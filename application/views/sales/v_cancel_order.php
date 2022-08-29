@@ -1,0 +1,77 @@
+	<!-- Main content -->
+	<section class="content">
+	    <div class="container-fluid">
+	        <!-- Info boxes -->
+	        <div class="row">
+	            <div class="col-12">
+	                <div class="card card-custom card-stretch">
+	                    <div class="card-header py-3">
+	                        <div class="card-title align-items-start flex-column">
+	                            <h3 class="card-label font-weight-bolder text-dark">Please Describe Your Reason to Cancel This Request</h3>
+	                        </div>
+	                        <div class="card-toolbar">
+	                            <a href="<?= base_url('sales/salesOrder') ?>" class="btn mr-2 text-light" style="background-color: #9c223b;">
+	                                <i class="fas fa-chevron-circle-left text-light"> </i>
+	                                Back
+	                            </a>
+	                        </div>
+
+	                    </div>
+	                    <!-- /.card-header -->
+	                    <div class="card-body" style="overflow: auto;">
+	                        <div class="card-body p-0">
+	                            <!--begin: Wizard-->
+	                            <div class="wizard wizard-3" id="kt_wizard_v3" data-wizard-state="step-first" data-wizard-clickable="true">
+	                                <!--begin: Wizard Nav-->
+
+	                                <!--end: Wizard Nav-->
+	                                <!--begin: Wizard Body-->
+	                                <div class="row justify-content-center py-10 px-8 py-lg-12 px-lg-10">
+	                                    <div class="col-xl-12 col-xxl-7">
+	                                        <!--begin: Wizard Form-->
+	                                        <form id="kt_form" novalidate="novalidate" action="<?= base_url('sales/salesOrder/cancelOrder') ?>" method="POST" enctype="multipart/form-data">
+	                                            <!--begin: Wizard Step 1-->
+	                                            <div class="pb-5" style="margin-top: -65px;">
+	                                                <!--begin::Input-->
+	                                                <div class="row">
+	                                                    <div class="col-md-12">
+	                                                        <div class="form-group">
+	                                                            <label for="exampleInputPassword1">Cancel Reason <span class="text-danger">*</span></label>
+	                                                            <input type="text" name="id_so" hidden value="<?= $id_so; ?>">
+	                                                            <textarea name="alasan_cancel" class="form-control" required></textarea>
+	                                                        </div>
+	                                                    </div>
+	                                                </div>
+	                                            </div>
+
+	                                            <!--end: Wizard Step 1-->
+
+	                                            <!--begin: Wizard Actions-->
+	                                            <div class="d-flex justify-content-between border-top mt-5 pt-10">
+	                                                <div>
+	                                                    <button type="submit" class="btn btn font-weight-bolder text-uppercase px-9 py-4 text-light" onclick="return confirm('Are You Sure ?')" style="background-color: #9c223b;">Process</button>
+	                                                    <!-- <button type="button" class="btn btn font-weight-bolder text-uppercase px-9 py-4 text-light" data-wizard-type="action-next" style="background-color: #9c223b;">Next</button> -->
+	                                                </div>
+	                                            </div>
+	                                            <!--end: Wizard Actions-->
+	                                        </form>
+	                                        <!--end: Wizard Form-->
+	                                    </div>
+	                                </div>
+	                                <!--end: Wizard Body-->
+	                            </div>
+	                            <!--end: Wizard-->
+	                        </div>
+	                    </div>
+	                    <!-- /.card-body -->
+	                </div>
+	                <!-- /.card -->
+	            </div>
+
+	        </div>
+	        <!-- /.row -->
+
+	    </div>
+	    <!--/. container-fluid -->
+	</section>
+	<!-- /.content --

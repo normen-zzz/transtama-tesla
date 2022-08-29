@@ -1,0 +1,312 @@
+<?php
+defined('BASEPATH') or exit('No direct script access allowed');
+
+class PengajuanModel extends CI_Model
+{
+
+    public function order($id = NULL)
+    {
+        if ($id == NULL) {
+            $this->db->select('a.*, b.nama_user');
+            $this->db->from('tbl_shp_order a');
+            $this->db->join('tb_user b', 'a.id_user=b.id_user');
+            $this->db->order_by('a.id', 'Desc');
+            return $this->db->get();
+        } else {
+            $this->db->select('a.*, b.nama_user');
+            $this->db->from('tbl_shp_order a');
+            $this->db->join('tb_user b', 'a.id_user=b.id_user');
+            $this->db->where('a.id', $id);
+            return $this->db->get();
+        }
+    }
+    public function dispatch()
+    {
+        $this->db->select('a.shipper,a.consigne,a.tree_shipper,a.tree_consignee,b.status as sts,b.is_incoming, b.created_at, b.shipment_id, b.status_eksekusi');
+        $this->db->from('tbl_shp_order a');
+        $this->db->join('tbl_gateway b', 'a.shipment_id=b.shipment_id');
+        $this->db->where('b.status_eksekusi', 0);
+        $this->db->order_by('b.shipment_id', 'DESC');
+        return $this->db->get();
+    }
+    public function dispatchHistory()
+    {
+        $this->db->select('a.shipper,a.consigne,a.tree_shipper,a.tree_consignee,b.status as sts,b.is_incoming, b.created_at, b.shipment_id, b.status_eksekusi');
+        $this->db->from('tbl_shp_order a');
+        $this->db->join('tbl_gateway b', 'a.shipment_id=b.shipment_id');
+        $this->db->where('b.status_eksekusi', 1);
+        $this->db->order_by('b.shipment_id', 'DESC');
+        return $this->db->get();
+    }
+    public function orderBySo($id)
+    {
+        $this->db->select('a.*, b.service_name');
+        $this->db->from('tbl_shp_order a');
+        $this->db->join('tb_service_type b', 'a.service_type=b.code');
+        $this->db->where('a.id_so', $id);
+        $this->db->where('a.shipment_id !=', NULL);
+        $this->db->where('a.deleted', 0);
+        return $this->db->get();
+    }
+    public function orderBySoAdmin($id)
+    {
+        $this->db->select('a.*, b.service_name');
+        $this->db->from('tbl_shp_order a');
+        $this->db->join('tb_service_type b', 'a.service_type=b.code');
+        $this->db->where('a.id_so', $id);
+        $this->db->where('a.shipment_id !=', NULL);
+        // $this->db->where('a.deleted', 0);
+        return $this->db->get();
+    }
+    public function getGenerate()
+    {
+        $query = "SELECT t.*,
+        (SELECT COUNT(id_booking) 
+           FROM tbl_booking_number_resi
+          WHERE status=1) sisa 
+        FROM tbl_booking_number_resi t  GROUP BY id_customer, created";
+        return  $this->db->query($query);
+    }
+    public function orderFilter($start, $end, $id_user)
+    {
+
+        if ($id_user != 0) {
+            $this->db->select('a.*, b.nama_user');
+            $this->db->from('tbl_shp_order a');
+            $this->db->join('tb_user b', 'a.id_user=b.id_user');
+            $this->db->where('a.date_new >=', $start);
+            $this->db->where('a.date_new <=',  $end);
+            $this->db->where('a.id_user =',  $id_user);
+            $this->db->order_by('a.id', 'Desc');
+            return $this->db->get();
+        } else {
+            $this->db->select('a.*, b.nama_user');
+            $this->db->from('tbl_shp_order a');
+            $this->db->join('tb_user b', 'a.id_user=b.id_user');
+            $this->db->where('a.date_new >=', $start);
+            $this->db->where('a.date_new <=',  $end);
+            $this->db->order_by('a.id', 'Desc');
+            return $this->db->get();
+        }
+    }
+
+
+    function search_blog($title)
+    {
+        $this->db->like('consigne', $title, 'both');
+        $this->db->order_by('consigne', 'ASC');
+        $this->db->limit(10);
+        return $this->db->get('tbl_shp_order')->result();
+    }
+
+    function get_data_consigne($kode)
+    {
+        $hsl = $this->db->query("SELECT * FROM tbl_shp_order WHERE consigne='$kode' ORDER BY id ASC");
+        if ($hsl->num_rows() > 0) {
+            foreach ($hsl->result() as $data) {
+                $hasil = array(
+                    'consigne' => $data->consigne,
+                    'destination' => $data->destination,
+                );
+            }
+        }
+        return $hasil;
+    }
+
+    function fetch_data($query)
+    {
+        $this->db->like('consigne', $query);
+        $this->db->group_by('consigne');
+        $query = $this->db->get('tbl_shp_order');
+        if ($query->num_rows() > 0) {
+            foreach ($query->result_array() as $row) {
+                $output[] = array(
+                    'consigne'  => $row["consigne"],
+                    'destination'  => $row["destination"]
+                );
+            }
+            echo json_encode($output);
+        }
+    }
+    public function getLaporanTransaksiFilter($bulan, $tahun)
+    {
+        // $where = array('a.shipment_id' != NULL, 'YEAR(a.tgl_pickup)' => $tahun, 'MONTH(a.tgl_pickup)' => $bulan);
+        $where = array('YEAR(a.tgl_pickup)' => $tahun, 'MONTH(a.tgl_pickup)' => $bulan, 'a.deleted' => 0);
+        $this->db->select('a.*, b.nama_user, c.service_name, c.prefix');
+        $this->db->from('tbl_shp_order a');
+        $this->db->join('tb_user b', 'a.id_user=b.id_user');
+        $this->db->join('tb_service_type c', 'a.service_type=c.code');
+        $this->db->where($where);
+        // $this->db->or_where('a.s')
+        $this->db->order_by('a.tgl_pickup', 'ASC');
+        $query = $this->db->get();
+        return $query;
+    }
+    public function getLaporanTransaksiVoidFilter($bulan, $tahun)
+    {
+        // $where = array('a.shipment_id' != NULL, 'YEAR(a.tgl_pickup)' => $tahun, 'MONTH(a.tgl_pickup)' => $bulan);
+        $where = array('YEAR(a.tgl_pickup)' => $tahun, 'MONTH(a.tgl_pickup)' => $bulan, 'a.deleted' => 1);
+        $this->db->select('a.*, b.nama_user, c.service_name, c.prefix');
+        $this->db->from('tbl_shp_order a');
+        $this->db->join('tb_user b', 'a.id_user=b.id_user');
+        $this->db->join('tb_service_type c', 'a.service_type=c.code');
+        $this->db->where($where);
+        // $this->db->or_where('a.s')
+        $this->db->order_by('a.tgl_pickup', 'ASC');
+        $query = $this->db->get();
+        return $query;
+    }
+    public function getLaporan()
+    {
+        $this->db->select('a.*, b.nama_user, c.service_name, c.prefix');
+        $this->db->from('tbl_shp_order a');
+        $this->db->join('tb_user b', 'a.id_user=b.id_user');
+        $this->db->join('tb_service_type c', 'a.service_type=c.code');
+        $this->db->where('a.deleted', 0);
+        $this->db->order_by('a.tgl_pickup', 'ASC');
+        $query = $this->db->get();
+        return $query;
+    }
+    public function getLaporanVoid()
+    {
+        $this->db->select('a.*, b.nama_user, c.service_name, c.prefix');
+        $this->db->from('tbl_shp_order a');
+        $this->db->join('tb_user b', 'a.id_user=b.id_user');
+        $this->db->join('tb_service_type c', 'a.service_type=c.code');
+        $this->db->where('a.deleted', 1);
+        $this->db->order_by('a.tgl_pickup', 'ASC');
+        $query = $this->db->get();
+        return $query;
+    }
+    function get_mahasiswa_list($limit, $start)
+    {
+        $query = $this->db->get('tbl_shp_order', $limit, $start);
+        return $query;
+    }
+    function getRevisiJs()
+    {
+        $this->db->select('a.*, b.created_at as tgl_pengajuan, b.status as status_pengajuan, b.id_request');
+        $this->db->from('tbl_shp_order a');
+        $this->db->join('tbl_request_revisi b', 'a.id=b.shipment_id');
+        $this->db->join('tbl_so d', 'a.id_so=d.id_so');
+        $this->db->where('d.id_sales', $this->session->userdata('id_user'));
+        $this->db->order_by('b.id_request', 'DESC');
+        $query = $this->db->get();
+        return $query;
+    }
+    function getRevisiSoNew()
+    {
+        $this->db->select('a.*, b.created_at as tgl_so_new, b.alasan, b.status_revisi, c.nama_user');
+        $this->db->from('tbl_shp_order a');
+        $this->db->join('tbl_revisi_so b', 'a.id=b.shipment_id');
+        $this->db->join('tbl_so d', 'a.id_so=d.id_so');
+        $this->db->join('tb_user c', 'd.id_sales=c.id_user');
+        $this->db->order_by('b.id_revisi', 'DESC');
+        $query = $this->db->get();
+        return $query;
+    }
+    function getDetailSo($id)
+    {
+        $this->db->select('a.*, b.service_name, c.nama_user');
+        $this->db->from('tbl_shp_order a');
+        $this->db->join('tb_service_type b', 'a.service_type=b.code');
+        $this->db->join('tbl_so d', 'a.id_so=d.id_so');
+        $this->db->join('tb_user c', 'd.id_sales=c.id_user');
+        $this->db->where('a.id', $id);
+        $query = $this->db->get();
+        return $query;
+    }
+
+    public function getLaporanTransaksiFilterByDate($start, $end)
+    {
+        // $where  = array('c.id_sales' => $this->session->userdata('id_user'));
+        $this->db->select('a.*, b.nama_user, c.pu_poin,d.service_name, d.prefix');
+        $this->db->from('tbl_shp_order a');
+        $this->db->join('tb_user b', 'a.id_user=b.id_user');
+        $this->db->join('tbl_so c', 'c.id_so=a.id_so');
+        $this->db->join('tb_service_type d', 'a.service_type=d.code');
+        $this->db->where('a.tgl_pickup >=', $start);
+        $this->db->where('a.tgl_pickup <=',  $end);
+        $this->db->where('c.id_sales', $this->session->userdata('id_user'));
+        $this->db->where('a.deleted', 0);
+        $this->db->order_by('a.tgl_pickup', 'ASC');
+        return $this->db->get();
+    }
+    public function getLaporanSales()
+    {
+        $this->db->select('a.*, b.nama_user, c.pu_poin,d.service_name, d.prefix');
+        $this->db->from('tbl_shp_order a');
+        $this->db->join('tb_user b', 'a.id_user=b.id_user');
+        $this->db->join('tbl_so c', 'c.id_so=a.id_so');
+        $this->db->join('tb_service_type d', 'a.service_type=d.code');
+        $this->db->where('c.id_sales', $this->session->userdata('id_user'));
+        $this->db->where('a.deleted', 0);
+        $this->db->order_by('a.tgl_pickup', 'ASC');
+        return $this->db->get();
+    }
+    function getShipmentBySales($bulan = null, $tahun = null)
+    {
+        $where = array('YEAR(a.tgl_pickup)' => $tahun, 'MONTH(a.tgl_pickup)' => $bulan, 'a.deleted' => 0);
+        $id_sales = $this->session->userdata('id_user');
+        if ($bulan != NULL && $tahun != NULL) {
+            $this->db->select('a.*, b.service_name, c.nama_user');
+            $this->db->from('tbl_shp_order a');
+            $this->db->join('tb_service_type b', 'a.service_type=b.code');
+            $this->db->join('tbl_so d', 'a.id_so=d.id_so');
+            $this->db->join('tb_user c', 'd.id_sales=c.id_user');
+            $this->db->where('d.id_sales', $id_sales);
+            $this->db->where($where);
+            $this->db->where('a.status_so >=', 1);
+            $query = $this->db->get();
+            return $query;
+        } else {
+            $this->db->select('a.*, b.service_name, c.nama_user');
+            $this->db->from('tbl_shp_order a');
+            $this->db->join('tb_service_type b', 'a.service_type=b.code');
+            $this->db->join('tbl_so d', 'a.id_so=d.id_so');
+            $this->db->join('tb_user c', 'd.id_sales=c.id_user');
+            $this->db->where('d.id_sales', $id_sales);
+            $this->db->where('a.status_so >=', 1);
+            $this->db->where('a.deleted', 0);
+            $query = $this->db->get();
+            return $query;
+        }
+    }
+    public function getLaporanTransaksiFilterAdmin($bulan, $tahun, $id_user)
+    {
+        if ($id_user == 0) {
+            $where = array('YEAR(a.tgl_pickup)' => $tahun, 'MONTH(a.tgl_pickup)' => $bulan, 'a.deleted' => 0);
+            $this->db->select('a.*, b.nama_user, c.service_name, c.prefix');
+            $this->db->from('tbl_shp_order a');
+            $this->db->join('tb_user b', 'a.id_user=b.id_user');
+            $this->db->join('tb_service_type c', 'a.service_type=c.code');
+            $this->db->where($where);
+            $this->db->order_by('a.tgl_pickup', 'ASC');
+            $query = $this->db->get();
+            return $query;
+        } else {
+            $where = array('YEAR(a.tgl_pickup)' => $tahun, 'MONTH(a.tgl_pickup)' => $bulan, 'a.deleted' => 0, 'd.id_sales' => $id_user);
+            $this->db->select('a.*, b.nama_user, c.service_name, c.prefix,d.id_sales');
+            $this->db->from('tbl_shp_order a');
+            $this->db->join('tbl_so d', 'a.id_so=d.id_so');
+            $this->db->join('tb_user b', 'd.id_sales=b.id_user');
+            $this->db->join('tb_service_type c', 'a.service_type=c.code');
+            $this->db->where($where);
+            $this->db->order_by('a.tgl_pickup', 'ASC');
+            $query = $this->db->get();
+            return $query;
+        }
+    }
+    public function getLaporanAdmin()
+    {
+        $this->db->select('a.*, b.nama_user, c.service_name, c.prefix');
+        $this->db->from('tbl_shp_order a');
+        $this->db->join('tbl_so d', 'a.id_so=d.id_so');
+        $this->db->join('tb_user b', 'd.id_sales=b.id_user');
+        $this->db->join('tb_service_type c', 'a.service_type=c.code');
+        $this->db->where('a.deleted', 0);
+        $this->db->order_by('a.tgl_pickup', 'ASC');
+        $query = $this->db->get();
+        return $query;
+    }
+}
