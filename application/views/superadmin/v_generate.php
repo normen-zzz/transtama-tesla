@@ -32,27 +32,31 @@
                             <tr>
                                 <th>Nama Customer</th>
                                 <th>Total</th>
-                                <!-- <th>Sisa</th> -->
+                                <th>Sisa</th>
                                 <th>Created At</th>
+                                <th>Notes</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php foreach ($generate as $gn) {
+                                $sisa = $this->db->get_where('tbl_booking_number_resi', array('group' => $gn['group'], 'status' => 0));
 
                             ?>
                                 <tr>
 
                                     <td><?= $gn['customer'] ?></td>
                                     <td><?= $gn['total'] ?></td>
-                                    <!-- <td><?= $gn['sisa'] ?></td> -->
+                                    <td><?= $sisa->num_rows() ?></td>
+
                                     <td><?= $gn['created_at'] ?></td>
+                                    <td><?= $gn['notes'] ?></td>
                                     <td>
-                                        <a href="<?= base_url('superadmin/order/detailGenerate/' . $gn['id_customer'] . '/' . $gn['created']) ?>" class="btn btn-sm text-light mb-1" style="background-color: #9c223b;">
+                                        <a href="<?= base_url('superadmin/order/detailGenerate/' . $gn['group']) ?>" class="btn btn-sm text-light mb-1" style="background-color: #9c223b;">
                                             Detail</a>
-                                        <a href="<?= base_url('superadmin/order/exportGenerate/' . $gn['id_customer'] . '/' . $gn['created']) ?>" class="btn btn-sm text-light mb-1" style="background-color: #9c223b;">
+                                        <a href="<?= base_url('superadmin/order/exportGenerateGenerateResi/' . $gn['id_customer'] . '/' . $gn['group']) ?>" class="btn btn-sm text-light mb-1" style="background-color: #9c223b;">
                                             Export Excell</a>
-                                        <a href="<?= base_url('superadmin/order/generatePdf/' . $gn['id_customer'] . '/' . $gn['created']) ?>" class="btn btn-sm text-light mb-1" style="background-color: #9c223b;">
+                                        <a href="<?= base_url('superadmin/order/generatePdfGenerateResi/' . $gn['group']) ?>" class="btn btn-sm text-light mb-1" style="background-color: #9c223b;">
                                             Print PDF</a>
                                     </td>
                                 </tr>
@@ -100,6 +104,13 @@
                                 <div class="form-group">
                                     <label for="exampleInputPassword1">Total Request</label>
                                     <input type="number" class="form-control" required name="total">
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="exampleInputPassword1">Notes</label>
+                                    <input type="text" class="form-control" required name="notes">
                                 </div>
                             </div>
 

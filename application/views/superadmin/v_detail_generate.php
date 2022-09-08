@@ -39,7 +39,9 @@
                             ?>
                                 <tr>
 
-                                    <td><?= $gn['shipment_id'] ?></td>
+                                    <td><?php if ($gn['status'] == 0) { ?><a href="<?= base_url('superadmin/Order/printSatuanGenerateResi/' . $gn['shipment_id']) ?>"><?= $gn['shipment_id'] ?></a><?php } else {
+                                                                                                                                                                                                    echo $gn['shipment_id'];
+                                                                                                                                                                                                } ?></td>
                                     <td>
                                         <?php if ($gn['status'] == 0) {
                                             echo ' <span class="label label-success label-inline font-weight-lighter">Available</span>';

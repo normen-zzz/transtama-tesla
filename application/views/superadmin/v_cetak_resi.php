@@ -51,7 +51,9 @@
 </style>
 
 <body style="font-family:'Open Sans',sans-serif; margin:-15px; margin-top:-50px;" onload="window.print()">
-    <?php foreach ($orders as $order) { ?>
+    <?php foreach ($orders as $order) {
+        $treeletter = $this->db->get_where('tb_province', array('name' => $order['provinsi']))->row_array();
+    ?>
 
         <div class="inv" style="margin-left: -10px; margin-top:-20px;">
             <table border="0">
@@ -93,7 +95,7 @@
                     </td>
                     <td style="border-left:1px solid black"><b>
                             <h2 style="font-size: 12px;">
-                                <center> <span style="font-size: 12px; padding-top:-60px"><b></b> </span></center>
+                                <span style="font-size: 12px; padding-top:-60px"><b><?= $treeletter['tree_code'] ?> - </b> </span>
                             </h2>
                         </b>
                     </td>
@@ -102,15 +104,24 @@
 
 
             </table>
+            <table>
+                <tr>
+                    <td style="border-bottom: 1px;border-top: 1px solid black;font-size: 8px;">
+                        DO Number :
+
+                    </td>
+                </tr>
+            </table>
             <table style="width:100%; border-top:1px solid black;">
                 <tr>
-                    <td style=" font-size: 10px; text-align:left; height:70px;vertical-align:top"><b>Consignee :</b>
+                    <td style=" font-size: 10px; text-align:left; height:50px;vertical-align:top"><b>Consignee :</b>
 
                     </td>
                 </tr>
 
 
             </table>
+
 
             <table style="width:100%; border-left:none;border-right:none" border="0">
                 <tr>
