@@ -60,12 +60,12 @@ class PengajuanModel extends CI_Model
     }
     public function getGenerate()
     {
-        $query = "SELECT t.*,
-        (SELECT COUNT(id_booking) 
-           FROM tbl_booking_number_resi
-          WHERE status=1) sisa 
-        FROM tbl_booking_number_resi t  GROUP BY id_customer, created";
-        return  $this->db->query($query);
+        // $query = "SELECT t.*,(SELECT COUNT(id_booking) FROM tbl_booking_number_resi WHERE status=0) sisa FROM tbl_booking_number_resi t  GROUP BY id_customer, created";
+        // return  $this->db->query($query);
+        $this->db->select('*');
+        $this->db->from('tbl_booking_number_resi');
+        $this->db->group_by('group');
+        return $this->db->get();
     }
     public function orderFilter($start, $end, $id_user)
     {
