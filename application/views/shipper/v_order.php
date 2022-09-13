@@ -18,10 +18,16 @@
 
 								<?php if ($so['type'] == 1) {
 								?>
-									<a href="<?= base_url('shipper/order/special/' . $id_so . '/' . $id_tracking) ?>" class="btn mr-2 mt-1 text-light" style="background-color: #9c223b;">
+									<!-- <a href="<?= base_url('shipper/order/special/' . $id_so . '/' . $id_tracking) ?>" class="btn mr-2 mt-1 text-light" style="background-color: #9c223b;">
 										<i class="fas fa-plus-circle text-light"> </i>
 										Special Order
+									</a> -->
+
+									<a href="<?= base_url('shipper/order/addShipmentGenerateResi/' . $id_so . '/' . $id_tracking) ?>" class="btn mr-2 mt-1 text-light" style="background-color: #9c223b;">
+										<i class="fas fa-plus-circle text-light"> </i>
+										Generate Order
 									</a>
+
 								<?php	} else {
 								?>
 									<a href="<?= base_url('shipper/order/bulk/' . $id_so . '/' . $id_tracking) ?>" class="btn mr-2 text-light" style="background-color: #9c223b;">

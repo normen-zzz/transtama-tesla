@@ -441,7 +441,7 @@
 														}
 														?>
 													<?php	} else {
-														echo 'SO Submited';
+														echo "<button type='submit' class='btn btn-success' onclick='return confirm('Are you sure ?')'>Submit SO</button>  SO Submited";
 													}
 													?>
 											<?php	}

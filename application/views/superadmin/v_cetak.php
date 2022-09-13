@@ -1,10 +1,11 @@
+<?php $is_generate = $this->db->get_where('tbl_so', array('id_so' => $order['id_so']))->row_array(); ?>
 <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700&display=swap" rel="stylesheet" type="text/css">
 <style>
     @page {
         margin-top: 15px;
         margin-left: 5px;
         margin-right: 10px;
-        margin-bottom: 5px;
+        margin-bottom: 25px;
     }
 
     table {
@@ -99,7 +100,7 @@
                 </td>
                 <td style="border-left:1px solid black"><b>
                         <h2 style="font-size: 12px;">
-                            <center> <span style="font-size: 12px; padding-top:-60px"><b><?= $order['tree_shipper'] ?>-<?= $order['tree_consignee'] ?></b> </span></center>
+                            <center> <span style="font-size: 12px; padding-top:-60px"><b><?= $order['tree_shipper'] ?>-<?php if ($is_generate['type'] == 0) { ?> <?= $order['tree_consignee'] ?> <?php } ?></b> </span></center>
                         </h2>
                     </b>
                 </td>
@@ -109,9 +110,10 @@
 
         </table>
         <table style="width:100%; border-top:1px solid black;">
+
             <tr>
-                <td style=" font-size: 9px; text-align:justify"><b>Consignee :</b> <?= ucwords(strtolower($order['consigne'])) . '<br>' . ucwords($order['destination']) . '. ' . '<b>' . ucwords(strtolower($order['city_consigne'])) . '</b>' . ', ' . '<b>' . ucwords(strtolower($order['state_consigne'])) . '</b>'  ?>
-                    <b>Indonesia</b>
+                <td style=" font-size: 9px; text-align:justify"><b>Consignee :</b> <?php if ($is_generate['type'] == 0) { ?> <?= ucwords(strtolower($order['consigne'])) . '<br>' . ucwords($order['destination']) . '. ' . '<b>' . ucwords(strtolower($order['city_consigne'])) . '</b>' . ', ' . '<b>' . ucwords(strtolower($order['state_consigne'])) . '</b>'  ?>
+                        <b>Indonesia</b><?php } ?>
                 </td>
             </tr>
 
@@ -144,7 +146,7 @@
         <table style="width:100%; border-left:none;border-right:none" border="0">
             <tr>
                 <td style="border-top: 1px solid black; font-size: 10px;">
-                    <b>Pieces :</b> <?= $order['koli'] ?>
+                    <b>Pieces : <?php if ($is_generate['type'] == 0) { ?></b> <?= $order['koli'] ?> <?php } ?>
                 </td>
                 <td style="border-top: 1px solid black; border-left: 1px solid black;font-size: 10px;">
                     <b>Weight :</b> <?= ($order['is_weight_print'] == 1) ?  $order['weight'] : ''; ?>

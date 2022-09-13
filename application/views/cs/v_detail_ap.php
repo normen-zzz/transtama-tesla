@@ -106,7 +106,7 @@
 												<div class="col-md-3">
 													<label for="note_cs">Amount Proposed 1</label>
 													<div class="form-group rec-element-ap">
-														<input type="text" class="form-control" id="amount1" name="amount_proposed[]">
+														<input type="text" class="amount_proposed form-control" id="rupiah1" name="amount_proposed[]">
 													</div>
 												</div>
 												<div class="col-md-4">

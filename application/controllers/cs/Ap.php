@@ -179,7 +179,7 @@ class Ap extends CI_Controller
 				$link = "https://tesla-smartwork.transtama.com/approval/detailCs/$no_ap";
 				$pesan = "Hallo, ada pengajuan Ap No. *$no_ap* Oleh *$nama_user*  Dengan Tujuan *$purpose* Tanggal *$date*. Silahkan Approve Melalu Link Berikut : $link . Terima Kasih";
 				// no mba lina
-				// kalo dia jabatannya bukan sm
+				// kalo dia jabatannya sm
 				if ($id_jabatan == 10) {
 					$this->wa->pickup('+6289629096425', "$pesan");
 					$this->wa->pickup('+6287771116286', "$pesan");

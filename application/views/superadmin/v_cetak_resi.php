@@ -1,5 +1,12 @@
 <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700&display=swap" rel="stylesheet" type="text/css">
 <style>
+    @page {
+        margin-top: 15px;
+        margin-left: 25px;
+        margin-right: 10px;
+        margin-bottom: 5px;
+    }
+
     table {
         width: 100%;
         font-size: 12pt;
@@ -50,12 +57,12 @@
     }
 </style>
 
-<body style="font-family:'Open Sans',sans-serif; margin:-15px; margin-top:-50px;" onload="window.print()">
+<body style="font-family:'Open Sans',sans-serif; margin:-15px; margin-top:-20px;" onload="window.print()">
     <?php foreach ($orders as $order) {
         $treeletter = $this->db->get_where('tb_province', array('name' => $order['provinsi']))->row_array();
     ?>
 
-        <div class="inv" style="margin-left: -10px; margin-top:-20px;">
+        <div class="inv" style="margin-left: -10px;">
             <table border="0">
                 <tr>
                     <td style="width: 60%; margin-bottom: 10px;">

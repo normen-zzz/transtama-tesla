@@ -23,8 +23,10 @@ class SalesOrder extends CI_Controller
         $this->load->model('SalesModel', 'sales');
         $this->load->model('Sendwa', 'wa');
         $this->load->model('Api');
+        $this->db->query("SET sql_mode=(SELECT REPLACE(@@sql_mode, 'ONLY_FULL_GROUP_BY', ''));");
         cek_role();
     }
+
 
     public function index()
     {
@@ -57,13 +59,13 @@ class SalesOrder extends CI_Controller
     }
     public function addSpecial()
     {
-        $cek_api = $this->Api->kirim();
-        $cek_api = json_decode($cek_api);
-        $cek_api = $cek_api->accessToken;
-        $data = [
-            'token' => $cek_api,
-        ];
-        $this->session->set_userdata($data);
+        // $cek_api = $this->Api->kirim();
+        // $cek_api = json_decode($cek_api);
+        // $cek_api = $cek_api->accessToken;
+        // $data = [
+        //     'token' => $cek_api,
+        // ];
+        // $this->session->set_userdata($data);
         $data['title'] = 'Add Sales Order';
         $data['service'] = $this->db->get('tb_service_type')->result_array();
         $data['moda'] = $this->db->get('tbl_moda')->result_array();
@@ -177,6 +179,8 @@ class SalesOrder extends CI_Controller
                 // kirim wa
 
                 $this->wa->pickup('+6285157906966', "$pesan"); //Nomor Mas Krisna
+                $this->wa->pickup('+6285697780467', "$pesan"); //Nomor Norman
+                $this->wa->pickup('+6281293753199', "$pesan"); //Nomor Bu Lili
                 // $this->wa->pickup('+6281617435559', "$pesan");
                 // $this->wa->pickup('+6285894438583', "$pesan");
                 // $this->wa->pickup('+6281385687290', "$pesan");
@@ -597,6 +601,16 @@ class SalesOrder extends CI_Controller
             redirect('sales/salesOrder/edit/' . $this->input->post('id_so'));
         }
     }
+
+    public function countint()
+    {
+        $int = 12;
+        if (strlen($int) > 2) {
+            echo 'diatas 2';
+        } else {
+            echo 'dibawah 2';
+        }
+    }
     public function prosesSo()
     {
 
@@ -619,20 +633,38 @@ class SalesOrder extends CI_Controller
             $others = $this->input->post('others');
             // $id = sizeof($id);
             for ($i = 0; $i < sizeof($id); $i++) {
-                $data = array(
-                    'freight_kg' => $freight_kg[$i],
-                    'packing' => $packing[$i],
-                    'pic_invoice' => $pic_invoice[$i],
-                    'special_freight' => $special_freight[$i],
-                    'insurance' => $insurance[$i],
-                    'surcharge' => $surcharge[$i],
-                    'disc' => $disc[$i] / 100,
-                    'cn' => $cn[$i] / 100,
-                    'others' => $others[$i],
-                    'so_note' => $so_note[$i],
-                    'status_so' => 1,
-                    'deadline_pic_js' => $deadline_pic_js,
-                );
+                $tblShpOrder = $this->db->get_where('tbl_shp_order', ['id' => $id[$i]])->row_array();
+                if ($tblShpOrder->status_so != 1) {
+                    $data = array(
+                        'freight_kg' => $freight_kg[$i],
+                        'packing' => $packing[$i],
+                        'pic_invoice' => $pic_invoice[$i],
+                        'special_freight' => $special_freight[$i],
+                        'insurance' => $insurance[$i],
+                        'surcharge' => $surcharge[$i],
+                        'disc' => $disc[$i] / 100,
+                        'cn' => $cn[$i] / 100,
+                        'others' => $others[$i],
+                        'so_note' => $so_note[$i],
+                        'status_so' => 1,
+                        'deadline_pic_js' => $deadline_pic_js,
+                    );
+                } else {
+                    $data = array(
+                        'freight_kg' => $freight_kg[$i],
+                        'packing' => $packing[$i],
+                        'pic_invoice' => $pic_invoice[$i],
+                        'special_freight' => $special_freight[$i],
+                        'insurance' => $insurance[$i],
+                        'surcharge' => $surcharge[$i],
+                        'disc' => $disc[$i] / 100,
+                        'cn' => $cn[$i] / 100,
+                        'others' => $others[$i],
+                        'so_note' => $so_note[$i],
+                        'deadline_pic_js' => $deadline_pic_js,
+                    );
+                }
+
                 $this->db->update('tbl_shp_order', $data, ['id' => $id[$i]]);
             }
             $data = array(
@@ -1405,6 +1437,100 @@ class SalesOrder extends CI_Controller
         $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
         $writer->save('php://output');
         exit;
+    }
+
+    //Untuk Generate Resi
+    public function generateResi()
+    {
+        $data['title'] = 'Generate Resi';
+        $data['customers'] = $this->db->get('tb_customer')->result_array();
+        $data['generate'] = $this->order->getGenerate()->result_array();
+        $this->backend->display('sales/v_generate', $data);
+    }
+    public function generateResiAdd()
+    {
+        $shipper = $this->input->post('customer');
+        $id_customer = $this->input->post('id_customer');
+        $total = $this->input->post('total');
+        $notes = $this->input->post('notes');
+
+        $sql_group = $this->db->query("SELECT * FROM tbl_booking_number_resi ORDER BY id_booking DESC LIMIT 1;")->row_array();
+        if ($sql_group == NULL) {
+            $noUrut = 1;
+            $group  = "$noUrut";
+        } else {
+            $last_group = $sql_group['group'];
+            $no = $last_group + 1;
+            $group =  "$no";
+        }
+        // var_dump($no);
+
+        for ($j = 0; $j < $total; $j++) {
+            $sql = $this->db->query("SELECT max(no_resi) as shipment_id FROM tbl_no_resi  ORDER BY id_no_resi DESC LIMIT 1")->row_array();
+            if ($sql == NULL) {
+                $noUrut = 1;
+
+                $shipment_id  = "$noUrut";
+            } else {
+                $last_shipment_id = $sql['shipment_id'];
+                $no = $last_shipment_id + 1;
+                $shipment_id =  ltrim($no, '0');
+            }
+
+            $data = array(
+                'id_customer' => $id_customer,
+                'shipment_id' => $shipment_id,
+                'qr_id' => 0,
+                'customer' => $shipper,
+                'total' => $total,
+                'created' => date('Y-m-d'),
+                'notes' => $notes,
+                'group' => $group
+            );
+            // input no shipment untuk cari max
+            $this->db->insert('tbl_no_resi', ['no_resi' => $shipment_id, 'created_by' => $this->session->userdata('id_user')]);
+            //untuk table booking
+            $this->db->insert('tbl_booking_number_resi', $data);
+            $this->barcode($shipment_id);
+            $this->qrcode($shipment_id);
+        }
+        $this->session->set_flashdata('message', '<div class="alert
+                    alert-success" role="alert">Success</div>');
+        redirect('sales/SalesOrder/generateResi');
+    }
+    public function detailGenerate($group)
+    {
+        $data['title'] = 'Detail Generate Resi';
+        $data['generate'] = $this->db->get_where('tbl_booking_number_resi', ['group' => $group])->result_array();
+        $this->backend->display('sales/v_detail_generate', $data);
+    }
+    public function generatePdfGenerateResi($group)
+    {
+
+        $mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => [74, 105]]);
+
+        $this->db->select('*, b.nama_pt,b.provinsi, b.kota');
+        $this->db->from('tbl_booking_number_resi a');
+        $this->db->join('tb_customer b', 'a.id_customer=b.id_customer');
+        $this->db->where('a.group', $group);
+        $this->db->where('a.status', 0);
+        $data['orders'] = $this->db->get()->result_array();
+        $data = $this->load->view('superadmin/v_cetak_resi', $data, TRUE);
+        $mpdf->WriteHTML($data);
+        $mpdf->Output();
+    }
+    public function printSatuanGenerateResi($id)
+    {
+        $mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => [74, 105]]);
+        $this->db->select('*, b.nama_pt,b.provinsi, b.kota');
+        $this->db->from('tbl_booking_number_resi a');
+        $this->db->join('tb_customer b', 'a.id_customer=b.id_customer');
+        $this->db->where('a.shipment_id', $id);
+        $this->db->where('a.status', 0);
+        $data['orders'] = $this->db->get()->result_array();
+        $data = $this->load->view('superadmin/v_cetak_resi', $data, TRUE);
+        $mpdf->WriteHTML($data);
+        $mpdf->Output('GenerateResi-' . $id . '.pdf', 'D');
     }
 
     // public function Exportexcel($awal = null, $akhir = null)

@@ -1,10 +1,13 @@
+<?php $is_generate = $this->db->get_where('tbl_so', array('id_so' => $orders[0]['id_so']))->row_array(); ?>
 <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700&display=swap" rel="stylesheet" type="text/css">
 <style>
     @page {
         margin-top: 15px;
         margin-left: 5px;
         margin-right: 10px;
-        margin-bottom: 5px;
+        <?php if ($is_generate['type'] == 1) { ?>margin-bottom: 50px;
+        <?php } else { ?>margin-bottom: 5px;
+        <?php } ?>
     }
 
     table {
@@ -111,8 +114,9 @@
             </table>
             <table style="width:100%; border-top:1px solid black;">
                 <tr>
-                    <td style=" font-size: 10px; text-align:left"><b>Consignee :</b> <?= ucwords(strtolower($order['consigne'])) . '<br>' . ucwords($order['destination']) . '. ' . '<br>'  . '<b>' . ucwords(strtolower($order['city_consigne'])) . '</b>' . ', ' . '<b>' . ucwords(strtolower($order['state_consigne'])) . '</b>'  ?>
-                        <b>Indonesia</b>
+                    <td style=" font-size: 10px; text-align:left"><b>Consignee : <?php if ($order['consigne'] != NULL) {
+                                                                                    ?></b> <?= ucwords(strtolower($order['consigne'])) . '<br>' . ucwords($order['destination']) . '. ' . '<br>'  . '<b>' . ucwords(strtolower($order['city_consigne'])) . '</b>' . ', ' . '<b>' . ucwords(strtolower($order['state_consigne'])) . '</b>'  ?>
+                        <b>Indonesia</b> <?php } ?>
                     </td>
                 </tr>
 

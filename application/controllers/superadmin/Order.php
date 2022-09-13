@@ -44,134 +44,47 @@ class Order extends CI_Controller
         $shipper = $this->input->post('customer');
         $id_customer = $this->input->post('id_customer');
         $total = $this->input->post('total');
+        $notes = $this->input->post('notes');
+
+        $sql_group = $this->db->query("SELECT * FROM tbl_booking_number_resi ORDER BY id_booking DESC LIMIT 1;")->row_array();
+        if ($sql_group == NULL) {
+            $noUrut = 1;
+            $group  = "$noUrut";
+        } else {
+            $last_group = $sql_group['group'];
+            $no = $last_group + 1;
+            $group =  "$no";
+        }
+        // var_dump($no);
+
         for ($j = 0; $j < $total; $j++) {
-            $koli = 1;
-            $package = array();
-            for ($i = 0; $i < $koli; $i++) {
-                $p = $i + 1;
-                $package_list = array(
-                    'weight' => '5',
-                    'length' => '10',
-                    'height' => '20',
-                    'width' => '5',
-                    'description' => "Package $p",
-                    'package_type_id' => "7db61ef4-5c0f-4965-8eec-3fd938f5d16f",
-                    'commodities_packages_attributes' => array(
-                        '0' => array(
-                            "commodity_id" => "dd7eb77d-431b-48a2-85b8-0c4a132c9bef",
-                            "items_count" => "1",
-                            "value_of_goods" => "1"
-                        )
-                    )
-                );
-                array_push($package, $package_list);
-            }
+            $sql = $this->db->query("SELECT max(no_resi) as shipment_id FROM tbl_no_resi  ORDER BY id_no_resi DESC LIMIT 1")->row_array();
+            if ($sql == NULL) {
+                $noUrut = 1;
 
-            $img = $this->input->post('ttd');
-            $img = str_replace('data:image/png;base64,', '', $img);
-            $service_type = "9194a22e-392f-4940-8229-e5df3557c2ac";
-
-            $date = date('Y-m-d');
-            $pickup_start = date('Y-m-d', strtotime('+1 days', strtotime($date)));
-            $delivery_start = date('Y-m-d', strtotime('+1 days', strtotime($pickup_start)));
-            $delivery_commit = date('Y-m-d', strtotime('+3 days', strtotime($delivery_start)));
-
-            $startTime = date("H:i:s", time() + 600);
-            // var_dump($startTime);
-            // die;
-            $data = array(
-                'order' => array(
-                    'user_id' => "6a85fa9d-154f-49ac-8710-35bf19122c31",
-                    'reference_id' => '',
-                    'service_type_id' => "$service_type",
-                    'measurement_units' => "metric",
-                    'pickup_start_time' => $date . "T$startTime.000Z",
-                    'pickup_commit_time' => $pickup_start . 'T23:59:00.000',
-                    'delivery_start_time' => $delivery_start . 'T00:00:00.000Z',
-                    'delivery_commit_time' => $delivery_commit . 'T23:59:00.000Z',
-                    // 'state_consigne' => $this->input->post('state_consigne'),
-                    'shipper_name' => $shipper,
-                    'shipper_phone' => "0000",
-                    'shipper_email' => "sender@gmail.com",
-                    'consignee_name' => "DUMMY",
-                    'consignee_phone' => "00000",
-                    'consignee_email' => "consigne@gmail.com",
-                    'delivery_timezon' => "Asia/Jakarta",
-                    'origin_attributes' => array(
-                        'country' => 'Indonesia',
-                        'state' => ucwords(strtolower("JAKARTA")),
-                        // 'state' => 'South Kalimantan',
-                        'city' => ucwords(strtolower("CENTRAL JAKARTA")),
-                        // 'city' => 'Kabupaten Kota Baru',
-                        'postal_code' => "12345",
-                        'address_line1' => "JAKARTA",
-                        // 'address_line1' => 'JL MH Thamrin no 51 Jakarta Pusat',
-                        'address_line2' => "JAKARTA",
-                        'address_line3' => "JAKARTA",
-                        'latitude' => "",
-                        'longitude' => ""
-                    ),
-                    'destination_attributes' => array(
-                        'country' => "Indonesia",
-                        'state' => ucwords(strtolower("JAKARTA")),
-                        // 'state' => 'Jakarta',
-                        'city' => ucwords(strtolower("WEST JAKARTA")),
-                        // 'city' => 'West jakarta',
-                        'postal_code' => '000',
-                        'address_line1' => "JAKARTA",
-                        'address_line2' => "JAKARTA",
-                        'address_line3' => "JAKARTA",
-
-                    ),
-                    'packages_attributes' => $package,
-                    'pricing_info_attributes' => array(
-                        "currency" => "IDR"
-                    )
-                )
-            );
-            // echo '<pre>';
-            // print_r($data);
-            // var_dump($data);
-            // die;
-
-            $data = json_encode($data);
-            $send = $this->Api->order($data);
-            // echo $send;
-            // die;
-            $jsonIterator = new RecursiveIteratorIterator(
-                new RecursiveArrayIterator(json_decode($send, TRUE)),
-                RecursiveIteratorIterator::SELF_FIRST
-            );
-
-            $new = array();
-            foreach ($jsonIterator as $key => $val) {
-                if (is_array($val)) {
-                } else {
-                    if ($key == 'order_id_label' || $key == 'shipment_id_label') {
-                        array_push($new, $val);
-                    }
-                }
-            }
-            if ($new) {
-
-                $order_id = $new[0];
-                $shipment_id  = $new[1];
-                $data = array(
-                    'id_customer' => $id_customer,
-                    'shipment_id' => $shipment_id,
-                    'qr_id' => $order_id,
-                    'customer' => $shipper,
-                    'total' => $total,
-                    'created' => date('Y-m-d')
-                );
-                $this->db->insert('tbl_booking_number_resi', $data);
-                $this->barcode($shipment_id);
-                $this->qrcode($shipment_id);
+                $shipment_id  = "$noUrut";
             } else {
-                $this->session->set_flashdata('message', '<div class="alert
-                            alert-danger" role="alert">Failed</div>');
-                redirect('superadmin/order/generate');
+                $last_shipment_id = $sql['shipment_id'];
+                $no = $last_shipment_id + 1;
+                $shipment_id =  ltrim($no, '0');
             }
+
+            $data = array(
+                'id_customer' => $id_customer,
+                'shipment_id' => $shipment_id,
+                'qr_id' => 0,
+                'customer' => $shipper,
+                'total' => $total,
+                'created' => date('Y-m-d'),
+                'notes' => $notes,
+                'group' => $group
+            );
+            // input no shipment untuk cari max
+            $this->db->insert('tbl_no_resi', ['no_resi' => $shipment_id, 'created_by' => $this->session->userdata('id_user')]);
+            //untuk table booking
+            $this->db->insert('tbl_booking_number_resi', $data);
+            $this->barcode($shipment_id);
+            $this->qrcode($shipment_id);
         }
         $this->session->set_flashdata('message', '<div class="alert
                     alert-success" role="alert">Success</div>');
@@ -197,10 +110,10 @@ class Order extends CI_Controller
         $data['p'] = $this->pengajuan->order($id)->row_array();
         $this->backend->display('superadmin/v_detail_pengajuan', $data);
     }
-    public function detailGenerate($id_customer, $tgl)
+    public function detailGenerate($group)
     {
         $data['title'] = 'Detail Generate Resi';
-        $data['generate'] = $this->db->get_where('tbl_booking_number_resi', ['id_customer' => $id_customer, 'created' => "$tgl"])->result_array();
+        $data['generate'] = $this->db->get_where('tbl_booking_number_resi', ['group' => $group])->result_array();
         $this->backend->display('superadmin/v_detail_generate', $data);
     }
     public function exportGenerate($id_customer, $tgl)
@@ -208,6 +121,16 @@ class Order extends CI_Controller
         $data['title'] = 'Detail Generate Resi';
         $customer = $this->db->get_where('tbl_booking_number_resi', ['id_customer' => $id_customer, 'created' => "$tgl"])->row_array();
         $data['generate'] = $this->db->get_where('tbl_booking_number_resi', ['id_customer' => $id_customer, 'created' => "$tgl"])->result_array();
+        header("Content-type: application/octet-stream");
+        header("Content-Disposition: attachment;Filename=export-generate-resi-$customer[customer].xls");
+        $this->load->view('superadmin/v_export_generate', $data);
+    }
+
+    public function exportGenerateGenerateResi($id_customer, $group)
+    {
+        $data['title'] = 'Detail Generate Resi';
+        $customer = $this->db->get_where('tbl_booking_number_resi', ['id_customer' => $id_customer])->row_array();
+        $data['generate'] = $this->db->get_where('tbl_booking_number_resi', ['group' => $group])->result_array();
         header("Content-type: application/octet-stream");
         header("Content-Disposition: attachment;Filename=export-generate-resi-$customer[customer].xls");
         $this->load->view('superadmin/v_export_generate', $data);
@@ -292,6 +215,44 @@ class Order extends CI_Controller
         $output = $this->dompdf->output();
         // file_put_contents('uploads/barcode' . '/' . "$shipment_id.pdf", $output);
         $this->dompdf->stream("Cetak" . $sekarang . ".pdf", array('Attachment' => 0));
+    }
+    public function generatePdfGenerateResi($group)
+    {
+        // $this->db->select('*, b.nama_pt,b.provinsi, b.kota');
+        // $this->db->from('tbl_booking_number_resi a');
+        // $this->db->join('tb_customer b', 'a.id_customer=b.id_customer');
+        // $this->db->where('a.group', $group);
+        // $this->db->where('a.status', 0);
+        // $data['orders'] = $this->db->get()->result_array();
+        // $this->load->view('superadmin/v_cetak_resi', $data);
+        // $html = $this->output->get_output();
+        // $this->load->library('dompdf_gen');
+        // $this->dompdf->set_paper("A7", 'potrait');
+        // $this->dompdf->load_html($html);
+        // $this->dompdf->render();
+        // $sekarang = date("d:F:Y:h:m:s");
+        // // return $this->dompdf->output();
+        // $output = $this->dompdf->output();
+        // // file_put_contents('uploads/barcode' . '/' . "$shipment_id.pdf", $output);
+        // $this->dompdf->stream("Cetak " . $sekarang . ".pdf", array('Attachment' => 0));
+
+        $mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => [74, 105]]);
+
+        $this->db->select('*, b.nama_pt,b.provinsi, b.kota');
+        $this->db->from('tbl_booking_number_resi a');
+        $this->db->join('tb_customer b', 'a.id_customer=b.id_customer');
+        $this->db->where('a.group', $group);
+        $this->db->where('a.status', 0);
+        $data['orders'] = $this->db->get()->result_array();
+
+        // var_dump($data['order']);
+        // die;
+        // $this->load->view('superadmin/v_cetak', $data);
+
+
+        $data = $this->load->view('superadmin/v_cetak_resi', $data, TRUE);
+        $mpdf->WriteHTML($data);
+        $mpdf->Output();
     }
     public function print($start = null, $end = null, $id_user = 0)
     {
@@ -532,6 +493,47 @@ class Order extends CI_Controller
 
 
         $data = $this->load->view('superadmin/v_cetak', $data, TRUE);
+        $mpdf->WriteHTML($data);
+        $mpdf->Output();
+    }
+
+    public function printSatuanGenerateResi($id)
+    {
+        // $mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => [74, 105]]);
+
+
+        // $data['orders'] = $this->db->get()->result_array();
+        // $this->load->view('superadmin/v_cetak_resi', $data);
+        // $html = $this->output->get_output();
+        // $this->load->library('dompdf_gen');
+        // $this->dompdf->set_paper("A7", 'potrait');
+        // $this->dompdf->load_html($html);
+        // $this->dompdf->render();
+        // $sekarang = date("d:F:Y:h:m:s");
+        // // return $this->dompdf->output();
+        // $output = $this->dompdf->output();
+        // // file_put_contents('uploads/barcode' . '/' . "$shipment_id.pdf", $output);
+        // $this->dompdf->stream("Cetak" . $sekarang . ".pdf", array('Attachment' => 0));
+
+        // // $data = 
+        // // $mpdf->WriteHTML($data);
+        // // $mpdf->Output();
+
+        $mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => [74, 105]]);
+
+        $this->db->select('*, b.nama_pt,b.provinsi, b.kota');
+        $this->db->from('tbl_booking_number_resi a');
+        $this->db->join('tb_customer b', 'a.id_customer=b.id_customer');
+        $this->db->where('a.shipment_id', $id);
+        $this->db->where('a.status', 0);
+        $data['orders'] = $this->db->get()->result_array();
+
+        // var_dump($data['order']);
+        // die;
+        // $this->load->view('superadmin/v_cetak', $data);
+
+
+        $data = $this->load->view('superadmin/v_cetak_resi', $data, TRUE);
         $mpdf->WriteHTML($data);
         $mpdf->Output();
     }

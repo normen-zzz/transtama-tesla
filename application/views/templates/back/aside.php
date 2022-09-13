@@ -168,6 +168,7 @@
 						</span></i>Sales Order</span>
 				</a>
 			</li>
+
 			<li class="menu-item menu-item" aria-haspopup="true">
 				<a href="<?= base_url('scan') ?>" class="menu-link">
 					<span class="menu-text"><span class="svg-icon svg-icon-danger svg-icon mr-2">
@@ -175,6 +176,8 @@
 						</span></i>Scan In/Out</span>
 				</a>
 			</li>
+
+
 
 
 		<?php	} else {
@@ -353,6 +356,13 @@
 						<i class="fa fa-book text-danger mr-2">
 
 					</span></i>Revisi Sales Order</span>
+			</a>
+		</li>
+		<li class="menu-item menu-item" aria-haspopup="true">
+			<a href="<?= base_url('sales/SalesOrder/generateResi') ?>" class="menu-link">
+				<span class="menu-text"><span class="svg-icon svg-icon-danger svg-icon mr-2">
+						<i class="fa fa-book text-danger mr-2">
+					</span></i>Generate Resi</span>
 			</a>
 		</li>
 		<li class="menu-item menu-item" aria-haspopup="true">

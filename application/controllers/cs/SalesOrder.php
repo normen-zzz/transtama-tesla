@@ -559,22 +559,24 @@ class SalesOrder extends CI_Controller
             // die;
             if ($sql == NULL) {
                 $noUrut = 1;
-                $kode =  sprintf("%06s", $noUrut);
-                $shipment_id  = "$kode";
+                // $kode =  sprintf("%06s", $noUrut);
+                $shipment_id  = "$noUrut";
             } else {
                 $last_shipment_id = $sql['shipment_id'];
                 $no = $last_shipment_id + 1;
-                $shipment_id =  sprintf("%06s", $no);
+                $shipment_id =  ltrim($no, '0');
             }
 
             // kode referensi so
+            //Mencari ANgka terbesar
             $sql = $this->db->query("SELECT max(so_id) as kode FROM tbl_shp_order")->row_array();
             $no = $sql['kode'];
             // SO - 0 0 0 0 0 0 0 0 9;
-            $potong = substr($no, 3);
+            $potongSO = ltrim($no, 'SO-');
+            $potong = ltrim($potongSO, '0');
             $noUrut = $potong + 1;
-            $kode =  sprintf("%09s", $noUrut);
-            $kode  = "SO-$kode";
+            // $kode =  sprintf("%09s", $noUrut);
+            $kode  = "SO-$noUrut";
             $img = $this->input->post('ttd');
             $img = str_replace('data:image/png;base64,', '', $img);
 

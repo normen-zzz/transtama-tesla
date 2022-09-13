@@ -49,6 +49,12 @@ class Approval extends CI_Controller
         $data['kategori_pengeluaran'] = $this->db->get('tbl_list_pengeluaran')->result_array();
         $this->load->view('v_detail_ap_finance', $data);
     }
+
+    public function testWa()
+    {
+        // $this->wa->pickup('+6281808008082', "Tester Message Whatsapp");
+        $this->wa->pickup('+6285697780467', "Tester Message Whatsapp");
+    }
     //Setelah Di approve
     // ap approval mgr cs
     public function approveMgrCs($no_pengeluaran)
