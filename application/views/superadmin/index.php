@@ -7,7 +7,19 @@
 			<!--begin::Dashboard-->
 
 			<div class="row ">
+				<!-- Button trigger modal -->
+				<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">
+					Launch demo modal
+				</button>
 
+				<!-- Modal -->
+				<div class="modal fade" id="exampleModalCenter" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+					<div class="modal-dialog modal-dialog-centered" role="document">
+						<div class="mx-auto spinner-border text-danger" role="status">
+							<span class="sr-only">Loading...</span>
+						</div>
+					</div>
+				</div>
 				<div class="col-xl-3">
 					<!--begin::Stats Widget 13-->
 					<a href="<?= base_url('superadmin/order') ?>" class="card card-custom bg-hover-state-dark card-stretch gutter-b" style="background-color: #9c223b;">

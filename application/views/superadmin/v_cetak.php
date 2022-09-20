@@ -100,7 +100,11 @@
                 </td>
                 <td style="border-left:1px solid black"><b>
                         <h2 style="font-size: 12px;">
-                            <center> <span style="font-size: 12px; padding-top:-60px"><b><?= $order['tree_shipper'] ?>-<?php if ($is_generate['type'] == 0) { ?> <?= $order['tree_consignee'] ?> <?php } ?></b> </span></center>
+                            <center> <span style="font-size: 12px; padding-top:-60px"><b><?= $order['tree_shipper'] ?>-<?php if ($is_generate['type'] == 0) { ?> <?= $order['tree_consignee'] ?> <?php } else {
+                                                                                                                                                                                                    if ($order['tree_shipper'] != '' || $order['tree_shipper'] != NULL) { ?>
+                                            <?= $order['tree_consignee'] ?>
+                                        <?php } ?>
+                                    <?php  } ?></b> </span></center>
                         </h2>
                     </b>
                 </td>
@@ -113,7 +117,11 @@
 
             <tr>
                 <td style=" font-size: 9px; text-align:justify"><b>Consignee :</b> <?php if ($is_generate['type'] == 0) { ?> <?= ucwords(strtolower($order['consigne'])) . '<br>' . ucwords($order['destination']) . '. ' . '<b>' . ucwords(strtolower($order['city_consigne'])) . '</b>' . ', ' . '<b>' . ucwords(strtolower($order['state_consigne'])) . '</b>'  ?>
-                        <b>Indonesia</b><?php } ?>
+                        <b>Indonesia</b><?php } else {
+                                                                                        if ($order['consigne'] != '' || $order['consigne'] != NULL) { ?>
+                            <?= ucwords(strtolower($order['consigne'])) . '<br>' . ucwords($order['destination']) . '. ' . '<b>' . ucwords(strtolower($order['city_consigne'])) . '</b>' . ', ' . '<b>' . ucwords(strtolower($order['state_consigne'])) . '</b>'  ?>
+                    <?php }
+                                                                                    } ?>
                 </td>
             </tr>
 
@@ -146,7 +154,11 @@
         <table style="width:100%; border-left:none;border-right:none" border="0">
             <tr>
                 <td style="border-top: 1px solid black; font-size: 10px;">
-                    <b>Pieces : <?php if ($is_generate['type'] == 0) { ?></b> <?= $order['koli'] ?> <?php } ?>
+                    <b>Pieces : <?php if ($is_generate['type'] == 0) { ?></b> <?= $order['koli'] ?> <?php } else {
+                                                                                                    if ($order['koli'] != '' || $order['koli'] != NULL) { ?>
+                        <?= $order['koli'] ?>
+                <?php }
+                                                                                                } ?>
                 </td>
                 <td style="border-top: 1px solid black; border-left: 1px solid black;font-size: 10px;">
                     <b>Weight :</b> <?= ($order['is_weight_print'] == 1) ?  $order['weight'] : ''; ?>

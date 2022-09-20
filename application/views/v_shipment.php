@@ -26,13 +26,14 @@
 							<div class="col-md-6">
 								<div class="well" style="position: middle;">
 									<form action="<?php echo base_url('scan1/cek_id'); ?>" method="POST">
-										<canvas width="400" height="400" id="webcodecam-canvas"></canvas>
+										<canvas id="cobascanOPS" width="400" height="400" id="webcodecam-canvas"></canvas>
 										<br>
 										<input type="text" name="id_karyawan" autofocus>
 										<input type="submit">
 									</form>
 
 								</div>
+
 							</div>
 						</div>
 						<!-- /.box-body -->

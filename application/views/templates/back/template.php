@@ -88,6 +88,8 @@
 
 
 
+
+
 	<!-- REQUIRED SCRIPTS -->
 	<script>
 		var HOST_URL = "#";
@@ -205,10 +207,18 @@
 	<!-- rupiah -->
 	<script src="https://raw.githubusercontent.com/plentz/jquery-maskmoney/master/dist/jquery.maskMoney.min.js"></script>
 
+	<script>
+		$('#Submit').click(function() {
+			$(this).html('<img src="<?= base_url('assets/loading/loading-red.gif') ?>" />'); // A GIF Image of Your choice
+			return false
+		});
+	</script>
+
 	<!-- Script -->
 	<!-- untuk edit ap -->
 	<script type="text/javascript">
 		$(document).ready(function() {
+			<?= $modal; ?>
 
 			// On text click
 			$('.edit').click(function() {

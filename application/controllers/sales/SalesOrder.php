@@ -175,12 +175,21 @@ class SalesOrder extends CI_Controller
                 $commodity = $this->input->post('commodity');
                 $note = $this->input->post('note');
                 $sales = $this->session->userdata('nama_user');
-                $pesan = "Hallo Cs, ada pickup dari *$shipper* tanggal *$tgl_pickup* jam *$time* dengan moda $pu_moda dengan jenis barang $commodity. Catatan : $note. *Sales : $sales*";
+                $destination = $this->input->post('destination');
+                $pu_poin = strtoupper($this->input->post('pu_poin'));
+                if ($destination != '' || $destination != NULL) {
+                    $pesanDestination = "dengan tujuan *$destination*";
+                } else {
+                    $pesanDestination = "";
+                }
+
+                $pesanPickUp = "dan pick up di *$pu_poin*";
+                $pesan = "Hallo Cs, ada pickup dari *$shipper* $pesanDestination $pesanPickUp tanggal *$tgl_pickup* jam *$time* dengan moda $pu_moda dengan jenis barang $commodity. Catatan : $note. *Sales : $sales*";
                 // kirim wa
 
-                $this->wa->pickup('+6285157906966', "$pesan"); //Nomor Mas Krisna
+                // $this->wa->pickup('+6285157906966', "$pesan"); //Nomor Mas Krisna
                 $this->wa->pickup('+6285697780467', "$pesan"); //Nomor Norman
-                $this->wa->pickup('+6281293753199', "$pesan"); //Nomor Bu Lili
+                // $this->wa->pickup('+6281293753199', "$pesan"); //Nomor Bu Lili
                 // $this->wa->pickup('+6281617435559', "$pesan");
                 // $this->wa->pickup('+6285894438583', "$pesan");
                 // $this->wa->pickup('+6281385687290', "$pesan");

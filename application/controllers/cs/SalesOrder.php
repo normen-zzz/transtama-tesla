@@ -38,6 +38,9 @@ class SalesOrder extends CI_Controller
             $data['tracking'] = $this->db->get_where('tbl_tracking_real', ['shipment_id' => $shipment_id])->result_array();
             $data['shipment'] = $this->db->get_where('tbl_shp_order', ['shipment_id' => $shipment_id])->row_array();
             $data['title'] = 'Sales Order';
+            if ($this->input->post('modal') == 1) {
+                $data['modal'] = '$("#modal-lg-dl-add' . $shipment_id . '").modal("show");';
+            }
             $this->backend->display('cs/v_tracking', $data);
         } else {
             $data['shipment_id'] = $shipment_id;
