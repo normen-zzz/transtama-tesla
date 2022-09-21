@@ -60,7 +60,7 @@
                                                                 if ($cek_so_baru) {
                                                             ?>
                                                                     <!-- <a href="#" class="btn btn-sm mb-1 text-light" data-toggle="modal" data-target="#modal-view<?= $j['id'] ?>" style="background-color: #9c223b;">View New SO</a> -->
-                                                                    <a href="<?= base_url('sales/salesOrder/detailRevisi/' . $j['id']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">View Status SO</a>
+                                                                    <a onclick='$("#modalLoading").modal("show");' href="<?= base_url('sales/salesOrder/detailRevisi/' . $j['id']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">View Status SO</a>
                                                                 <?php    } else {
                                                                 ?>
                                                                     <a href="#" class="btn btn-sm mb-1 text-light" data-toggle="modal" data-target="#modal-lg<?= $j['id'] ?>" style="background-color: #9c223b;">Add New SO</a>

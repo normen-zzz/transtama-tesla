@@ -14,7 +14,7 @@
                     </div>
                     <div class="card-toolbar">
                         <!--begin::Button-->
-                        <a href="<?= base_url('superadmin/order/generate') ?>" class="btn font-weight-bolder text-light" style="background-color: #9c223b;">
+                        <a onclick='$("#modalLoading").modal("show");' href="<?= base_url('sales/SalesOrder/generateResi') ?>" class="btn font-weight-bolder text-light" style="background-color: #9c223b;">
                             <span class="svg-icon svg-icon-md">
                                 <i class="fa fa-arrow-left text-light"></i>
                                 <!--end::Svg Icon-->

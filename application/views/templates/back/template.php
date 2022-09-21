@@ -851,9 +851,11 @@
 						"data": "id_so",
 						"render": function(data, type, row, meta) {
 							if (row.status == 0 || row.status == 1) {
-								return '<a href="<?= base_url('sales/salesOrder/detail/') ?>' + data + '" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Detail</a><a href="<?= base_url('sales/salesOrder/edit/') ?>' + data + '" class="btn btn-sm text-light ml-2" style="background-color: #9c223b;">Edit</a><a href="<?= base_url('sales/salesOrder/cancel/') ?>' + data + '" class="btn btn-sm text-light" style="background-color: #9c223b;">Cancel</a>';
+								return `<a onclick='$("#modalLoading").modal("show");' href="<?= base_url('sales/salesOrder/detail/') ?>` + data + `" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Detail</a>
+								<a onclick='$("#modalLoading").modal("show");' href="<?= base_url('sales/salesOrder/edit/') ?>` + data + `" class="btn btn-sm text-light ml-2" style="background-color: #9c223b;">Edit</a>
+								<a onclick='$("#modalLoading").modal("show");' href="<?= base_url('sales/salesOrder/cancel/') ?>` + data + `" class="btn btn-sm text-light" style="background-color: #9c223b;">Cancel</a>`;
 							} else {
-								return '<a href="<?= base_url('sales/salesOrder/detail/') ?>' + data + '" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Detail</a>';
+								return `<a onclick='$("#modalLoading").modal("show");' href="<?= base_url('sales/salesOrder/detail/') ?>` + data + `" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Detail</a>`;
 
 							}
 						}

@@ -10,7 +10,7 @@
 								<h3 class="card-label font-weight-bolder text-dark">Add Request Pickup</h3>
 							</div>
 							<div class="card-toolbar">
-								<a href="<?= base_url('sales/salesOrder') ?>" class="btn mr-2 text-light" style="background-color: #9c223b;">
+								<a onclick='$("#modalLoading").modal("show");' href="<?= base_url('sales/salesOrder') ?>" class="btn mr-2 text-light" style="background-color: #9c223b;">
 									<i class="fas fa-chevron-circle-left text-light"> </i>
 									Cancel
 								</a>
@@ -215,7 +215,7 @@
 											<div class="d-flex justify-content-between border-top mt-5 pt-10">
 
 												<div>
-													<button type="submit" class="btn btn font-weight-bolder text-uppercase px-9 py-4 text-light" data-wizard-type="action-submit" style="background-color: #9c223b;">Submit</button>
+													<button onclick='$("#modalLoading").modal("show");' type="submit" class="btn btn font-weight-bolder text-uppercase px-9 py-4 text-light" data-wizard-type="action-submit" style="background-color: #9c223b;">Submit</button>
 												</div>
 											</div>
 											<!--end: Wizard Actions-->

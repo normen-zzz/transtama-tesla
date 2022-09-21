@@ -15,7 +15,7 @@
 					<div class="card-header">
 						<h2 class="card-title"><?= $title ?></h2>
 						<div class="card-toolbar">
-							<a href="<?= base_url('sales/ap') ?>" class="btn mr-2 text-light" style="background-color: #9c223b;">
+							<a onclick='$("#modalLoading").modal("show");' href="<?= base_url('sales/ap') ?>" class="btn mr-2 text-light" style="background-color: #9c223b;">
 								<i class="fas fa-chevron-circle-left text-light"> </i>
 								Back
 							</a>
