@@ -11,7 +11,7 @@
 								<span class="text-muted font-weight-bold font-size-sm mt-1">Input Your Order Information</span>
 							</div>
 							<div class="card-toolbar">
-								<a href="<?= base_url('shipper/order/add/' . $id_so . '/' . $id_tracking) ?>" class="btn mr-2 text-light" style="background-color: #9c223b;">
+								<a onclick='$("#modalLoading").modal("show");' href="<?= base_url('shipper/order/add/' . $id_so . '/' . $id_tracking) ?>" class="btn mr-2 text-light" style="background-color: #9c223b;">
 									<i class="fas fa-plus-circle text-light"> </i>
 									Single Order
 								</a>
@@ -23,14 +23,14 @@
 										Special Order
 									</a> -->
 
-									<a href="<?= base_url('shipper/order/addShipmentGenerateResi/' . $id_so . '/' . $id_tracking) ?>" class="btn mr-2 mt-1 text-light" style="background-color: #9c223b;">
+									<a onclick='$("#modalLoading").modal("show");' href="<?= base_url('shipper/order/addShipmentGenerateResi/' . $id_so . '/' . $id_tracking) ?>" class="btn mr-2 mt-1 text-light" style="background-color: #9c223b;">
 										<i class="fas fa-plus-circle text-light"> </i>
 										Generate Order
 									</a>
 
 								<?php	} else {
 								?>
-									<a href="<?= base_url('shipper/order/bulk/' . $id_so . '/' . $id_tracking) ?>" class="btn mr-2 text-light" style="background-color: #9c223b;">
+									<a onclick='$("#modalLoading").modal("show");' href="<?= base_url('shipper/order/bulk/' . $id_so . '/' . $id_tracking) ?>" class="btn mr-2 text-light" style="background-color: #9c223b;">
 										<i class="fas fa-plus-circle text-light"> </i>
 										Bulk Order
 									</a>
@@ -73,8 +73,8 @@
 											<td><?= $o['consigne'] ?></td>
 											<td><?= $o['created_at'] ?></td>
 											<td>
-												<a href="<?= base_url('shipper/order/detail/' . $o['id'] . '/' . $o['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Detail</a>
-												<a href="<?= base_url('shipper/order/edit/' . $o['id'] . '/' . $o['id_so'] . '/' . $id_tracking) ?>" class="btn btn-sm text-light ml-2" style="background-color: #9c223b;">Edit</a>
+												<a onclick='$("#modalLoading").modal("show");' href="<?= base_url('shipper/order/detail/' . $o['id'] . '/' . $o['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Detail</a>
+												<a onclick='$("#modalLoading").modal("show");' href="<?= base_url('shipper/order/edit/' . $o['id'] . '/' . $o['id_so'] . '/' . $id_tracking) ?>" class="btn btn-sm text-light ml-2" style="background-color: #9c223b;">Edit</a>
 											</td>
 
 										</tr>

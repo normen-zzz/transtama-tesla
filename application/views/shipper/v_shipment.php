@@ -80,7 +80,7 @@
 												<p class="h-14"><i class="fa fa-info text-danger"></i> Tekan tombol <b>Add Shipment</b> Jika sudah tiba ditempat Pickup</p>
 												<!-- <div class="alert alert-success text-light" role="alert"> </div> -->
 												<div class="card-toolbar">
-													<a href="<?= base_url('shipper/order/view/' . $shipment['id_so']) ?>" class="btn mr-2 text-light" style="background-color: #9c223b;">
+													<a onclick='$("#modalLoading").modal("show");' href="<?= base_url('shipper/order/view/' . $shipment['id_so']) ?>" class="btn mr-2 text-light" style="background-color: #9c223b;">
 														<i class="fas fa-plus-circle text-light"> </i>
 														Add Shipment
 													</a>
@@ -125,7 +125,7 @@
 														<i class="fas fa-car text-light"> </i>
 														Delivery
 													</a>
-													<a href="<?= base_url('shipper/order/view/' . $shipment['id_so'] . '/' . $shipment['id_tracking']) ?>" class="btn mr-2 text-light" style="background-color: #9c223b;">
+													<a onclick='$("#modalLoading").modal("show");' href="<?= base_url('shipper/order/view/' . $shipment['id_so'] . '/' . $shipment['id_tracking']) ?>" class="btn mr-2 text-light" style="background-color: #9c223b;">
 														<i class="fas fa-plus-circle text-light"> </i>
 														View Shipment
 													</a>
@@ -261,7 +261,7 @@
 											<p class="h-14"><i class="fa fa-info text-danger"></i> Tekan Tombol <b>Add Shipment</b> apabila sudah sampai tempat Pickup</p>
 											<!-- <div class="alert alert-success text-light" role="alert"> </div> -->
 
-											<a href="<?= base_url('shipper/order/view/' . $shipment['id_so'] . '/' . $shipment['id_tracking']) ?>" class="btn mr-2 text-light" style="background-color: #9c223b;">
+											<a onclick='$("#modalLoading").modal("show");' href="<?= base_url('shipper/order/view/' . $shipment['id_so'] . '/' . $shipment['id_tracking']) ?>" class="btn mr-2 text-light" style="background-color: #9c223b;">
 												<i class="fas fa-plus-circle text-light"> </i>
 												Add Shipment
 											</a>
@@ -302,7 +302,7 @@
 													Arrive In Benhil Hub
 												</a>
 
-												<a href="<?= base_url('shipper/order/view/' . $shipment['id_so'] . '/' . $shipment['id_tracking']) ?>" class="btn mr-2 text-light" style="background-color: #9c223b;">
+												<a onclick='$("#modalLoading").modal("show");' href="<?= base_url('shipper/order/view/' . $shipment['id_so'] . '/' . $shipment['id_tracking']) ?>" class="btn mr-2 text-light" style="background-color: #9c223b;">
 													<i class="fas fa-plus-circle text-light"> </i>
 													Add Shipment
 												</a>
@@ -585,7 +585,7 @@
 										<p class="h-12"><i class="fa fa-info text-danger"></i> Apabila sudah sampai, tekan tombol <i>Add Shipment</i> untuk membuat Shipment</p>
 										<!-- <div class="alert alert-success text-light" role="alert"> </div> -->
 										<div class="card-toolbar">
-											<a href="<?= base_url('shipper/order/view/' . $shipment['id_so'] . '/' . $shipment['id_tracking']) ?>" class="btn mr-2 text-light" style="background-color: #9c223b;">
+											<a onclick='$("#modalLoading").modal("show");' href="<?= base_url('shipper/order/view/' . $shipment['id_so'] . '/' . $shipment['id_tracking']) ?>" class="btn mr-2 text-light" style="background-color: #9c223b;">
 												<i class="fas fa-plus-circle text-light"> </i>
 												Add Shipment
 											</a>
@@ -626,7 +626,7 @@
 												<i class="fas fa-check text-light"> </i>
 												Arrive In Benhil Hub
 											</a>
-											<a href="<?= base_url('shipper/order/view/' . $shipment['id_so'] . '/' . $shipment['id_tracking']) ?>" class="btn mr-2 text-light" style="background-color: #9c223b;">
+											<a onclick='$("#modalLoading").modal("show");' href="<?= base_url('shipper/order/view/' . $shipment['id_so'] . '/' . $shipment['id_tracking']) ?>" class="btn mr-2 text-light" style="background-color: #9c223b;">
 												<i class="fas fa-plus-circle text-light"> </i>
 												View Shipment
 											</a>

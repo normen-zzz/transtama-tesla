@@ -14,7 +14,7 @@
                     <div class="card-toolbar">
 
                         <!--begin::Button-->
-                        <a href="<?= base_url('shipper/ap/add') ?>" class="btn font-weight-bolder text-light" style="background-color: #9c223b;">
+                        <a onclick='$("#modalLoading").modal("show");' href="<?= base_url('shipper/ap/add') ?>" class="btn font-weight-bolder text-light" style="background-color: #9c223b;">
                             <span class="svg-icon svg-icon-md">
                                 <i class="fa fa-plus text-light"></i>
                                 <!--end::Svg Icon-->
@@ -72,7 +72,7 @@
                                             ?>
                                         <?php   } else {
                                         ?>
-                                            <a href="<?= base_url('shipper/ap/detail/' . $c['no_pengeluaran']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Detail</a>
+                                            <a onclick='$("#modalLoading").modal("show");' href="<?= base_url('shipper/ap/detail/' . $c['no_pengeluaran']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Detail</a>
                                             <a target="blank" href="<?= base_url('shipper/ap/print/' . $c['no_pengeluaran']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;"> <i class="fa fa-print text-light"></i> Print</a>
 
                                         <?php }

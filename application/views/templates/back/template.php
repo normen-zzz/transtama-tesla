@@ -86,7 +86,14 @@
 	<?= $_content; ?>
 	<?php $this->load->view('templates/back/footer'); ?>
 
-
+	<!-- Modal -->
+	<div class="modal fade" id="modalLoading" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered" role="document">
+			<div class="mx-auto spinner-border text-danger" role="status">
+				<span class="sr-only">Loading...</span>
+			</div>
+		</div>
+	</div>
 
 
 

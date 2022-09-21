@@ -12,7 +12,7 @@
 								<span class="text-muted font-weight-bold font-size-sm mt-1">Order ID :<b> <?= $p['order_id'] ?></b></span> -->
 							</div>
 							<div class="card-toolbar">
-								<a href="<?= base_url('shipper/salesOrder') ?>" class="btn mr-2 text-light" style="background-color: #9c223b;">
+								<a onclick='$("#modalLoading").modal("show");' href="<?= base_url('shipper/salesOrder') ?>" class="btn mr-2 text-light" style="background-color: #9c223b;">
 									<i class="fas fa-chevron-circle-left text-light"> </i>
 									Back
 								</a>
@@ -613,7 +613,7 @@
 				</div>
 				<div class="modal-footer justify-content-between">
 					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-					<button type="submit" class="btn btn-primary">Submit</button>
+					<button onclick='$("#modalLoading").modal("show");' type="submit" class="btn btn-primary">Submit</button>
 				</div>
 				</form>
 			</div>
@@ -660,7 +660,7 @@
 					</div>
 					<div class="modal-footer justify-content-between">
 						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-						<button type="submit" class="btn btn-primary">Submit</button>
+						<button onclick='$("#modalLoading").modal("show");' type="submit" class="btn btn-primary">Submit</button>
 					</div>
 					</form>
 				</div>
@@ -705,7 +705,7 @@
 					</div>
 					<div class="modal-footer justify-content-between">
 						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-						<button type="submit" class="btn btn-primary">Submit</button>
+						<button onclick='$("#modalLoading").modal("show");' type="submit" class="btn btn-primary">Submit</button>
 					</div>
 					</form>
 				</div>
@@ -784,7 +784,7 @@
 					</div>
 					<div class="modal-footer justify-content-between">
 						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-						<button type="submit" class="btn btn-primary">Submit</button>
+						<button onclick='$("#modalLoading").modal("show");' type="submit" class="btn btn-primary">Submit</button>
 					</div>
 					</form>
 				</div>
@@ -876,7 +876,7 @@
 							<!-- /.card-body -->
 					</div>
 					<div class="modal-footer justify-content-between">
-						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+						<button onclick='$("#modalLoading").modal("show");' type="button" class="btn btn-default" data-dismiss="modal">Close</button>
 						<button type="submit" class="btn btn-primary">Submit</button>
 					</div>
 					</form>

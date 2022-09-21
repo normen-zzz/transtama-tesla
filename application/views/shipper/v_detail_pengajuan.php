@@ -14,7 +14,7 @@
 								<span class="text-muted font-weight-bold font-size-sm mt-1">Weight :<b> <?= $p['weight'] ?></b> Kg</span>
 							</div>
 							<div class="card-toolbar">
-								<a href="<?= base_url('shipper/salesOrder/detail/' . $id_so) ?>" class="btn mr-2 text-light" style="background-color: #9c223b;">
+								<a onclick='$("#modalLoading").modal("show");' href="<?= base_url('shipper/salesOrder/detail/' . $id_so) ?>" class="btn mr-2 text-light" style="background-color: #9c223b;">
 									<i class="fas fa-chevron-circle-left text-light"> </i>
 									Back
 								</a>
