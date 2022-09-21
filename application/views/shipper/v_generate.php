@@ -52,7 +52,7 @@
                                     <td><?= $gn['created_at'] ?></td>
                                     <td><?= $gn['notes'] ?></td>
                                     <td>
-                                        <a href="<?= base_url('shipper/order/detailGenerate/' . $gn['group']) ?>" class="btn btn-sm text-light mb-1" style="background-color: #9c223b;">
+                                        <a onclick='$("#modalLoading").modal("show");' href="<?= base_url('shipper/order/detailGenerate/' . $gn['group']) ?>" class="btn btn-sm text-light mb-1" style="background-color: #9c223b;">
                                             Detail</a>
                                         <!-- <a href="<?= base_url('superadmin/order/exportGenerateGenerateResi/' . $gn['id_customer'] . '/' . $gn['group']) ?>" class="btn btn-sm text-light mb-1" style="background-color: #9c223b;">
                                             Export Excell</a> -->

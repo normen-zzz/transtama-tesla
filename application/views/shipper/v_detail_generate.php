@@ -14,7 +14,7 @@
                     </div>
                     <div class="card-toolbar">
                         <!--begin::Button-->
-                        <a href="<?= base_url('superadmin/order/generate') ?>" class="btn font-weight-bolder text-light" style="background-color: #9c223b;">
+                        <a onclick='$("#modalLoading").modal("show");' href="<?= base_url('shipper/order/generateResi') ?>" class="btn font-weight-bolder text-light" style="background-color: #9c223b;">
                             <span class="svg-icon svg-icon-md">
                                 <i class="fa fa-arrow-left text-light"></i>
                                 <!--end::Svg Icon-->
@@ -27,25 +27,25 @@
                         <div class="col ml-0 mb-2">
                             <?php $users =  $this->db->get_where('tb_user', ['id_role' => 2])->result_array(); ?>
                             <label for="id_driver"></label>
-                            <select name="id_driver" class="form-control" style="width: 200px;">
+                            <!-- <select name="id_driver" class="form-control" style="width: 200px;">
                                 <?php foreach ($users as $u) {
                                 ?>
                                     <option value="<?= $u['id_user'] ?>"><?= $u['nama_user'] ?></option>
                                 <?php    } ?>
-                            </select>
+                            </select> -->
 
                         </div>
                         <input type="hidden" name="group" value="<?= $this->uri->segment(4) ?>">
 
 
-                        <button type="submit" class="btn btn-success mb-2"> <i class="fa fa-plus"></i> Assign Driver</button>
+                        <!-- <button type="submit" class="btn btn-success mb-2"> <i class="fa fa-plus"></i> Assign Driver</button> -->
                         <!--begin: Datatable-->
                         <table class="table table-separate table-head-custom table-checkable" id="myTable">
 
                             <div class="flash-data" data-flashdata="<?= $this->session->flashdata('message'); ?>"></div>
                             <thead>
                                 <tr>
-                                    <th>#</th>
+                                    <!-- <th>#</th> -->
                                     <th>No</th>
                                     <th>Shipment ID</th>
                                     <th>Status</th>
@@ -59,7 +59,7 @@
                                 ?>
                                     <?php if ($gn['status'] == 0) { ?>
                                         <tr>
-                                            <td><input type="checkbox" value="<?= $gn['shipment_id'] ?>" name="shipment_id[]" id=""></td>
+                                            <!-- <td><input type="checkbox" value="<?= $gn['shipment_id'] ?>" name="shipment_id[]" id=""></td> -->
                                             <td><?= $no; ?></td>
 
                                             <td><?php if ($gn['status'] == 0) { ?><a href="<?= base_url('shipper/Order/printSatuanGenerateResi/' . $gn['shipment_id']) ?>"><?= $gn['shipment_id'] ?></a><?php } else {

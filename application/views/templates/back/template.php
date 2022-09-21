@@ -948,7 +948,7 @@
 					{
 						"data": "id_so",
 						"render": function(data, type, row, meta) {
-							return '<a href="<?= base_url('shipper/salesOrder/detail/') ?>' + data + '" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Detail</a>';
+							return `<a onclick='$("#modalLoading").modal("show");' href="<?= base_url('shipper/salesOrder/detail/') ?>` + data + `" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Detail</a>`;
 
 						}
 					},
