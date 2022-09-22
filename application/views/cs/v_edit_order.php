@@ -12,7 +12,7 @@
 								<span class="text-muted font-weight-bold font-size-sm mt-1">Order ID :<b> <?= $p['order_id'] ?></b></span>
 							</div>
 							<div class="card-toolbar">
-								<a href="<?= base_url('cs/salesOrder/detail/' . $id_so) ?>" class="btn mr-2 text-light" style="background-color: #9c223b;">
+								<a onclick='$("#modalLoading").modal("show");' href="<?= base_url('cs/salesOrder/detail/' . $id_so) ?>" class="btn mr-2 text-light" style="background-color: #9c223b;">
 									<i class="fas fa-chevron-circle-left text-light"> </i>
 									Back
 								</a>
@@ -325,7 +325,7 @@
 												<div class="d-flex justify-content-between border-top mt-5 pt-10">
 
 													<div>
-														<button type="submit" class="btn btn font-weight-bolder text-uppercase px-9 py-4 text-light" style="background-color: #9c223b;">Submit</button>
+														<button onclick='$("#modalLoading").modal("show");' type="submit" class="btn btn font-weight-bolder text-uppercase px-9 py-4 text-light" style="background-color: #9c223b;">Submit</button>
 
 													</div>
 												</div>
