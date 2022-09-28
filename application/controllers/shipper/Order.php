@@ -139,6 +139,7 @@ class Order extends CI_Controller
             $q = $this->db->get('tbl_booking_number_resi');
             $booking = $q->row_array();
 
+            //Cek Apakah Resi sudah dipakai
             if ($q->num_rows() < 1 || $booking['status'] == 1) {
                 $this->session->set_flashdata('message', 'Nomor Resi Tidak Ditemukan');
                 $this->addShipmentGenerateResi($this->input->post('id_so'), $this->input->post('id_tracking'));

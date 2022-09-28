@@ -92,7 +92,7 @@
 							<div class="card-toolbar">
 								<?php if ($info['status'] == 0) {
 								?>
-									<a onclick="return confirm('Are You Sure ?')" href="<?= base_url('approval/approveMgrCs/' . $info['no_pengeluaran']) ?>" class="btn mr-2 text-light" style="background-color: #9c223b;">
+									<a onclick="return approveCs()" href="<?= base_url('approval/approveMgrCs/' . $info['no_pengeluaran']) ?>" class="btn mr-2 text-light" style="background-color: #9c223b;">
 										Approve
 									</a>
 
@@ -263,7 +263,24 @@
 		</div>
 		<!--/. container-fluid -->
 	</section>
+	<!-- Modal -->
+	<div class="modal fade" id="modalLoading" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered" role="document">
+			<div class="mx-auto spinner-border text-danger" role="status">
+				<span class="sr-only">Loading...</span>
+			</div>
+		</div>
+	</div>
 	<!-- /.content -->
+	<script>
+		function approveCs() {
+			if (confirm("Apakah Anda yakin?") == true) {
+				`onclick='$("#modalLoading").modal("show");`
+			} else {
+				return false;
+			}
+		}
+	</script>
 
 	<!-- REQUIRED SCRIPTS -->
 	<script>

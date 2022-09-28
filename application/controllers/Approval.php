@@ -80,7 +80,7 @@ class Approval extends CI_Controller
                 // echo "<li><a href='whatsapp://send?text=$actual_link'>Share</a></li>";
                 $pesan = "Hallo, ada pengajuan Ap No. *$no_ap* Dengan Tujuan *$purpose* Tanggal *$date*. Silahkan approve melalui link berikut : $link . Terima Kasih";
                 // no pak sam
-                $this->wa->pickup('+6281808008082', "$pesan");
+                // $this->wa->pickup('+6281808008082', "$pesan");
                 $this->wa->pickup('+6285697780467', "$pesan");
                 echo "<script>alert('Success Approve')</script>";
                 echo "<script>window.close();</script>";

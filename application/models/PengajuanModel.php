@@ -29,6 +29,21 @@ class PengajuanModel extends CI_Model
         $this->db->order_by('b.shipment_id', 'DESC');
         return $this->db->get();
     }
+
+    public function outbond()
+    {
+
+        $this->db->select('*');
+        $this->db->from('tbl_tracking_real');
+        return $this->db->get();
+        // $this->db->select('a.shipper,a.consigne,a.tree_shipper,a.tree_consignee,b.status as sts,b.is_incoming, b.created_at, b.shipment_id, b.status_eksekusi');
+        // $this->db->from('tbl_shp_order a');
+        // $this->db->join('tbl_gateway b', 'a.shipment_id=b.shipment_id');
+        // $this->db->where('b.status_eksekusi', 0);
+        // $this->db->order_by('b.shipment_id', 'DESC');
+        // return $this->db->get();
+
+    }
     public function dispatchHistory()
     {
         $this->db->select('a.shipper,a.consigne,a.tree_shipper,a.tree_consignee,b.status as sts,b.is_incoming, b.created_at, b.shipment_id, b.status_eksekusi');
