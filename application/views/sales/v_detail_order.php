@@ -261,6 +261,7 @@
 													<th style="width: 15%;">Surcharge</th>
 													<th style="width: 15%;">Discount</th>
 													<th style="width: 15%;">Commision (%)</th>
+													<th style="width: 15%;">Special Commision (Rp.)</th>
 													<th style="width: 10%;">Other</th>
 													<th style="width: 10%;">PIC Invoice</th>
 													<th style="width: 20%;">Note</th>
@@ -330,6 +331,9 @@
 														</td>
 														<td>
 															<input type="number" name="cn[]" value="<?= $shp['cn'] ?>" class="form-control" style="width: 100px;">
+														</td>
+														<td>
+															<input type="number" name="specialcn[]" value="<?= $shp['specialcn'] ?>" class="form-control" style="width: 100px;">
 														</td>
 														<td>
 															<input type="text" name="others[]" value="<?= $shp['others'] ?>" class="form-control" style="width: 100px;">

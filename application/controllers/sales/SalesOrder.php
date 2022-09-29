@@ -639,6 +639,7 @@ class SalesOrder extends CI_Controller
             $disc = $this->input->post('disc');
             $pic_invoice = $this->input->post('pic_invoice');
             $cn = $this->input->post('cn');
+            $specialcn = $this->input->post('specialcn');
             $others = $this->input->post('others');
             // $id = sizeof($id);
             for ($i = 0; $i < sizeof($id); $i++) {
@@ -653,6 +654,7 @@ class SalesOrder extends CI_Controller
                         'surcharge' => $surcharge[$i],
                         'disc' => $disc[$i] / 100,
                         'cn' => $cn[$i] / 100,
+                        'specialcn' => $specialcn[$i],
                         'others' => $others[$i],
                         'so_note' => $so_note[$i],
                         'status_so' => 1,
@@ -668,6 +670,7 @@ class SalesOrder extends CI_Controller
                         'surcharge' => $surcharge[$i],
                         'disc' => $disc[$i] / 100,
                         'cn' => $cn[$i] / 100,
+                        'specialcn' => $specialcn[$i],
                         'others' => $others[$i],
                         'so_note' => $so_note[$i],
                         'deadline_pic_js' => $deadline_pic_js,
@@ -702,6 +705,7 @@ class SalesOrder extends CI_Controller
             $pic_invoice = $this->input->post('pic_invoice');
             $so_note = $this->input->post('so_note');
             $cn = $this->input->post('cn');
+            $specialcn = $this->input->post('specialcn');
             $others = $this->input->post('others');
             $special_freight = $this->input->post('special_freight');
             // $id = sizeof($id);
@@ -715,6 +719,7 @@ class SalesOrder extends CI_Controller
                     'surcharge' => $surcharge[$i],
                     'disc' => $disc[$i] / 100,
                     'cn' => $cn[$i] / 100,
+                    'specialcn' => $specialcn[$i],
                     'others' => $others[$i],
                     'so_note' => $so_note[$i],
                     'status_so' => 1,
