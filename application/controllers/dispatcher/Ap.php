@@ -35,6 +35,20 @@ class Ap extends CI_Controller
 		}
 		$this->backend->display('dispatcher/v_ap', $data);
 	}
+	public function history()
+	{
+
+		$data['title'] = 'Account Payable';
+		$id_user = $this->session->userdata('id_user');
+		$id_atasan = $this->session->userdata('id_atasan');
+		// kalo dia atasan
+		if ($id_atasan == NULL || $id_atasan == 0) {
+			$data['ap'] = $this->ap->getHistoryMyApAtasan($id_user)->result_array();
+		} else {
+			$data['ap'] = $this->ap->getHistoryMyAp($id_user)->result_array();
+		}
+		$this->backend->display('dispatcher/v_ap_history', $data);
+	}
 	public function detail($no_ap)
 	{
 
@@ -43,6 +57,7 @@ class Ap extends CI_Controller
 		$data['info'] = $this->ap->getApByNo($no_ap)->row_array();
 		$data['kategori_ap'] = $this->db->get('tbl_kat_ap')->result_array();
 		$data['kategori_pengeluaran'] = $this->db->get('tbl_list_pengeluaran')->result_array();
+		$data['jabatan'] = $this->session->userdata('id_jabatan');
 		$this->backend->display('dispatcher/v_detail_ap', $data);
 	}
 	public function add()
@@ -328,15 +343,6 @@ class Ap extends CI_Controller
 		$insert = $this->db->insert('tbl_approve_pengeluaran', $data);
 		if ($insert) {
 			$this->db->update('tbl_pengeluaran', ['status' => 1], $where);
-
-			$get_ap = $this->db->get_where('tbl_pengeluaran', $where)->row_array();
-			$no_ap = $get_ap['no_pengeluaran'];
-			$purpose = $get_ap['purpose'];
-			$date = $get_ap['date'];
-			$pesan = "Hallo, ada pengajuan Ap No. *$no_ap* Dengan Tujuan *$purpose* Tanggal *$date*. Tolong Segera Cek Ya, Terima Kasih";
-			// no pak sam
-			$this->wa->pickup('+6281808008082', "$pesan");
-
 			$this->session->set_flashdata('message', 'Success Approve');
 			redirect('dispatcher/ap');
 		} else {
@@ -396,6 +402,8 @@ class Ap extends CI_Controller
 			redirect('dispatcher/ap/detail/' . $no_pengeluaran);
 		}
 	}
+
+
 	public function print($no_ap)
 	{
 		$mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => [210, 160.3]]);

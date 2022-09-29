@@ -13,15 +13,10 @@
                     </div>
                     <div class="card-toolbar">
 
-                        <!--begin::Button-->
-                        <a onclick='$("#modalLoading").modal("show");' href="<?= base_url('sales/ap/add') ?>" class="btn font-weight-bolder text-light" style="background-color: #9c223b;">
-                            <span class="svg-icon svg-icon-md">
-                                <i class="fa fa-plus text-light"></i>
-                                <!--end::Svg Icon-->
-                            </span>Add</a>
-                        <!--end::Button-->
-                        <a href="<?= base_url('sales/ap/history') ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;"> <i class="fa fa-clipboard text-light"></i> History</a>
 
+
+
+                        <!--end::Button-->
                     </div>
                 </div>
                 <div class="card-body" style="overflow: auto;">
@@ -45,7 +40,9 @@
                             <?php foreach ($ap as $c) {
                             ?>
                                 <tr>
-                                    <td><?= $c['no_pengeluaran'] ?></td>
+                                    <td><?= $c['no_pengeluaran'] . '<br>';
+                                        echo ($c['id_kat_ap'] == 3)  ? $c['no_ca'] : ''
+                                        ?> </td>
                                     <td><?= $c['nama_user'] ?></td>
                                     <!-- <td><?= $c['purpose'] ?></td> -->
                                     <td><?= bulan_indo($c['date']) ?></td>
@@ -60,20 +57,20 @@
                                         if ($id_atasan == NULL || $id_atasan == 0) {
                                             if ($c['status'] <= 0) {
                                         ?>
-                                                <a href="<?= base_url('sales/ap/approve/' . $c['no_pengeluaran']) ?>" onclick="return confirm('Are You Sure ?')" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Approve</a>
-                                                <a onclick='$("#modalLoading").modal("show");' href="<?= base_url('sales/ap/detail/' . $c['no_pengeluaran']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Detail</a>
-                                                <a target="blank" href="<?= base_url('sales/ap/print/' . $c['no_pengeluaran']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;"> <i class="fa fa-print text-light"></i> Print</a>
+                                                <a href="<?= base_url('cs/ap/approve/' . $c['no_pengeluaran']) ?>" onclick="return confirm('Are You Sure ?')" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Approve</a>
+                                                <a onclick='$("#modalLoading").modal("show");' href="<?= base_url('cs/ap/detail/' . $c['no_pengeluaran']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Detail</a>
+                                                <a target="blank" href="<?= base_url('cs/ap/print/' . $c['no_pengeluaran']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;"> <i class="fa fa-print text-light"></i> Print</a>
                                             <?php  } else {
                                             ?>
-                                                <a onclick='$("#modalLoading").modal("show");' href="<?= base_url('sales/ap/detail/' . $c['no_pengeluaran']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Detail</a>
-                                                <a target="blank" href="<?= base_url('sales/ap/print/' . $c['no_pengeluaran']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;"> <i class="fa fa-print text-light"></i> Print</a>
+                                                <a onclick='$("#modalLoading").modal("show");' href="<?= base_url('cs/ap/detail/' . $c['no_pengeluaran']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Detail</a>
+                                                <a target="blank" href="<?= base_url('cs/ap/print/' . $c['no_pengeluaran']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;"> <i class="fa fa-print text-light"></i> Print</a>
 
                                             <?php  }
                                             ?>
                                         <?php   } else {
                                         ?>
-                                            <a onclick='$("#modalLoading").modal("show");' href="<?= base_url('sales/ap/detail/' . $c['no_pengeluaran']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Detail</a>
-                                            <a target="blank" href="<?= base_url('sales/ap/print/' . $c['no_pengeluaran']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;"> <i class="fa fa-print text-light"></i> Print</a>
+                                            <a onclick='$("#modalLoading").modal("show");' href="<?= base_url('cs/ap/detail/' . $c['no_pengeluaran']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Detail</a>
+                                            <a target="blank" href="<?= base_url('cs/ap/print/' . $c['no_pengeluaran']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;"> <i class="fa fa-print text-light"></i> Print</a>
 
                                         <?php }
 

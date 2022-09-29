@@ -33,6 +33,19 @@ class Ap extends CI_Controller
 		}
 		$this->backend->display('finance/v_ap', $data);
 	}
+	public function history()
+	{
+		$data['title'] = 'Account Payable';
+		$id_user = $this->session->userdata('id_user');
+		$id_atasan = $this->session->userdata('id_atasan');
+		// kalo dia atasan
+		if ($id_atasan == NULL || $id_atasan == 0) {
+			$data['ap'] = $this->ap->getHistoryMyApAtasan($id_user)->result_array();
+		} else {
+			$data['ap'] = $this->ap->getHistoryMyAp($id_user)->result_array();
+		}
+		$this->backend->display('finance/v_ap_history', $data);
+	}
 
 	public function detail($no_ap)
 	{
@@ -167,22 +180,6 @@ class Ap extends CI_Controller
 					);
 
 					$this->db->insert('tbl_approve_pengeluaran', $data_approve);
-				} else {
-					// $get_no_hp_mgr = $this->db->select('no_hp')->get_where('tb_user', ['id_user' => $id_atasan])->row_array();
-					// $no_hp = $get_no_hp_mgr['no_hp'];
-					// kirim WA
-
-					$no_ap = $get_last_ap['no_pengeluaran'];
-					$purpose = $get_last_ap['purpose'];
-					$date = $get_last_ap['date'];
-					$link = "https://tesla-smartwork.transtama.com/approval/detailFinance/$no_ap/$id_atasan";
-					// $link = "http://jobsheet.test/approval/ap/$no_ap";
-					// echo "<li><a href='whatsapp://send?text=$actual_link'>Share</a></li>";
-					$pesan = "Hallo, ada pengajuan Ap No. *$no_ap* Dengan Tujuan *$purpose* Tanggal *$date*. Silahkan approve melalui link berikut : $link . Terima Kasih";
-					// no Bu Dwi
-					$this->wa->pickup("+6281212311908", "$pesan");
-					// No Norman
-					$this->wa->pickup("+6285697780467", "$pesan");
 				}
 			} else {
 				$this->session->set_flashdata('message', '<div class="alert

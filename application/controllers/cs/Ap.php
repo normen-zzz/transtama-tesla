@@ -35,6 +35,20 @@ class Ap extends CI_Controller
 		}
 		$this->backend->display('cs/v_ap', $data);
 	}
+	public function history()
+	{
+
+		$data['title'] = 'History Account Payable';
+		$id_user = $this->session->userdata('id_user');
+		$id_atasan = $this->session->userdata('id_atasan');
+		// kalo dia atasan
+		if ($id_atasan == NULL || $id_atasan == 0) {
+			$data['ap'] = $this->ap->getHistoryMyApAtasan($id_user)->result_array();
+		} else {
+			$data['ap'] = $this->ap->getHistoryMyAp($id_user)->result_array();
+		}
+		$this->backend->display('cs/v_ap_history', $data);
+	}
 	public function detail($no_ap)
 	{
 
@@ -57,7 +71,6 @@ class Ap extends CI_Controller
 
 	public function processAdd()
 	{
-		$id_jabatan = $this->session->userdata('id_jabatan');
 		$id_kategori_pengeluaran = $this->input->post('id_category');
 		$description = $this->input->post('descriptions');
 		$amount_proposed = $this->input->post('amount_proposed');
@@ -152,7 +165,7 @@ class Ap extends CI_Controller
 
 				$id_atasan = $this->session->userdata('id_atasan');
 				if ($id_atasan == 0 || $id_atasan == NULL) {
-					// kalo dia SM
+					// kali dia SM
 					$id_jabatan = $this->session->userdata('id_jabatan');
 					if ($id_jabatan == 10) {
 						$data_status = array(
@@ -178,8 +191,8 @@ class Ap extends CI_Controller
 				$nama_user = $this->session->userdata('nama_user');
 				$link = "https://tesla-smartwork.transtama.com/approval/detailCs/$no_ap";
 				$pesan = "Hallo, ada pengajuan Ap No. *$no_ap* Oleh *$nama_user*  Dengan Tujuan *$purpose* Tanggal *$date*. Silahkan Approve Melalu Link Berikut : $link . Terima Kasih";
-				// no mba lina
-				// kalo dia jabatannya sm
+				// no mba lili
+				// kalo dia jabatannya bukan sm
 				if ($id_jabatan == 10) {
 					$this->wa->pickup('+6289629096425', "$pesan");
 					$this->wa->pickup('+6287771116286', "$pesan");
@@ -370,7 +383,7 @@ class Ap extends CI_Controller
 			$this->session->set_flashdata('message', 'Diedit');
 			redirect('cs/ap/detail/' . $no_pengeluaran);
 		} else {
-			$this->session->set_flashdata('message', 'Diedit');
+			$this->session->set_flashdata('message', 'Gagal');
 			redirect('cs/ap/detail/' . $no_pengeluaran);
 		}
 	}

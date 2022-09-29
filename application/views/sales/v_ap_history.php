@@ -13,14 +13,6 @@
                     </div>
                     <div class="card-toolbar">
 
-                        <!--begin::Button-->
-                        <a onclick='$("#modalLoading").modal("show");' href="<?= base_url('sales/ap/add') ?>" class="btn font-weight-bolder text-light" style="background-color: #9c223b;">
-                            <span class="svg-icon svg-icon-md">
-                                <i class="fa fa-plus text-light"></i>
-                                <!--end::Svg Icon-->
-                            </span>Add</a>
-                        <!--end::Button-->
-                        <a href="<?= base_url('sales/ap/history') ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;"> <i class="fa fa-clipboard text-light"></i> History</a>
 
                     </div>
                 </div>

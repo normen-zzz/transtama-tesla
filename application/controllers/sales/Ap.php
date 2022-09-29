@@ -14,10 +14,10 @@ class Ap extends CI_Controller
 		if (!$this->session->userdata('id_user')) {
 			redirect('backoffice');
 		}
-		cek_role();
 		$this->db->query("SET sql_mode=(SELECT REPLACE(@@sql_mode, 'ONLY_FULL_GROUP_BY', ''));");
 		$this->load->model('ApModel', 'ap');
 		$this->load->model('Sendwa', 'wa');
+		cek_role();
 		$this->load->library('form_validation');
 	}
 
@@ -35,6 +35,20 @@ class Ap extends CI_Controller
 		}
 		$this->backend->display('sales/v_ap', $data);
 	}
+	public function history()
+	{
+
+		$data['title'] = 'Account Payable';
+		$id_user = $this->session->userdata('id_user');
+		$id_atasan = $this->session->userdata('id_atasan');
+		// kalo dia atasan
+		if ($id_atasan == NULL || $id_atasan == 0) {
+			$data['ap'] = $this->ap->getHistoryMyApAtasan($id_user)->result_array();
+		} else {
+			$data['ap'] = $this->ap->getHistoryMyAp($id_user)->result_array();
+		}
+		$this->backend->display('sales/v_ap_history', $data);
+	}
 	public function detail($no_ap)
 	{
 
@@ -43,6 +57,7 @@ class Ap extends CI_Controller
 		$data['info'] = $this->ap->getApByNo($no_ap)->row_array();
 		$data['kategori_ap'] = $this->db->get('tbl_kat_ap')->result_array();
 		$data['kategori_pengeluaran'] = $this->db->get('tbl_list_pengeluaran')->result_array();
+		$data['jabatan'] = $this->session->userdata('id_jabatan');
 		$this->backend->display('sales/v_detail_ap', $data);
 	}
 	public function add()
@@ -188,8 +203,7 @@ class Ap extends CI_Controller
 			$pesan = "Hallo, ada pengajuan Ap No. *$no_ap* Dengan Tujuan *$purpose* Tanggal *$date*. Silahkan approve melalui link berikut : $link . Terima Kasih";
 			// no mba vema
 			$this->wa->pickup("$no_hp", "$pesan");
-			// No Norman
-			$this->wa->pickup("+6285697780467", "$pesan");
+			$this->wa->pickup("+6285157906966", "$pesan");
 		}
 
 		$this->session->set_flashdata('message', '<div class="alert
@@ -412,6 +426,7 @@ class Ap extends CI_Controller
 			redirect('sales/ap/detail/' . $no_pengeluaran);
 		}
 	}
+
 	public function print($no_ap)
 	{
 		$mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => [210, 160.3]]);

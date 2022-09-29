@@ -20,6 +20,7 @@
                                 <!--end::Svg Icon-->
                             </span>Add</a>
                         <!--end::Button-->
+                        <a href="<?= base_url('dispatcher/ap/history') ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;"> <i class="fa fa-clipboard text-light"></i> History</a>
                     </div>
                 </div>
                 <div class="card-body" style="overflow: auto;">
