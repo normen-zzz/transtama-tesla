@@ -259,7 +259,7 @@ class Order extends CI_Controller
                         $this->barcode($shipment_id);
                         $this->qrcode($shipment_id);
                         //Titik Gagal Beberapa shipper
-                        $data = array(
+                        $dataTrack = array(
                             'shipment_id' => $shipment_id,
                             'status' => 'Shipment Telah Dipickup Dari Shipper',
                             'id_so' => $this->input->post('id_so'),
@@ -270,8 +270,8 @@ class Order extends CI_Controller
                             'flag' => 3,
                             'status_eksekusi' => 0,
                         );
-                        $data = array_merge($data, $bukti_tracking);
-                        $this->db->insert('tbl_tracking_real', $data);
+                        // $data = array_merge($data, $bukti_tracking);
+                        $this->db->insert('tbl_tracking_real', $dataTrack);
                         $data = array(
                             'status' => 2,
                             'deadline_sales_so' => $deadline_sales

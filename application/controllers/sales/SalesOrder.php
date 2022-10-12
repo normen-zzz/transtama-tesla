@@ -177,6 +177,7 @@ class SalesOrder extends CI_Controller
                 $sales = $this->session->userdata('nama_user');
                 $destination = $this->input->post('destination');
                 $pu_poin = strtoupper($this->input->post('pu_poin'));
+                $service = $this->input->post('service');
                 if ($destination != '' || $destination != NULL) {
                     $pesanDestination = "dengan tujuan *$destination*";
                 } else {
@@ -184,15 +185,15 @@ class SalesOrder extends CI_Controller
                 }
 
                 $pesanPickUp = "dan pick up di *$pu_poin*";
-                $pesan = "Hallo Cs, ada pickup dari *$shipper* $pesanDestination $pesanPickUp tanggal *$tgl_pickup* jam *$time* dengan moda $pu_moda dengan jenis barang $commodity. Catatan : $note. *Sales : $sales*";
+                $pesan = "Hallo Cs, ada pickup dari *$shipper* $pesanDestination $pesanPickUp *$service* tanggal *$tgl_pickup* jam *$time* dengan moda $pu_moda dengan jenis barang $commodity. Catatan : $note. *Sales : $sales*";
                 // kirim wa
 
                 // $this->wa->pickup('+6285157906966', "$pesan"); //Nomor Mas Krisna
                 $this->wa->pickup('+6285697780467', "$pesan"); //Nomor Norman
-                // $this->wa->pickup('+6281293753199', "$pesan"); //Nomor Bu Lili
+                $this->wa->pickup('+6281293753199', "$pesan"); //Nomor Bu Lili
                 // $this->wa->pickup('+6281617435559', "$pesan");
-                // $this->wa->pickup('+6285894438583', "$pesan");
-                // $this->wa->pickup('+6281385687290', "$pesan");
+                $this->wa->pickup('+6285894438583', "$pesan"); //Mba Yunita 
+                $this->wa->pickup('+6281385687290', "$pesan"); //Mba Lina
                 // $this->wa->pickup('+6285774086919', "$pesan");
                 $random = random_string('numeric', 8);
 
@@ -859,6 +860,8 @@ class SalesOrder extends CI_Controller
         $sheet->setCellValue('M1', 'PIC Invoice');
         $sheet->setCellValue('N1', 'City');
         $sheet->setCellValue('O1', 'Weight');
+        $sheet->setCellValue('P1', 'Pickup Poin');
+
         $no = 1;
         $x = 2;
         foreach ($shipments as $row) {
@@ -890,6 +893,8 @@ class SalesOrder extends CI_Controller
             $sheet->setCellValue('N' . $x, $row['city_consigne'])->getColumnDimension('N')
                 ->setAutoSize(true);
             $sheet->setCellValue('O' . $x, $row['berat_js']);
+            $sheet->setCellValue('P' . $x, $detail['pu_poin'])->getColumnDimension('P')
+                ->setAutoSize(true);
             $x++;
         }
         $filename = "sales order $detail[shipper]";
