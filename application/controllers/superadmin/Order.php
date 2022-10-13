@@ -39,6 +39,78 @@ class Order extends CI_Controller
         $data['generate'] = $this->pengajuan->getGenerate()->result_array();
         $this->backend->display('superadmin/v_generate', $data);
     }
+    public function edit($id)
+    {
+        $data['title'] = 'Edit Order';
+        $data['city'] = $this->db->get('tb_city')->result_array();
+        $data['province'] = $this->db->get('tb_province')->result_array();
+        $data['service'] = $this->db->get('tb_service_type')->result_array();
+        $data['agents'] = $this->db->get_where('tbl_vendor', ['type' => 1])->result_array();
+        $data['customer'] = $this->db->get('tb_customer')->result_array();
+        $data['p'] = $this->pengajuan->order($id)->row_array();
+        $this->backend->display('superadmin/v_edit_order', $data);
+    }
+    public function processEdit()
+    {
+        $id_do = $this->input->post('id_do');
+        if ($id_do == NULL) {
+            $total_weight = $this->input->post('weight');
+            $total_koli = $this->input->post('koli');
+        } else {
+            $total_weight = 0;
+            $total_koli = 0;
+            $weight = $this->input->post('weight');
+            $collie = $this->input->post('collie');
+            $no_so = $this->input->post('no_so');
+            for ($i = 0; $i < sizeof($id_do); $i++) {
+                $data = array(
+                    'berat' => $weight[$i],
+                    'koli' => $collie[$i],
+                    'no_so' => $no_so[$i],
+                    'no_do' => $this->input->post('note_cs')[$i],
+                );
+                $this->db->update('tbl_no_do', $data, ['id_berat' => $id_do[$i]]);
+                $total_weight += $weight[$i];
+                $total_koli += $collie[$i];
+            }
+        }
+
+        $no_do = $this->input->post('note_cs');
+        $no_do = implode(',', $no_do);
+        $data = array(
+            'weight' => $total_weight,
+            'destination' => $this->input->post('destination'),
+            'state_shipper' => $this->input->post('state_shipper'),
+            // 'city_shipper' => $this->input->post('city_shipper'),
+            'consigne' => $this->input->post('consigne'),
+            'state_consigne' => $this->input->post('state_consigne'),
+            'city_consigne' => $this->input->post('city_consigne'),
+            'pu_commodity' => $this->input->post('pu_commodity'),
+            'sender' => $this->input->post('sender'),
+            'id_agent' => $this->input->post('id_agent'),
+            'service_type' => $this->input->post('service_type'),
+            'tree_shipper' => $this->input->post('tree_shipper'),
+            'tree_consignee' => $this->input->post('tree_consignee'),
+            'berat_js' => $total_weight,
+            'koli' => $total_koli,
+            'note_cs' => $no_do,
+            // 'no_so' => $this->input->post('no_so'),
+            'no_stp' => $this->input->post('no_stp'),
+            'note_shipment' => $this->input->post('note_shipment'),
+            'is_weight_print' => $this->input->post('is_weight_print'),
+        );
+
+        $update =  $this->db->update('tbl_shp_order', $data, ['id' => $this->input->post('id')]);
+        if ($update) {
+            $this->session->set_flashdata('message', '<div class="alert
+                alert-success" role="alert">Success</div>');
+            redirect('superadmin/order/edit/' . $this->input->post('id') . '/' . $this->input->post('id_so'));
+        } else {
+            $this->session->set_flashdata('message', '<div class="alert
+                alert-danger" role="alert">Failed</div>');
+            redirect('superadmin/order/edit/' . $this->input->post('id') . '/' . $this->input->post('id_so'));
+        }
+    }
     public function generateResi()
     {
         $shipper = $this->input->post('customer');

@@ -644,7 +644,7 @@ class SalesOrder extends CI_Controller
             // $id = sizeof($id);
             for ($i = 0; $i < sizeof($id); $i++) {
                 $tblShpOrder = $this->db->get_where('tbl_shp_order', ['id' => $id[$i]])->row_array();
-                if ($tblShpOrder->status_so != 1) {
+                if ($tblShpOrder->status_so < 1) {
                     $data = array(
                         'freight_kg' => $freight_kg[$i],
                         'packing' => $packing[$i],

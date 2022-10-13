@@ -310,39 +310,52 @@
 
 													<?php	} ?> -->
 														<td>
-															<input type="text" name="freight[]" value="<?= $shp['freight_kg'] ?>" required class="form-control">
-															<input type="text" name="id[]" hidden value="<?= $shp['id'] ?>" class="form-control">
-															<input type="text" name="id_so" hidden value="<?= $shp['id_so'] ?>" class="form-control">
+															<input type="text" name="freight[]" value="<?= $shp['freight_kg'] ?>" required class="form-control" <?php if ($shp['status_so'] >= 1) {
+																																								?> disabled <?php } ?>>
+															<input type="text" name="id[]" hidden value="<?= $shp['id'] ?>" class="form-control" <?php if ($shp['status_so'] >= 1) {
+																																					?> disabled <?php } ?>>
+															<input type="text" name="id_so" hidden value="<?= $shp['id_so'] ?>" class="form-control" <?php if ($shp['status_so'] >= 1) {
+																																						?> disabled <?php } ?>>
 														</td>
 														<td>
-															<input type="text" name="special_freight[]" value="<?= $shp['special_freight'] ?>" class="form-control">
+															<input type="text" name="special_freight[]" value="<?= $shp['special_freight'] ?>" class="form-control" <?php if ($shp['status_so'] >= 1) {
+																																									?> disabled <?php } ?>>
 														</td>
 														<td>
-															<input type="text" name="packing[]" value="<?= $shp['packing'] ?>" class="form-control">
+															<input type="text" name="packing[]" value="<?= $shp['packing'] ?>" class="form-control" <?php if ($shp['status_so'] >= 1) {
+																																					?> disabled <?php } ?>>
 														</td>
 														<td>
-															<input type="text" name="insurance[]" value="<?= $shp['insurance'] ?>" class="form-control">
+															<input type="text" name="insurance[]" value="<?= $shp['insurance'] ?>" class="form-control" <?php if ($shp['status_so'] >= 1) {
+																																						?> disabled <?php } ?>>
 														</td>
 														<td>
-															<input type="text" name="surcharge[]" value="<?= $shp['surcharge'] ?>" class="form-control">
+															<input type="text" name="surcharge[]" value="<?= $shp['surcharge'] ?>" class="form-control" <?php if ($shp['status_so'] >= 1) {
+																																						?> disabled <?php } ?>>
 														</td>
 														<td>
-															<input type="text" name="disc[]" value="<?= $shp['disc'] ?>" class="form-control" style="width: 100px;">
+															<input type="text" name="disc[]" value="<?= $shp['disc'] ?>" class="form-control" style="width: 100px;" <?php if ($shp['status_so'] >= 1) {
+																																									?> disabled <?php } ?>>
 														</td>
 														<td>
-															<input type="number" name="cn[]" value="<?= $shp['cn'] ?>" class="form-control" style="width: 100px;">
+															<input type="number" name="cn[]" value="<?= $shp['cn'] ?>" class="form-control" style="width: 100px;" <?php if ($shp['status_so'] >= 1) {
+																																									?> disabled <?php } ?>>
 														</td>
 														<td>
-															<input type="number" name="specialcn[]" value="<?= $shp['specialcn'] ?>" class="form-control" style="width: 100px;">
+															<input type="number" name="specialcn[]" value="<?= $shp['specialcn'] ?>" class="form-control" style="width: 100px;" <?php if ($shp['status_so'] >= 1) {
+																																												?> disabled <?php } ?>>
 														</td>
 														<td>
-															<input type="text" name="others[]" value="<?= $shp['others'] ?>" class="form-control" style="width: 100px;">
+															<input type="text" name="others[]" value="<?= $shp['others'] ?>" class="form-control" style="width: 100px;" <?php if ($shp['status_so'] >= 1) {
+																																										?> disabled <?php } ?>>
 														</td>
 														<td>
-															<input type="text" name="pic_invoice[]" value="<?= $shp['pic_invoice'] ?>" class="form-control" required style="width: 100px;">
+															<input type="text" name="pic_invoice[]" value="<?= $shp['pic_invoice'] ?>" class="form-control" required style="width: 100px;" <?php if ($shp['status_so'] >= 1) {
+																																															?> disabled <?php } ?>>
 														</td>
 														<td>
-															<input type="text" name="so_note[]" value="<?= $shp['so_note'] ?>" class="form-control" style="width: 200px;">
+															<input type="text" name="so_note[]" value="<?= $shp['so_note'] ?>" class="form-control" style="width: 200px;" <?php if ($shp['status_so'] >= 1) {
+																																											?> disabled <?php } ?>>
 														</td>
 														<td>
 															<?php

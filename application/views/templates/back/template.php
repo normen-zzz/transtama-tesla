@@ -582,12 +582,15 @@
 						}
 
 					}, // Tampilkan nama sub kategori
-					// {
-					// 	"data": "id",
-					// 	"render": function(data, type, row, meta) {
-					// 		return '<a href="<?= base_url('superadmin/order/detail/') ?>' + data + '" class="btn btn-sm text-light" style="background-color: #9c223b;">Detail</a>';
-					// 	}
-					// },
+					{
+						"data": "id",
+						"render": function(data, type, row, meta) {
+							// return '<a href="<?= base_url('sales/salesOrder/detail/') ?>' + data + '" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Detail</a><a href="<?= base_url('sales/salesOrder/edit/') ?>' + data + '" class="btn btn-sm text-light ml-2" style="background-color: #9c223b;">Edit</a>';
+
+							return '<a href="<?= base_url('superadmin/Order/edit/') ?>' + data + '" class="btn btn-sm text-light ml-2" style="background-color: #9c223b;">Edit</a>';
+
+						}
+					},
 				],
 			});
 		});
