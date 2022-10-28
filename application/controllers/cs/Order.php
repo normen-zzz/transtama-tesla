@@ -18,7 +18,7 @@ class Order extends CI_Controller
         $this->load->library('upload');
         $this->load->model('M_Datatables');
         $this->load->library('form_validation');
-        $this->load->model('PengajuanModel', 'pengajuan');
+		 $this->load->model('PengajuanModel', 'pengajuan');
         // $this->getDataWisuda();
 
         $this->load->model('PengajuanModel', 'order');
@@ -47,11 +47,10 @@ class Order extends CI_Controller
         $data['city'] = $this->db->get('tb_city')->result_array();
         $data['province'] = $this->db->get('tb_province')->result_array();
         $data['service'] = $this->db->get('tb_service_type')->result_array();
-        $data['agents'] = $this->db->get_where('tbl_vendor', ['type' => 1])->result_array();
         $data['p'] = $this->order->order($id)->row_array();
         $this->backend->display('cs/v_edit_order', $data);
     }
-    public function editOrder($id, $id_so)
+	 public function editOrder($id, $id_so)
     {
         $data['title'] = 'Edit Order';
         $data['id_so'] = $id_so;
@@ -65,70 +64,17 @@ class Order extends CI_Controller
     function view_data_query()
     {
         $query  = "SELECT a.*, b.nama_user FROM tbl_shp_order a JOIN tb_user b ON a.id_user=b.id_user";
-        $search = array('nama_user', 'shipment_id', 'order_id', 'shipper', 'consigne');
+          $search = array('nama_user', 'shipment_id', 'order_id', 'shipper', 'consigne');
         $where  = array('a.deleted' => 0);
+        // $where  = array('a.id_user' => $this->session->userdata('id_user'));
+
         // jika memakai IS NULL pada where sql
         $isWhere = null;
         // $isWhere = 'artikel.deleted_at IS NULL';
         header('Content-Type: application/json');
         echo $this->M_Datatables->get_tables_query($query, $search, $where, $isWhere);
     }
-
-    // public function processEdit()
-    // {
-    //     $id_do = $this->input->post('id_do');
-    //     if ($id_do == NULL) {
-    //         $total_weight = $this->input->post('weight');
-    //     } else {
-    //         $total_weight = 0;
-    //         $weight = $this->input->post('weight');
-    //         $collie = $this->input->post('collie');
-    //         $no_so = $this->input->post('no_so');
-    //         for ($i = 0; $i < sizeof($id_do); $i++) {
-    //             $data = array(
-    //                 'berat' => $weight[$i],
-    //                 'koli' => $collie[$i],
-    //                 'no_so' => $no_so[$i],
-    //                 'no_do' => $this->input->post('note_cs')[$i],
-    //             );
-    //             $this->db->update('tbl_no_do', $data, ['id_berat' => $id_do[$i]]);
-    //             $total_weight += $weight[$i];
-    //         }
-    //     }
-    //     $data = array(
-    //         'weight' => $total_weight,
-    //         'destination' => $this->input->post('destination'),
-    //         'state_shipper' => $this->input->post('state_shipper'),
-    //         // 'city_shipper' => $this->input->post('city_shipper'),
-    //         'consigne' => $this->input->post('consigne'),
-    //         'state_consigne' => $this->input->post('state_consigne'),
-    //         'city_consigne' => $this->input->post('city_consigne'),
-    //         'pu_commodity' => $this->input->post('pu_commodity'),
-    //         'sender' => $this->input->post('sender'),
-    //         'service_type' => $this->input->post('service_type'),
-    //         'tree_shipper' => $this->input->post('tree_shipper'),
-    //         'tree_consignee' => $this->input->post('tree_consignee'),
-    //         'berat_js' => $total_weight,
-    //         'koli' => $this->input->post('koli'),
-    //         // 'note_cs' => $this->input->post('note_cs'),
-    //         // 'no_so' => $this->input->post('no_so'),
-    //         'no_stp' => $this->input->post('no_stp'),
-    //         'note_shipment' => $this->input->post('note_shipment'),
-    //         'is_weight_print' => $this->input->post('is_weight_print'),
-    //     );
-
-    //     $update =  $this->db->update('tbl_shp_order', $data, ['id' => $this->input->post('id')]);
-    //     if ($update) {
-    //         $this->session->set_flashdata('message', '<div class="alert
-    //             alert-success" role="alert">Success</div>');
-    //         redirect('cs/order/edit/' . $this->input->post('id') . '/' . $this->input->post('id_so'));
-    //     } else {
-    //         $this->session->set_flashdata('message', '<div class="alert
-    //             alert-danger" role="alert">Failed</div>');
-    //         redirect('cs/order/edit/' . $this->input->post('id') . '/' . $this->input->post('id_so'));
-    //     }
-    // }
-    public function processEdit()
+	public function processEdit()
     {
         $id_do = $this->input->post('id_do');
         if ($id_do == NULL) {
@@ -152,8 +98,7 @@ class Order extends CI_Controller
                 $total_koli += $collie[$i];
             }
         }
-
-        $no_do = $this->input->post('note_cs');
+		$no_do = $this->input->post('note_cs');
         $no_do = implode(',', $no_do);
         $data = array(
             'weight' => $total_weight,
@@ -165,7 +110,6 @@ class Order extends CI_Controller
             'city_consigne' => $this->input->post('city_consigne'),
             'pu_commodity' => $this->input->post('pu_commodity'),
             'sender' => $this->input->post('sender'),
-            'id_agent' => $this->input->post('id_agent'),
             'service_type' => $this->input->post('service_type'),
             'tree_shipper' => $this->input->post('tree_shipper'),
             'tree_consignee' => $this->input->post('tree_consignee'),
@@ -189,8 +133,11 @@ class Order extends CI_Controller
             redirect('cs/order/edit/' . $this->input->post('id') . '/' . $this->input->post('id_so'));
         }
     }
+	
+	  
 
-    public function processEditOrder()
+    
+	public function processEditOrder()
     {
         $data = array(
             'weight' => $this->input->post('weight'),
@@ -222,6 +169,7 @@ class Order extends CI_Controller
             redirect('cs/order/report');
         }
     }
+
     public function addMasterCustomer()
     {
         $nama_pt = strtoupper($this->input->post('shipper'));
@@ -237,22 +185,17 @@ class Order extends CI_Controller
 
     public function print($id)
     {
-        $mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => [74, 105]]);
+         $mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => [74, 105]]);
 
         $where = array('shipment_id' => $id);
         $data['order'] = $this->db->get_where('tbl_shp_order', $where)->row_array();
         $where2 = array('code' => $data['order']['service_type']);
         $data['service'] = $this->db->get_where('tb_service_type', $where2)->row_array();
-        // var_dump($data['order']);
-        // die;
-        // $this->load->view('superadmin/v_cetak', $data);
-
-
         $data = $this->load->view('superadmin/v_cetak', $data, TRUE);
         $mpdf->WriteHTML($data);
         $mpdf->Output();
     }
-    public function printAll($id)
+	public function printAll($id)
     {
         $mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => [74, 105]]);
 
@@ -284,8 +227,7 @@ class Order extends CI_Controller
         $params['savename'] = FCPATH . "uploads/qrcode/" . $id . '.png';
         $this->ciqrcode->generate($params);
     }
-
-    public function report()
+	 public function report()
     {
         $data['title'] = 'Report Order';
         $data['order'] = $this->pengajuan->getLaporan()->result_array();
@@ -302,7 +244,7 @@ class Order extends CI_Controller
         $this->backend->display('cs/v_report_filter', $data);
     }
 
-    public function Exportexcel($bulan = null, $tahun = null)
+     public function Exportexcel($bulan = null, $tahun = null)
     {
 
         if ($bulan != null && $tahun != null) {
@@ -440,7 +382,7 @@ class Order extends CI_Controller
         $writer->save('php://output');
         exit;
     }
-    public function ExportexcelVoid($bulan = null, $tahun = null)
+	 public function ExportexcelVoid($bulan = null, $tahun = null)
     {
 
         if ($bulan != null && $tahun != null) {

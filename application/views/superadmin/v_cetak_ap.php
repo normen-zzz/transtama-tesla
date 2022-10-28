@@ -185,17 +185,18 @@
 
         <?php
         $pemohon = $this->db->get_where('tb_user', ['id_user' => $info['id_user']])->row_array();
-        $ttd_atasan = $this->db->get_where('tb_user', ['id_user' => $approval['approve_by_atasan']])->row_array();
-        $ttd_sm = $this->db->get_where('tb_user', ['id_user' => $approval['approve_by_sm']])->row_array();
-        $ttd_gm = $this->db->get_where('tb_user', ['id_user' => $approval['approve_by_gm']])->row_array();
-        $ttd_finance = $this->db->get_where('tb_user', ['id_user' => $approval['received_by']])->row_array();
-        $ttd_mgr_finance = $this->db->get_where('tb_user', ['id_user' => $approval['approve_mgr_finance']])->row_array();
-        if ($ttd_sm == NULL) {
-            $nama_sm = '-';
-        } else {
-            $nama_sm = $ttd_sm['nama_user'];
-        }
+        // $ttd_atasan = $this->db->get_where('tb_user', ['id_user' => $approval['approve_by_atasan']])->row_array();
+        // $ttd_sm = $this->db->get_where('tb_user', ['id_user' => $approval['approve_by_sm']])->row_array();
+        // $ttd_gm = $this->db->get_where('tb_user', ['id_user' => $approval['approve_by_gm']])->row_array();
+        // $ttd_finance = $this->db->get_where('tb_user', ['id_user' => $approval['received_by']])->row_array();
+        // $ttd_mgr_finance = $this->db->get_where('tb_user', ['id_user' => $approval['approve_mgr_finance']])->row_array();
+        // if ($ttd_sm == NULL) {
+        //     $nama_sm = '-';
+        // } else {
+        //     $nama_sm = $ttd_sm['nama_user'];
+        // }
 
+        // 
         ?>
 
         <?php if ($info['is_approve_sm'] == 1) {
@@ -208,8 +209,8 @@
                     </td>
                     <td style=" font-size: 10px; width:10%; text-align:center"><b>Date</b>
                     </td>
-                    <td style=" font-size: 10px; width:10%; text-align:center"><b>Signature</b>
-                    </td>
+                    <!-- <td style=" font-size: 10px; width:10%; text-align:center"><b>Signature</b>
+                    </td> -->
 
                 </tr>
                 <tr>
@@ -221,9 +222,9 @@
                     </td>
                     <td style=" font-size: 12px; text-align:left"><?= date($info['created']) . '<br>' . $approval['created_atasan'] ?>
                     </td>
-                    <td style=" font-size: 12px; text-align:left"><img src="<?= base_url('uploads/ttd/' . $pemohon['ttd']) ?>" alt="ttd" width="40" height="40">
+                    <!-- <td style=" font-size: 12px; text-align:left"><img src="<?= base_url('uploads/ttd/' . $pemohon['ttd']) ?>" alt="ttd" width="40" height="40">
                         <img src="<?= base_url('uploads/ttd/' . $ttd_atasan['ttd']) ?>" alt="ttd" width="40" height="40" style="margin-left:100px ;">
-                    </td>
+                    </td> -->
 
                 </tr>
                 <tr>
@@ -233,8 +234,8 @@
                     </td>
                     <td style=" font-size: 12px; text-align:left"><?= $approval['created_sm'] ?>
                     </td>
-                    <td style=" font-size: 12px; text-align:left"><img src="<?= base_url('uploads/ttd/' . $ttd_sm['ttd']) ?>" alt="ttd" width="40" height="40">
-                    </td>
+                    <!-- <td style=" font-size: 12px; text-align:left"><img src="<?= base_url('uploads/ttd/' . $ttd_sm['ttd']) ?>" alt="ttd" width="40" height="40">
+                    </td> -->
 
                 </tr>
                 <tr>
@@ -244,8 +245,8 @@
                     </td>
                     <td style=" font-size: 12px; text-align:left"><?= $approval['created_gm'] ?>
                     </td>
-                    <td style=" font-size: 12px; text-align:left"><img src="<?= base_url('uploads/ttd/' . $ttd_gm['ttd']) ?>" alt="ttd" width="40" height="40">
-                    </td>
+                    <!-- <td style=" font-size: 12px; text-align:left"><img src="<?= base_url('uploads/ttd/' . $ttd_gm['ttd']) ?>" alt="ttd" width="40" height="40">
+                    </td> -->
 
                 </tr>
                 <tr>
@@ -257,10 +258,10 @@
                     </td>
                     <td style=" font-size: 12px; text-align:left"><?= $approval['created_received'] . '<br>' . $approval['created_mgr_finance']  ?>
                     </td>
-                    <td style=" font-size: 12px; text-align:left">
+                    <!-- <td style=" font-size: 12px; text-align:left">
                         <img src="<?= base_url('uploads/ttd/' .  $ttd_finance['ttd']) ?>" alt="ttd" width="40" height="40">
                         <img src="<?= base_url('uploads/ttd/' . $ttd_mgr_finance['ttd']) ?>" alt="ttd" width="40" height="40" style="margin-left:100px ;">
-                    </td>
+                    </td> -->
 
                 </tr>
             </table>
@@ -275,8 +276,8 @@
                     </td>
                     <td style=" font-size: 10px; width:10%; text-align:center"><b>Date</b>
                     </td>
-                    <td style=" font-size: 10px; width:10%; text-align:center"><b>Signature</b>
-                    </td>
+                    <!-- <td style=" font-size: 10px; width:10%; text-align:center"><b>Signature</b>
+                    </td> -->
 
                 </tr>
                 <tr>
@@ -286,9 +287,9 @@
                     </td>
                     <td style=" font-size: 12px; text-align:left"><?= $info['created'] ?>
                     </td>
-                    <td style=" font-size: 12px; text-align:left"><img src="<?= base_url('uploads/ttd/' . $pemohon['ttd']) ?>" alt="ttd" width="40" height="40">
+                    <!-- <td style=" font-size: 12px; text-align:left"><img src="<?= base_url('uploads/ttd/' . $pemohon['ttd']) ?>" alt="ttd" width="40" height="40">
 
-                    </td>
+                    </td> -->
 
                 </tr>
                 <tr>
@@ -298,8 +299,8 @@
                     </td>
                     <td style=" font-size: 12px; text-align:left"><?= $approval['created_atasan'] ?>
                     </td>
-                    <td style=" font-size: 12px; text-align:left"> <img src="<?= base_url('uploads/ttd/' . $ttd_atasan['ttd']) ?>" alt="ttd" width="40" height="40">
-                    </td>
+                    <!-- <td style=" font-size: 12px; text-align:left"> <img src="<?= base_url('uploads/ttd/' . $ttd_atasan['ttd']) ?>" alt="ttd" width="40" height="40">
+                    </td> -->
 
                 </tr>
                 <tr>
@@ -309,8 +310,8 @@
                     </td>
                     <td style=" font-size: 12px; text-align:left"><?= $approval['created_gm'] ?>
                     </td>
-                    <td style=" font-size: 12px; text-align:left"><img src="<?= base_url('uploads/ttd/' . $ttd_gm['ttd']) ?>" alt="ttd" width="40" height="40">
-                    </td>
+                    <!-- <td style=" font-size: 12px; text-align:left"><img src="<?= base_url('uploads/ttd/' . $ttd_gm['ttd']) ?>" alt="ttd" width="40" height="40">
+                    </td> -->
 
                 </tr>
                 <tr>
@@ -322,10 +323,10 @@
                     </td>
                     <td style=" font-size: 12px; text-align:left"><?= $approval['created_received'] . '<br>' . $approval['created_mgr_finance']  ?>
                     </td>
-                    <td style=" font-size: 12px; text-align:left">
+                    <!-- <td style=" font-size: 12px; text-align:left">
                         <img src="<?= base_url('uploads/ttd/' .  $ttd_finance['ttd']) ?>" alt="ttd" width="40" height="40">
                         <img src="<?= base_url('uploads/ttd/' . $ttd_mgr_finance['ttd']) ?>" alt="ttd" width="40" height="40" style="margin-left:100px ;">
-                    </td>
+                    </td> -->
 
                 </tr>
             </table>
@@ -348,7 +349,7 @@
         <div class="page_break"></div>
         <div class="content" style="margin-left: -15px; margin-right:0px">
             <center>
-                <p style="text-align: center; font-size:20px; font-style:bold"> ATTACHMENT</p>
+                <p style="text-align: center; font-size:15px; font-style:bold"> ATTACHMENT</p>
             </center>
             <?php $no = 1;
 
@@ -357,8 +358,8 @@
                     echo '';
                 } else {
             ?>
-                    <span style="font-size:20px; font-style:bold"><?= $no . '. ' . $a['description'] ?> </span>
-                    <p><img src="<?= base_url('uploads/ap/' . $a['attachment']) ?>" width="auto"> </p>
+                    <span style="font-size:15px; font-style:bold"><?= $no . '. ' . $a['description'] ?> </span>
+                    <center><img src="<?= base_url('uploads/ap/' . $a['attachment']) ?>" width="auto" height="400"></center>
             <?php }
                 $no++;
             } ?>

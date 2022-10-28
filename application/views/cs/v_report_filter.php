@@ -7,6 +7,7 @@
 					<div class="card">
 						<div class="card-header">
 							<h2 class="card-title">Report Order
+
 								<div class="row">
 									<form action="<?= base_url('cs/order/filterLaporan') ?>" method="POST">
 										<div class="row ml-2">
@@ -27,6 +28,8 @@
 													<option value="11">November</option>
 													<option value="12">Desember</option>
 												</select>
+
+
 											</div>
 											<div class="form-group">
 												<label>Tahun</label> <br>
@@ -50,16 +53,17 @@
 								<!-- <button class="btn btn-icon waves-effect waves-light btn-success mb-4" data-toggle="modal" data-target="#addBukti"> <i class="fas fa-plus"></i> Lakukan Pembayaran Sample </button> -->
 
 								<div class="row">
-									<a target="blank" href="<?= base_url('cs/order/exportexcel/' . $bulan . '/' . $tahun) ?>" class="btn btn-sm btn-danger mb-3 ml-2">Export </a>
+									<a target="blank" href="<?= base_url('cs/order/exportexcel/' . $bulan . '/' . $tahun) ?>" class="btn btn-sm btn-danger mb-3 ml-2">Export Laporan Excell</a>
 									<a target="blank" href="<?= base_url('cs/order/exportexcelVoid/' . $bulan . '/' . $tahun) ?>" class="btn btn-sm btn-primary mb-3 ml-2">Export Void</a>
 
 								</div>
 								<br>
+
+
 						</div>
 
 						<!-- /.card-header -->
 						<div class="card-body" style="overflow: auto;">
-
 							<table id="myTable" class="table table-bordered">
 								<div class="flash-data" data-flashdata="<?= $this->session->flashdata('message'); ?>"></div>
 								<p style="color:red"><?= $this->session->flashdata('message'); ?></p>
@@ -70,12 +74,13 @@
 										<th style="width: 15%;">Consignee</th>
 										<th style="width: 15%;">Driver</th>
 										<th style="width: 10%;">Shipment ID</th>
-										<th style="width: 10%;">No DO</th>
+										
 									</tr>
 								</thead>
 								<tbody>
 									<?php foreach ($order as $p) {
-										$no_do = $this->db->get_where('tbl_no_do', array('shipment_id' => $p['shipment_id']))->result_array();
+										//$no_do = $this->db->get_where('tbl_no_do', array('shipment_id' => $p['shipment_id']))->result_array();
+
 									?>
 										<tr>
 											<td><?= bulan_indo($p['tgl_pickup']) ?></td>
@@ -83,7 +88,7 @@
 											<td><?= $p['consigne'] ?></td>
 											<td><?= $p['nama_user'] ?></td>
 											<td> <a href="<?= base_url('cs/order/print/' . $p['shipment_id']) ?>"><?= $p['shipment_id'] ?> </a> </td>
-											<td><?php foreach ($no_do as $no_do) { ?> <?= $no_do['no_do']  ?> <?php } ?></td>
+											
 
 										</tr>
 									<?php } ?>

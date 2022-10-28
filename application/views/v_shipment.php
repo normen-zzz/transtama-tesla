@@ -11,7 +11,7 @@
 					<div class="card card-custom card-stretch">
 
 						<div class="flash-data" data-flashdata="<?= $this->session->flashdata('message'); ?>"></div>
-						<div class="row">
+						 <div class="row">
 							<div class="col-md-6">
 								<div class="panel-heading ml-2">
 									<div class="navbar-form navbar-left">
@@ -26,16 +26,15 @@
 							<div class="col-md-6">
 								<div class="well" style="position: middle;">
 									<form action="<?php echo base_url('scan1/cek_id'); ?>" method="POST">
-										<canvas id="cobascanOPS" width="400" height="400" id="webcodecam-canvas"></canvas>
+										<canvas id="cobascanOPS" width="400" height="400" ></canvas>
 										<br>
 										<input type="text" name="id_karyawan" autofocus>
 										<input type="submit">
 									</form>
 
 								</div>
-
 							</div>
-						</div>
+						</div> 
 						<!-- /.box-body -->
 						<div class="row m-4" style="overflow: auto;">
 							<div class="col-md-12">

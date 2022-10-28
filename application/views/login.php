@@ -41,7 +41,7 @@
 					<!--begin::Signin-->
 					<div class="login-form login-signin">
 						<div class="text-center mb-5 mb-lg-10 mt-20">
-							<img src="<?= base_url('uploads/LogoRaw.png') ?>" width="auto" height="100">
+							<img src="<?= base_url('uploads/logoRaw.png') ?>" width="auto" height="100">
 							<h1 style="font-size: 40px; color:#eee">Log In</h1>
 							<p class="text-muted font-weight-bold">Masukan Username Dan Password</p>
 						

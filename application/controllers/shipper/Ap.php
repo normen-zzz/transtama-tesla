@@ -43,6 +43,7 @@ class Ap extends CI_Controller
 		$data['info'] = $this->ap->getApByNo($no_ap)->row_array();
 		$data['kategori_ap'] = $this->db->get('tbl_kat_ap')->result_array();
 		$data['kategori_pengeluaran'] = $this->db->get('tbl_list_pengeluaran')->result_array();
+		$data['jabatan'] = $this->session->userdata('id_jabatan');
 		$this->backend->display('shipper/v_detail_ap', $data);
 	}
 	public function add()
@@ -53,6 +54,7 @@ class Ap extends CI_Controller
 		$data['kategori_ap'] = $this->db->get('tbl_kat_ap')->result_array();
 		$this->backend->display('shipper/v_add_ap', $data);
 	}
+
 
 	public function processAdd()
 	{
@@ -286,45 +288,6 @@ class Ap extends CI_Controller
 			redirect('shipper/ap/detail/' . $this->input->post('no_pengeluaran1'));
 		}
 	}
-	public function editApSatuanAjax()
-	{
-		$id = $this->input->post('id');
-		$field = $this->input->post('field');
-		$value = $this->input->post('value');
-		$data = array(
-			$field => $value,
-
-		);
-
-		$folderUpload = "./uploads/ap/";
-		$files = $_FILES;
-		$attachment = $files['attachmentedit']['name'];
-
-		// var_dump($data);
-
-		// if ($attachment != NULL) {
-		// 	$namaFile = $files['attachmentedit']['name'];
-		// 	$lokasiTmp = $files['attachmentedit']['tmp_name'];
-		// 	// # kita tambahkan uniqid() agar nama gambar bersifat unik
-		// 	$namaBaru = uniqid() . '-' . $namaFile;
-		// 	$lokasiBaru = "{$folderUpload}/{$namaBaru}";
-		// 	move_uploaded_file($lokasiTmp, $lokasiBaru);
-		// 	$ktp = array('attachment' => $namaBaru);
-		// 	$data = array_merge($data, $ktp);
-		// }
-
-		$update = $this->db->update('tbl_pengeluaran', $data, array('id_pengeluaran' => $id));
-		if ($update) {
-			// unlink('uploads/ap/' . $attachment_lama);
-			$this->session->set_flashdata('message', 'Diedit');
-			echo 1;
-			exit;
-			// redirect('cs/ap/detail/' . $id);
-		} else {
-			$this->session->set_flashdata('message', 'Gagal');
-			// redirect('cs/ap/detail/' . $id);
-		}
-	}
 	public function getKategori()
 	{
 		$kategori = $this->db->get('tbl_list_pengeluaran')->result_array();
@@ -353,6 +316,7 @@ class Ap extends CI_Controller
 			// no pak sam
 
 			$this->wa->pickup('+6281808008082', "$pesan");
+			$this->wa->pickup('+6285157906966', "$pesan");
 			// $this->wa->pickup('+6285157906966', "$pesan");
 
 			$this->session->set_flashdata('message', 'Success Approve');
@@ -414,6 +378,42 @@ class Ap extends CI_Controller
 			redirect('shipper/ap/detail/' . $no_pengeluaran);
 		}
 	}
+	public function editApSatuanAjax()
+	{
+		$id = $this->input->post('id');
+		$field = $this->input->post('field');
+		$value = $this->input->post('value');
+		$ap = $this->db->get_where('tbl_pengeluaran', array('id_pengeluaran' => $id))->row_array();
+
+
+
+		$data = array(
+			$field => $value,
+
+		);
+		$update = $this->db->update('tbl_pengeluaran', $data, array('id_pengeluaran' => $id));
+		if ($update) {
+			$allAp = $this->db->get_where('tbl_pengeluaran', array('no_pengeluaran' => $ap['no_pengeluaran']))->result_array();
+			$total = 0;
+			foreach ($allAp as $allAp) {
+				$total += $allAp['amount_proposed'];
+			}
+			$dataTotal = [
+				'total' => $total
+			];
+			if ($this->db->update('tbl_pengeluaran', $dataTotal, array('no_pengeluaran' => $ap['no_pengeluaran']))) {
+				$this->session->set_flashdata('message', 'Diedit');
+				echo 1;
+				exit;
+			}
+
+			// redirect('cs/ap/detail/' . $id);
+		} else {
+			$this->session->set_flashdata('message', 'Gagal');
+			// redirect('cs/ap/detail/' . $id);
+		}
+	}
+
 	public function print($no_ap)
 	{
 		$mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => [210, 160.3]]);
@@ -426,10 +426,10 @@ class Ap extends CI_Controller
 		$mpdf->WriteHTML($data);
 		$mpdf->Output();
 	}
-	function getAp()
+	function getCustomerById()
 	{
-		$no_ap = $this->input->post('no_ap', TRUE);
-		$data = $this->db->get_where('tbl_pengeluaran', ['no_pengeluaran' => $no_ap])->row_array();
+		$ket = $this->input->post('id', TRUE);
+		$data = $this->db->get_where('tb_customer', ['id_customer' => $ket])->row_array();
 		echo json_encode($data);
 	}
 }

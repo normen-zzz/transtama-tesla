@@ -16,6 +16,7 @@ class Customer extends CI_Controller
 
 	public function index()
 	{
+
 		$data['title'] = 'Customer';
 		$data['city'] = $this->db->get('tb_city')->result_array();
 		$data['province'] = $this->db->get('tb_province')->result_array();

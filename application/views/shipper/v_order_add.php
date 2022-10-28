@@ -130,11 +130,10 @@
 																</select>
 															</div>
 														</div>
-
 														<div class="col-md-4">
 															<div class="form-group">
 																<label for="exampleInputEmail1">Moda<span class="text-danger">*</span></label>
-																<select name="moda" class="form-control" required id="moda">
+																<select name="moda" class="form-control" required>
 																	<option value="NULL">-Choose Moda-</option>
 																	<?php foreach ($moda as $m) {
 																	?>
@@ -145,20 +144,13 @@
 																</select>
 															</div>
 														</div>
-														<div class="col-md-4" style="display: none" id="moda_input">
-															<div class="form-group">
-																<label for="exampleInputEmail1">Input Moda</label>
-																<input type="text" class="form-control" name="moda_input">
-															</div>
-														</div>
-
-														<div class="col-md-1">
+														<div class="col-md-4">
 															<div class="form-group">
 																<label for="exampleInputEmail1">Koli<span class="text-danger">*</span></label>
 																<input type="number" class="form-control" required name="koli" value="<?php echo set_value('koli'); ?>">
 															</div>
 														</div>
-
+														
 														<div class="col-md-2">
 															<div class="form-group rec-element2">
 																<label for="exampleInputEmail1">No. DO/DN 1 <button type="button" class="btn btn-info tambah-form-essay"><i class="fa fa-plus"></i> </button> </label>
@@ -178,7 +170,7 @@
 														<div class="ln_solid2"></div>
 														<div id="nextkolom" name="nextkolom"></div>
 														<button type="button" id="jumlahkolom" value="1" style="display:none"></button>
-
+														
 														<div class="col-md-2">
 															<div class="form-group">
 																<label for="exampleInputEmail1">STP</label>
@@ -207,8 +199,7 @@
 																<label for="exampleInputEmail1">Image</label>
 																<!-- <input type="file" class="form-control" name="ktp"> -->
 																<input type="file" class="form-control" name="ktp[]" onchange="preview_image(); handleImageUpload(this.id);" accept="image/*" capture multiple id="upload_file">
-																<input type="file" class="form-control" name="ktp2[]" onchange="preview_image();" accept="image/*" capture multiple id="upload_file2" hidden>
-															</div>
+																<input type="file" class="form-control" name="ktp2[]" onchange="preview_image();" accept="image/*" capture multiple id="upload_file2" hidden></div>
 														</div>
 														<div class="col-md-4 mb-2">
 															<div id="image_preview"></div>

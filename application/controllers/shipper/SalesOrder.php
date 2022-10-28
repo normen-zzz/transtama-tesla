@@ -12,17 +12,15 @@ class SalesOrder extends CI_Controller
         $this->load->library('upload');
         $this->load->model('M_Datatables');
         $this->load->library('form_validation');
-        $this->db->query("SET sql_mode=(SELECT REPLACE(@@sql_mode, 'ONLY_FULL_GROUP_BY', ''));");
+		$this->db->query("SET sql_mode=(SELECT REPLACE(@@sql_mode, 'ONLY_FULL_GROUP_BY', ''));");
         $this->load->model('PengajuanModel', 'order');
         $this->load->model('SalesModel', 'sales');
         $this->load->model('Api');
-        $this->load->library('pagination');
         cek_role();
     }
 
     public function index()
     {
-        $data['title'] = 'Sales Order';
         $akses = $this->session->userdata('akses');
         if ($akses == 1) {
             $data['title'] = 'Sales Order';
@@ -38,9 +36,10 @@ class SalesOrder extends CI_Controller
              WHERE b.id_user= ?  AND b.status_eksekusi =0 AND a.deleted=0 GROUP BY a.shipment_id";
             $result = $this->db->query($query, array($this->session->userdata('id_user')))->result_array();
             $data['shipments'] = $result;
+            // var_dump($result);
+            // die;
             $data['title'] = 'My Shipment';
             $this->backend->display('shipper/v_shipment', $data);
-            // }
         }
     }
 
@@ -110,7 +109,7 @@ class SalesOrder extends CI_Controller
     {
         date_default_timezone_set("Asia/Jakarta");
         $cek_driver = $this->db->limit(1)->order_by('id_tracking', 'DESC')->get_where('tbl_tracking_real', ['shipment_id' => $this->input->post('shipment_id')])->row_array();
-        if ($cek_driver['status'] == 'Shipment Keluar Dari Hub Benhil') {
+        if ($cek_driver['status'] == 'Shipment Keluar Dari Hub Jakarta Pusat') {
             $data = array(
                 'id_user' => $this->input->post('id_driver'),
                 'created_at' => date('Y-m-d'),
@@ -128,7 +127,7 @@ class SalesOrder extends CI_Controller
             }
         } else {
             $data = array(
-                'status' => 'Shipment Keluar Dari Hub Benhil',
+                'status' => 'Shipment Keluar Dari Hub Jakarta Pusat',
                 'id_so' => $this->input->post('id_so'),
                 'shipment_id' => $this->input->post('shipment_id'),
                 'id_user' => $this->input->post('id_driver'),
@@ -148,52 +147,15 @@ class SalesOrder extends CI_Controller
             }
         }
     }
-
-    // public function assignDriverHub()
-    // {
-    //     $gatway = $this->input->post('gateway');
-    //     date_default_timezone_set("Asia/Jakarta");
-    //     $data = array(
-    //         'status' => 'Shipment Keluar Dari Hub Jakarta Pusat',
-    //         'id_so' => $this->input->post('id_so'),
-    //         'shipment_id' => $this->input->post('shipment_id'),
-    //         'id_user' => $this->input->post('id_driver'),
-    //         'created_at' => date('Y-m-d'),
-    //         'time' => date('H:i:s'),
-    //         'flag' => 5,
-    //         'status_eksekusi' => 0,
-    //         'note' => $this->input->post('note')
-    //     );
-    //     $insert = $this->db->insert('tbl_tracking_real', $data);
-    //     if ($insert) {
-    //         if ($gatway == 'ops') {
-    //             $data = array(
-    //                 'shipment_id' => $this->input->post('shipment_id'),
-    //                 'id_user' => 'null',
-    //                 'status' => 'in',
-    //                 // 'note' => $cek_tracking['note'],
-    //                 'id_so' => $this->input->post('id_so'),
-    //                 'status_eksekusi' => 0
-    //             );
-    //             $this->db->insert('tbl_gateway', $data);
-    //         }
-
-    //         $this->session->set_flashdata('message', 'Success');
-    //         redirect('shipper/salesOrder/detail/' . $this->input->post('id_so'));
-    //     } else {
-    //         $this->session->set_flashdata('message', 'Failed');
-    //         redirect('shipper/salesOrder/detail/' . $this->input->post('id_so'));
-    //     }
-    // }
-
-    public function assignDriverHub()
+	
+	  public function assignDriverHub()
     {
         $gatway = $this->input->post('gateway');
         date_default_timezone_set("Asia/Jakarta");
         $cek_driver = $this->db->limit(1)->order_by('id_tracking', 'DESC')->get_where('tbl_tracking_real', ['shipment_id' => $this->input->post('shipment_id')])->row_array();
-        if ($cek_driver['status'] == 'Shipment Keluar Dari Hub Benhil') {
+        if ($cek_driver['status'] == 'Shipment Keluar Dari Hub Jakarta Pusat') {
             $data = array(
-                'status' => 'Shipment Keluar Dari Hub Benhil',
+                'status' => 'Shipment Keluar Dari Hub Jakarta Pusat',
                 'id_so' => $this->input->post('id_so'),
                 'shipment_id' => $this->input->post('shipment_id'),
                 'id_user' => $this->input->post('id_driver'),
@@ -213,7 +175,7 @@ class SalesOrder extends CI_Controller
             }
         } else {
             $data = array(
-                'status' => 'Shipment Keluar Dari Hub Benhil',
+                'status' => 'Shipment Keluar Dari Hub Jakarta Pusat',
                 'id_so' => $this->input->post('id_so'),
                 'shipment_id' => $this->input->post('shipment_id'),
                 'id_user' => $this->input->post('id_driver'),
@@ -245,6 +207,8 @@ class SalesOrder extends CI_Controller
             }
         }
     }
+
+    
     public function receive($id, $id_tracking, $shipment_id)
     {
         $data = array(
@@ -339,6 +303,8 @@ class SalesOrder extends CI_Controller
 
     public function arriveBenhil($id_so, $shipment_id, $id_tracking)
     {
+        // var_dump($shipment_id);
+        // die;
         $data = array(
             'status' => 'Shipment Telah Tiba Di Hub Jakarta Pusat',
             'id_so' => $id_so,
@@ -375,7 +341,8 @@ class SalesOrder extends CI_Controller
         $config['encrypt_name'] = TRUE;
         $this->upload->initialize($config);
 
-        $folderUpload = "./uploads/berkas_uncompress/";
+       // $folderUpload = "./uploads/berkas/";
+		 $folderUpload = "./uploads/berkas_uncompress/";
         $files = $_FILES;
         $files = $_FILES;
         $jumlahFile = count($files['ktp']['name']);
@@ -391,9 +358,16 @@ class SalesOrder extends CI_Controller
                 array_push($listNamaBaru, $namaBaru);
                 $lokasiBaru = "{$folderUpload}/{$namaBaru}";
                 $prosesUpload = move_uploaded_file($lokasiTmp, $lokasiBaru);
+
+                # jika proses berhasil
+                // if ($prosesUpload) {
+                // } else {
+                //     // $this->session->set_flashdata('message', 'Gambar gagal Ditambahkan');
+                //     // redirect('shipper/salesOrder');
+                // }
             }
             $namaBaru = implode("+", $listNamaBaru);
-            $this->resizeImage($namaBaru);
+			 $this->resizeImage($namaBaru);
             $ktp = array('bukti' => $namaBaru);
             $data = array_merge($data, $ktp);
         }
@@ -407,8 +381,8 @@ class SalesOrder extends CI_Controller
             'status_eksekusi' => 1,
         );
         $this->db->update('tbl_tracking_real', $data, ['shipment_id' => $shipment_id]);
-
-        // update tgl diterima
+		  // update tgl diterima
+         
         $data = array(
             'tgl_diterima' => date('Y-m-d'),
             // 'status_pod' => 2
@@ -422,31 +396,9 @@ class SalesOrder extends CI_Controller
         //     'created_by' => $this->session->userdata('nama_user')
         // );
         // $this->db->insert('tbl_tracking_pod', $data);
-
+		
         $this->session->set_flashdata('message', 'Terima Kasih');
         redirect('shipper/salesOrder');
-    }
-    public function resizeImage($filename)
-    {
-        $files = explode("+", $filename);
-        // var_dump($files);
-        // die;
-        for ($i = 0; $i < sizeof($files); $i++) {
-            $source_path = $_SERVER['DOCUMENT_ROOT'] . '/uploads/berkas_uncompress/' . $files[$i];
-            $target_path = $_SERVER['DOCUMENT_ROOT'] . '/uploads/berkas/';
-            $config_manip = array(
-                'image_library' => 'gd2',
-                'source_image' => $source_path,
-                'new_image' => $target_path,
-                'maintain_ratio' => TRUE,
-                'width' => 500,
-            );
-
-            $this->load->library('image_lib');
-            $this->image_lib->initialize($config_manip);
-            $this->image_lib->resize();
-            $this->image_lib->clear();
-        }
     }
     public function arriveCustomerIncoming($id_so, $shipment_id, $id_tracking)
     {
@@ -461,7 +413,7 @@ class SalesOrder extends CI_Controller
             'pic_task' => $consignee,
             'id_user' => $this->session->userdata('id_user'),
         );
-        $config['upload_path'] = './uploads/berkas_uncompress/';
+        $config['upload_path'] = './uploads/berkas/';
         $config['allowed_types'] = 'jpg|png|jpeg';
         $config['encrypt_name'] = TRUE;
         $this->upload->initialize($config);
@@ -491,7 +443,7 @@ class SalesOrder extends CI_Controller
                 // }
             }
             $namaBaru = implode("+", $listNamaBaru);
-            $this->resizeImage($namaBaru);
+			$this->resizeImage($namaBaru);
             $ktp = array('bukti' => $namaBaru);
             $data = array_merge($data, $ktp);
         }
@@ -500,7 +452,8 @@ class SalesOrder extends CI_Controller
             'status' => 3,
         );
         $this->db->update('tbl_so', $data, ['id_so' => $id_so]);
-        // update tgl diterima
+        $this->updateEksekusiTracking($id_tracking);
+		 // update tgl diterima
         $data = array(
             'tgl_diterima' => date('Y-m-d'),
             // 'status_pod' => 2
@@ -514,7 +467,7 @@ class SalesOrder extends CI_Controller
         //     'created_by' => $this->session->userdata('nama_user')
         // );
         // $this->db->insert('tbl_tracking_pod', $data);
-        $this->updateEksekusiTracking($id_tracking);
+		
         $this->session->set_flashdata('message', 'Terima Kasih');
         redirect('shipper/salesOrder');
     }
@@ -533,7 +486,7 @@ class SalesOrder extends CI_Controller
             'pic_task' => $consignee,
             'id_user' => $this->session->userdata('id_user'),
         );
-        $config['upload_path'] = './uploads/berkas_uncompress/';
+        $config['upload_path'] = './uploads/berkas/';
         $config['allowed_types'] = 'jpg|png|jpeg';
         $config['encrypt_name'] = TRUE;
         $this->upload->initialize($config);
@@ -558,12 +511,12 @@ class SalesOrder extends CI_Controller
                 # jika proses berhasil
                 if ($prosesUpload) {
                 } else {
-                    // $this->session->set_flashdata('message', 'Gambar gagal Ditambahkan');
-                    // redirect('shipper/salesOrder');
+                    $this->session->set_flashdata('message', 'Gambar gagal Ditambahkan');
+                    redirect('shipper/salesOrder');
                 }
             }
             $namaBaru = implode("+", $listNamaBaru);
-            $this->resizeImage($namaBaru);
+			$this->resizeImage($namaBaru);
             $ktp = array('bukti' => $namaBaru);
             $data = array_merge($data, $ktp);
         }
@@ -572,7 +525,8 @@ class SalesOrder extends CI_Controller
             'status' => 3,
         );
         $this->db->update('tbl_so', $data, ['id_so' => $id_so]);
-        // update tgl diterima
+        $this->updateEksekusiTracking($id_tracking);
+		 // update tgl diterima
         $data = array(
             'tgl_diterima' => date('Y-m-d'),
             // 'status_pod' => 2
@@ -586,8 +540,7 @@ class SalesOrder extends CI_Controller
         //     'created_by' => $this->session->userdata('nama_user')
         // );
         // $this->db->insert('tbl_tracking_pod', $data);
-
-        $this->updateEksekusiTracking($id_tracking);
+		
         $this->session->set_flashdata('message', 'Terima Kasih');
         redirect('shipper/salesOrder');
     }
@@ -608,7 +561,7 @@ class SalesOrder extends CI_Controller
         $data['shipment2'] =  $this->order->orderBySo($id)->result_array();
         $this->backend->display('shipper/v_detail_order_luar', $data);
     }
-    public function edit($id, $id_so)
+	 public function edit($id, $id_so)
     {
         $data['title'] = 'Edit Order';
         $data['id_so'] = $id_so;
@@ -616,7 +569,7 @@ class SalesOrder extends CI_Controller
         $data['province'] = $this->db->get('tb_province')->result_array();
         $data['service'] = $this->db->get('tb_service_type')->result_array();
         $data['p'] = $this->order->order($id)->row_array();
-        $data['moda'] = $this->db->get('tbl_moda')->result_array();
+		  $data['moda'] = $this->db->get('tbl_moda')->result_array();
         $this->backend->display('shipper/v_edit_order2', $data);
     }
     public function processEdit()
@@ -624,10 +577,10 @@ class SalesOrder extends CI_Controller
         $data = array(
             'service_type' => $this->input->post('service_type'),
             'tree_shipper' => $this->input->post('tree_shipper'),
-            'note_driver' => $this->input->post('note_driver'),
+			 'note_driver' => $this->input->post('note_driver'),
             'pu_moda' => $this->input->post('moda'),
             'tree_consignee' => $this->input->post('tree_consignee'),
-            'is_jabodetabek' => $this->input->post('is_jabodetabek'),
+			 'is_jabodetabek' => $this->input->post('is_jabodetabek'),
         );
         $folderUpload = "./uploads/berkas_uncompress/";
         $files = $_FILES;
@@ -671,6 +624,7 @@ class SalesOrder extends CI_Controller
             redirect('shipper/salesOrder/edit/' . $this->input->post('id') . '/' . $this->input->post('id_so'));
         }
     }
+    
     function view_data_query()
     {
         $akses = $this->session->userdata('akses');
@@ -679,7 +633,7 @@ class SalesOrder extends CI_Controller
             $search = array('shipper', 'destination', 'b.nama_user');
             $query  = "SELECT a.*, b.nama_user as sales FROM tbl_so a 
         JOIN tb_user b ON a.id_sales=b.id_user";
-            $where  = array('a.status <' => 5);
+            $where  = null;
             $isWhere = null;
             // $isWhere = 'artikel.deleted_at IS NULL';
             // jika memakai IS NULL pada where sql
@@ -687,7 +641,29 @@ class SalesOrder extends CI_Controller
             echo $this->M_Datatables->get_tables_query($query, $search, $where, $isWhere);
         }
     }
-    public function completeTtd($id)
+	public function resizeImage($filename)
+    {
+        $files = explode("+", $filename);
+        // var_dump($files);
+        // die;
+        for ($i = 0; $i < sizeof($files); $i++) {
+            $source_path = $_SERVER['DOCUMENT_ROOT'] . '/uploads/berkas_uncompress/' . $files[$i];
+            $target_path = $_SERVER['DOCUMENT_ROOT'] . '/uploads/berkas/';
+            $config_manip = array(
+                'image_library' => 'gd2',
+                'source_image' => $source_path,
+                'new_image' => $target_path,
+                'maintain_ratio' => TRUE,
+                'width' => 500,
+            );
+
+            $this->load->library('image_lib');
+            $this->image_lib->initialize($config_manip);
+            $this->image_lib->resize();
+            $this->image_lib->clear();
+        }
+    }
+	public function completeTtd($id)
     {
         $this->db->select('a.image,a.signature, a.shipment_id,a.id');
         $this->db->from('tbl_shp_order a');

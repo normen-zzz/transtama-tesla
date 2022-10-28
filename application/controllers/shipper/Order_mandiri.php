@@ -17,7 +17,6 @@ class Order extends CI_Controller
         $this->load->library('upload');
         $this->load->model('M_Datatables');
         $this->load->library('form_validation');
-        // $this->getDataWisuda();
 
         $this->load->model('PengajuanModel', 'order');
         $this->load->model('Api');
@@ -30,6 +29,7 @@ class Order extends CI_Controller
         $data['order'] = $this->order->orderBySo($id)->result_array();
         $data['id_so'] = $id;
         $data['id_tracking'] = $id_tracking;
+		$data['so'] = $this->db->select('type')->get_where('tbl_so', ['id_so' => $id])->row_array();
         $this->backend->display('shipper/v_order', $data);
     }
     public function detail($id, $id_so)
@@ -41,7 +41,7 @@ class Order extends CI_Controller
     }
     public function edit($id, $id_so, $id_tracking)
     {
-        $data['title'] = 'Edit Order';
+      $data['title'] = 'Edit Order';
         $data['id_so'] = $id_so;
         $data['id_tracking'] = $id_tracking;
         $data['city'] = $this->db->get('tb_city')->result_array();
@@ -49,6 +49,7 @@ class Order extends CI_Controller
         $data['service'] = $this->db->get('tb_service_type')->result_array();
         $data['customer'] = $this->db->get('tb_customer')->result_array();
         $data['p'] = $this->order->order($id)->row_array();
+		 $data['moda'] = $this->db->get('tbl_moda')->result_array();
         $this->backend->display('shipper/v_edit_order', $data);
     }
 
@@ -71,6 +72,35 @@ class Order extends CI_Controller
         $data['order'] = $this->db->order_by('id', 'DESC')->get_where('tbl_shp_order', ['id_user' => $this->session->userdata('id_user')])->result_array();
         $this->backend->display('shipper/v_camera', $data);
     }
+	public function completeTtd($id, $id_tracking)
+    {
+        $this->db->select('a.image,a.signature, a.shipment_id,a.id');
+        $this->db->from('tbl_shp_order a');
+        $this->db->where('a.id_so', $id);
+        $this->db->order_by('a.id', 'ASC');
+        $this->db->limit(1);
+        $orders = $this->db->get()->row_array();
+        if ($orders['image'] == NULL || $orders['signature'] == NULL) {
+            $this->session->set_flashdata('message', '<div class="alert
+                    alert-danger" role="alert">Gagal, Pastikan Data Pertama Dari Shipment Ini telah di Tanda tangan dan sudah ada POP</div>');
+            redirect('shipper/order/view/' . $id . '/' . $id_tracking);
+        } else {
+            $data = array(
+                'signature' => $orders['signature'],
+                'image' => $orders['image']
+            );
+            $update = $this->db->update('tbl_shp_order', $data, ['id_so' => $id]);
+            if ($update) {
+                $this->session->set_flashdata('message', '<div class="alert
+                    alert-success" role="alert">Success Duplicate Signature</div>');
+                redirect('shipper/order/view/' . $id . '/' . $id_tracking);
+            } else {
+                $this->session->set_flashdata('message', '<div class="alert
+                    alert-danger" role="alert">Gagal</div>');
+                redirect('shipper/order/view/' . $id . '/' . $id_tracking);
+            }
+        }
+    }
     public function addImage()
     {
 
@@ -91,10 +121,12 @@ class Order extends CI_Controller
         // $data['imagecamera'] = $img;
         $data['id_so'] = $id_so;
         $data['id_tracking'] = $id_tracking;
-        $data['city'] = $this->db->get('tb_city')->result_array();
+       	$data['city'] = $this->db->get('tb_city')->result_array();
         $data['province'] = $this->db->get('tb_province')->result_array();
         $data['service'] = $this->db->get('tb_service_type')->result_array();
         $data['customer'] = $this->db->get('tb_customer')->result_array();
+        $data['moda'] = $this->db->get('tbl_moda')->result_array();
+        $data['so'] = $this->db->get_where('tbl_so', ['id_so' => $id_so])->row_array();
         $this->backend->display('shipper/v_order_add', $data);
     }
     public function bulk($id_so, $id_tracking)
@@ -109,15 +141,89 @@ class Order extends CI_Controller
         // $this->session->set_userdata($data);
         $data['id_so'] = $id_so;
         $data['id_tracking'] = $id_tracking;
-        // var_dump($id_tracking);
-        // die;
         $data['city'] = $this->db->get('tb_city')->result_array();
         $data['province'] = $this->db->get('tb_province')->result_array();
         $data['service'] = $this->db->get('tb_service_type')->result_array();
         $data['customer'] = $this->db->get('tb_customer')->result_array();
         $this->backend->display('shipper/v_order_add_bulk', $data);
     }
-    public function import()
+	 public function special($id_so, $id_tracking)
+    {
+        // $cek_api = $this->Api->kirim();
+        // $cek_api = json_decode($cek_api);
+        // $cek_api = $cek_api->accessToken;
+        // $data = [
+        //     'token' => $cek_api,
+        // ];
+        // $this->session->set_userdata($data);
+        $data['title'] = 'Special Order';
+        $data['id_so'] = $id_so;
+        $data['id_tracking'] = $id_tracking;
+        $data['city'] = $this->db->get('tb_city')->result_array();
+        $data['province'] = $this->db->get('tb_province')->result_array();
+        $data['service'] = $this->db->get('tb_service_type')->result_array();
+        $data['customer'] = $this->db->get('tb_customer')->result_array();
+        $this->backend->display('shipper/v_order_add_special', $data);
+    }
+	  public function downloadSpecial($id_so)
+    {
+        $detail = $this->db->get_where('tbl_so', ['id_so' => $id_so])->row_array();
+        $shipments = $this->db->get_where('tbl_shp_order', ['id_so' => $id_so])->result_array();
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setCellValue('A1', 'Shipment ID');
+        $sheet->setCellValue('B1', 'Shipper');
+        $sheet->setCellValue('C1', 'Consignee');
+        $sheet->setCellValue('D1', 'Destination');
+        $sheet->setCellValue('E1', 'Provinsi');
+        $sheet->setCellValue('F1', 'Kota');
+        $sheet->setCellValue('G1', 'Service');
+        $sheet->setCellValue('H1', 'Koli');
+        $sheet->setCellValue('I1', 'PIC');
+        $sheet->setCellValue('J1', 'NO.DO');
+        $sheet->setCellValue('K1', 'Tree Shipper');
+        $sheet->setCellValue('L1', 'Tree Consignee');
+        $sheet->setCellValue('M1', 'Is Jabodetabek ?');
+        $no = 1;
+        $x = 2;
+        foreach ($shipments as $row) {
+            $sheet->setCellValue('A' . $x, $row['shipment_id'])->getColumnDimension('A')
+                ->setAutoSize(true);
+            $sheet->setCellValue('B' . $x, $row['shipper'])->getColumnDimension('B')
+                ->setAutoSize(true);
+            $sheet->setCellValue('C' . $x, $row['consigne'])->getColumnDimension('C')
+                ->setAutoSize(true);
+            $sheet->setCellValue('D' . $x, $row['destination'])->getColumnDimension('D')
+                ->setAutoSize(true);
+            $sheet->setCellValue('E' . $x, $row['state_consigne'])->getColumnDimension('E')
+                ->setAutoSize(true);
+            $sheet->setCellValue('F' . $x, $row['city_consigne'])->getColumnDimension('F')
+                ->setAutoSize(true);
+            $sheet->setCellValue('G' . $x, $row['service_type'])->getColumnDimension('G')
+                ->setAutoSize(true);
+            $sheet->setCellValue('H' . $x, $row['koli'])->getColumnDimension('H')
+                ->setAutoSize(true);
+            $sheet->setCellValue('I' . $x, $row['sender'])->getColumnDimension('I')
+                ->setAutoSize(true);
+            $sheet->setCellValue('J' . $x, $row['note_cs'])->getColumnDimension('J')
+                ->setAutoSize(true);
+            $sheet->setCellValue('K' . $x, $row['tree_shipper'])->getColumnDimension('K')
+                ->setAutoSize(true);
+            $sheet->setCellValue('L' . $x, $row['tree_consignee']);
+            $sheet->setCellValue('M' . $x, $row['is_jabodetabek']);
+            $x++;
+        }
+        $filename = "Order $detail[shipper]";
+
+        header('Content-Type: application/vnd.ms-excel');
+        header('Content-Disposition: attachment;filename="' . $filename . '.xlsx"');
+        header('Cache-Control: max-age=0');
+
+        $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
+        $writer->save('php://output');
+        exit;
+    }
+	   public function import()
     {
         $file_mimes = array(
             'text/x-comma-separated-values', 'text/comma-separated-values', 'application/octet-stream',
@@ -230,12 +336,12 @@ class Order extends CI_Controller
                     'id_user' => $this->session->userdata('id_user'),
                     'signature' => $img,
                     'so_id' => $kode,
-                    'tree_shipper' => $this->getTreeLetterCode($province_shipper),
-                    'tree_consignee' => $this->getTreeLetterCode($province_consigne),
+                    'tree_shipper' => $rowdata[11],
+                        'tree_consignee' => $rowdata[12],
                     'shipment_id' => $shipment_id,
                     'order_id' => $order_id,
                     'service_type' =>  $rowdata[7],
-                    'is_jabodetabek' =>  $rowdata[10],
+                    'is_jabodetabek' =>  $rowdata[13],
                     'date_new' => date('Y-m-d'),
                     'id_so' => $this->input->post('id_so'),
                     'tgl_pickup' => $get_pickup['tgl_pickup'],
@@ -251,10 +357,11 @@ class Order extends CI_Controller
                     'is_incoming' => $get_pickup['is_incoming'],
 
                 );
+				//var_dump($data); die;
                 // cek order berdasarkan id_so
                 $get_last_order = $this->db->limit(1)->order_by('id', 'desc')->get_where('tbl_shp_order', ['id_so' => $this->input->post('id_so')])->row_array();
                 // var_dump($get_last_order);
-                // die;
+               //  die;
                 // kalo shipment id nya null, maka update tbl nya
                 if ($get_last_order['so_id'] == NULL) {
                     // echo 'kosong';
@@ -296,7 +403,9 @@ class Order extends CI_Controller
                     }
                 } else {
                     // kalo shipment id nya ada, maka insert tbl nya 
+					//die;
                     $insert =  $this->db->insert('tbl_shp_order', $data);
+					//var_dump($insert); die;
                     if ($insert) {
                         $this->barcode($shipment_id);
                         $this->qrcode($shipment_id);
@@ -342,6 +451,7 @@ class Order extends CI_Controller
             redirect('shipper/order/bulk/' . $this->input->post('id_so') . '/' . $this->input->post('id_tracking'));
         }
     }
+	   
     public function importSpecial()
     {
         $file_mimes = array(
@@ -511,6 +621,7 @@ class Order extends CI_Controller
         }
     }
 
+    
 
     public function processAdd()
     {
@@ -589,6 +700,8 @@ class Order extends CI_Controller
             $province_shipper = $this->input->post('state_shipper2');
             $province_consigne = $this->input->post('state_consigne');
             $get_pickup = $this->db->limit(1)->order_by('id', 'DESC')->get_where('tbl_shp_order', ['id_so' => $this->input->post('id_so')])->row_array();
+			$no_do = $this->input->post('note_cs');
+			$no_do = implode(',', $no_do);
             $data = array(
                 'shipper' => strtoupper($this->input->post('shipper2')),
                 'origin' => $this->input->post('origin'),
@@ -602,7 +715,7 @@ class Order extends CI_Controller
                 'is_jabodetabek' => $this->input->post('is_jabodetabek'),
                 'sender' => $this->input->post('sender'),
                 'note_driver' => $this->input->post('note_driver'),
-                'note_cs' => $this->input->post('note_cs'),
+                'note_cs' => $no_do,
                 'id_so' => $this->input->post('id_so'),
                 'id_user' => $this->session->userdata('id_user'),
                 'signature' => $img,
@@ -734,7 +847,10 @@ class Order extends CI_Controller
                         'status' => 2,
                     );
                     $this->db->update('tbl_so', $data, ['id_so' => $this->input->post('id_so')]);
-
+                    // $data = array(
+                    //     'status_eksekusi' => 1,
+                    // );
+                    // $this->db->update('tbl_tracking_real', $data, ['id_tracking' => $this->input->post('id_tracking')]);
                     $this->session->set_flashdata('message', '<div class="alert
                     alert-success" role="alert">Success</div>');
                     redirect('shipper/order/view/' . $this->input->post('id_so') . '/' . $this->input->post('id_tracking'));
@@ -746,8 +862,8 @@ class Order extends CI_Controller
             }
         }
     }
-
-    public function processEdit()
+	
+	  public function processEdit()
     {
         $img = $this->input->post('ttd');
         $img = str_replace('data:image/png;base64,', '', $img);
@@ -762,28 +878,46 @@ class Order extends CI_Controller
             'pu_moda' => $this->input->post('moda'),
             'note_driver' => $this->input->post('note_driver'),
             'sender' => $this->input->post('sender'),
-            'note_cs' => $this->input->post('note_cs'),
+            //'note_cs' => $this->input->post('note_cs'),
             'service_type' => $this->input->post('service_type'),
             // 'signature' => $img,
         );
+		//var_dump($data); die;
         if ($img != null) {
             $sig = array('signature' => $img);
             $data = array_merge($data, $sig);
         }
 
         // var_dump($data);
-        $config['upload_path'] = './uploads/berkas/';
-        $config['allowed_types'] = 'jpg|png|jpeg';
-        $config['encrypt_name'] = TRUE;
-        $this->upload->initialize($config);
+       $folderUpload = "./uploads/berkas_uncompress/";
+        $files = $_FILES;
+        $files = $_FILES;
+        $jumlahFile = count($files['ktp']['name']);
+        if (!empty($_FILES['ktp']['name'][0])) {
+            $listNamaBaru = array();
+            for ($i = 0; $i < $jumlahFile; $i++) {
+                $namaFile = $files['ktp']['name'][$i];
+                $lokasiTmp = $files['ktp']['tmp_name'][$i];
+                // # kita tambahkan uniqid() agar nama gambar bersifat unik
+                $namaBaru = uniqid() . '-' . $namaFile;
 
-        if (!empty($_FILES['ktp']['name'])) {
-            if ($this->upload->do_upload('ktp')) {
-                $data_ktp = $this->upload->data();
-                $file = $data_ktp['file_name'];
-                $ktp = array('image' => $file);
-                $data = array_merge($data, $ktp);
+                array_push($listNamaBaru, $namaBaru);
+                $lokasiBaru = "{$folderUpload}/{$namaBaru}";
+                $prosesUpload = move_uploaded_file($lokasiTmp, $lokasiBaru);
+
+                # jika proses berhasil
+                if ($prosesUpload) {
+                    // $this->resizeImage($namaBaru);
+                } else {
+                    // $this->session->set_flashdata('message', 'Gambar gagal Ditambahkan');
+                    // $this->add($this->input->post('id_so'), $this->input->post('id_tracking'));
+                }
             }
+            $namaBaru = implode("+", $listNamaBaru);
+            $this->resizeImage($namaBaru);
+            $ktp = array('image' => $namaBaru);
+            $bukti_tracking = array('bukti' => $namaBaru);
+            $data = array_merge($data, $ktp);
         }
 
         $update =  $this->db->update('tbl_shp_order', $data, ['id' => $this->input->post('id')]);
@@ -797,6 +931,9 @@ class Order extends CI_Controller
             redirect('shipper/order/edit/' . $this->input->post('id') . '/' . $this->input->post('id_so') . '/' . $this->input->post('id_tracking'));
         }
     }
+
+
+    
 
     public function addMasterCustomer()
     {
@@ -813,24 +950,20 @@ class Order extends CI_Controller
 
     public function print($id)
     {
+         $mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => [74, 105]]);
+
         $where = array('shipment_id' => $id);
         $data['order'] = $this->db->get_where('tbl_shp_order', $where)->row_array();
         $where2 = array('code' => $data['order']['service_type']);
         $data['service'] = $this->db->get_where('tb_service_type', $where2)->row_array();
         // var_dump($data['order']);
         // die;
-        $this->load->view('superadmin/v_cetak', $data);
-        $html = $this->output->get_output();
-        $this->load->library('dompdf_gen');
-        $this->dompdf->set_paper("A7", 'potrait');
-        $this->dompdf->load_html($html);
-        $this->dompdf->render();
-        $sekarang = date("d:F:Y:h:m:s");
-        // return $this->dompdf->output();
-        $output = $this->dompdf->output();
-        ob_end_clean();
-        // file_put_contents('uploads/barcode' . '/' . "$shipment_id.pdf", $output);
-        $this->dompdf->stream("Cetak" . $sekarang . ".pdf", array('Attachment' => 0));
+        // $this->load->view('superadmin/v_cetak', $data);
+
+
+        $data = $this->load->view('superadmin/v_cetak', $data, TRUE);
+        $mpdf->WriteHTML($data);
+        $mpdf->Output();
     }
     public function barcode($id)
     {
@@ -879,6 +1012,21 @@ class Order extends CI_Controller
             return null;
         }
     }
+	
+public function printAll($id)
+    {
+          $mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => [74, 105]]);
+
+        $where = array('id_so' => $id);
+        $this->db->select('*, b.service_name, b.prefix');
+        $this->db->from('tbl_shp_order a');
+        $this->db->join('tb_service_type b', 'a.service_type=b.code');
+        $this->db->where('a.id_so', $id);
+        $data['orders'] = $this->db->get()->result_array();
+        $data = $this->load->view('superadmin/v_cetak_all', $data, TRUE);
+        $mpdf->WriteHTML($data);
+        $mpdf->Output();    
+		}
     function get_consigne()
     {
         $kode = $this->input->post('kode');
@@ -892,7 +1040,7 @@ class Order extends CI_Controller
         // die;
         echo $this->order->fetch_data($this->uri->segment(4));
     }
-    public function resizeImage($filename)
+	 public function resizeImage($filename)
     {
         $files = explode("+", $filename);
         // var_dump($files);

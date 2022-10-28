@@ -104,7 +104,7 @@
 															if ($s['status_approve'] == 0) {
 															?>
 																<a onclick='$("#modalLoading").modal("show");' href="<?= base_url('sales/salesOrder/detail/' . $s['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Detail</a>
-																<a href="<?= base_url('sales/salesOrder/approve/' . $s['id_so']) ?>" onclick="return confirm('Are You Sure ?')" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Approve</a>
+																<a  href="<?= base_url('sales/salesOrder/approve/' . $s['id_so']) ?>" onclick="return confirm('Are You Sure ?')" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Approve</a>
 															<?php	} else {
 															?>
 																<a onclick='$("#modalLoading").modal("show");' href="<?= base_url('sales/salesOrder/detail/' . $s['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Detail</a>

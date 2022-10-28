@@ -7,7 +7,7 @@
 					<div class="card card-custom card-stretch">
 						<div class="card-header py-3">
 							<div class="card-title align-items-start flex-column">
-								<h3 class="card-label font-weight-bolder text-dark">Detail Sales Order </h3>
+								<h3 class="card-label font-weight-bolder text-dark">Detail Request Pickup</h3>
 								<!-- <span class="text-muted font-weight-bold font-size-sm mt-1">Shipment ID :<b> <?= $p['shipment_id'] ?></b></span>
 								<span class="text-muted font-weight-bold font-size-sm mt-1">Order ID :<b> <?= $p['order_id'] ?></b></span> -->
 							</div>

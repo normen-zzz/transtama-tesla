@@ -225,7 +225,7 @@
 											<tr>
 												<td><a href="<?= base_url('shipper/order/print/' . $shp['shipment_id']) ?>"> <?= $shp['shipment_id'] ?></a><br>
 													<?= $shp['service_name'] ?> </td>
-												<td><?= $shp['shipper'] ?><br> <?= $shp['tree_shipper'] ?>-<?= $shp['tree_consignee'] ?>/ <?= $shp['koli'] ?></td>
+												<td><?= $shp['shipper'] ?><br> <?= $shp['tree_shipper'] ?>-<?= $shp['tree_consignee'] ?>/<?= $shp['koli'] ?>C</td>
 												<td><?= $shp['destination'] ?>, <?= $shp['city_consigne'] ?> <?= $shp['state_consigne'] ?></td>
 												<td><?= $shp['consigne'] ?></td>
 												<td style="color: green;"><?= $get_last_status['status'] ?> <?= $get_last_status['note'] ?>. <?= longdate_indo($get_last_status['created_at']), ' ' . $get_last_status['time'] ?>
@@ -367,7 +367,7 @@
 															?>
 																<a href="#" class="btn font-weight-bolder text-light" data-toggle="modal" data-target="#modal-lg" style="background-color: #9c223b;">
 																	Asign Driver PU</a>
-																<?php $tracking = $this->db->order_by('id_tracking', 'asc')->get_where('tbl_tracking', ['id_so' => $p['id_so']])->row_array();
+																<?php $tracking = $this->db->order_by('id_tracking', 'asc')->get_where('tbl_tracking_real', ['id_so' => $p['id_so']])->row_array();
 
 																?>
 																<div class="d-flex align-items-center">
@@ -876,8 +876,8 @@
 							<!-- /.card-body -->
 					</div>
 					<div class="modal-footer justify-content-between">
-						<button onclick='$("#modalLoading").modal("show");' type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-						<button type="submit" class="btn btn-primary">Submit</button>
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+						<button onclick='$("#modalLoading").modal("show");' type="submit" class="btn btn-primary">Submit</button>
 					</div>
 					</form>
 				</div>

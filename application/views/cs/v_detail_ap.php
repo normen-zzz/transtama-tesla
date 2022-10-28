@@ -4,6 +4,7 @@
 		width: 98%;
 	}
 </style>
+
 <!-- Main content -->
 <section class="content">
 	<div class="container-fluid">
@@ -131,7 +132,6 @@
 
 										<?php	} ?>
 									</form>
-									<!-- Table Edit ap  -->
 									<div class="card-body" style="overflow: auto;">
 										<h3>List <?= $info['nama_kategori'] ?></h3>
 										<p class="text-danger">***Klik ditempat yang ingin diedit***</p>
@@ -155,11 +155,12 @@
 														<td><?= $c['nama_kategori'] ?></td>
 														<td>
 															<span class='edit'><?= $c['description'] ?></span>
-															<input type='text' class='form-control txtedit' data-id="<?= $c['id_pengeluaran'] ?>" data-field='description' id='descriptiontxt_<?= $c['id_pengeluaran'] ?>' value='<?= $c['description'] ?>'>
+															<input type='text' class='form-control txtedit' data-id="<?= $c['id_pengeluaran'] ?>" data-url='<?= base_url() ?>/cs/ap/editApSatuanAjax' data-field='description' id='descriptiontxt_<?= $c['id_pengeluaran'] ?>' value='<?= $c['description'] ?>'>
 														</td>
 
-														<td><span class='edit'>Rp. <?= $c['amount_proposed'] ?></span>
-															<input type='number' name="jumlah" class='form-control txtedit' data-id="<?= $c['id_pengeluaran'] ?>" data-field='amount_proposed' id='amount_proposedtxt_<?= $c['amount_proposed'] ?>' value='<?= $c['amount_proposed'] ?>'>
+														<td><span <?php $approve = $this->db->get_where('tbl_approve_pengeluaran', array('no_pengeluaran' => $c['no_pengeluaran']));
+																	if ($approve->num_rows() == 0) { ?> class='edit' <?php } ?>>Rp. <?= $c['amount_proposed'] ?></span>
+															<input type='number' name="jumlah" class='form-control txtedit' data-id="<?= $c['id_pengeluaran'] ?>" data-url='<?= base_url() ?>/cs/ap/editApSatuanAjax' data-field='amount_proposed' id='amount_proposedtxt_<?= $c['amount_proposed'] ?>' value='<?= $c['amount_proposed'] ?>'>
 														</td>
 
 														<td>
@@ -185,7 +186,7 @@
 																	<input type="text" name="id_pengeluaran" value="<?= $c['id_pengeluaran'] ?>" hidden>
 																	<input type="text" name="no_pengeluaran" value="<?= $c['no_pengeluaran'] ?>" hidden>
 																	<input type="file" class="form-control-file" id="attachmentedit<?= $c['id_pengeluaran'] ?>" data-idpengeluaran="<?= $c['id_pengeluaran'] ?>" name="attachment" onchange="handleImageEditUpload(this.id,this.dataset['idpengeluaran']);" accept="image/*" capture>
-																	<input type="file" class="form-control" id="upload_fileedit<?= $c['id_pengeluaran'] ?>" name="attachmentedit" accept="image/*" capture hidden>
+																	<input type="file" class="form-control" id="upload_fileedit<?= $c['id_pengeluaran'] ?>" name="attachmentedit" hidden>
 																	<button class="btn btn-primary mt-2" type="submit">Submit</button>
 
 																</form>
@@ -205,9 +206,10 @@
 									</div>
 									<div class="col-md-3" id="car3">
 										<label for="note_cs">Total</label>
-										<input class="form-control total" type="text" name="total_expanses" disabled value="<?= rupiah($total); ?>">
+										<input class="form-control" type="text" name="total_expanses" disabled value="<?= rupiah($total); ?>">
 
 									</div>
+
 									<div class="d-flex justify-content-between border-top mt-5 pt-10">
 										<?php if ($info['status'] == 2) {
 										?>
@@ -253,7 +255,7 @@
 									<!--begin: Wizard Actions-->
 
 									<!--end: Wizard Actions-->
-									</form>
+
 									<!--end: Wizard Form-->
 								</div>
 							</div>
@@ -316,16 +318,16 @@
 					</button>
 				</div>
 				<div class="modal-body">
-					<form action="<?= base_url('superadmin/role/addRole') ?>" method="POST">
-						<div class="col-md-12">
-							<img src="<?= base_url('uploads/ap/' . $c['attachment']) ?>" alt="attachment" width="100%">
 
-						</div>
+					<div class="col-md-12">
+						<img src="<?= base_url('uploads/ap/' . $c['attachment']) ?>" alt="attachment" width="100%">
+
+					</div>
 				</div>
 				<div class="modal-footer justify-content-between">
 					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
 				</div>
-				</form>
+
 			</div>
 			<!-- /.modal-content -->
 		</div>
@@ -337,6 +339,52 @@
 <?php foreach ($ap as $c) {
 ?>
 
+	<div class="modal fade" id="modal-edit<?= $c['id_pengeluaran'] ?>">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title">Edit <?= $c['description'] ?> </h4>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<form action="<?= base_url('cs/ap/edit') ?>" method="POST" enctype="multipart/form-data">
+						<div class="col-md-12">
+							<label for="description">Description</label>
+							<input type="text" name="description" class="form-control" value="<?= $c['description'] ?>">
+						</div>
+						<div class="col-md-12">
+							<label for="description">Amount Proposed</label>
+							<input type="text" name="amount_proposed" class="form-control" value="<?= $c['amount_proposed'] ?>">
+						</div>
 
+						<div class="col-md-6">
+							<label for="note_cs">Change Attachment</label>
+							<div class="form-group rec-element-ap">
+								<!-- <input type="file" class="form-control" name="attachment"> -->
+								<input type="file" class="form-control" id="attachment" name="attachment" onchange="handleImageEditUpload(this.id);" accept="image/*" capture>
+								<input type="file" class="form-control" id="edit_file2" name="attachment2" accept="image/*" capture>
+								<input type="text" class="form-control" name="attachment_lama" hidden value="<?= $c['attachment'] ?>">
+								<input type="text" class="form-control" name="id_pengeluaran" hidden value="<?= $c['id_pengeluaran'] ?>">
+								<input type="text" class="form-control" name="no_pengeluaran" hidden value="<?= $c['no_pengeluaran'] ?>">
+							</div>
+						</div>
+
+						<div class="col-md-6">
+							<img src="<?= base_url('uploads/ap/' . $c['attachment']) ?>" alt="attachment" width="100%">
+
+						</div>
+				</div>
+				<div class="modal-footer justify-content-between">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					<button type="submit" class="btn btn-primary">Update</button>
+				</div>
+				</form>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal-dialog -->
+	</div>
 	<!-- /.modal -->
 <?php } ?>

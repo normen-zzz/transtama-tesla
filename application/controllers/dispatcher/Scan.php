@@ -19,8 +19,9 @@ class Scan extends CI_Controller
         $data['title'] = 'Scan';
         $data['gateway'] = $this->order->dispatch()->result_array();
         $this->backend->display('dispatcher/v_shipment', $data);
+        // $this->load->view('dispatcher/v_shipment', $data);
     }
-    public function history()
+	 public function history()
     {
         $data['title'] = 'History Task';
         $data['gateway'] = $this->order->dispatchHistory()->result_array();

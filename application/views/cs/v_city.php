@@ -87,16 +87,25 @@
                                     <label for="exampleInputEmail1">Nama of City</label>
                                     <input type="text" class="form-control" required name="city_name">
                                 </div>
+
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="exampleInputEmail1">Tree Code</label>
                                     <input type="text" class="form-control" required name="tree_code">
                                 </div>
+
                             </div>
+
+
                         </div>
+
+
+
                     </div>
                     <!-- /.card-body -->
+
+
             </div>
             <div class="modal-footer justify-content-between">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>

@@ -51,7 +51,7 @@
 											<div class="form-group"> <br>
 												<button type="submit" class="btn btn-success ml-3">Show</button>
 												<a href="<?= base_url('sales/salesOrder/report') ?>" class="btn btn-primary ml-1">Reset Filter</a>
-												<a target="blank" href="<?= base_url('sales/salesOrder/exportexcel/') ?>" class="btn btn-sm btn-danger ml-2">Export All</a>
+												<a target="blank" href="<?= base_url('sales/salesOrder/exportexcel/') ?>" class="btn btn-sm btn-danger ml-2">Export</a>
 											</div>
 										</div>
 

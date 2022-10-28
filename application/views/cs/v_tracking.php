@@ -36,6 +36,10 @@
 									<div class="col-md-6">Shipper : <b><?= $shipment['shipper'] ?> - <?= $shipment['tree_shipper'] ?></b> </div>
 									<div class="col-md-6">Consignee : <b><?= $shipment['consigne'] ?> - <?= $shipment['tree_consignee'] ?></b> </div>
 								</div>
+								<div class="row">
+									<?php $user = $this->db->get_where('tb_user', array('id_user' => $shipment['id_user']))->row_array() ?>
+									<div class="col">Driver : <b><?= $user['nama_user'] ?></b> </div>
+								</div>
 								<br>
 								<?php if ($shipment_id != NULL) {
 								?>

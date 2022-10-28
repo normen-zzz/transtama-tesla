@@ -462,11 +462,19 @@ class SalesOrder extends CI_Controller
                 $order_id = $new[0];
                 $shipment_id  = $new[1];
 
+                // kode referensi so
+                $sql = $this->db->query("SELECT max(so_id) as kode FROM tbl_shp_order")->row_array();
+                $no = $sql['kode'];
+                // SO - 0 0 0 0 0 0 0 0 9;
+                $potong = substr($no, 3);
+                $noUrut = $potong + 1;
+                $kode =  sprintf("%09s", $noUrut);
+                $kode  = "SO-$kode";
                 $img = $this->input->post('ttd');
                 $img = str_replace('data:image/png;base64,', '', $img);
                 $province_shipper = $this->input->post('state_shipper2');
                 $province_consigne = $this->input->post('state_consigne');
-
+                $get_pickup = $this->db->limit(1)->order_by('id', 'DESC')->get_where('tbl_shp_order', ['id_so' => $this->input->post('id_so')])->row_array();
                 $data = array(
                     'shipper' => strtoupper($this->input->post('shipper2')),
                     'origin' => $this->input->post('origin'),
@@ -487,10 +495,21 @@ class SalesOrder extends CI_Controller
                     'shipment_id' => $shipment_id,
                     'order_id' => $order_id,
                     'service_type' =>  $service_type,
-                    'date_new' => date('Y-m-d')
+                    'date_new' => date('Y-m-d'),
+                    'so_id' => $kode,
+                    'tgl_pickup' => $get_pickup['tgl_pickup'],
+                    'pu_moda' => $get_pickup['pu_moda'],
+                    'pu_poin' => $get_pickup['pu_poin'],
+                    'time' => $get_pickup['time'],
+                    'pu_commodity' => $get_pickup['pu_commodity'],
+                    'pu_service' => $get_pickup['pu_service'],
+                    'pu_note' => $get_pickup['pu_note'],
+                    'city_shipper' => $get_pickup['city_shipper'],
+                    'payment' => $get_pickup['payment'],
+                    'packing_type' => $get_pickup['packing_type'],
+                    'is_incoming' => $get_pickup['is_incoming'],
 
                 );
-
                 // var_dump($data);
                 $config['upload_path'] = './uploads/berkas/';
                 $config['allowed_types'] = 'jpg|png|jpeg';
@@ -518,8 +537,8 @@ class SalesOrder extends CI_Controller
                         # jika proses berhasil
                         if ($prosesUpload) {
                         } else {
-                            $this->session->set_flashdata('message', 'Gambar gagal Ditambahkan');
-                            $this->add();
+                            //$this->session->set_flashdata('message', 'Gambar gagal Ditambahkan');
+                            //$this->add();
                         }
                     }
                     $namaBaru = implode("+", $listNamaBaru);
@@ -531,7 +550,7 @@ class SalesOrder extends CI_Controller
                 // cek order berdasarkan id_so
                 $get_last_order = $this->db->limit(1)->order_by('id', 'desc')->get_where('tbl_shp_order', ['id_so' => $this->input->post('id_so')])->row_array();
                 // kalo shipment id nya null, maka update tbl nya
-                if ($get_last_order['shipment_id'] == NULL) {
+              if ($get_last_order['so_id'] == NULL) {
                     // echo 'kosong';
                     $update =  $this->db->update('tbl_shp_order', $data, ['id_so' => $this->input->post('id_so')]);
                     if ($update) {
@@ -594,6 +613,7 @@ class SalesOrder extends CI_Controller
                             );
                             $this->db->insert('tbl_tracking_real', $data);
                         }
+						//nambah 
                         $data = array(
                             'shipment_id' => $shipment_id,
                             'status' => 'Shipment Telah Dipickup Dari Shipper',

@@ -23,6 +23,7 @@
 	<link href="<?= base_url('assets/back/metronic/') ?>css/pages/wizard/wizard-3.css" rel="stylesheet" type="text/css" />
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.form/4.3.0/jquery.form.min.js" integrity="sha384-qlmct0AOBiA2VPZkMY3+2WqkHtIQ9lSdAsAn5RUJD/3vA5MKDgSGcdmIv4ycVxyn" crossorigin="anonymous"></script>
 
+
 	<!-- scan -->
 	<!-- 
 	<link rel="stylesheet" href="<?= base_url('assets/scan/') ?>style.css">
@@ -204,7 +205,7 @@
 
 
 	<script src="<?= base_url('assets/back/metronic/') ?>js/pages/crud/forms/widgets/typeahead.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.form/4.3.0/jquery.form.min.js" integrity="sha384-qlmct0AOBiA2VPZkMY3+2WqkHtIQ9lSdAsAn5RUJD/3vA5MKDgSGcdmIv4ycVxyn" crossorigin="anonymous"></script>
+	<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.form/4.3.0/jquery.form.min.js" integrity="sha384-qlmct0AOBiA2VPZkMY3+2WqkHtIQ9lSdAsAn5RUJD/3vA5MKDgSGcdmIv4ycVxyn" crossorigin="anonymous"></script> -->
 
 	<!-- compress -->
 	<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.0/dist/browser-image-compression.js"></script>
@@ -213,6 +214,7 @@
 
 	<!-- rupiah -->
 	<script src="https://raw.githubusercontent.com/plentz/jquery-maskmoney/master/dist/jquery.maskMoney.min.js"></script>
+	<!-- <script src="https://code.jquery.com/jquery-2.2.4.js" integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI=" crossorigin="anonymous"></script> -->
 
 	<script>
 		$('#Submit').click(function() {
@@ -225,7 +227,7 @@
 	<!-- untuk edit ap -->
 	<script type="text/javascript">
 		$(document).ready(function() {
-			<?= $modal; ?>
+
 
 			// On text click
 			$('.edit').click(function() {
@@ -245,6 +247,7 @@
 				// Get edit id, field name and value
 				var edit_id = $(this).data('id');
 				var fieldname = $(this).data('field');
+				var url = $(this).data('url');
 				var value = $(this).val();
 
 				// assign instance to element variable
@@ -252,7 +255,7 @@
 
 				// Send AJAX request
 				$.ajax({
-					url: '<?= base_url() ?>/cs/ap/editApSatuanAjax',
+					url: url,
 					type: 'post',
 					data: {
 						field: fieldname,
@@ -520,7 +523,7 @@
 					{
 						"data": "id",
 						"render": function(data, type, row, meta) {
-							return '<a href="<?= base_url('cs/order/editOrder/') ?>' + data + '/' + row.id_so + '" class="btn btn-sm text-light" style="background-color: #9c223b;">Edit</a>';
+							return '<a href="<?= base_url('cs/order/edit/') ?>' + data + '/' + row.id_so + '" class="btn btn-sm text-light" style="background-color: #9c223b;">Edit</a>';
 						}
 					},
 				],

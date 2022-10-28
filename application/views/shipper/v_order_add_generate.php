@@ -26,7 +26,7 @@
 					</div>
 					<!-- /.card-header -->
 					<div class="card-body" style="overflow: auto;">
-						<p class="text-danger"><?= $this->session->flashdata('message'); ?></p>
+					<p class="text-danger"><?= $this->session->flashdata('message'); ?></p>
 						<div class="card-body p-0">
 							<!--begin: Wizard-->
 							<div class="wizard wizard-3" id="kt_wizard_v3" data-wizard-state="step-first" data-wizard-clickable="true">

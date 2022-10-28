@@ -12,10 +12,9 @@ class Order extends CI_Controller
         $this->load->library('upload');
         $this->load->library('form_validation');
         $this->load->model('PengajuanModel', 'pengajuan');
-        $this->load->model('UserModel');
         $this->load->model('M_Datatables');
-        $this->load->model('Api');
-        $this->db->query("SET sql_mode=(SELECT REPLACE(@@sql_mode, 'ONLY_FULL_GROUP_BY', ''));");
+		$this->load->model('Api');
+		$this->db->query("SET sql_mode=(SELECT REPLACE(@@sql_mode, 'ONLY_FULL_GROUP_BY', ''));");
         cek_role();
     }
 
@@ -25,93 +24,75 @@ class Order extends CI_Controller
         $data['order'] = $this->pengajuan->order()->result_array();
         $this->backend->display('superadmin/v_pengajuan', $data);
     }
-    public function generate()
+	 public function generatePdf($id_customer, $date)
     {
-        $cek_api = $this->Api->kirim();
-        $cek_api = json_decode($cek_api);
-        $cek_api = $cek_api->accessToken;
-        $data = [
-            'token' => $cek_api,
-        ];
-        $this->session->set_userdata($data);
+        // $where = array('id_customer' => $id_customer, 'created' => $date);
+        $this->db->select('*, b.nama_pt,b.provinsi, b.kota');
+        $this->db->from('tbl_booking_number_resi a');
+        $this->db->join('tb_customer b', 'a.id_customer=b.id_customer');
+        $this->db->where('a.id_customer', $id_customer);
+        $this->db->where('a.created', $date);
+		$this->db->where('a.status', 0);
+        $data['orders'] = $this->db->get()->result_array();
+        $this->load->view('superadmin/v_cetak_resi', $data);
+        $html = $this->output->get_output();
+        $this->load->library('dompdf_gen');
+        $this->dompdf->set_paper("A7", 'potrait');
+        $this->dompdf->load_html($html);
+        $this->dompdf->render();
+        $sekarang = date("d:F:Y:h:m:s");
+        // return $this->dompdf->output();
+        $output = $this->dompdf->output();
+        // file_put_contents('uploads/barcode' . '/' . "$shipment_id.pdf", $output);
+        $this->dompdf->stream("Cetak" . $sekarang . ".pdf", array('Attachment' => 0));
+    }
+	public function generatePdfGenerateResi($group)
+    {
+        // $this->db->select('*, b.nama_pt,b.provinsi, b.kota');
+        // $this->db->from('tbl_booking_number_resi a');
+        // $this->db->join('tb_customer b', 'a.id_customer=b.id_customer');
+        // $this->db->where('a.group', $group);
+        // $this->db->where('a.status', 0);
+        // $data['orders'] = $this->db->get()->result_array();
+        // $this->load->view('superadmin/v_cetak_resi', $data);
+        // $html = $this->output->get_output();
+        // $this->load->library('dompdf_gen');
+        // $this->dompdf->set_paper("A7", 'potrait');
+        // $this->dompdf->load_html($html);
+        // $this->dompdf->render();
+        // $sekarang = date("d:F:Y:h:m:s");
+        // // return $this->dompdf->output();
+        // $output = $this->dompdf->output();
+        // // file_put_contents('uploads/barcode' . '/' . "$shipment_id.pdf", $output);
+        // $this->dompdf->stream("Cetak " . $sekarang . ".pdf", array('Attachment' => 0));
+
+        $mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => [74, 105]]);
+
+        $this->db->select('*, b.nama_pt,b.provinsi, b.kota');
+        $this->db->from('tbl_booking_number_resi a');
+        $this->db->join('tb_customer b', 'a.id_customer=b.id_customer');
+        $this->db->where('a.group', $group);
+        $this->db->where('a.status', 0);
+        $data['orders'] = $this->db->get()->result_array();
+
+        // var_dump($data['order']);
+        // die;
+        // $this->load->view('superadmin/v_cetak', $data);
+
+
+        $data = $this->load->view('superadmin/v_cetak_resi', $data, TRUE);
+        $mpdf->WriteHTML($data);
+        $mpdf->Output();
+    }
+	 public function generate()
+    {
+        
         $data['title'] = 'Generate Resi';
         $data['customers'] = $this->db->get('tb_customer')->result_array();
         $data['generate'] = $this->pengajuan->getGenerate()->result_array();
         $this->backend->display('superadmin/v_generate', $data);
     }
-    public function edit($id)
-    {
-        $data['title'] = 'Edit Order';
-        $data['city'] = $this->db->get('tb_city')->result_array();
-        $data['province'] = $this->db->get('tb_province')->result_array();
-        $data['service'] = $this->db->get('tb_service_type')->result_array();
-        $data['agents'] = $this->db->get_where('tbl_vendor', ['type' => 1])->result_array();
-        $data['customer'] = $this->db->get('tb_customer')->result_array();
-        $data['p'] = $this->pengajuan->order($id)->row_array();
-        $this->backend->display('superadmin/v_edit_order', $data);
-    }
-    public function processEdit()
-    {
-        $id_do = $this->input->post('id_do');
-        if ($id_do == NULL) {
-            $total_weight = $this->input->post('weight');
-            $total_koli = $this->input->post('koli');
-        } else {
-            $total_weight = 0;
-            $total_koli = 0;
-            $weight = $this->input->post('weight');
-            $collie = $this->input->post('collie');
-            $no_so = $this->input->post('no_so');
-            for ($i = 0; $i < sizeof($id_do); $i++) {
-                $data = array(
-                    'berat' => $weight[$i],
-                    'koli' => $collie[$i],
-                    'no_so' => $no_so[$i],
-                    'no_do' => $this->input->post('note_cs')[$i],
-                );
-                $this->db->update('tbl_no_do', $data, ['id_berat' => $id_do[$i]]);
-                $total_weight += $weight[$i];
-                $total_koli += $collie[$i];
-            }
-        }
-
-        $no_do = $this->input->post('note_cs');
-        $no_do = implode(',', $no_do);
-        $data = array(
-            'weight' => $total_weight,
-            'destination' => $this->input->post('destination'),
-            'state_shipper' => $this->input->post('state_shipper'),
-            // 'city_shipper' => $this->input->post('city_shipper'),
-            'consigne' => $this->input->post('consigne'),
-            'state_consigne' => $this->input->post('state_consigne'),
-            'city_consigne' => $this->input->post('city_consigne'),
-            'pu_commodity' => $this->input->post('pu_commodity'),
-            'sender' => $this->input->post('sender'),
-            'id_agent' => $this->input->post('id_agent'),
-            'service_type' => $this->input->post('service_type'),
-            'tree_shipper' => $this->input->post('tree_shipper'),
-            'tree_consignee' => $this->input->post('tree_consignee'),
-            'berat_js' => $total_weight,
-            'koli' => $total_koli,
-            'note_cs' => $no_do,
-            // 'no_so' => $this->input->post('no_so'),
-            'no_stp' => $this->input->post('no_stp'),
-            'note_shipment' => $this->input->post('note_shipment'),
-            'is_weight_print' => $this->input->post('is_weight_print'),
-        );
-
-        $update =  $this->db->update('tbl_shp_order', $data, ['id' => $this->input->post('id')]);
-        if ($update) {
-            $this->session->set_flashdata('message', '<div class="alert
-                alert-success" role="alert">Success</div>');
-            redirect('superadmin/order/edit/' . $this->input->post('id') . '/' . $this->input->post('id_so'));
-        } else {
-            $this->session->set_flashdata('message', '<div class="alert
-                alert-danger" role="alert">Failed</div>');
-            redirect('superadmin/order/edit/' . $this->input->post('id') . '/' . $this->input->post('id_so'));
-        }
-    }
-    public function generateResi()
+	public function generateResi()
     {
         $shipper = $this->input->post('customer');
         $id_customer = $this->input->post('id_customer');
@@ -162,10 +143,60 @@ class Order extends CI_Controller
                     alert-success" role="alert">Success</div>');
         redirect('superadmin/order/generate');
     }
-    public function barcode($id)
+    public function printSatuanGenerateResi($id)
     {
+        // $mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => [74, 105]]);
+
+
+        // $data['orders'] = $this->db->get()->result_array();
+        // $this->load->view('superadmin/v_cetak_resi', $data);
+        // $html = $this->output->get_output();
+        // $this->load->library('dompdf_gen');
+        // $this->dompdf->set_paper("A7", 'potrait');
+        // $this->dompdf->load_html($html);
+        // $this->dompdf->render();
+        // $sekarang = date("d:F:Y:h:m:s");
+        // // return $this->dompdf->output();
+        // $output = $this->dompdf->output();
+        // // file_put_contents('uploads/barcode' . '/' . "$shipment_id.pdf", $output);
+        // $this->dompdf->stream("Cetak" . $sekarang . ".pdf", array('Attachment' => 0));
+
+        // // $data = 
+        // // $mpdf->WriteHTML($data);
+        // // $mpdf->Output();
+
+        $mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => [74, 105]]);
+
+        $this->db->select('*, b.nama_pt,b.provinsi, b.kota');
+        $this->db->from('tbl_booking_number_resi a');
+        $this->db->join('tb_customer b', 'a.id_customer=b.id_customer');
+        $this->db->where('a.shipment_id', $id);
+        $this->db->where('a.status', 0);
+        $data['orders'] = $this->db->get()->result_array();
+
+        // var_dump($data['order']);
+        // die;
+        // $this->load->view('superadmin/v_cetak', $data);
+
+
+        $data = $this->load->view('superadmin/v_cetak_resi', $data, TRUE);
+        $mpdf->WriteHTML($data);
+        $mpdf->Output();
+    }
+	 public function barcode($id)
+    {
+        // $koli = sprintf("%02s",  $koli);
+        // for ($i = 1; $i <= $koli; $i++) {
+        //     $koli_ke =  sprintf("%02s", $i);
+        //     $generator = new Picqer\Barcode\BarcodeGeneratorJPG();
+        //     file_put_contents("uploads/barcode/$id-$koli_ke-$koli.jpg", $generator->getBarcode($id . '-' . $koli_ke . '-' . $koli, $generator::TYPE_CODE_128));
+        // }
         $generator = new Picqer\Barcode\BarcodeGeneratorJPG();
         file_put_contents("uploads/barcode/$id.jpg", $generator->getBarcode($id, $generator::TYPE_CODE_128));
+        // $generator = new Picqer\Barcode\BarcodeGeneratorHTML();
+        // $generatorPNG = new Picqer\Barcode\BarcodeGeneratorPNG(); // Pixel based PNG
+        // echo $generatorPNG->getBarcode($id, $generatorPNG::TYPE_CODE_128);
+        // fix
     }
     public function qrcode($id)
     {
@@ -176,13 +207,14 @@ class Order extends CI_Controller
         $params['savename'] = FCPATH . "uploads/qrcode/" . $id . '.png';
         $this->ciqrcode->generate($params);
     }
+	
     public function detail($id)
     {
         $data['title'] = 'Detail Order';
         $data['p'] = $this->pengajuan->order($id)->row_array();
         $this->backend->display('superadmin/v_detail_pengajuan', $data);
     }
-    public function detailGenerate($group)
+	   public function detailGenerate($group)
     {
         $data['title'] = 'Detail Generate Resi';
         $data['generate'] = $this->db->get_where('tbl_booking_number_resi', ['group' => $group])->result_array();
@@ -197,8 +229,7 @@ class Order extends CI_Controller
         header("Content-Disposition: attachment;Filename=export-generate-resi-$customer[customer].xls");
         $this->load->view('superadmin/v_export_generate', $data);
     }
-
-    public function exportGenerateGenerateResi($id_customer, $group)
+	public function exportGenerateGenerateResi($id_customer, $group)
     {
         $data['title'] = 'Detail Generate Resi';
         $customer = $this->db->get_where('tbl_booking_number_resi', ['id_customer' => $id_customer])->row_array();
@@ -207,7 +238,8 @@ class Order extends CI_Controller
         header("Content-Disposition: attachment;Filename=export-generate-resi-$customer[customer].xls");
         $this->load->view('superadmin/v_export_generate', $data);
     }
-    public function delete()
+
+     public function delete()
     {
         $id_order = $this->input->post('id_order');
         $id_so = $this->input->post('id_so');
@@ -215,7 +247,7 @@ class Order extends CI_Controller
         $data = array(
             'deleted' => 1,
             'reason_delete' => $this->input->post('reason_delete'),
-            'status_so' => 0
+			'status_so' => 0
         );
         $delete = $this->db->update('tbl_shp_order', $data, $where);
         if ($delete) {
@@ -226,6 +258,7 @@ class Order extends CI_Controller
             redirect('superadmin/salesOrder/detail/' . $id_so);
         }
     }
+
 
     function view_data_query()
     {
@@ -247,85 +280,11 @@ class Order extends CI_Controller
         $data['end'] = 'null';
         // var_dump($data);
         // die;
-        $data['users'] = $this->db->get_where('tb_user', ['id_role' => 4])->result_array();
-        $data['order'] = $this->pengajuan->order()->result_array();
+		 $data['users'] = $this->db->get_where('tb_user', ['id_role' => 4])->result_array();
+      
         $this->backend->display('superadmin/v_report', $data);
     }
-    // public function filterLaporan()
-    // {
-    //     $data['title'] = 'Laporan Keseluruhan';
-    //     // perbulan dan tahun
-    //     $start = $_POST['start'];
-    //     $end = $_POST['end'];
-    //     $id_user = $_POST['id_user'];
-    //     // var_dump($end);
-    //     // die;
-    //     $data['start'] = $_POST['start'];
-    //     $data['end'] = $_POST['end'];
-    //     $data['id_user'] = $id_user;
-    //     $data['users'] = $this->db->get_where('tb_user', ['id_role' => 2])->result_array();
-    //     $data['order'] = $this->pengajuan->orderFilter($start, $end, $id_user)->result_array();
-    //     $this->backend->display('superadmin/v_report_filter', $data);
-    // }
-    public function generatePdf($id_customer, $date)
-    {
-        $this->db->select('*, b.nama_pt,b.provinsi, b.kota');
-        $this->db->from('tbl_booking_number_resi a');
-        $this->db->join('tb_customer b', 'a.id_customer=b.id_customer');
-        $this->db->where('a.id_customer', $id_customer);
-        $this->db->where('a.created', $date);
-        $this->db->where('a.status', 0);
-        $data['orders'] = $this->db->get()->result_array();
-        $this->load->view('superadmin/v_cetak_resi', $data);
-        $html = $this->output->get_output();
-        $this->load->library('dompdf_gen');
-        $this->dompdf->set_paper("A7", 'potrait');
-        $this->dompdf->load_html($html);
-        $this->dompdf->render();
-        $sekarang = date("d:F:Y:h:m:s");
-        // return $this->dompdf->output();
-        $output = $this->dompdf->output();
-        // file_put_contents('uploads/barcode' . '/' . "$shipment_id.pdf", $output);
-        $this->dompdf->stream("Cetak" . $sekarang . ".pdf", array('Attachment' => 0));
-    }
-    public function generatePdfGenerateResi($group)
-    {
-        // $this->db->select('*, b.nama_pt,b.provinsi, b.kota');
-        // $this->db->from('tbl_booking_number_resi a');
-        // $this->db->join('tb_customer b', 'a.id_customer=b.id_customer');
-        // $this->db->where('a.group', $group);
-        // $this->db->where('a.status', 0);
-        // $data['orders'] = $this->db->get()->result_array();
-        // $this->load->view('superadmin/v_cetak_resi', $data);
-        // $html = $this->output->get_output();
-        // $this->load->library('dompdf_gen');
-        // $this->dompdf->set_paper("A7", 'potrait');
-        // $this->dompdf->load_html($html);
-        // $this->dompdf->render();
-        // $sekarang = date("d:F:Y:h:m:s");
-        // // return $this->dompdf->output();
-        // $output = $this->dompdf->output();
-        // // file_put_contents('uploads/barcode' . '/' . "$shipment_id.pdf", $output);
-        // $this->dompdf->stream("Cetak " . $sekarang . ".pdf", array('Attachment' => 0));
-
-        $mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => [74, 105]]);
-
-        $this->db->select('*, b.nama_pt,b.provinsi, b.kota');
-        $this->db->from('tbl_booking_number_resi a');
-        $this->db->join('tb_customer b', 'a.id_customer=b.id_customer');
-        $this->db->where('a.group', $group);
-        $this->db->where('a.status', 0);
-        $data['orders'] = $this->db->get()->result_array();
-
-        // var_dump($data['order']);
-        // die;
-        // $this->load->view('superadmin/v_cetak', $data);
-
-
-        $data = $this->load->view('superadmin/v_cetak_resi', $data, TRUE);
-        $mpdf->WriteHTML($data);
-        $mpdf->Output();
-    }
+   
     public function print($start = null, $end = null, $id_user = 0)
     {
         if ($start != null && $end != null && $id_user != 0) {
@@ -344,45 +303,10 @@ class Order extends CI_Controller
         // $sekarang = date("d:F:Y:h:m:s");
         $this->dompdf->stream("Print_Order" . $start . '-' . $end . ".pdf", array('Attachment' => 0));
     }
-    public function printAll($id)
+   
+	 public function tracking($shipment_id = Null)
     {
-        $where = array('id_so' => $id);
-        $this->db->select('*, b.service_name, b.prefix');
-        $this->db->from('tbl_shp_order a');
-        $this->db->join('tb_service_type b', 'a.service_type=b.code');
-        $this->db->where('a.id_so', $id);
-        $data['orders'] = $this->db->get()->result_array();
-        $this->load->view('superadmin/v_cetak_all', $data);
-        $html = $this->output->get_output();
-        $this->load->library('dompdf_gen');
-        $this->dompdf->set_paper("A7", 'potrait');
-        $this->dompdf->load_html($html);
-        $this->dompdf->render();
-        $sekarang = date("d:F:Y:h:m:s");
-        // return $this->dompdf->output();
-        $output = $this->dompdf->output();
-        // file_put_contents('uploads/barcode' . '/' . "$shipment_id.pdf", $output);
-        $this->dompdf->stream("Cetak" . $sekarang . ".pdf", array('Attachment' => 0));
-    }
-    // public function Exportexcel($start = null, $end = null, $id_user = 0)
-    // {
-    //     if ($start != null && $end != null || $id_user != 0) {
-    //         $data['title'] = "Laporan Order dari $start sampai $end ";
-    //         $data['order'] = $this->pengajuan->orderFilter($start, $end, $id_user)->result_array();
-    //     } else {
-    //         $data['title'] = "Laporan Order Keseluruhan";
-    //         $data['order'] = $this->pengajuan->order()->result_array();
-    //     }
-    //     header("Content-type: application/octet-stream");
-    //     header("Content-Disposition: attachment;Filename=export-laporan.xls");
-    //     $data['title'] = "Report Order";
-    //     $data['order'] = $this->pengajuan->order()->result_array();
-    //     $this->load->view('superadmin/v_cetak_laporan', $data);
-    // }
-
-    public function tracking($shipment_id = Null)
-    {
-        if ($shipment_id == NULL) {
+         if ($shipment_id == NULL) {
             $shipment_id = $this->input->post('shipment_id');
             $data['shipment_id'] = $shipment_id;
             $data['tracking'] = $this->db->get_where('tbl_tracking_real', ['shipment_id' => $shipment_id])->result_array();
@@ -539,8 +463,27 @@ class Order extends CI_Controller
         $this->session->set_flashdata('message', 'Update Sukses');
         redirect('superadmin/order/tracking/' . $shipment_id);
     }
-
-    public function deleteShipmentTracking($id_tracking, $shipment_id)
+	 public function printAll($id)
+    {
+        $where = array('id_so' => $id);
+        $this->db->select('*, b.service_name, b.prefix');
+        $this->db->from('tbl_shp_order a');
+        $this->db->join('tb_service_type b', 'a.service_type=b.code');
+        $this->db->where('a.id_so', $id);
+        $data['orders'] = $this->db->get()->result_array();
+        $this->load->view('superadmin/v_cetak_all', $data);
+        $html = $this->output->get_output();
+        $this->load->library('dompdf_gen');
+        $this->dompdf->set_paper("A7", 'potrait');
+        $this->dompdf->load_html($html);
+        $this->dompdf->render();
+        $sekarang = date("d:F:Y:h:m:s");
+        // return $this->dompdf->output();
+        $output = $this->dompdf->output();
+        // file_put_contents('uploads/barcode' . '/' . "$shipment_id.pdf", $output);
+        $this->dompdf->stream("Cetak" . $sekarang . ".pdf", array('Attachment' => 0));
+    }
+	 public function deleteShipmentTracking($id_tracking, $shipment_id)
     {
         $delete = $this->db->delete('tbl_tracking_real', ['id_tracking' => $id_tracking]);
         if ($delete) {
@@ -551,7 +494,9 @@ class Order extends CI_Controller
             redirect('superadmin/order/tracking/' . $shipment_id);
         }
     }
-    public function print2($id)
+	 
+	
+	 public function print2($id)
     {
         $mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => [74, 105]]);
 
@@ -569,47 +514,6 @@ class Order extends CI_Controller
         $mpdf->Output();
     }
 
-    public function printSatuanGenerateResi($id)
-    {
-        // $mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => [74, 105]]);
-
-
-        // $data['orders'] = $this->db->get()->result_array();
-        // $this->load->view('superadmin/v_cetak_resi', $data);
-        // $html = $this->output->get_output();
-        // $this->load->library('dompdf_gen');
-        // $this->dompdf->set_paper("A7", 'potrait');
-        // $this->dompdf->load_html($html);
-        // $this->dompdf->render();
-        // $sekarang = date("d:F:Y:h:m:s");
-        // // return $this->dompdf->output();
-        // $output = $this->dompdf->output();
-        // // file_put_contents('uploads/barcode' . '/' . "$shipment_id.pdf", $output);
-        // $this->dompdf->stream("Cetak" . $sekarang . ".pdf", array('Attachment' => 0));
-
-        // // $data = 
-        // // $mpdf->WriteHTML($data);
-        // // $mpdf->Output();
-
-        $mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => [74, 105]]);
-
-        $this->db->select('*, b.nama_pt,b.provinsi, b.kota');
-        $this->db->from('tbl_booking_number_resi a');
-        $this->db->join('tb_customer b', 'a.id_customer=b.id_customer');
-        $this->db->where('a.shipment_id', $id);
-        $this->db->where('a.status', 0);
-        $data['orders'] = $this->db->get()->result_array();
-
-        // var_dump($data['order']);
-        // die;
-        // $this->load->view('superadmin/v_cetak', $data);
-
-
-        $data = $this->load->view('superadmin/v_cetak_resi', $data, TRUE);
-        $mpdf->WriteHTML($data);
-        $mpdf->Output();
-    }
-
     public function filterLaporan()
     {
         $bulan = $this->input->post('bulan');
@@ -619,7 +523,7 @@ class Order extends CI_Controller
         $data['tahun'] = $tahun;
         $data['id_sales'] = $id_user;
         $data['title'] = "Laporan Order Tahun $tahun Bulan $bulan";
-        $data['users'] = $this->db->get_where('tb_user', ['id_role' => 4])->result_array();
+		 $data['users'] = $this->db->get_where('tb_user', ['id_role' => 4])->result_array();
         $data['order'] = $this->pengajuan->getLaporanTransaksiFilterAdmin($bulan, $tahun, $id_user)->result_array();
         $this->backend->display('superadmin/v_report_filter', $data);
     }

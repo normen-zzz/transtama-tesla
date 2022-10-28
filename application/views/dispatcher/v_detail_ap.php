@@ -143,130 +143,134 @@
 											</div>
 
 										<?php	} ?>
+									</form>
+									<!-- Table Edit ap  -->
+									<div class="card-body" style="overflow: auto;">
+										<h3>List <?= $info['nama_kategori'] ?></h3>
+										<p class="text-danger">***Klik ditempat yang ingin diedit***</p>
 
-										<!-- Table Edit ap  -->
-										<div class="card-body" style="overflow: auto;">
-											<h3>List <?= $info['nama_kategori'] ?></h3>
-											<p class="text-danger">***Klik ditempat yang ingin diedit***</p>
 
+										<div class="col-md-9">
+											<table class="table table-separate table-head-custom table-checkable" id="myTable3">
+												<tr>
+													<td>Category</td>
+													<td>Description</td>
+													<td>Amount Proposed</td>
+													<td>Attachment</td>
+													<td>Action</td>
 
-											<div class="col-md-9">
-												<table class="table table-separate table-head-custom table-checkable" id="myTable3">
+												</tr>
+												<?php $total = 0;
+												foreach ($ap as $c) {
+													$total += $c['amount_proposed'];
+												?>
 													<tr>
-														<td>Category</td>
-														<td>Description</td>
-														<td>Amount Proposed</td>
-														<td>Attachment</td>
-														<td>Action</td>
+														<td><?= $c['nama_kategori'] ?></td>
+														<td>
+															<span class='edit'><?= $c['description'] ?></span>
+															<input type='text' class='form-control txtedit' data-id="<?= $c['id_pengeluaran'] ?>" data-url='<?= base_url() ?>/dispatcher/ap/editApSatuanAjax' data-field='description' id='descriptiontxt_<?= $c['id_pengeluaran'] ?>' value='<?= $c['description'] ?>'>
+														</td>
 
+														<td><span <?php $approve = $this->db->get_where('tbl_approve_pengeluaran', array('no_pengeluaran' => $c['no_pengeluaran']));
+																	if ($approve->num_rows() == 0) { ?> class='edit' <?php } ?>>Rp. <?= $c['amount_proposed'] ?></span>
+															<input type='number' name="jumlah" class='form-control txtedit' data-id="<?= $c['id_pengeluaran'] ?>" data-url='<?= base_url() ?>/dispatcher/ap/editApSatuanAjax' data-field='amount_proposed' id='amount_proposedtxt_<?= $c['amount_proposed'] ?>' value='<?= $c['amount_proposed'] ?>'>
+														</td>
+
+														<td>
+
+															<?php if ($info['status'] <= 0) {
+															?>
+																<a data-toggle="modal" data-target="#modal-bukti<?= $c['id_pengeluaran'] ?>" class=" btn btn-sm text-light mt-1" style="background-color: #9c223b;">Attacment</a>
+
+																<!-- <a data-toggle="modal" data-target="#modal-edit<?= $c['id_pengeluaran'] ?>" class=" btn btn-sm text-light mt-1" style="background-color: #9c223b;"> <i class="fa fa-edit text-light"></i> Edit</a> -->
+															<?php	} else {
+															?>
+																<a data-toggle="modal" data-target="#modal-bukti<?= $c['id_pengeluaran'] ?>" class=" btn btn-sm text-light mt-1 mb-2" style="background-color: #9c223b;">Attacment</a>
+
+															<?php	} ?>
+														</td>
+														<td width="20%">
+
+															<div class="col">
+																<p class="text-danger">***Choose file jika ingin mengubah foto dan klik submit***</p>
+																<!-- <a data-toggle="modal" data-target="#modal-edit<?= $c['id_pengeluaran'] ?>" class=" btn btn-sm text-light mt-1" style="background-color: #9c223b;"> <i class="fa fa-edit text-light"></i> Edit</a> -->
+
+																<form action="<?= base_url('dispatcher/ap/edit') ?>" method="POST" enctype="multipart/form-data">
+																	<input type="text" name="id_pengeluaran" value="<?= $c['id_pengeluaran'] ?>" hidden>
+																	<input type="text" name="no_pengeluaran" value="<?= $c['no_pengeluaran'] ?>" hidden>
+																	<input type="file" class="form-control-file" id="attachmentedit<?= $c['id_pengeluaran'] ?>" data-idpengeluaran="<?= $c['id_pengeluaran'] ?>" name="attachment" onchange="handleImageEditUpload(this.id,this.dataset['idpengeluaran']);" accept="image/*" capture>
+																	<input type="file" class="form-control" id="upload_fileedit<?= $c['id_pengeluaran'] ?>" name="attachmentedit" accept="image/*" capture hidden>
+																	<button class="btn btn-primary mt-2" type="submit">Submit</button>
+
+																</form>
+															</div>
+
+														</td>
 													</tr>
-													<?php $total = 0;
-													foreach ($ap as $c) {
-														$total += $c['amount_proposed'];
-													?>
-														<tr>
-															<td><?= $c['nama_kategori'] ?></td>
-															<td>
-																<span class='edit'><?= $c['description'] ?></span>
-																<input type='text' class='form-control txtedit' data-id="<?= $c['id_pengeluaran'] ?>" data-field='description' id='descriptiontxt_<?= $c['id_pengeluaran'] ?>' value='<?= $c['description'] ?>'>
-															</td>
 
-															<td><span class='edit'>Rp. <?= $c['amount_proposed'] ?></span>
-																<input type='number' name="jumlah" class='form-control txtedit' data-id="<?= $c['id_pengeluaran'] ?>" data-field='amount_proposed' id='amount_proposedtxt_<?= $c['amount_proposed'] ?>' value='<?= $c['amount_proposed'] ?>'>
-															</td>
+												<?php } ?>
 
-															<td>
-
-																<?php if ($info['status'] <= 0) {
-																?>
-																	<a data-toggle="modal" data-target="#modal-bukti<?= $c['id_pengeluaran'] ?>" class=" btn btn-sm text-light mt-1" style="background-color: #9c223b;">Attacment</a>
-
-																	<!-- <a data-toggle="modal" data-target="#modal-edit<?= $c['id_pengeluaran'] ?>" class=" btn btn-sm text-light mt-1" style="background-color: #9c223b;"> <i class="fa fa-edit text-light"></i> Edit</a> -->
-																<?php	} else {
-																?>
-																	<a data-toggle="modal" data-target="#modal-bukti<?= $c['id_pengeluaran'] ?>" class=" btn btn-sm text-light mt-1 mb-2" style="background-color: #9c223b;">Attacment</a>
-
-																<?php	} ?>
-															</td>
-															<td width="20%">
-
-																<div class="col">
-																	<p class="text-danger">***Choose file jika ingin mengubah foto dan klik submit***</p>
-																	<!-- <a data-toggle="modal" data-target="#modal-edit<?= $c['id_pengeluaran'] ?>" class=" btn btn-sm text-light mt-1" style="background-color: #9c223b;"> <i class="fa fa-edit text-light"></i> Edit</a> -->
-
-																	<form action="<?= base_url('dispatcher/ap/edit') ?>" method="POST" enctype="multipart/form-data">
-																		<input type="text" name="id_pengeluaran" value="<?= $c['id_pengeluaran'] ?>" hidden>
-																		<input type="text" name="no_pengeluaran" value="<?= $c['no_pengeluaran'] ?>" hidden>
-																		<input type="file" class="form-control-file" id="attachmentedit<?= $c['id_pengeluaran'] ?>" data-idpengeluaran="<?= $c['id_pengeluaran'] ?>" name="attachment" onchange="handleImageEditUpload(this.id,this.dataset['idpengeluaran']);" accept="image/*" capture>
-																		<input type="file" class="form-control" id="upload_fileedit<?= $c['id_pengeluaran'] ?>" name="attachmentedit" accept="image/*" capture hidden>
-																		<button class="btn btn-primary mt-2" type="submit">Submit</button>
-
-																	</form>
-																</div>
-
-															</td>
-														</tr>
-
-													<?php } ?>
-
-												</table>
-											</div>
-
-
-
-
+											</table>
 										</div>
-										<div class="col-md-3" id="car3">
-											<label for="note_cs">Total</label>
-											<input class="form-control total" type="text" name="total_expanses" disabled value="<?= rupiah($total); ?>">
 
-										</div>
-										<div class="d-flex justify-content-between border-top mt-5 pt-10">
-											<?php if ($info['status'] == 2) {
-											?>
 
-											<?php	} elseif ($info['status'] == 6) {
-											?>
 
-												<span>
-													<span class="fa fa-window-close text-danger"></span>
-													This <b><?= $info['no_pengeluaran'] ?></b> has been Void At <b><?= $info['void_date'] ?></b> Because <b><?= $info['reason_void'] ?></b> <br>
 
-												</span>
+									</div>
 
-											<?php } elseif ($info['status'] == 5) {
-											?>
 
-												<span>
-													<span class="fa fa-check-circle text-success"></span>
-													This <b><?= $info['no_pengeluaran'] ?></b> has been <b> Approve GM</b>
 
-												</span>
-											<?php } elseif ($info['status'] == 4) {
-											?>
+									<div class="col-md-3" id="car3">
+										<label for="note_cs">Total</label>
+										<input class="form-control" type="text" name="total_expanses" disabled value="<?= rupiah($total); ?>">
 
-												<span>
-													<span class="fa fa-check-circle text-success"></span>
-													This <b><?= $info['no_pengeluaran'] ?></b> has been Paid At <b><?= bulan_indo($info['payment_date']) ?> <a target="blank" href="https://jobsheet.transtama.com/uploads/<?= $info['payment_proof'] ?>">View Proof</a> </b>
+									</div>
+									<div class="d-flex justify-content-between border-top mt-5 pt-10">
+										<?php if ($info['status'] == 2) {
+										?>
 
-												</span>
-											<?php } else {
+										<?php	} elseif ($info['status'] == 6) {
+										?>
 
-											?>
-												<!-- <span>
+											<span>
+												<span class="fa fa-window-close text-danger"></span>
+												This <b><?= $info['no_pengeluaran'] ?></b> has been Void At <b><?= $info['void_date'] ?></b> Because <b><?= $info['reason_void'] ?></b> <br>
+
+											</span>
+
+										<?php } elseif ($info['status'] == 5) {
+										?>
+
+											<span>
+												<span class="fa fa-check-circle text-success"></span>
+												This <b><?= $info['no_pengeluaran'] ?></b> has been <b> Approve GM</b>
+
+											</span>
+										<?php } elseif ($info['status'] == 4) {
+										?>
+
+											<span>
+												<span class="fa fa-check-circle text-success"></span>
+												This <b><?= $info['no_pengeluaran'] ?></b> has been Paid At <b><?= bulan_indo($info['payment_date']) ?> <a target="blank" href="https://jobsheet.transtama.com/uploads/<?= $info['payment_proof'] ?>">View Proof</a> </b>
+
+											</span>
+										<?php } else {
+
+										?>
+											<!-- <span>
 														<span class="fa fa-check-circle text-success"></span>
 														This <?= $info['no_pengeluaran'] ?> has been Received Finance, Please Wait GM To Check
 													</span> -->
 
-											<?php } ?>
-										</div>
+										<?php } ?>
+									</div>
 
-										<!--end: Wizard Step 1-->
+									<!--end: Wizard Step 1-->
 
-										<!--begin: Wizard Actions-->
+									<!--begin: Wizard Actions-->
 
-										<!--end: Wizard Actions-->
-									</form>
+									<!--end: Wizard Actions-->
+
 									<!--end: Wizard Form-->
 								</div>
 							</div>

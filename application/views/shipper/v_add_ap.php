@@ -56,7 +56,7 @@
 												<div class="col-md-4" style="display: none;" id="car">
 													<label for="note_cs">NO CA</label>
 													<div class="form-check">
-														<input class="form-control" id="no_ca" type="text" name="no_ca" id="no_ca">
+														<input class="form-control" type="text" name="no_ca" id="no_ca">
 													</div>
 												</div>
 
@@ -106,6 +106,29 @@
 
 
 											</div>
+											<div class="row">
+												<div class="col-md-4" style="display: none;" id="car2">
+													<label for="note_cs">Total Cash Advance Approved</label>
+
+													<input class="form-control" type="text" name="ca_approved" disabled id="ca_approved">
+
+												</div>
+
+												<div class="col-md-4" style="display: none;" id="car3">
+													<label for="note_cs">Total Expenses</label>
+
+													<input class="total_expanses form-control" type="text" name="total_expanses" disabled id="total_expanses">
+
+												</div>
+												<div class="col-md-4" style="display: none;" id="car4">
+													<label for="note_cs">Over/Less</label>
+
+													<input class="form-control" type="text" name="sisa" disabled id="sisa">
+
+												</div>
+
+											</div>
+											
 											<div class="row">
 												<div class="col-md-4" style="display: none;" id="car2">
 													<label for="note_cs">Total Cash Advance Approved</label>

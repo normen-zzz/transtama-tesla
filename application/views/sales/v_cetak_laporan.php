@@ -76,11 +76,11 @@
         </thead>
         <tbody>
             <?php $no = 1;
-            foreach ($order as $p) {
+			foreach ($order as $p) {
                 $get_tracking = $this->db->order_by('id_tracking', 'DESC')->get_where('tbl_tracking_real', ['shipment_id' => $p['shipment_id']])->row_array();
                 $get_do = $this->db->select('no_do,no_so, berat, koli')->get_where('tbl_no_do', ['shipment_id' => $p['shipment_id']])->result_array();
                 $jumlah = $this->db->select('no_do')->get_where('tbl_no_do', ['shipment_id' => $p['shipment_id']])->num_rows();
-
+                
             ?>
                 <tr>
                     <td><?= $no; ?></td>

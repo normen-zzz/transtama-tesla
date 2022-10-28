@@ -107,9 +107,9 @@
 															</div>
 														</div>
 													</div>
-													<div class="col-md-2">
+													<div class="col-md-4">
 														<div class="form-group">
-															<label for="exampleInputEmail1">Use Generate Resi ?<span style="color: red;">*</span></label>
+															<label for="exampleInputEmail1">Use Generate Resi ?<span style="color: red;">*FOR EH CHOOSE YES</span></label>
 															<div class="form-check">
 																<input class="form-check-input" type="radio" name="type" id="flexRadioDefault1" value="1">
 																<label class="form-check-label" for="flexRadioDefault1">

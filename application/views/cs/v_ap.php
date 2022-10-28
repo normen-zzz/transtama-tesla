@@ -31,7 +31,7 @@
                             <tr>
                                 <th>No AP</th>
                                 <th>Created By</th>
-                                <!-- <th>Purpose</th> -->
+                                <th>Purpose</th>
                                 <th>Date</th>
                                 <!-- <th>Address</th> -->
                                 <th>Amount Proposed</th>
@@ -49,7 +49,7 @@
                                         echo ($c['id_kat_ap'] == 3)  ? $c['no_ca'] : ''
                                         ?> </td>
                                     <td><?= $c['nama_user'] ?></td>
-                                    <!-- <td><?= $c['purpose'] ?></td> -->
+                                    <td><?= $c['purpose'] ?></td> 
                                     <td><?= bulan_indo($c['date']) ?></td>
                                     <td><?= rupiah($c['total']) ?></td>
                                     <td><?= ($c['status'] <= 2 ? 'Wait Received' : rupiah($c['total_approved'])) ?></td>

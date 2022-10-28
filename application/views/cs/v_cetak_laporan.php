@@ -2,6 +2,7 @@
     table {
         width: 100%;
         font-size: 12pt;
+
     }
 
     table,
@@ -58,7 +59,7 @@
                 <th>No</th>
                 <th>DATE</th>
                 <th>SHPMENT ID</th>
-                <th>NO DO/DN</th>
+				<th>NO DO/DN</th>
                 <th>NO SO/PO</th>
                 <th>STP</th>
                 <th>CUSTOMER</th>
@@ -68,7 +69,7 @@
                 <th>COMM</th>
                 <th>COLLY</th>
                 <th>WEIGHT</th>
-                <th>SPECIAL WEIGHT</th>
+				<th>SPECIAL WEIGHT</th>
                 <th>PETUGAS PICKUP</th>
                 <th>NO FLIGHT</th>
                 <th>NO SMU</th>
@@ -87,9 +88,9 @@
             </tr>
         </thead>
         <tbody>
-            <?php $no = 1;
-            foreach ($order as $p) {
-                $get_do = $this->db->select('no_do,no_so, berat, koli')->get_where('tbl_no_do', ['shipment_id' => $p['shipment_id']])->result_array();
+            <?php $no = 1; foreach ($order as $p) {
+                // $get_tracking = $this->db->get_where('tbl_tracking_real', ['shipment_id' => $p['shipment_id']])->result_array();
+				  $get_do = $this->db->select('no_do,no_so, berat, koli')->get_where('tbl_no_do', ['shipment_id' => $p['shipment_id']])->result_array();
                 $jumlah = $this->db->select('no_do')->get_where('tbl_no_do', ['shipment_id' => $p['shipment_id']])->num_rows();
 
                 $no_do = '';
@@ -115,16 +116,15 @@
                 } else {
                     $no_so =  $p['no_so'];
                 }
-
-                // $get_tracking = $this->db->get_where('tbl_tracking_real', ['shipment_id' => $p['shipment_id']])->result_array();
-                $shipment_id = "'$p[shipment_id]";
+				
+                 $shipment_id = "'$p[shipment_id]";
 
             ?>
                 <tr>
                     <td><?= $no; ?></td>
                     <td><?= bulan_indo($p['tgl_pickup']) ?></td>
-                    <td> <?php echo $shipment_id ?> </td>
-                    <td> <?= $no_do ?> </td>
+ <td> <?php echo $shipment_id ?> </td>
+					 <td> <?= $no_do ?> </td>
                     <td> <?= $no_so ?> </td>
                     <td> <?= $p['no_stp'] ?> </td>
                     <td><b><?= $p['shipper'] ?></b> </td>
@@ -133,7 +133,7 @@
                     <td><b><?= $p['service_name'] ?></b></td>
                     <td><b><?= $p['pu_commodity'] ?></b></td>
                     <td><b><?= $p['koli'] ?></b></td>
-                    <td><b><?= $p['berat_js'] ?></b></td>
+                     <td><b><?= $p['berat_js'] ?></b></td>
                     <td><b><?= $p['berat_msr'] ?></b></td>
                     <td><?= $p['nama_user'] ?></td>
                     <td><?= $p['no_flight'] ?></td>
@@ -148,7 +148,9 @@
                     <td></td>
                     <td></td>
                     <td></td>
-                    <td></td>
+                    <td><?= $p['note_shipment'] ?></td>
+
+
                 </tr>
             <?php $no++;
             } ?>

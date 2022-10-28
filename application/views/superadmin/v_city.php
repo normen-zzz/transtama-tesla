@@ -83,10 +83,17 @@
                 <form action="<?= base_url('superadmin/city/add') ?>" method="POST">
                     <div class="card-body">
                         <div class="row">
-                            <div class="col-md-12">
+                            <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="exampleInputEmail1">Nama of City</label>
                                     <input type="text" class="form-control" required name="city_name">
+                                </div>
+
+                            </div>
+							 <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="exampleInputEmail1">Tree Code</label>
+                                    <input type="text" class="form-control" required name="tree_code">
                                 </div>
 
                             </div>

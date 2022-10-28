@@ -8,6 +8,11 @@
 					<div class="col-12">
 						<!-- ini jabodetabek -->
 						<?php if ($shipment['is_jabodetabek'] == 1) {
+							// var_dump($shipment['service_name']);
+							// die;
+							// kalo dia servicenya ONS
+								// var_dump($shipment['flag']);
+								// die;
 							if ($shipment['service_name'] == 'Same Day Service' || $shipment['service_name'] == 'Charter Service') {
 						?>
 								<div class="card card-custom gutter-b">
@@ -175,16 +180,7 @@
 										</div>
 									<?php	} elseif ($shipment['flag'] == 5) {
 									?>
-										<div class="card-body">
-											<div>
-												<p class="text-dark-150 font-size-lg font-weight-normal" style="text-align: justify;">
-													<i class="fa fa-calendar-check text-success"></i> <span style="font-size: 
-					15px;">No Activity Right Now </span>
-												</p>
-											</div>
-
-											<!--edit::Editor-->
-										</div>
+										
 									<?php } else {
 									} ?>
 
@@ -405,59 +401,9 @@
 											<!--edit::Editor-->
 										</div>
 
-									<?php	} elseif ($shipment['flag'] == 9) {
-									?>
-										<?php if ($shipment['status_eksekusi'] == 0) {
-										?>
-											<div class="card-body">
-												<div class="d-flex align-items-center">
-													<div class="symbol symbol-40 mr-5 symbol-success">
-														<span class="symbol-label">
-															<p class="h-90 font-weight-bold mt-3">DL</p>
-														</span>
-													</div>
-													<div class="d-flex flex-column flex-grow-1">
-														<a href="#" class="text-dark-75 text-hover-primary mb-1 font-size-lg font-weight-bolder"><?= $shipment['shipper'] ?></a>
-														<span class="text-muted font-weight-bold"><?= $shipment['shipment_id'] ?></span>
-													</div>
-												</div>
-												<div>
-													<span class="text-dark-75 font-size-lg font-weight-normal" style="text-align: justify;">
-														Hallo <?= $this->session->userdata('nama_user') ?>, Tolong Delivery ke<b> <?= $shipment['destination'] ?>, <?= $shipment['state_consigne'] ?>, <?= $shipment['city_consigne'] ?></b> <br>
-														jumlah koli <b><?= $shipment['koli'] ?></b> <br>
-														Service : <b><?= $shipment['service_name'] ?></b> <br>
-														Consignee : <b><?= $shipment['consigne'] ?></b>
-													</span>
-												</div>
-												<p class="text-dark-75 font-size-lg font-weight-normal" style="text-align: justify;">
-													<b>Informasi Tambahan :</b> <i><b><?= $shipment['note'] ?></b></i> <br>
-													<b>Tanggal Tugas :</b> <?= longdate_indo($shipment['tgl_tugas']) . ' ' . $shipment['jam_tugas'] ?>
-												</p>
-												<div class="separator separator-solid mt-2 mb-4"></div>
-												<form class="position-relative" style="height: 20px;">
-													<div class="position-absolute top-0 right-0 mt-n1 mr-n2">
-														<a href="<?= base_url('shipper/salesOrder/receiveDeliveryIncoming/' . $shipment['id_so'] . '/' . $shipment['shipment_id'] . '/' . $shipment['id_tracking']) ?>" onclick="return confirm('You will accept this Request')" class="btn text-light" style="background-color: #9c223b;">Receive Task</a>
-													</div>
-												</form>
-												<!--edit::Editor-->
-											</div>
-										<?php	} else {
-										?>
-											<div class="card-body">
-												<div>
-													<p class="text-dark-150 font-size-lg font-weight-normal" style="text-align: justify;">
-														<i class="fa fa-calendar-check text-success"></i> <span style="font-size: 
-					15px;">On The Way To <?= $shipment['note'] ?></span>
-													</p>
-												</div>
-
-												<!--edit::Editor-->
-											</div>
-
-
-										<?php	} ?>
-
-									<?php	} elseif ($shipment['flag'] == 10) {
+									<?php	}elseif ($shipment['flag'] == 9) {
+								?>
+									<?php if ($shipment['status_eksekusi'] == 0) {
 									?>
 										<div class="card-body">
 											<div class="d-flex align-items-center">
@@ -483,30 +429,80 @@
 												<b>Informasi Tambahan :</b> <i><b><?= $shipment['note'] ?></b></i> <br>
 												<b>Tanggal Tugas :</b> <?= longdate_indo($shipment['tgl_tugas']) . ' ' . $shipment['jam_tugas'] ?>
 											</p>
-											<hr>
-											<p class="h-14 mt-4"><i class="fa fa-info text-danger"></i> Tekan tombol <b>Arrive</b> Jika Kiriman Anda sudah sampai di tujuan</p>
-											<!-- <div class="alert alert-success text-light" role="alert"> </div> -->
-											<div class="card-toolbar">
-												<a href="#" class="btn mr-2 text-light" data-toggle="modal" data-target="#modal-lg-incoming<?= $shipment['shipment_id'] ?>" style="background-color: #9c223b;">
-													<i class="fas fa-check text-light"> </i>
-													Arrive
-												</a>
-											</div>
+											<div class="separator separator-solid mt-2 mb-4"></div>
+											<form class="position-relative" style="height: 20px;">
+												<div class="position-absolute top-0 right-0 mt-n1 mr-n2">
+													<a href="<?= base_url('shipper/salesOrder/receiveDeliveryIncoming/' . $shipment['id_so'] . '/' . $shipment['shipment_id'] . '/' . $shipment['id_tracking']) ?>" onclick="return confirm('You will accept this Request')" class="btn text-light" style="background-color: #9c223b;">Receive Task</a>
+												</div>
+											</form>
+											<!--edit::Editor-->
 										</div>
-
 									<?php	} else {
 									?>
-										<!--				<div class="card-body">-->
-										<!--					<div>-->
-										<!--						<p class="text-dark-150 font-size-lg font-weight-normal" style="text-align: justify;">-->
-										<!--							<i class="fa fa-calendar-check text-success"></i> <span style="font-size: -->
-										<!--15px;">No Activity Right Now </span>-->
-										<!--						</p>-->
-										<!--					</div>-->
+										<div class="card-body">
+											<div>
+												<p class="text-dark-150 font-size-lg font-weight-normal" style="text-align: justify;">
+													<i class="fa fa-calendar-check text-success"></i> <span style="font-size: 
+					15px;">On The Way To <?= $shipment['note'] ?></span>
+												</p>
+											</div>
 
-										<!--					edit::Editor-->
-										<!--				</div>-->
+											<!--edit::Editor-->
+										</div>
+
+
 									<?php	} ?>
+
+								<?php	} elseif ($shipment['flag'] == 10) {
+								?>
+									<div class="card-body">
+										<div class="d-flex align-items-center">
+											<div class="symbol symbol-40 mr-5 symbol-success">
+												<span class="symbol-label">
+													<p class="h-90 font-weight-bold mt-3">DL</p>
+												</span>
+											</div>
+											<div class="d-flex flex-column flex-grow-1">
+												<a href="#" class="text-dark-75 text-hover-primary mb-1 font-size-lg font-weight-bolder"><?= $shipment['shipper'] ?></a>
+												<span class="text-muted font-weight-bold"><?= $shipment['shipment_id'] ?></span>
+											</div>
+										</div>
+										<div>
+											<span class="text-dark-75 font-size-lg font-weight-normal" style="text-align: justify;">
+												Hallo <?= $this->session->userdata('nama_user') ?>, Tolong Delivery ke<b> <?= $shipment['destination'] ?>, <?= $shipment['state_consigne'] ?>, <?= $shipment['city_consigne'] ?></b> <br>
+												jumlah koli <b><?= $shipment['koli'] ?></b> <br>
+												Service : <b><?= $shipment['service_name'] ?></b> <br>
+												Consignee : <b><?= $shipment['consigne'] ?></b>
+											</span>
+										</div>
+										<p class="text-dark-75 font-size-lg font-weight-normal" style="text-align: justify;">
+											<b>Informasi Tambahan :</b> <i><b><?= $shipment['note'] ?></b></i> <br>
+											<b>Tanggal Tugas :</b> <?= longdate_indo($shipment['tgl_tugas']) . ' ' . $shipment['jam_tugas'] ?>
+										</p>
+										<hr>
+										<p class="h-14 mt-4"><i class="fa fa-info text-danger"></i> Tekan tombol <b>Arrive</b> Jika Kiriman Anda sudah sampai di tujuan</p>
+										<!-- <div class="alert alert-success text-light" role="alert"> </div> -->
+										<div class="card-toolbar">
+											<a href="#" class="btn mr-2 text-light" data-toggle="modal" data-target="#modal-lg-incoming<?= $shipment['shipment_id'] ?>" style="background-color: #9c223b;">
+												<i class="fas fa-check text-light"> </i>
+												Arrive
+											</a>
+										</div>
+									</div>
+
+								<?php	} else {
+								?>
+					<!--				<div class="card-body">-->
+					<!--					<div>-->
+					<!--						<p class="text-dark-150 font-size-lg font-weight-normal" style="text-align: justify;">-->
+					<!--							<i class="fa fa-calendar-check text-success"></i> <span style="font-size: -->
+					<!--15px;">No Activity Right Now </span>-->
+					<!--						</p>-->
+					<!--					</div>-->
+
+					<!--					edit::Editor-->
+					<!--				</div>-->
+								<?php	} ?>
 
 									<!--end::Body-->
 								</div>
@@ -515,7 +511,7 @@
 							?>
 							<!-- kalo dia bukan jabodetabek -->
 						<?php	} else {
-
+						   
 
 						?>
 							<div class="card card-custom gutter-b">
@@ -622,7 +618,7 @@
 										<p class="h-14 mt-4"><i class="fa fa-info text-danger"></i> Tekan tombol <b>Arrive In Benhil Hub</b>apabila sudah sampai di Hub Benhil</p>
 										<!-- <div class="alert alert-success text-light" role="alert"> </div> -->
 										<div class="card-toolbar">
-											<a href="<?= base_url('shipper/salesOrder/arriveBenhil/' . $shipment['id_so'] . '/' . $shipment['shipment_id'] . '/' . $shipment['id_tracking']) ?>" class="btn mr-2 text-light" style="background-color: #9c223b;">
+											<a  href="<?= base_url('shipper/salesOrder/arriveBenhil/' . $shipment['id_so'] . '/' . $shipment['shipment_id'] . '/' . $shipment['id_tracking']) ?>" class="btn mr-2 text-light" style="background-color: #9c223b;">
 												<i class="fas fa-check text-light"> </i>
 												Arrive In Benhil Hub
 											</a>

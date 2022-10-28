@@ -290,34 +290,30 @@ class Ap extends CI_Controller
 		$id = $this->input->post('id');
 		$field = $this->input->post('field');
 		$value = $this->input->post('value');
+		$ap = $this->db->get_where('tbl_pengeluaran', array('id_pengeluaran' => $id))->row_array();
+
+
+
 		$data = array(
 			$field => $value,
 
 		);
-
-		$folderUpload = "./uploads/ap/";
-		$files = $_FILES;
-		$attachment = $files['attachmentedit']['name'];
-
-		// var_dump($data);
-
-		// if ($attachment != NULL) {
-		// 	$namaFile = $files['attachmentedit']['name'];
-		// 	$lokasiTmp = $files['attachmentedit']['tmp_name'];
-		// 	// # kita tambahkan uniqid() agar nama gambar bersifat unik
-		// 	$namaBaru = uniqid() . '-' . $namaFile;
-		// 	$lokasiBaru = "{$folderUpload}/{$namaBaru}";
-		// 	move_uploaded_file($lokasiTmp, $lokasiBaru);
-		// 	$ktp = array('attachment' => $namaBaru);
-		// 	$data = array_merge($data, $ktp);
-		// }
-
 		$update = $this->db->update('tbl_pengeluaran', $data, array('id_pengeluaran' => $id));
 		if ($update) {
-			// unlink('uploads/ap/' . $attachment_lama);
-			$this->session->set_flashdata('message', 'Diedit');
-			echo 1;
-			exit;
+			$allAp = $this->db->get_where('tbl_pengeluaran', array('no_pengeluaran' => $ap['no_pengeluaran']))->result_array();
+			$total = 0;
+			foreach ($allAp as $allAp) {
+				$total += $allAp['amount_proposed'];
+			}
+			$dataTotal = [
+				'total' => $total
+			];
+			if ($this->db->update('tbl_pengeluaran', $dataTotal, array('no_pengeluaran' => $ap['no_pengeluaran']))) {
+				$this->session->set_flashdata('message', 'Diedit');
+				echo 1;
+				exit;
+			}
+
 			// redirect('cs/ap/detail/' . $id);
 		} else {
 			$this->session->set_flashdata('message', 'Gagal');

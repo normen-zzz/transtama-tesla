@@ -7,9 +7,6 @@
 			<!--begin::Dashboard-->
 
 			<div class="row ">
-				<!-- Button trigger modal -->
-
-
 
 				<div class="col-xl-3">
 					<!--begin::Stats Widget 13-->

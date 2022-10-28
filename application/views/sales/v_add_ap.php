@@ -107,7 +107,7 @@
 
 
 											</div>
-
+											
 											<div class="row">
 												<div class="col-md-4" style="display: none;" id="car2">
 													<label for="note_cs">Total Cash Advance Approved</label>

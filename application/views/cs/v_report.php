@@ -44,6 +44,7 @@
 											<div class="form-group"> <br>
 												<button type="submit" class="btn btn-success mt-4 ml-3">Tampilkan</button>
 												<a href="<?= base_url('cs/order/report') ?>" class="btn btn-primary mt-4 ml-1">Reset Filter</a>
+												
 											</div>
 										</div>
 
@@ -52,7 +53,7 @@
 								<!-- <button class="btn btn-icon waves-effect waves-light btn-success mb-4" data-toggle="modal" data-target="#addBukti"> <i class="fas fa-plus"></i> Lakukan Pembayaran Sample </button> -->
 
 								<div class="row">
-									<a target="blank" href="<?= base_url('cs/order/exportexcel/') ?>" class="btn btn-sm btn-danger mb-3 ml-2">Export All</a>
+									<a target="blank" href="<?= base_url('cs/order/exportexcel/') ?>" class="btn btn-sm btn-danger mb-3 ml-2">Export Laporan Keseluruhan</a>
 									<a target="blank" href="<?= base_url('cs/order/exportexcelVoid/') ?>" class="btn btn-sm btn-primary mb-3 ml-2">Export Void All</a>
 								</div>
 								<br>
@@ -67,8 +68,8 @@
 								<!-- <a href="<?= base_url('shipper/order/add') ?>" class="btn btn-success mr-2 mb-4">
 									<i class="fas fa-plus-circle"> </i>Add
 								</a> -->
-								<!-- <div class="flash-data" data-flashdata="<?= $this->session->flashdata('message'); ?>"></div> -->
-								<p><?= $this->session->flashdata('message'); ?></p>
+								<div class="flash-data" data-flashdata="<?= $this->session->flashdata('message'); ?>"></div>
+								<p style="color:red"><?= $this->session->flashdata('message'); ?></p>
 								<thead>
 									<tr>
 										<th style="width: 15%;">Pickup Date</th>

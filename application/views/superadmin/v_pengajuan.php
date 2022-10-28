@@ -23,7 +23,7 @@
 										<th style="width: 20%;">Consigne</th>
 										<th style="width: 10%;">Shipment ID</th>
 										<th>Created At</th>
-										<th>Action</th>
+										<!-- <th>Action</th> -->
 									</tr>
 								</thead>
 

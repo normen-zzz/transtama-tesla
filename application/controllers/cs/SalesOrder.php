@@ -37,8 +37,8 @@ class SalesOrder extends CI_Controller
             $data['shipment_id'] = $shipment_id;
             $data['tracking'] = $this->db->get_where('tbl_tracking_real', ['shipment_id' => $shipment_id])->result_array();
             $data['shipment'] = $this->db->get_where('tbl_shp_order', ['shipment_id' => $shipment_id])->row_array();
-            $data['title'] = 'Sales Order';
-            if ($this->input->post('modal') == 1) {
+			$data['title'] = 'Sales Order';
+			if ($this->input->post('modal') == 1) {
                 $data['modal'] = '$("#modal-lg-dl-add' . $shipment_id . '").modal("show");';
             }
             $this->backend->display('cs/v_tracking', $data);
@@ -46,7 +46,7 @@ class SalesOrder extends CI_Controller
             $data['shipment_id'] = $shipment_id;
             $data['tracking'] = $this->db->get_where('tbl_tracking_real', ['shipment_id' => $shipment_id])->result_array();
             $data['shipment'] = $this->db->get_where('tbl_shp_order', ['shipment_id' => $shipment_id])->row_array();
-            $data['title'] = 'Sales Order';
+			$data['title'] = 'Sales Order';
             $this->backend->display('cs/v_tracking', $data);
         }
     }
@@ -119,13 +119,6 @@ class SalesOrder extends CI_Controller
             $data = array_merge($data, $ktp);
         }
         $this->db->update('tbl_tracking_real', $data, ['id_tracking' => $this->input->post('id_tracking')]);
-        if ($status == "Shipment Telah Diterima Oleh") {
-            // update tgl diterima
-            $data = array(
-                'tgl_diterima' => $this->input->post('date')
-            );
-            $this->db->update('tbl_shp_order', $data, ['shipment_id' => $shipment_id]);
-        }
         $this->session->set_flashdata('message', 'Update Sukses');
         redirect('cs/salesOrder/tracking/' . $shipment_id);
     }
@@ -205,9 +198,9 @@ class SalesOrder extends CI_Controller
         $this->resizeImage($namaBaru);
         $ktp = array('bukti' => $namaBaru);
         $data = array_merge($data, $ktp);
-        $this->db->insert('tbl_tracking_real', $data);
 
-        if ($status == "Shipment Telah Diterima Oleh") {
+        $this->db->insert('tbl_tracking_real', $data);
+		 if ($status == "Shipment Telah Diterima Oleh") {
             // update tgl diterima
             $data = array(
                 'tgl_diterima' => $this->input->post('date')
@@ -219,6 +212,8 @@ class SalesOrder extends CI_Controller
     }
     public function add($id_so)
     {
+        $data['title'] = 'Add Order';
+       
         // $data['imagecamera'] = $img;
         $data['id_so'] = $id_so;
         $data['city'] = $this->db->get('tb_city')->result_array();
@@ -227,27 +222,10 @@ class SalesOrder extends CI_Controller
         $data['customer'] = $this->db->get('tb_customer')->result_array();
         $this->backend->display('cs/v_order_add', $data);
     }
-    // public function add($id_so)
-    // {
-    //     $data['title'] = 'Add Order';
-    //     // $cek_api = $this->Api->kirim();
-    //     // $cek_api = json_decode($cek_api);
-    //     // $cek_api = $cek_api->accessToken;
-    //     // $data = [
-    //     //     'token' => $cek_api,
-    //     // ];
-    //     // $this->session->set_userdata($data);
-    //     // $data['imagecamera'] = $img;
-    //     $data['id_so'] = $id_so;
-    //     $data['city'] = $this->db->get('tb_city')->result_array();
-    //     $data['province'] = $this->db->get('tb_province')->result_array();
-    //     $data['service'] = $this->db->get('tb_service_type')->result_array();
-    //     $data['customer'] = $this->db->get('tb_customer')->result_array();
-    //     $this->backend->display('cs/v_order_add', $data);
-    // }
     public function bulk($id_so)
     {
-
+        $data['title'] = 'Add Order';
+        
         $data['id_so'] = $id_so;
         $data['city'] = $this->db->get('tb_city')->result_array();
         $data['province'] = $this->db->get('tb_province')->result_array();
@@ -531,8 +509,8 @@ class SalesOrder extends CI_Controller
             redirect('shipper/order/bulk/' . $this->input->post('id_so') . '/' . $this->input->post('id_tracking'));
         }
     }
-
-    public function processAdd()
+	
+	 public function processAdd()
     {
         $this->form_validation->set_rules('consigne', 'consigne', 'required');
         $this->form_validation->set_rules('state_consigne', 'State_consigne', 'required');
@@ -571,6 +549,13 @@ class SalesOrder extends CI_Controller
             }
 
             // kode referensi so
+            $sql = $this->db->query("SELECT max(so_id) as kode FROM tbl_shp_order")->row_array();
+            $no = $sql['kode'];
+            // SO - 0 0 0 0 0 0 0 0 9;
+            $potong = substr($no, 3);
+            $noUrut = $potong + 1;
+            $kode =  sprintf("%09s", $noUrut);
+            $kode  = "SO-$kode";// kode referensi so
             //Mencari ANgka terbesar
             $sql = $this->db->query("SELECT max(so_id) as kode FROM tbl_shp_order")->row_array();
             $no = $sql['kode'];
@@ -605,7 +590,7 @@ class SalesOrder extends CI_Controller
                 'id_so' => $this->input->post('id_so'),
                 'id_user' => $this->session->userdata('id_user'),
                 'signature' => $img,
-                'tree_shipper' => $this->getTreeLetterCode($city_shipper),
+                 'tree_shipper' => $this->getTreeLetterCode($city_shipper),
                 'tree_consignee' => $this->getTreeLetterCode($city_consigne),
                 'shipment_id' => $shipment_id,
                 'order_id' => null,
@@ -619,7 +604,7 @@ class SalesOrder extends CI_Controller
                 'pu_commodity' => $get_pickup['pu_commodity'],
                 'pu_service' => $get_pickup['pu_service'],
                 'pu_note' => $get_pickup['pu_note'],
-                // 'city_shipper' => $get_pickup['city_shipper'],
+                'city_shipper' => $get_pickup['city_shipper'],
                 'payment' => $get_pickup['payment'],
                 'packing_type' => $get_pickup['packing_type'],
                 'is_incoming' => $get_pickup['is_incoming'],
@@ -763,6 +748,7 @@ class SalesOrder extends CI_Controller
             }
         }
     }
+	 
     // public function processAdd()
     // {
     //     $this->form_validation->set_rules('consigne', 'consigne', 'required');
@@ -1008,6 +994,7 @@ class SalesOrder extends CI_Controller
     //         }
     //     }
     // }
+    
     public function resizeImage($filename)
     {
         $files = explode("+", $filename);
@@ -1232,7 +1219,6 @@ class SalesOrder extends CI_Controller
         $data['p'] = $this->db->get_where('tbl_so', ['id_so' => $id])->row_array();
         $this->backend->display('cs/v_edit_order', $data);
     }
-
     function view_data_query()
     {
         $search = array('id_so', 'shipper', 'destination', 'b.nama_user');
@@ -1245,8 +1231,7 @@ class SalesOrder extends CI_Controller
         header('Content-Type: application/json');
         echo $this->M_Datatables->get_tables_query($query, $search, $where, $isWhere);
     }
-
-    function getTreeLetterCode($city)
+     function getTreeLetterCode($city)
     {
         $code = $this->db->get_where('tb_city', ['city_name' => $city])->row_array();
         if ($code) {
@@ -1255,7 +1240,6 @@ class SalesOrder extends CI_Controller
             return null;
         }
     }
-
     public function barcode($id)
     {
         // $koli = sprintf("%02s",  $koli);
@@ -1282,7 +1266,7 @@ class SalesOrder extends CI_Controller
     }
     public function print($id)
     {
-        $mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => [74, 105]]);
+         $mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => [74, 105]]);
 
         $where = array('shipment_id' => $id);
         $data['order'] = $this->db->get_where('tbl_shp_order', $where)->row_array();
@@ -1296,5 +1280,32 @@ class SalesOrder extends CI_Controller
         $data = $this->load->view('superadmin/v_cetak', $data, TRUE);
         $mpdf->WriteHTML($data);
         $mpdf->Output();
+
+    }
+	public function printAll($id)
+    {
+        $mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => [74, 105]]);
+
+        $where = array('id_so' => $id);
+        $this->db->select('*, b.service_name, b.prefix');
+        $this->db->from('tbl_shp_order a');
+        $this->db->join('tb_service_type b', 'a.service_type=b.code');
+        $this->db->where('a.id_so', $id);
+        $data['orders'] = $this->db->get()->result_array();
+        $data = $this->load->view('superadmin/v_cetak_all', $data, TRUE);
+        $mpdf->WriteHTML($data);
+        $mpdf->Output();
+
+        // $this->load->view('superadmin/v_cetak_all', $data);
+        // $html = $this->output->get_output();
+        // $this->load->library('dompdf_gen');
+        // $this->dompdf->set_paper("A7", 'potrait');
+        // $this->dompdf->load_html($html);
+        // $this->dompdf->render();
+        // $sekarang = date("d:F:Y:h:m:s");
+        // // return $this->dompdf->output();
+        // $output = $this->dompdf->output();
+        // // file_put_contents('uploads/barcode' . '/' . "$shipment_id.pdf", $output);
+        // $this->dompdf->stream("Cetak" . $sekarang . ".pdf", array('Attachment' => 0));
     }
 }

@@ -22,7 +22,7 @@
 										<i class="fas fa-plus-circle text-light"> </i>
 										Special Order
 									</a> -->
-
+									
 									<a onclick='$("#modalLoading").modal("show");' href="<?= base_url('shipper/order/addShipmentGenerateResi/' . $id_so . '/' . $id_tracking) ?>" class="btn mr-2 mt-1 text-light" style="background-color: #9c223b;">
 										<i class="fas fa-plus-circle text-light"> </i>
 										Generate Order
@@ -42,7 +42,7 @@
 						<!-- /.card-header -->
 						<div class="card-body" style="overflow: auto;">
 							<table id="myTable" class="table table-bordered">
-								<div class="col-md-12 mt-4">
+								<div class="col-md-2 mt-4">
 									<a href="<?= base_url('shipper/order/printAll/' . $id_so) ?>" class="btn mr-2 text-light" style="background-color: #9c223b;">
 										<i class="fas fa-print text-light"> </i>
 										Print All
@@ -51,6 +51,7 @@
 										<i class="fas fa-print text-light"> </i>
 										Complete TTD & POP
 									</a>
+									
 
 								</div>
 								<!-- <div class="flash-data" data-flashdata="<?= $this->session->flashdata('message'); ?>"></div> -->
@@ -68,7 +69,7 @@
 									<?php foreach ($order as $o) {
 									?>
 										<tr>
-											<td><a href="<?= base_url('shipper/order/print/' . $o['shipment_id']) ?>"><?= $o['shipment_id'] ?></a> <br> <?= $o['service_name'] ?> </td>
+											<td><a href="<?= base_url('shipper/order/print/' . $o['shipment_id']) ?>"><?= $o['shipment_id'] ?></a> <br> <?= $o['service_name'] ?><br> <?= $o['note_cs'] ?> </td>
 											<td><?= $o['shipper'] ?> <br> <?= $o['tree_shipper'] ?>-<?= $o['tree_consignee'] ?></td>
 											<td><?= $o['consigne'] ?></td>
 											<td><?= $o['created_at'] ?></td>

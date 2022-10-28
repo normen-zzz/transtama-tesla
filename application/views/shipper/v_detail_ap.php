@@ -77,7 +77,7 @@
 
 											<div class="col-md-4" id="via">
 												<div class="form-group">
-													<label for="exampleInputEmail1">Via</label>
+													<label for="exampleInputEmail1"></br>Via</label>
 													<input type="text" name="via" class="form-control" value="<?= $info['via_transfer'] ?>">
 												</div>
 											</div>
@@ -141,82 +141,83 @@
 											</div>
 
 										<?php	} ?>
+									</form>
+									<div class="card-body" style="overflow: auto;">
+										<h3>List <?= $info['nama_kategori'] ?></h3>
+										<p class="text-danger">***Klik ditempat yang ingin diedit***</p>
 
-										<!-- Table Edit ap  -->
-										<div class="card-body" style="overflow: auto;">
-											<h3>List <?= $info['nama_kategori'] ?></h3>
-											<p class="text-danger">***Klik ditempat yang ingin diedit***</p>
 
+										<div class="col-md-9">
+											<table class="table table-separate table-head-custom table-checkable" id="myTable3">
+												<tr>
+													<td>Category</td>
+													<td>Description</td>
+													<td>Amount Proposed</td>
+													<td>Attachment</td>
+													<td>Action</td>
 
-											<div class="col-md-9">
-												<table class="table table-separate table-head-custom table-checkable" id="myTable3">
+												</tr>
+												<?php $total = 0;
+												foreach ($ap as $c) {
+													$total += $c['amount_proposed'];
+												?>
 													<tr>
-														<td>Category</td>
-														<td>Description</td>
-														<td>Amount Proposed</td>
-														<td>Attachment</td>
-														<td>Action</td>
+														<td><?= $c['nama_kategori'] ?></td>
+														<td>
+															<span class='edit'><?= $c['description'] ?></span>
+															<input type='text' class='form-control txtedit' data-id="<?= $c['id_pengeluaran'] ?>" data-url='<?= base_url() ?>/shipper/ap/editApSatuanAjax' data-field='description' id='descriptiontxt_<?= $c['id_pengeluaran'] ?>' value='<?= $c['description'] ?>'>
+														</td>
 
+														<td <?php $approve = $this->db->get_where('tbl_approve_pengeluaran', array('no_pengeluaran' => $c['no_pengeluaran']));
+															if ($approve->num_rows() == 0) { ?> class='edit' <?php } ?>><span>Rp. <?= $c['amount_proposed'] ?></span>
+															<input type='number' name="jumlah" class='form-control txtedit' data-id="<?= $c['id_pengeluaran'] ?>" data-url='<?= base_url() ?>/shipper/ap/editApSatuanAjax' data-field='amount_proposed' id='amount_proposedtxt_<?= $c['amount_proposed'] ?>' value='<?= $c['amount_proposed'] ?>'>
+														</td>
+
+														<td>
+
+															<?php if ($info['status'] <= 0) {
+															?>
+																<a data-toggle="modal" data-target="#modal-bukti<?= $c['id_pengeluaran'] ?>" class=" btn btn-sm text-light mt-1" style="background-color: #9c223b;">Attachment</a>
+																<input type="file" class="form-control-file" id="exampleFormControlFile1">
+																<!-- <a data-toggle="modal" data-target="#modal-edit<?= $c['id_pengeluaran'] ?>" class=" btn btn-sm text-light mt-1" style="background-color: #9c223b;"> <i class="fa fa-edit text-light"></i> Edit</a> -->
+															<?php	} else {
+															?>
+																<a data-toggle="modal" data-target="#modal-bukti<?= $c['id_pengeluaran'] ?>" class=" btn btn-sm text-light mt-1 mb-2" style="background-color: #9c223b;">Attacment</a>
+
+															<?php	} ?>
+														</td>
+														<td width="20%">
+
+															<div class="col">
+																<!--<p class="text-danger">***Choose file jika ingin mengubah foto dan klik submit***</p>-->
+																<!-- <a data-toggle="modal" data-target="#modal-edit<?= $c['id_pengeluaran'] ?>" class=" btn btn-sm text-light mt-1" style="background-color: #9c223b;"> <i class="fa fa-edit text-light"></i> Edit</a> -->
+
+																<form action="<?= base_url('cs/ap/edit') ?>" method="POST" enctype="multipart/form-data">
+																	<input type="text" name="id_pengeluaran" value="<?= $c['id_pengeluaran'] ?>" hidden>
+																	<input type="text" name="no_pengeluaran" value="<?= $c['no_pengeluaran'] ?>" hidden>
+																	<input type="file" class="form-control-file" id="attachmentedit<?= $c['id_pengeluaran'] ?>" data-idpengeluaran="<?= $c['id_pengeluaran'] ?>" name="attachment" onchange="handleImageEditUpload(this.id,this.dataset['idpengeluaran']);" accept="image/*" capture>
+																	<input type="file" class="form-control" id="upload_fileedit<?= $c['id_pengeluaran'] ?>" name="attachmentedit" accept="image/*" capture hidden>
+																	<button class="btn btn-primary mt-2" type="submit">Submit</button>
+
+																</form>
+															</div>
+
+														</td>
 													</tr>
-													<?php $total = 0;
-													foreach ($ap as $c) {
-														$total += $c['amount_proposed'];
-													?>
-														<tr>
-															<td><?= $c['nama_kategori'] ?></td>
-															<td>
-																<span class='edit'><?= $c['description'] ?></span>
-																<input type='text' class='form-control txtedit' data-id="<?= $c['id_pengeluaran'] ?>" data-field='description' id='descriptiontxt_<?= $c['id_pengeluaran'] ?>' value='<?= $c['description'] ?>'>
-															</td>
 
-															<td><span class='edit'>Rp. <?= $c['amount_proposed'] ?></span>
-																<input type='number' name="jumlah" class='form-control txtedit' data-id="<?= $c['id_pengeluaran'] ?>" data-field='amount_proposed' id='amount_proposedtxt_<?= $c['amount_proposed'] ?>' value='<?= $c['amount_proposed'] ?>'>
-															</td>
+												<?php } ?>
 
-															<td>
-
-																<?php if ($info['status'] <= 0) {
-																?>
-																	<a data-toggle="modal" data-target="#modal-bukti<?= $c['id_pengeluaran'] ?>" class=" btn btn-sm text-light mt-1" style="background-color: #9c223b;">Attacment</a>
-
-																	<!-- <a data-toggle="modal" data-target="#modal-edit<?= $c['id_pengeluaran'] ?>" class=" btn btn-sm text-light mt-1" style="background-color: #9c223b;"> <i class="fa fa-edit text-light"></i> Edit</a> -->
-																<?php	} else {
-																?>
-																	<a data-toggle="modal" data-target="#modal-bukti<?= $c['id_pengeluaran'] ?>" class=" btn btn-sm text-light mt-1 mb-2" style="background-color: #9c223b;">Attacment</a>
-
-																<?php	} ?>
-															</td>
-															<td width="20%">
-
-																<div class="col">
-																	<p class="text-danger">***Choose file jika ingin mengubah foto dan klik submit***</p>
-																	<!-- <a data-toggle="modal" data-target="#modal-edit<?= $c['id_pengeluaran'] ?>" class=" btn btn-sm text-light mt-1" style="background-color: #9c223b;"> <i class="fa fa-edit text-light"></i> Edit</a> -->
-
-																	<form action="<?= base_url('shipper/ap/edit') ?>" method="POST" enctype="multipart/form-data">
-																		<input type="text" name="id_pengeluaran" value="<?= $c['id_pengeluaran'] ?>" hidden>
-																		<input type="text" name="no_pengeluaran" value="<?= $c['no_pengeluaran'] ?>" hidden>
-																		<input type="file" class="form-control-file" id="attachmentedit<?= $c['id_pengeluaran'] ?>" data-idpengeluaran="<?= $c['id_pengeluaran'] ?>" name="attachment" onchange="handleImageEditUpload(this.id,this.dataset['idpengeluaran']);" accept="image/*" capture>
-																		<input type="file" class="form-control" id="upload_fileedit<?= $c['id_pengeluaran'] ?>" name="attachmentedit" accept="image/*" capture hidden>
-																		<button class="btn btn-primary mt-2" type="submit">Submit</button>
-
-																	</form>
-																</div>
-
-															</td>
-														</tr>
-
-													<?php } ?>
-
-												</table>
-											</div>
-
-
-
-
+											</table>
 										</div>
+
+
+
+
+										<!-- </div> -->
+
 										<div class="col-md-3" id="car3">
 											<label for="note_cs">Total</label>
-											<input class="form-control total" type="text" name="total_expanses" disabled value="<?= rupiah($total); ?>">
+											<input class="form-control" type="text" name="total_expanses" disabled value="<?= rupiah($total); ?>">
 
 										</div>
 										<div class="d-flex justify-content-between border-top mt-5 pt-10">
@@ -264,24 +265,24 @@
 										<!--begin: Wizard Actions-->
 
 										<!--end: Wizard Actions-->
-									</form>
-									<!--end: Wizard Form-->
-								</div>
-							</div>
-							<!--end: Wizard Body-->
 
+										<!--end: Wizard Form-->
+									</div>
+								</div>
+								<!--end: Wizard Body-->
+
+							</div>
 						</div>
+						<!-- /.card-body -->
 					</div>
-					<!-- /.card-body -->
+					<!-- /.card -->
 				</div>
-				<!-- /.card -->
+
 			</div>
+			<!-- /.row -->
 
 		</div>
-		<!-- /.row -->
-
-	</div>
-	<!--/. container-fluid -->
+		<!--/. container-fluid -->
 </section>
 <!-- /.content -->
 
@@ -371,10 +372,7 @@
 						<div class="col-md-6">
 							<label for="note_cs">Change Attachment</label>
 							<div class="form-group rec-element-ap">
-								<!-- <input type="file" class="form-control" name="attachment"> -->
-								<!-- <input type="file" class="form-control" id="attachmenteditawal" name="attachment" onchange="handleImageEditUpload(this.id);" accept="image/*" capture> -->
-								<input type="file" class="form-control" id="attachmenteditawal" name="attachment" onchange="handleImageEditUpload(this.id);" accept="image/*" capture>
-								<input type="file" class="form-control" id="edit_file2" name="attachmentedit" accept="image/*" hidden>
+								<input type="file" class="form-control" name="attachment">
 								<input type="text" class="form-control" name="attachment_lama" hidden value="<?= $c['attachment'] ?>">
 								<input type="text" class="form-control" name="id_pengeluaran" hidden value="<?= $c['id_pengeluaran'] ?>">
 								<input type="text" class="form-control" name="no_pengeluaran" hidden value="<?= $c['no_pengeluaran'] ?>">

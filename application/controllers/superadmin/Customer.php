@@ -10,7 +10,6 @@ class Customer extends CI_Controller
 			redirect('backoffice');
 		}
 		$this->load->model('UserModel');
-		$this->load->helper('kodekelas');
 		cek_role();
 	}
 
@@ -91,4 +90,5 @@ class Customer extends CI_Controller
 			redirect('superadmin/customer');
 		}
 	}
+		
 }

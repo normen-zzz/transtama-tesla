@@ -160,40 +160,29 @@
 																<input type="number" class="form-control" required name="koli" value="<?= $p['koli'] ?>">
 															</div>
 														</div>
-														<?php $get_do = $this->db->get_where('tbl_no_do', ['shipment_id' => $p['shipment_id']])->result_array(); ?>
+															<?php $get_do = $this->db->get_where('tbl_no_do', ['shipment_id' => $p['shipment_id']])->result_array(); ?>
 														<?php
-
-														if ($get_do) {
-															$no = 1;
-															foreach ($get_do as $do) {
+														$no = 1;
+														foreach ($get_do as $do) {
 														?>
-																<div class="col-md-4">
-																	<div class="form-group">
-																		<label for="exampleInputEmail1">No. DO/DN <?= $no; ?></label>
-																		<input type="text" class="form-control" name="note_cs[]" value="<?= $do['no_do'] ?>">
-																		<input type="text" class="form-control" hidden name="id_do[]" value="<?= $do['id_berat'] ?>">
-																	</div>
-																</div>
-															<?php $no++;
-															}
-														} else {
-															?>
 															<div class="col-md-4">
 																<div class="form-group">
-																	<label for="exampleInputEmail1">No. DO/DN </label>
-																	<input type="text" class="form-control" name="note_cs[]" value="<?= $p['note_cs'] ?>">
+																	<label for="exampleInputEmail1">No. DO/DN <?= $no; ?></label>
+																	<input type="text" class="form-control" name="note_cs[]" value="<?= $do['no_do'] ?>">
+																	<input type="text" class="form-control" hidden name="id_do[]" value="<?= $do['id_berat'] ?>">
 																</div>
 															</div>
-
-														<?php	}
+														<?php $no++;
+														}
 
 														?>
 														<div class="col-md-4">
 															<div class="form-group">
-																<label for="exampleInputEmail1">No. SO/PO</label>
+																<label for="exampleInputEmail1">No. SO/PO</label><small> Use (,) if more than 1</small>
 																<input type="text" class="form-control" name="no_so" value="<?= $do['no_so'] ?>">
 															</div>
 														</div>
+														
 														<div class="col-md-3">
 															<div class="form-group">
 																<label for="exampleInputEmail1">STP</label>
@@ -201,17 +190,17 @@
 															</div>
 														</div>
 														<div class="col-md-2">
-															<div class="form-group">
-																<label for="exampleInputEmail1">Tree Shipper</label>
-																<input type="text" class="form-control" required name="tree_shipper" value="<?= $p['tree_shipper'] ?>">
-															</div>
-														</div>
-														<div class="col-md-2">
-															<div class="form-group">
-																<label for="exampleInputEmail1">Tree Consignee</label>
-																<input type="text" class="form-control" required name="tree_consignee" value="<?= $p['tree_consignee'] ?>">
-															</div>
-														</div>
+	                                                        <div class="form-group">
+	                                                            <label for="exampleInputEmail1">Tree Shipper</label>
+	                                                            <input type="text" class="form-control" required name="tree_shipper" value="<?= $p['tree_shipper'] ?>">
+	                                                        </div>
+	                                                    </div>
+	                                                    <div class="col-md-2">
+	                                                        <div class="form-group">
+	                                                            <label for="exampleInputEmail1">Tree Consignee</label>
+	                                                            <input type="text" class="form-control" required name="tree_consignee" value="<?= $p['tree_consignee'] ?>">
+	                                                        </div>
+	                                                    </div>
 														<div class="col-md-4">
 															<div class="form-group">
 																<label for="exampleInputPassword1">Note</label>
@@ -230,34 +219,29 @@
 													</h4>
 													<div class="row">
 														<div class="col-md-4">
-															<div class="form-group">
+														<div class="form-group">
 																<label for="exampleInputEmail1">Image</label>
 																<!-- <input type="file" class="form-control" name="ktp"> -->
 																<input type="file" class="form-control" name="ktp[]" accept="image/*" capture multiple>
-																<?php if ($p['image'] == NULL) {
+																<?php
+	$files = explode("+", $p['image']);
+																foreach ($files as $file) {
+																	// var_dump($file);
+																	// die;
+																	$cek_foto = file_exists($_SERVER['DOCUMENT_ROOT'] . 'uploads/berkas/' . $file);
+																	
 																?>
-																	<!-- <input type="file" class="form-control" name="ktp" accept="image/*" capture> -->
-																	<?php	} else {
-																	$files = explode("+", $p['image']);
-																	foreach ($files as $file) {
-																		// var_dump($file);
-																		// die;
-																		$cek_foto = file_exists($_SERVER['DOCUMENT_ROOT'] . 'uploads/berkas/' . $file);
-																		if ($cek_foto) {
-																	?>
-																			<div class="col-md-3">
-																				<img src="<?= base_url('uploads/berkas/' . $file) ?>" width="250" height="250">
+																		<div class="col-md-3">
+																			<img src="<?= base_url('uploads/berkas/' . $file) ?>" width="250" height="250">
 
-																			</div>
+																		</div>
 
-																		<?php    } else {
-																		?>
-																			<!-- <input type="file" name="foto[]" class="form-control" multiple> -->
+																	
 
-																<?php    }
-																	}
+																<?php    
 																} ?>
 															</div>
+
 
 														</div>
 
@@ -271,15 +255,14 @@
 
 																<?php	} else {
 																?>
-																	<button type="button" class="btn text-light" data-toggle="modal" data-target="#modal-lg" style="background-color: #9c223b;">
+																<button type="button" class="btn text-light" data-toggle="modal" data-target="#modal-lg" style="background-color: #9c223b;">
 																		Add Signature
 																	</button>
-																	<label for="exampleInputEmail1">Signature</label>
+																<label for="exampleInputEmail1">Signature</label>
 																	<img src="data:<?= $p['signature']; ?>" height="80" width="100">
 																<?php	} ?>
 															</div>
 														</div>
-
 														<div class="col-md-4">
 															<div class="form-group">
 																<label for="exampleInputEmail1">Sender</label>

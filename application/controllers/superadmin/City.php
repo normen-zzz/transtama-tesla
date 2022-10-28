@@ -25,7 +25,7 @@ class City extends CI_Controller
 	{
 		$data = array(
 			'city_name' => $this->input->post('city_name'),
-			'tree_code' => $this->input->post('tree_code'),
+			'tree_code' => $this->input->post('tree_code')
 		);
 		//insert all together
 		$this->db->insert('tb_city', $data);

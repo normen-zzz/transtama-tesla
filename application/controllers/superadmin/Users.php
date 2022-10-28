@@ -27,11 +27,11 @@ class Users extends CI_Controller
 	{
 		$data = array(
 			'nama_user' => $this->input->post('nama_user'),
+			'username' => $this->input->post('username'),
 			'email' => $this->input->post('email'),
 			'id_role' => $this->input->post('id_role'),
 			'id_jabatan' => $this->input->post('id_jabatan'),
 			'id_atasan' => $this->input->post('id_atasan'),
-			'username' => $this->input->post('username'),
 			'password' => password_hash($this->input->post('password'), PASSWORD_DEFAULT),
 			'status' => 1,
 
