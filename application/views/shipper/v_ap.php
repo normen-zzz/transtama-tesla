@@ -20,6 +20,7 @@
                                 <!--end::Svg Icon-->
                             </span>Add</a>
                         <!--end::Button-->
+                        <a href="<?= base_url('shipper/ap/history') ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;"> <i class="fa fa-clipboard text-light"></i> History</a>
                     </div>
                 </div>
                 <div class="card-body" style="overflow: auto;">
@@ -28,7 +29,7 @@
                         <thead>
                             <tr>
                                 <th>No AP</th>
-                               <!-- <th>Created By</th> -->
+                                <!-- <th>Created By</th> -->
                                 <!-- <th>Purpose</th> -->
                                 <th>Date</th>
                                 <!-- <th>Address</th> -->
@@ -46,7 +47,7 @@
                                     <td><?= $c['no_pengeluaran'] . '<br>';
                                         echo ($c['id_kat_ap'] == 3)  ? $c['no_ca'] : ''
                                         ?> </td>
-                                   <!-- <td><?= $c['nama_user'] ?></td> -->
+                                    <!-- <td><?= $c['nama_user'] ?></td> -->
                                     <!-- <td><?= $c['purpose'] ?></td> -->
                                     <td><?= bulan_indo($c['date']) ?></td>
                                     <td><?= rupiah($c['total']) ?></td>

@@ -378,6 +378,20 @@ class Ap extends CI_Controller
 			redirect('shipper/ap/detail/' . $no_pengeluaran);
 		}
 	}
+	public function history()
+	{
+
+		$data['title'] = 'History Account Payable';
+		$id_user = $this->session->userdata('id_user');
+		$id_atasan = $this->session->userdata('id_atasan');
+		// kalo dia atasan
+		if ($id_atasan == NULL || $id_atasan == 0) {
+			$data['ap'] = $this->ap->getHistoryMyApAtasan($id_user)->result_array();
+		} else {
+			$data['ap'] = $this->ap->getHistoryMyAp($id_user)->result_array();
+		}
+		$this->backend->display('shipper/v_ap_history', $data);
+	}
 	public function editApSatuanAjax()
 	{
 		$id = $this->input->post('id');
