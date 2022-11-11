@@ -52,11 +52,13 @@ class Backoffice extends CI_Controller
 						redirect('shipper/salesOrder');
 					} elseif ($user['id_role'] == 3) {
 						redirect('cs/salesOrder');
-					} elseif ($user['id_role'] == 4) {
+					} elseif ($user['id_role'] == 4 && $user['id_jabatan'] != 12) {
 						redirect('sales/salesOrder');
+					} elseif ($user['id_role'] == 4 && $user['id_jabatan'] == 12) {
+						redirect('sales/SalesTracker');
 					} elseif ($user['id_role'] == 5) {
 						redirect('dispatcher/scan');
-					}elseif ($user['id_role'] == 6) {
+					} elseif ($user['id_role'] == 6) {
 						redirect('finance/ap');
 					} else {
 						redirect('dispatcher/salesOrder');

@@ -18,7 +18,7 @@ class Order extends CI_Controller
         $this->load->library('upload');
         $this->load->model('M_Datatables');
         $this->load->library('form_validation');
-		 $this->load->model('PengajuanModel', 'pengajuan');
+        $this->load->model('PengajuanModel', 'pengajuan');
         // $this->getDataWisuda();
 
         $this->load->model('PengajuanModel', 'order');
@@ -50,7 +50,7 @@ class Order extends CI_Controller
         $data['p'] = $this->order->order($id)->row_array();
         $this->backend->display('cs/v_edit_order', $data);
     }
-	 public function editOrder($id, $id_so)
+    public function editOrder($id, $id_so)
     {
         $data['title'] = 'Edit Order';
         $data['id_so'] = $id_so;
@@ -64,7 +64,7 @@ class Order extends CI_Controller
     function view_data_query()
     {
         $query  = "SELECT a.*, b.nama_user FROM tbl_shp_order a JOIN tb_user b ON a.id_user=b.id_user";
-          $search = array('nama_user', 'shipment_id', 'order_id', 'shipper', 'consigne');
+        $search = array('nama_user', 'shipment_id', 'order_id', 'shipper', 'consigne');
         $where  = array('a.deleted' => 0);
         // $where  = array('a.id_user' => $this->session->userdata('id_user'));
 
@@ -74,7 +74,7 @@ class Order extends CI_Controller
         header('Content-Type: application/json');
         echo $this->M_Datatables->get_tables_query($query, $search, $where, $isWhere);
     }
-	public function processEdit()
+    public function processEdit()
     {
         $id_do = $this->input->post('id_do');
         if ($id_do == NULL) {
@@ -98,7 +98,7 @@ class Order extends CI_Controller
                 $total_koli += $collie[$i];
             }
         }
-		$no_do = $this->input->post('note_cs');
+        $no_do = $this->input->post('note_cs');
         $no_do = implode(',', $no_do);
         $data = array(
             'weight' => $total_weight,
@@ -133,11 +133,23 @@ class Order extends CI_Controller
             redirect('cs/order/edit/' . $this->input->post('id') . '/' . $this->input->post('id_so'));
         }
     }
-	
-	  
 
-    
-	public function processEditOrder()
+    public function tambahDo()
+    {
+        $dataDo = [
+            'shipment_id' => $this->input->post('tambahShipmentId'),
+            'no_do' => $this->input->post('tambahNoDo'),
+            'no_so' => $this->input->post('tambahNoSo'),
+        ];
+        if ($this->db->insert('tbl_no_do', $dataDo)) {
+            $this->session->set_flashdata('message', '<div class="alert
+                alert-success" role="alert">Success</div>');
+            redirect($_SERVER['HTTP_REFERER']);
+        }
+    }
+
+
+    public function processEditOrder()
     {
         $data = array(
             'weight' => $this->input->post('weight'),
@@ -185,7 +197,7 @@ class Order extends CI_Controller
 
     public function print($id)
     {
-         $mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => [74, 105]]);
+        $mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => [74, 105]]);
 
         $where = array('shipment_id' => $id);
         $data['order'] = $this->db->get_where('tbl_shp_order', $where)->row_array();
@@ -195,7 +207,7 @@ class Order extends CI_Controller
         $mpdf->WriteHTML($data);
         $mpdf->Output();
     }
-	public function printAll($id)
+    public function printAll($id)
     {
         $mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => [74, 105]]);
 
@@ -227,7 +239,7 @@ class Order extends CI_Controller
         $params['savename'] = FCPATH . "uploads/qrcode/" . $id . '.png';
         $this->ciqrcode->generate($params);
     }
-	 public function report()
+    public function report()
     {
         $data['title'] = 'Report Order';
         $data['order'] = $this->pengajuan->getLaporan()->result_array();
@@ -244,7 +256,7 @@ class Order extends CI_Controller
         $this->backend->display('cs/v_report_filter', $data);
     }
 
-     public function Exportexcel($bulan = null, $tahun = null)
+    public function Exportexcel($bulan = null, $tahun = null)
     {
 
         if ($bulan != null && $tahun != null) {
@@ -382,7 +394,7 @@ class Order extends CI_Controller
         $writer->save('php://output');
         exit;
     }
-	 public function ExportexcelVoid($bulan = null, $tahun = null)
+    public function ExportexcelVoid($bulan = null, $tahun = null)
     {
 
         if ($bulan != null && $tahun != null) {

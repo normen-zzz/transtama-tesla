@@ -293,13 +293,13 @@
 
 
 														?>
-														<div class="col-md-4">
+															<div class="col-md-4">
 																<div class="form-group">
 																	<label for="exampleInputEmail1">No. DO/DN </label>
 																	<input type="text" class="form-control" name="note_cs[]" value="<?= $p['note_cs'] ?>">
 																</div>
 															</div>
-														<div class="col-md-4">
+															<div class="col-md-4">
 																<div class="form-group">
 																	<label for="exampleInputEmail1">Koli </label>
 																	<input type="text" class="form-control" name="koli" value="<?= $p['koli'] ?>">
@@ -326,6 +326,33 @@
 												</div>
 												<!--end: Wizard Actions-->
 											</form>
+
+											<div class="row" style="margin-top: 100px ;">
+
+												<div class="col">
+													<h2>Tambah DO</h2>
+													<form action="<?= base_url('cs/Order/tambahDo') ?>" method="POST">
+														<div class="col">
+															<div class="form-group">
+																<label for="exampleInputEmail1">No. DO/DN </label>
+																<input type="text" class="form-control" name="tambahNoDo">
+																<input type="text" name="tambahShipmentId" id="" value="<?= $p['shipment_id'] ?>" hidden>
+
+															</div>
+														</div>
+														<div class="col">
+															<div class="form-group">
+																<label for="exampleInputEmail1">No. SO/PO</label>
+																<input type="text" class="form-control" name="tambahNoSo">
+															</div>
+														</div>
+
+														<div>
+															<button type="submit" class="btn btn font-weight-bolder text-uppercase px-9 py-4 text-light" style="background-color: #9c223b;">Submit Tambah Do</button>
+														</div>
+													</form>
+												</div>
+											</div>
 											<!--end: Wizard Form-->
 										</div>
 									</div>

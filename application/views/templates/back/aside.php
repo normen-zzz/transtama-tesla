@@ -1,4 +1,6 @@
 <?php $role = $this->session->userdata('id_role'); ?>
+<?php $jabatan = $this->session->userdata('id_jabatan'); ?>
+
 <!-- jika dia superadmin -->
 <?php if ($role == 1) {
 ?>
@@ -117,6 +119,15 @@
 
 				</ul>
 			</div>
+		</li>
+		<li class="menu-item menu-item" aria-haspopup="true">
+			<a href="<?= base_url('superadmin/SalesTracker') ?>" class="menu-link">
+				<span class="menu-text"><span class="svg-icon svg-icon-danger svg-icon mr-2">
+
+						<i class="far fa-map text-danger mr-2" aria-hidden="true">
+
+					</span></i>Sales Tracker</span>
+			</a>
 		</li>
 		<li class="menu-item menu-item" aria-haspopup="true">
 			<a href="<?= base_url('profile') ?>" class="menu-link">
@@ -240,6 +251,7 @@
 		</li>
 
 	</ul>
+	<!-- jika cs  -->
 <?php } elseif ($role == 3) {
 ?>
 
@@ -341,7 +353,8 @@
 		</li>
 
 	</ul>
-<?php } elseif ($role == 4) {
+	<!-- jika sales -->
+<?php } elseif ($role == 4 && $jabatan != 12) {
 ?>
 	<ul class="menu-nav">
 		<li class="menu-item menu-item" aria-haspopup="true">
@@ -373,6 +386,16 @@
 						<i class="fa fa-book text-danger mr-2">
 
 					</span></i>Revisi Sales Order</span>
+			</a>
+		</li>
+
+		<li class="menu-item menu-item" aria-haspopup="true">
+			<a href="<?= base_url('sales/SalesTracker') ?>" class="menu-link">
+				<span class="menu-text"><span class="svg-icon svg-icon-danger svg-icon mr-2">
+
+						<i class="far fa-map text-danger mr-2" aria-hidden="true">
+
+					</span></i>Sales Tracker</span>
 			</a>
 		</li>
 		<li class="menu-item menu-item" aria-haspopup="true">
@@ -418,6 +441,36 @@
 		</li>
 
 	</ul>
+<?php } elseif ($role == 4 && $jabatan == 12) { ?>
+	<ul class="menu-nav">
+		<li class="menu-item menu-item" aria-haspopup="true">
+			<a href="<?= base_url('sales/SalesTracker') ?>" class="menu-link">
+				<span class="menu-text"><span class="svg-icon svg-icon-danger svg-icon mr-2">
+
+						<i class="far fa-map text-danger mr-2" aria-hidden="true">
+
+					</span></i>Sales Tracker</span>
+			</a>
+		</li>
+		<li class="menu-item menu-item" aria-haspopup="true">
+			<a href="<?= base_url('profile') ?>" class="menu-link">
+				<span class="menu-text"><span class="svg-icon svg-icon-success svg-icon mr-2">
+
+						<i class="fa fa-user text-danger mr-2">
+
+					</span></i>My Profile</span>
+			</a>
+		</li>
+		<li class="menu-item menu-item" aria-haspopup="true">
+			<a href="<?= base_url('logout') ?>" class="menu-link">
+				<span class="menu-text"><span class="svg-icon svg-icon-success svg-icon mr-2">
+						<i class="fa fa-sign-out-alt text-danger mr-2">
+					</span></i>Logout</span>
+			</a>
+		</li>
+
+	</ul>
+
 <?php } elseif ($role == 5) {
 ?>
 	<ul class="menu-nav">

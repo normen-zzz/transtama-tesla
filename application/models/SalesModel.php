@@ -71,4 +71,54 @@ class SalesModel extends CI_Model
         $this->db->from($this->table);
         return $this->db->count_all_results();
     }
+
+    public function getDataSalesTracker($date, $id_sales)
+    {
+        $this->db->select('a.*, b.*');
+        $this->db->from('tbl_sales_tracker a');
+        $this->db->join('tb_user b', 'a.id_sales=b.id_user');
+        // $this->db->where('a.start_date', $date);
+        $this->db->like('a.start_date', $date);
+        $this->db->where('a.id_sales', $id_sales);
+        $this->db->where('a.is_deleted', 0);
+        return $this->db->get();
+    }
+
+    public function getDetailSalesTracker($id)
+    {
+        $this->db->select('a.*, b.*');
+        $this->db->from('tbl_sales_tracker a');
+        $this->db->join('tb_user b', 'a.id_sales=b.id_user');
+        $this->db->where('a.id_sales_tracker', $id);
+        $this->db->where('a.is_deleted', 0);
+        // $this->db->like('a.start_date', $date);
+        return $this->db->get();
+    }
+
+    public function getAllReportSalesTracker($sales)
+    {
+        $this->db->select('a.*, b.*,a.created_at as dibuat');
+        $this->db->from('tbl_sales_tracker a');
+        $this->db->join('tb_user b', 'a.id_sales=b.id_user');
+        if ($sales != 0) {
+            $this->db->where('b.id_user', $sales);
+        }
+        $this->db->where('a.is_deleted', 0);
+        $this->db->order_by('a.start_date', 'desc');
+        return $this->db->get();
+    }
+
+    public function getReportSalesTracker($awal, $akhir, $sales)
+    {
+        $this->db->select('a.*, b.*,a.created_at as dibuat');
+        $this->db->from('tbl_sales_tracker a');
+        $this->db->join('tb_user b', 'a.id_sales=b.id_user');
+        if ($sales != 0) {
+            $this->db->where('b.id_user', $sales);
+        }
+        $this->db->where('a.is_deleted', 0);
+        $this->db->where('a.start_date >=', $awal);
+        $this->db->where('a.start_date <=', $akhir);
+        return $this->db->get();
+    }
 }

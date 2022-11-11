@@ -191,8 +191,8 @@
 
                 <tr>
                     <td style=" font-size: 7.5px; width:50%;border-bottom: 1px solid black;"><b>Sender : <?= $order['sender'] ?><br>
-                            <b>Date &nbsp;&nbsp;&nbsp;&nbsp;: <?= $tahun . '-' . $bulan . '-' . $tanggal . '&nbsp;' . $jam . ':' . $menit . ':' . $detik ?></b></td>
-
+                            <!-- <b>Date &nbsp;&nbsp;&nbsp;&nbsp;: <?= $tahun . '-' . $bulan . '-' . $tanggal . '&nbsp;' . $jam . ':' . $menit . ':' . $detik ?></b></td> -->
+                            <b>Date &nbsp;&nbsp;&nbsp;&nbsp;: <?= date('Y-m-d', strtotime($order['tgl_pickup'])) ?></b></td>
                     <td style=" font-size: 7.5px; width:50%;border-left: 1px solid black;border-bottom: 1px solid black;"><b>Receiver : <br>
                             <b>Date &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: </b></td>
                 </tr>

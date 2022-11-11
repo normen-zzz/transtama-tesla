@@ -21,6 +21,7 @@
 	<!-- <link href="<?= base_url('assets/back/') ?>plugins/jquery-ui/jquery-ui.css" rel="stylesheet" type="text/css" /> -->
 	<link href="<?= base_url('assets/back/metronic/') ?>css/style.bundle.css" rel="stylesheet" type="text/css" />
 	<link href="<?= base_url('assets/back/metronic/') ?>css/pages/wizard/wizard-3.css" rel="stylesheet" type="text/css" />
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/css/datepicker.css" rel="stylesheet" type="text/css" />
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.form/4.3.0/jquery.form.min.js" integrity="sha384-qlmct0AOBiA2VPZkMY3+2WqkHtIQ9lSdAsAn5RUJD/3vA5MKDgSGcdmIv4ycVxyn" crossorigin="anonymous"></script>
 
 
@@ -216,12 +217,52 @@
 	<script src="https://raw.githubusercontent.com/plentz/jquery-maskmoney/master/dist/jquery.maskMoney.min.js"></script>
 	<!-- <script src="https://code.jquery.com/jquery-2.2.4.js" integrity="sha256-iT6Q9iMJYuQiMWNd9lDyBUStIq/8PuOW33aOqmvFpqI=" crossorigin="anonymous"></script> -->
 
+	<!-- datepicker -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js" integrity="sha512-T/tUfKSV1bihCnd+MxKD0Hm1uBBroVYBOYSk1knyvQ9VyZJpc/ALb4P0r6ubwVPSGB2GvjeoMAJJImBG12TiaQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/locales/bootstrap-datepicker.id.min.js" integrity="sha512-zHDWtKP91CHnvBDpPpfLo9UsuMa02/WgXDYcnFp5DFs8lQvhCe2tx56h2l7SqKs/+yQCx4W++hZ/ABg8t3KH/Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+
 	<script>
 		$('#Submit').click(function() {
 			$(this).html('<img src="<?= base_url('assets/loading/loading-red.gif') ?>" />'); // A GIF Image of Your choice
 			return false
 		});
 	</script>
+
+	<script type="text/javascript">
+		if (<?= $date ?> == <?= date('d-m-y') ?>) {
+			$('#datepickid div').datepicker({
+				// minDate: '0',
+				// startDate: "+1d",
+				// dayNamesShort: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+				// language: "id",
+				// dayNamesMin: ['Sunday', 'Monday', ],
+				todayHighlight: true
+
+			}).on('changeDate', function(e) {
+				// $('#datepickid div').datepicker('setDate', selected.date);
+				$('#dt_due').val(e.format('dd/mm/yy'));
+				var value = $('#dt_due').val();
+				// console.log(e);
+				window.location.replace("<?= base_url('sales/SalesTracker/index/') ?>" + value);
+
+			});
+		} else {
+			var realDate = new Date('<?= $date ?>');
+			console.log(realDate);
+			$('#datepickid div').datepicker('setDate', realDate).on('changeDate', function(e) {
+				// $('#datepickid div').datepicker('setDate', selected.date);
+				$('#dt_due').val(e.format('dd/mm/yy'));
+				var value = $('#dt_due').val();
+				// console.log(e);
+				window.location.replace("<?= base_url('sales/SalesTracker/index/') ?>" + value);
+
+			});
+
+		}
+	</script>
+
+
 
 	<!-- Script -->
 	<!-- untuk edit ap -->
@@ -378,6 +419,12 @@
 		$('select').select2({
 			allowClear: true,
 		});
+	</script>
+
+	<script type="text/javascript">
+		function confirm_delete() {
+			return confirm('are you sure?');
+		}
 	</script>
 
 
@@ -1146,6 +1193,12 @@
 				$('#deleteModal').modal('show');
 			});
 
+		});
+	</script>
+
+	<script>
+		$(document).ready(function() {
+			$('#tableSalesTracker').DataTable();
 		});
 	</script>
 
