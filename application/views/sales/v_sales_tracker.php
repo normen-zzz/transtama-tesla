@@ -171,7 +171,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="exampleInputPassword1">Picture</label>
-                                <input type="file" id="attachment1" class="form-control" accept="image/png, image/gif, image/jpeg" onchange="handleImageUpload(this.id);" required name="photoBefore">
+                                <input type="file" id="attachment1" class="form-control" onchange="handleImageUpload(this.id);" required name="photoBefore">
                                 <input type="file" class="form-control" id="upload_file2" name="photo" hidden>
                             </div>
                             <div class="form-group">

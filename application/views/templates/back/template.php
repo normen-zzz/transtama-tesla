@@ -204,8 +204,9 @@
 	<script src="<?= base_url('assets/back/metronic/') ?>js/jSignature.min.js"></script>
 	<script src="<?= base_url('assets/back/') ?>plugins/dropify/js/dropify.min.js"></script>
 
-
-	<script src="<?= base_url('assets/back/metronic/') ?>js/pages/crud/forms/widgets/typeahead.js"></script>
+	<!-- just include the file in a script tag untuk convert heic ke jpg -->
+	<script src="<?= base_url('assets/heic2any/') ?>dist/heic2any.js"></script>
+	<script script script src="<?= base_url('assets/back/metronic/') ?>js/pages/crud/forms/widgets/typeahead.js"></script>
 	<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.form/4.3.0/jquery.form.min.js" integrity="sha384-qlmct0AOBiA2VPZkMY3+2WqkHtIQ9lSdAsAn5RUJD/3vA5MKDgSGcdmIv4ycVxyn" crossorigin="anonymous"></script> -->
 
 	<!-- compress -->

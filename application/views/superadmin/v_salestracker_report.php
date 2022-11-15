@@ -86,7 +86,9 @@
 											<td><?= $salestracker['location'] ?></td>
 											<td><?= date('D d/m/Y H:i:s', strtotime($salestracker['dibuat'])) ?></td>
 											<td><?= date('D d/m/Y H:i:s', strtotime($salestracker['start_date'])) ?></td>
-											<td><?= date('D d/m/Y H:i:s', strtotime($salestracker['end_date'])) ?></td>
+											<td><?php if ($salestracker['end_date'] != NULL) {
+													echo date('D d/m/Y H:i:s', strtotime($salestracker['end_date']));
+												} ?></td>
 											<td><?= $salestracker['contact'] ?></td>
 											<td><?= $salestracker['summary'] ?></td>
 											<td><img src="<?= base_url('uploads/salestracker/' . $salestracker['image']) ?>" alt="" srcset="" width="70px"></td>

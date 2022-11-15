@@ -12,12 +12,41 @@ async function handleImageUpload(id) {
 		maxWidthOrHeight: 1920,
 		useWebWorker: true,
 	};
-	console.log(fileUpload);
+	console.log(fileUpload.files);
 	var file;
+	var imageFile = "";
 	const dataTransfer = new DataTransfer();
 	const compressedImages = [];
 	for (let i = 0; i < fileUpload.files.length; i++) {
-		const imageFile = fileUpload.files[i];
+		var fileNameExt = fileUpload.files[i].name;
+		var ext = fileNameExt.split(".");
+		ext = ext[ext.length - 1];
+		console.log(ext);
+
+		if (ext == "heic" || ext == "heif") {
+			var blob = new Blob([fileUpload.files[i]], { type: "image/" + ext });
+			await heic2any({
+				blob: blob,
+				toType: "image/jpeg",
+				quality: 0.5, // cuts the quality and size by half
+			})
+				.then(function (resultBlob) {
+					console.log("hasil convert");
+					console.log(resultBlob);
+					let file = new File([resultBlob], fileUpload.files[i].name + ".jpg", {
+						type: "image/jpeg",
+					});
+					imageFile = file;
+					console.log("ini image file heif");
+					console.log(imageFile);
+				})
+				.catch(function (x) {
+					console.log(x.code);
+					console.log(x.message);
+				});
+		} else {
+			imageFile = fileUpload.files[i];
+		}
 		fileUploads = document.getElementById("upload_file2");
 		try {
 			console.log("Ini File Asli");
