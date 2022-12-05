@@ -1,4 +1,5 @@
 async function handleImageUpload(id) {
+	$("#modalLoading").modal("show");
 	var fileUpload = document.getElementById(id);
 	//This is a hidden input in the html document. This is what will be sent to the server.
 	var fileUploads = document.getElementById("upload_file2");
@@ -91,6 +92,11 @@ async function handleImageUpload(id) {
 
 	console.log("Isi Input Kdua");
 	console.log(fileUploads.files);
+	setTimeout(function () {
+		if ($("#modalLoading").modal("hide")) {
+			console.log("Sembunyiin modal");
+		}
+	}, 2000);
 
 	// console.log("Ini Isi items");
 	// console.log(dataTransfer.items);

@@ -9,11 +9,14 @@ class Approval extends CI_Controller
         $this->load->model('Sendwa', 'wa');
         $this->load->model('ApModel', 'ap');
     }
-	public function testWa()
+    public function testWa($nomor = NULL)
     {
         // $this->wa->pickup('+6281808008082', "Tester Message Whatsapp");
         $this->wa->pickup('+6285697780467', "Tester Message Whatsapp");
-		//$this->wa->pickup('+62895358288395', "Tester Message Whatsapp Api");
+        if ($nomor != NULL) {
+            $this->wa->pickup($nomor, "Tester Message Whatsapp");
+        }
+        //$this->wa->pickup('+62895358288395', "Tester Message Whatsapp Api");
     }
 
     public function detailCs($no_ap)
@@ -34,7 +37,7 @@ class Approval extends CI_Controller
         $data['kategori_pengeluaran'] = $this->db->get('tbl_list_pengeluaran')->result_array();
         $this->load->view('v_detail_ap_ops', $data);
     }
-	 public function detailSales($no_ap, $id_atasan)
+    public function detailSales($no_ap, $id_atasan)
     {
         $data['title'] = 'Detail Account Payable';
         $data['ap'] = $this->ap->getApByNo($no_ap)->result_array();
@@ -56,7 +59,7 @@ class Approval extends CI_Controller
                 'created_atasan' => date('Y-m-d H:i:s'),
             );
             $insert = $this->db->insert('tbl_approve_pengeluaran', $data);
-			//var_dump($data); die;
+            //var_dump($data); die;
             if ($insert) {
                 $this->db->update('tbl_pengeluaran', ['status' => 1], $where);
 
@@ -70,7 +73,7 @@ class Approval extends CI_Controller
                 $pesan = "Hallo, ada pengajuan Ap No. *$no_ap* Dengan Tujuan *$purpose* Tanggal *$date*. Silahkan approve melalui link berikut : $link . Terima Kasih";
                 // no pak sam
                 $this->wa->pickup('+6281808008082', "$pesan");
-                 $this->wa->pickup('+6285157906966', "$pesan");
+                $this->wa->pickup('+6285157906966', "$pesan");
 
                 echo "<script>alert('Success Approve')</script>";
                 echo "<script>window.close();</script>";
@@ -123,7 +126,7 @@ class Approval extends CI_Controller
             echo "<script>window.close();</script>";
         }
     }
-	// approve sales
+    // approve sales
     public function approveMgrSales($no_pengeluaran, $id_atasan)
     {
         $where = array('no_pengeluaran' => $no_pengeluaran);
@@ -153,7 +156,7 @@ class Approval extends CI_Controller
             echo "<script>window.close();</script>";
         }
     }
-	 // approve aktivasi
+    // approve aktivasi
     public function approveRequest($id_request)
     {
         $data = array(

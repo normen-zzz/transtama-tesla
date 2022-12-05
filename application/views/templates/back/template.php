@@ -212,6 +212,7 @@
 	<!-- compress -->
 	<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.0/dist/browser-image-compression.js"></script>
 	<script src="<?= base_url('assets/compress/index.js') ?>"></script>
+	<script src="<?= base_url('assets/compress/tracker.js') ?>"></script>
 	<script src="<?= base_url('assets/compress/edit.js') ?>"></script>
 
 	<!-- rupiah -->

@@ -77,6 +77,7 @@
                         </tbody>
                     </table>
                     <!--end: Datatable-->
+
                 </div>
             </div>
             <!--end::Card-->
@@ -171,8 +172,8 @@
                             </div>
                             <div class="form-group">
                                 <label for="exampleInputPassword1">Picture</label>
-                                <input type="file" id="attachment1" class="form-control" onchange="handleImageUpload(this.id);" required name="photoBefore">
-                                <input type="file" class="form-control" id="upload_file2" name="photo" hidden>
+                                <input type="file" class="form-control" id="attachment<?= $d['id_sales_tracker'] ?>" name="attachmentbefore<?= $d['id_sales_tracker'] ?>" onchange="handleImageUploadTracker(this.id);" accept="image/*" required>
+                                <input type="file" class="form-control" id="upload_file-attachment<?= $d['id_sales_tracker'] ?>" name="photo">
                             </div>
                             <div class="form-group">
                                 <label for="exampleInputPassword1">End Date</label>

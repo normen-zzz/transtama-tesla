@@ -96,6 +96,8 @@ class SalesOrder extends CI_Controller
             // no bu sri dan mba Lina
             $this->wa->pickup('+62818679758', "$pesan");
             $this->wa->pickup('+6281385687290', "$pesan");
+            $this->wa->pickup('+6285697780467', "$pesan");
+
 
             $this->session->set_flashdata('message', '<div class="alert
             alert-success" role="alert">Success</div>');
@@ -177,7 +179,7 @@ class SalesOrder extends CI_Controller
                 $sales = $this->session->userdata('nama_user');
                 $destination = $this->input->post('destination');
                 $pu_poin = strtoupper($this->input->post('pu_poin'));
-				$service = $this->input->post('service');
+                $service = $this->input->post('service');
                 if ($destination != '' || $destination != NULL) {
                     $pesanDestination = "dengan tujuan *$destination*";
                 } else {
@@ -188,13 +190,12 @@ class SalesOrder extends CI_Controller
                 $pesan = "Hallo Cs, ada pickup dari *$shipper* $pesanDestination $pesanPickUp *$service* tanggal *$tgl_pickup* jam *$time* dengan moda $pu_moda dengan jenis barang $commodity. Catatan : $note. *Sales : $sales*";
                 // kirim wa
 
-                // $this->wa->pickup('+6285157906966', "$pesan"); //Nomor Mas Krisna
+
                 $this->wa->pickup('+6285697780467', "$pesan"); //Nomor Norman
-                 $this->wa->pickup('+6281293753199', "$pesan"); //Nomor Bu Lili
-                // $this->wa->pickup('+6281617435559', "$pesan");
-                 $this->wa->pickup('+6285894438583', "$pesan"); //Mba Yunita 
-                 $this->wa->pickup('+6281385687290', "$pesan"); //Mba Lina
-                // $this->wa->pickup('+6285774086919', "$pesan");
+                $this->wa->pickup('+6281293753199', "$pesan"); //Nomor Bu Lili
+                $this->wa->pickup('+6285894438583', "$pesan"); //Mba Yunita 
+                $this->wa->pickup('+6281385687290', "$pesan"); //Mba Lina
+
                 $random = random_string('numeric', 8);
 
                 $get_last_id_so = $this->db->limit(1)->order_by('id_so', 'DESC')->get('tbl_so')->row_array(); // mencari data terakhir yang baru diinput di tbl so
@@ -771,7 +772,7 @@ class SalesOrder extends CI_Controller
         $link = "https://tesla-smartwork.transtama.com/approval/approveRequest/$id_aktivasi";
         $pesan = "Hallo CS, Ada Request Revisi SO Dari *$nama* . Silahkan Aktivasi Melalu Link Berikut : $link . Terima Kasih";
         // no bu sri
-        $this->wa->pickup('+6285157906966', "$pesan");
+        $this->wa->pickup('+6285697780467', "$pesan");
         $this->wa->pickup('+62818679758', "$pesan");
 
         $this->session->set_flashdata('message', '<div class="alert
@@ -860,8 +861,8 @@ class SalesOrder extends CI_Controller
         $sheet->setCellValue('M1', 'PIC Invoice');
         $sheet->setCellValue('N1', 'City');
         $sheet->setCellValue('O1', 'Weight');
-		 $sheet->setCellValue('P1', 'Pickup Poin');
-		
+        $sheet->setCellValue('P1', 'Pickup Poin');
+
         $no = 1;
         $x = 2;
         foreach ($shipments as $row) {
@@ -893,7 +894,7 @@ class SalesOrder extends CI_Controller
             $sheet->setCellValue('N' . $x, $row['city_consigne'])->getColumnDimension('N')
                 ->setAutoSize(true);
             $sheet->setCellValue('O' . $x, $row['berat_js']);
-			 $sheet->setCellValue('P' . $x, $detail['pu_poin'])->getColumnDimension('P')
+            $sheet->setCellValue('P' . $x, $detail['pu_poin'])->getColumnDimension('P')
                 ->setAutoSize(true);
             $x++;
         }
