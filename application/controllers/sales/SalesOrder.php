@@ -108,6 +108,48 @@ class SalesOrder extends CI_Controller
             redirect('sales/salesOrder/revisiSo');
         }
     }
+
+    public function addNewSoDecline()
+    {
+        $data = array(
+            'freight_baru' => $this->input->post('freight_baru'),
+            'special_freight_baru' => $this->input->post('special_freight_baru'),
+            'packing_baru' => $this->input->post('packing_baru'),
+            'insurance_baru' => $this->input->post('insurance_baru'),
+            'surcharge_baru' => $this->input->post('surcharge_baru'),
+            'disc_baru' => $this->input->post('disc_baru') / 100,
+            'cn_baru' => $this->input->post('cn_baru') / 100,
+            'others_baru' => $this->input->post('others_baru'),
+            'alasan' => $this->input->post('alasan'),
+            'shipment_id' => $this->input->post('id'),
+            'id_sales' => $this->session->userdata('id_user'),
+        );
+        $nama = $this->session->userdata('nama_user');
+        $delete = $this->db->delete('tbl_revisi_so', array('shipment_id' => $this->input->post('id')));
+        $deleteApprove = $this->db->delete('tbl_approve_revisi_so', array('shipment_id' => $this->input->post('id')));
+        $insert = $this->db->insert('tbl_revisi_so', $data);
+        if ($deleteApprove) {
+            if ($delete) {
+                if ($insert) {
+                    $this->db->update('tbl_request_revisi', array('status' => 1), array('shipment_id' => $this->input->post('id')));
+                    $pesan = "Hallo CS, Ada Revisi Harga SO Baru Yang Diajukan Oleh *$nama* . Silahkan Cek Melalu Sistem Ya . Terima Kasih";
+                    // no bu sri dan mba Lina
+                    $this->wa->pickup('+62818679758', "$pesan");
+                    $this->wa->pickup('+6281385687290', "$pesan");
+                    $this->wa->pickup('+6285697780467', "$pesan");
+
+
+                    $this->session->set_flashdata('message', '<div class="alert
+            alert-success" role="alert">Success</div>');
+                    redirect('sales/salesOrder/revisiSo');
+                } else {
+                    $this->session->set_flashdata('message', '<div class="alert
+            alert-danger" role="alert">Failed</div>');
+                    redirect('sales/salesOrder/revisiSo');
+                }
+            }
+        }
+    }
     public function processAdd()
     {
         $this->form_validation->set_rules('tgl_pickup', 'tgl_pickup', 'required');

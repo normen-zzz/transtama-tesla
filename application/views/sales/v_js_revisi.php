@@ -64,8 +64,10 @@
                                                                 <?php    } else {
                                                                 ?>
                                                                     <a href="#" class="btn btn-sm mb-1 text-light" data-toggle="modal" data-target="#modal-lg<?= $j['id'] ?>" style="background-color: #9c223b;">Add New SO</a>
+                                                                <?php }
+                                                            } elseif ($j['status_pengajuan'] == 4) { ?>
+                                                                <a href="#" class="btn btn-sm mb-1 text-light" data-toggle="modal" data-target="#modal-lg-decline<?= $j['id'] ?>" style="background-color: #9c223b;">Add New SO</a>
                                                             <?php }
-                                                            }
                                                             ?>
                                                         </td>
 
@@ -106,6 +108,105 @@
                     </div>
                     <div class="modal-body">
                         <form action="<?= base_url('sales/salesOrder/addNewSo') ?>" method="POST">
+
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Freight</label>
+                                        <input type="text" class="form-control" id="exampleInputEmail1" required name="freight_baru">
+                                        <input type="text" class="form-control" id="exampleInputEmail1" name="id" hidden required value="<?= $shp['id'] ?>">
+                                        <input type="text" class="form-control" id="exampleInputEmail1" name="id_so" hidden required value="<?= $shp['id_so'] ?>">
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Special Freight</label>
+                                        <input type="text" class="form-control" id="exampleInputEmail1" required name="special_freight_baru">
+                                        <!-- <input type="text" class="form-control" id="exampleInputEmail1" hidden required value="<?= $msr['id_msr'] ?>" name="id_msr"> -->
+                                    </div>
+
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Packing</label>
+                                        <input type="text" class="form-control" id="exampleInputEmail1" required name="packing_baru">
+                                        <!-- <input type="text" class="form-control" id="exampleInputEmail1" hidden required value="<?= $msr['id_msr'] ?>" name="id_msr"> -->
+                                    </div>
+
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Others</label>
+                                        <input type="text" class="form-control" id="exampleInputEmail1" required name="others_baru">
+                                    </div>
+
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Surcharge</label>
+                                        <input type="text" class="form-control" id="exampleInputEmail1" required name="surcharge_baru">
+                                    </div>
+
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Insurance</label>
+                                        <input type="text" class="form-control" id="exampleInputEmail1" required name="insurance_baru">
+                                    </div>
+
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Disc</label>
+                                        <input type="number" class="form-control" id="exampleInputEmail1" required name="disc_baru" placeholder="ex: 2, it measn 2 %">
+                                    </div>
+
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Cn</label>
+                                        <input type="number" class="form-control" id="exampleInputEmail1" required name="cn_baru" placeholder="ex: 2, it measn 2 %">
+                                    </div>
+
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Reason</label>
+                                        <textarea name="alasan" class="form-control" required></textarea>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                    </div>
+                    <div class="modal-footer justify-content-between">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                    </form>
+                </div>
+                <!-- /.modal-content -->
+            </div>
+            <!-- /.modal-dialog -->
+        </div>
+        <!-- /.modal -->
+
+    <?php } ?>
+
+    <?php foreach ($js as $shp) {
+    ?>
+
+        <div class="modal fade" id="modal-lg-decline<?= $shp['id'] ?>">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Add New Sales Order with <?= $shp['shipment_id'] ?></h4>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="<?= base_url('sales/salesOrder/addNewSoDecline') ?>" method="POST">
 
                             <div class="row">
                                 <div class="col-md-6">

@@ -20,6 +20,16 @@ class PengajuanModel extends CI_Model
             return $this->db->get();
         }
     }
+    public function getLastTracking($shipmnent_id)
+    {
+        $this->db->select('*');
+        $this->db->from('tbl_tracking_real a');
+        $this->db->where('a.shipment_id', $shipmnent_id);
+        $this->db->order_by('a.id_tracking', 'DESC');
+        $this->db->limit(1);
+        $query = $this->db->get();
+        return $query;
+    }
     public function dispatch()
     {
         $this->db->select('a.shipper,a.consigne,a.tree_shipper,a.tree_consignee,b.status as sts,b.is_incoming,b.id_gateway, b.created_at, b.shipment_id, b.status_eksekusi');
@@ -143,7 +153,7 @@ class PengajuanModel extends CI_Model
         $query = $this->db->get();
         return $query;
     }
-	 public function getLaporanTransaksiVoidFilter($bulan, $tahun)
+    public function getLaporanTransaksiVoidFilter($bulan, $tahun)
     {
         // $where = array('a.shipment_id' != NULL, 'YEAR(a.tgl_pickup)' => $tahun, 'MONTH(a.tgl_pickup)' => $bulan);
         $where = array('YEAR(a.tgl_pickup)' => $tahun, 'MONTH(a.tgl_pickup)' => $bulan, 'a.deleted' => 1);
@@ -168,7 +178,7 @@ class PengajuanModel extends CI_Model
         $query = $this->db->get();
         return $query;
     }
-	 public function getLaporanVoid()
+    public function getLaporanVoid()
     {
         $this->db->select('a.*, b.nama_user, c.service_name, c.prefix');
         $this->db->from('tbl_shp_order a');
@@ -245,7 +255,7 @@ class PengajuanModel extends CI_Model
         $this->db->order_by('a.tgl_pickup', 'ASC');
         return $this->db->get();
     }
-	function getShipmentBySales($bulan = null, $tahun = null)
+    function getShipmentBySales($bulan = null, $tahun = null)
     {
         $where = array('YEAR(a.tgl_pickup)' => $tahun, 'MONTH(a.tgl_pickup)' => $bulan, 'a.deleted' => 0);
         $id_sales = $this->session->userdata('id_user');
@@ -273,7 +283,7 @@ class PengajuanModel extends CI_Model
             return $query;
         }
     }
-	public function getLaporanTransaksiFilterAdmin($bulan, $tahun, $id_user)
+    public function getLaporanTransaksiFilterAdmin($bulan, $tahun, $id_user)
     {
         if ($id_user == 0) {
             $where = array('YEAR(a.tgl_pickup)' => $tahun, 'MONTH(a.tgl_pickup)' => $bulan, 'a.deleted' => 0);

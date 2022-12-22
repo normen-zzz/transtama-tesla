@@ -286,7 +286,7 @@ class Order extends CI_Controller
         $sheet->setCellValue('O1', 'PETUGAS PICKUP');
         $sheet->setCellValue('P1', 'NO FLIGHT');
         $sheet->setCellValue('Q1', 'NO SMU');
-        $sheet->setCellValue('R1', 'TANGGAL TIBA DI DAERAH');
+        $sheet->setCellValue('R1', 'TANGGAL DITERIMA');
         $sheet->setCellValue('S1', 'STATUS DELIVERY');
         $sheet->setCellValue('T1', 'LEADTIME');
         $sheet->setCellValue('U1', 'REALISASI LEADTIME');
@@ -305,6 +305,7 @@ class Order extends CI_Controller
             $jumlah = $this->db->select('no_do')->get_where('tbl_no_do', ['shipment_id' => $row['shipment_id']])->num_rows();
             $no_do = '';
             $no_so = '';
+            $tracking = $this->pengajuan->getLastTracking($row['shipment_id'])->row_array();
             if ($get_do) {
                 $i = 1;
                 foreach ($get_do as $d) {
@@ -325,6 +326,11 @@ class Order extends CI_Controller
             } else {
                 $no_so =  $row['no_so'];
             }
+            $diterima = new DateTime($row['tgl_diterima']);
+            $pickup = new DateTime($row['tgl_pickup']);
+
+
+            $leadtime = $diterima->diff($pickup)->d;
 
             $sheet->setCellValue('A' . $x, $no)->getColumnDimension('A')
                 ->setAutoSize(true);
@@ -360,11 +366,11 @@ class Order extends CI_Controller
                 ->setAutoSize(true);
             $sheet->setCellValue('Q' . $x, $row['no_smu'])->getColumnDimension('Q')
                 ->setAutoSize(true);
-            $sheet->setCellValue('R' . $x, '')->getColumnDimension('R')
+            $sheet->setCellValue('R' . $x, $row['tgl_diterima'])->getColumnDimension('R')
                 ->setAutoSize(true);
-            $sheet->setCellValue('S' . $x, '')->getColumnDimension('S')
+            $sheet->setCellValue('S' . $x, $tracking['status'])->getColumnDimension('S')
                 ->setAutoSize(true);
-            $sheet->setCellValue('T' . $x, '')->getColumnDimension('T')
+            $sheet->setCellValue('T' . $x, $leadtime)->getColumnDimension('T')
                 ->setAutoSize(true);
             $sheet->setCellValue('U' . $x, '')->getColumnDimension('U')
                 ->setAutoSize(true);
