@@ -60,43 +60,31 @@ async function handleImageUploadTracker(id) {
 		}
 		console.log("masukin file ke" + [i + 1]);
 		file = new File([compressedImages[i]], [compressedImages[i].name], {
-			type: "image/jpeg",
+			type: "image/jpg",
 		});
 		if (fileUploads.files.length == 0) {
-			dataTransfer.items.add(file);
+			if (dataTransfer.items.add(file)) {
+			}
 		} else {
-			console.log("Coba LIat Fileuploads di else");
-			console.log(fileUploads.files[0]);
-			console.log("Ini Yg File baru");
-			console.log(file);
-
 			for (let k = 0; k < fileUploads.files.length; k++) {
 				if (dataTransfer.items.add(fileUploads.files[k])) {
-					console.log("Tambah Di else Yg pertama berhasil");
 				}
 			}
 			if (dataTransfer.items.add(file)) {
-				console.log("Data Kedua berhasil");
 			}
 		}
 	}
 
 	if ((fileUploads.files = dataTransfer.files)) {
-		dataTransfer.items.clear();
 		var $el = $("#" + id);
-		// $el.wrap("<form>").closest("form").get(0).reset();
-		// $el.unwrap();
+		// dataTransfer.items.clear();
 		$el.prop("disabled", true);
-		console.log("success Clear");
+		setTimeout(function () {
+			if ($("#modalLoading").modal("hide")) {
+				console.log("Sembunyiin modal");
+			}
+		}, 2000);
 	}
-
-	console.log("Isi Input Kdua");
-	console.log(fileUploads.files);
-	setTimeout(function () {
-		if ($("#modalLoading").modal("hide")) {
-			console.log("Sembunyiin modal");
-		}
-	}, 2000);
 
 	// console.log("Ini Isi items");
 	// console.log(dataTransfer.items);

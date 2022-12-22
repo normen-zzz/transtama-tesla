@@ -96,8 +96,8 @@
 												<div class="col-md-4">
 													<label for="note_cs">Attachment 1</label>
 													<div class="form-group rec-element-ap">
-														<input type="file" class="form-control" id="attachment1" name="attachment[]" onchange="handleImageUpload(this.id);" accept="image/*" capture>
-														<input type="file" class="form-control" id="upload_file2" name="attachment2[]" accept="image/*" capture hidden>
+														<input type="file" class="form-control" id="attachment1" name="attachment[]" onchange="handleImageUploadTracker(this.id);" accept="image/*" capture>
+														<input type="file" class="form-control" id="upload_file-attachment1" name="attachment2[]" accept="image/*" capture required hidden>
 													</div>
 												</div>
 

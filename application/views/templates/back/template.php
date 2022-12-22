@@ -211,6 +211,7 @@
 
 	<!-- compress -->
 	<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.0/dist/browser-image-compression.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/core-js/3.21.1/minified.min.js"></script>
 	<script src="<?= base_url('assets/compress/index.js') ?>"></script>
 	<script src="<?= base_url('assets/compress/tracker.js') ?>"></script>
 	<script src="<?= base_url('assets/compress/edit.js') ?>"></script>
@@ -1654,7 +1655,9 @@
 					'<div class="col-md-2">' +
 					'<label for="note_cs">Attachment ' + i + '</label>' +
 					'<div class="form-group rec-element-ap">' +
-					'<input type="file" class="form-control" required  onchange="handleImageUpload(this.id);" id="attachment' + i + '" name="attachment[]" accept="image/*" capture>' +
+					'<input type="file" class="form-control" required  onchange="handleImageUploadTracker(this.id);" id="attachment' + i + '" name="attachment[]" accept="image/*" capture required>' +
+					'<input type="file" class="form-control" required  id="upload_file-attachment' + i + '" name="attachment2[]" accept="image/*" hidden>' +
+
 					'</div>' +
 					'</div>' +
 					'<div class="col-md-1">' +
