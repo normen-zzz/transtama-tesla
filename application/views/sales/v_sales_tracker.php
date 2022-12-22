@@ -46,6 +46,7 @@
                     <table class="table table-separate table-head-custom table-checkable" id="myTable">
 
                         <div class="flash-data" data-flashdata="<?= $this->session->flashdata('message'); ?>"></div>
+                        <div class="flash-data" data-flashdata="<?= $this->session->flashdata('error_upload'); ?>"></div>
                         <thead>
                             <tr>
                                 <th>Subject</th>
@@ -154,7 +155,7 @@
                     </button>
                 </div>
                 <div class="modal-body" style="margin-top: -40px;">
-                    <form action="<?= base_url('sales/SalesTracker/checkOut') ?>" method="POST" enctype="multipart/form-data">
+                    <form action="<?= base_url('sales/SalesTracker/checkOut') ?>" method="POST" enctype='multipart/form-data'>
                         <div class="card-body">
 
                             <div class="form-group">
@@ -173,7 +174,7 @@
                             <div class="form-group">
                                 <label for="exampleInputPassword1">Picture</label>
                                 <input type="file" class="form-control" id="attachment<?= $d['id_sales_tracker'] ?>" name="attachmentbefore<?= $d['id_sales_tracker'] ?>" onchange="handleImageUploadTracker(this.id);" accept="image/*" required>
-                                <input type="file" class="form-control" id="upload_file-attachment<?= $d['id_sales_tracker'] ?>" name="photo">
+                                <input type="file" class="form-control" id="upload_file-attachment<?= $d['id_sales_tracker'] ?>" name="photo" required>
                             </div>
                             <div class="form-group">
                                 <label for="exampleInputPassword1">End Date</label>
