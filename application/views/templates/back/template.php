@@ -211,7 +211,6 @@
 
 	<!-- compress -->
 	<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.0/dist/browser-image-compression.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/core-js/3.21.1/minified.min.js"></script>
 	<script src="<?= base_url('assets/compress/index.js') ?>"></script>
 	<script src="<?= base_url('assets/compress/tracker.js') ?>"></script>
 	<script src="<?= base_url('assets/compress/edit.js') ?>"></script>
@@ -1636,7 +1635,7 @@
 					'<div class="col-md-2">' +
 					'<label for="note_cs">Choose Category ' + i + '</label>' +
 					'<div class="form-group rec-element-ap">' +
-					'<input type="hidden" class="browse-category form-control" id="id_category' + i + '"  name="id_category[]">' +
+					'<input type="hidden" class="browse-category form-control" required id="id_category' + i + '"  name="id_category[]">' +
 					'<input type="text" readonly class="browse-category required form-control" id="nama_kategori' + i + '" data-index="' + i + '" name="nama_kategori_pengeluaran[]">' +
 					'</div>' +
 					'</div>' +

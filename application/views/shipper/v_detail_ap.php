@@ -123,8 +123,8 @@
 												<div class="col-md-4">
 													<label for="note_cs">Attachment 1</label>
 													<div class="form-group rec-element-ap">
-														<input type="file" class="form-control" id="attachment1" name="attachment[]" onchange="handleImageUpload(this.id);" accept="image/*" capture>
-														<input type="file" class="form-control" id="upload_file2" name="attachment2[]" accept="image/*" capture hidden>
+														<input type="file" class="form-control" id="attachment1" name="attachment[]" onchange="handleImageUploadTracker(this.id);" accept="image/*" capture>
+														<input type="file" class="form-control" id="upload_file-attachment1" name="attachment2[]" accept="image/*" capture hidden>
 													</div>
 												</div>
 
@@ -195,8 +195,8 @@
 																<form action="<?= base_url('cs/ap/edit') ?>" method="POST" enctype="multipart/form-data">
 																	<input type="text" name="id_pengeluaran" value="<?= $c['id_pengeluaran'] ?>" hidden>
 																	<input type="text" name="no_pengeluaran" value="<?= $c['no_pengeluaran'] ?>" hidden>
-																	<input type="file" class="form-control-file" id="attachmentedit<?= $c['id_pengeluaran'] ?>" data-idpengeluaran="<?= $c['id_pengeluaran'] ?>" name="attachment" onchange="handleImageEditUpload(this.id,this.dataset['idpengeluaran']);" accept="image/*" capture>
-																	<input type="file" class="form-control" id="upload_fileedit<?= $c['id_pengeluaran'] ?>" name="attachmentedit" accept="image/*" capture hidden>
+																	<input type="file" class="form-control-file" id="attachmentedit<?= $c['id_pengeluaran'] ?>" data-idpengeluaran="<?= $c['id_pengeluaran'] ?>" name="attachment" onchange="handleImageUploadTracker(this.id);" accept="image/*" capture>
+																	<input type="file" class="form-control" id="upload_file-attachmentedit<?= $c['id_pengeluaran'] ?>" name="attachmentedit" hidden>
 																	<button class="btn btn-primary mt-2" type="submit">Submit</button>
 
 																</form>

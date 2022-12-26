@@ -77,7 +77,7 @@
 												<div class="col-md-2">
 													<label for="note_cs">Choose Category 1</label>
 													<div class="form-group rec-element-ap">
-														<input type="text" class="form-control" hidden id="id_category1" name="id_category[]">
+														<input type="text" class="form-control" required hidden id="id_category1" name="id_category[]">
 														<input type="text" class="browse-category form-control" readonly data-index="1" id="nama_kategori1" name="nama_kategori_pengeluaran[]">
 													</div>
 												</div>
