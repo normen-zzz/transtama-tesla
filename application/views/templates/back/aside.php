@@ -327,12 +327,35 @@
 			</a>
 		</li>
 
-		<li class="menu-item menu-item" aria-haspopup="true">
-			<a target="_blank" href="https://pod.transtama.com" class="menu-link">
-				<span class="menu-text"><span class="svg-icon svg-icon-danger svg-icon mr-2">
-						<i class="fa fa-solid fa-envelope text-danger mr-2">
-					</span></i>POD Tracker</span>
+
+		<li class="menu-item menu-item-submenu menu-item-rel" data-menu-toggle="click" aria-haspopup="true">
+			<a href="javascript:;" class="menu-link menu-toggle">
+				<span class="menu-text">
+					<span class="menu-text"> <i class="fa fa-envelope mr-2 text-danger"></i>POD</span>
+					<!--end::Svg Icon-->
+					<span class="menu-desc"></span>
+					<i class="menu-arrow"></i>
+
 			</a>
+			<div class="menu-submenu menu-submenu-classic menu-submenu-left">
+				<ul class="menu-subnav">
+					<li class="menu-item menu-item" aria-haspopup="true">
+						<a href="<?= base_url('cs/Pod') ?>" class="menu-link">
+							<span class="menu-text"><span class="svg-icon svg-icon-danger svg-icon mr-2">
+									<i class="fa fa-envelope text-danger mr-2">
+								</span></i>Track Pod</span>
+						</a>
+					</li>
+					<li class="menu-item menu-item" aria-haspopup="true">
+						<a href="<?= base_url('cs/Pod/list') ?>" class="menu-link">
+							<span class="menu-text"><span class="svg-icon svg-icon-danger svg-icon mr-2">
+									<i class="fa fa-cog text-danger mr-2">
+								</span></i>List POD</span>
+						</a>
+					</li>
+
+				</ul>
+			</div>
 		</li>
 
 		<li class="menu-item menu-item" aria-haspopup="true">
