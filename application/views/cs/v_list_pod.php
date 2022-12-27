@@ -23,7 +23,6 @@
 
 											<div class="form-group"> <br>
 												<button type="submit" class="btn btn-success ml-3">Tampilkan</button>
-												<a href="<?= base_url('superadmin/SalesTracker') ?>" class="btn btn-primary ml-1">Reset Filter</a>
 											</div>
 										</div>
 
@@ -133,7 +132,7 @@
 													echo 'Belum Sampai';
 												} ?></td>
 											<td><?php if ($shipment['tgl_diterima'] != NULL) {
-													$kpi_result;
+													echo $kpi_result;
 												}  ?></td>
 											<td><?php
 

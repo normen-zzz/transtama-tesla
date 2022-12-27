@@ -354,6 +354,13 @@
 						</a>
 					</li>
 
+					<li class="menu-item" aria-haspopup="true">
+						<a href="<?= base_url('cs/Pod/report') ?>" class="menu-link">
+							<span class="menu-text">
+								<i class="fa fa-chart-bar text-danger mr-2"></i>Report POD</span>
+						</a>
+					</li>
+
 				</ul>
 			</div>
 		</li>
