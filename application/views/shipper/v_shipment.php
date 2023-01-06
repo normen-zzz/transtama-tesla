@@ -863,8 +863,9 @@
 									<div class="col-md-4">
 										<div class="form-group">
 											<label for="exampleInputEmail1">POD</label>
-											<!-- <input type="file" class="form-control" name="ktp"> -->
-											<input type="file" class="form-control" name="ktp[]" accept="image/*" capture multiple>
+											<input type="file" name="awal" id="attachment<?= $shipment['shipment_id'] ?>" onchange="handleImageUploadTracker(this.id);" accept="image/*" required capture>
+											<input type="file" class="form-control" id="upload_file-attachment<?= $shipment['shipment_id'] ?>" name="ktp[]" accept="image/*" hidden>
+
 										</div>
 
 									</div>
@@ -912,8 +913,9 @@
 									<div class="col-md-4">
 										<div class="form-group">
 											<label for="exampleInputEmail1">POD</label>
-											<!-- <input type="file" class="form-control" name="ktp"> -->
-											<input type="file" class="form-control" name="ktp[]" accept="image/*" capture multiple>
+											<input type="file" name="awal" id="attachmentincoming<?= $shipment['shipment_id'] ?>" onchange="handleImageUploadTracker(this.id);" accept="image/*" required capture>
+											<input type="file" class="form-control" id="upload_file-attachmentincoming<?= $shipment['shipment_id'] ?>" name="ktp[]" accept="image/*" hidden>
+
 										</div>
 
 									</div>
@@ -963,7 +965,8 @@
 										<div class="form-group">
 											<label for="exampleInputEmail1">POD</label>
 											<!-- <input type="file" class="form-control" name="ktp"> -->
-											<input type="file" class="form-control" name="ktp[]" accept="image/*" capture multiple>
+											<input type="file" name="awal" id="attachmentons<?= $shipment['shipment_id'] ?>" onchange="handleImageUploadTracker(this.id);" accept="image/*" required capture>
+											<input type="file" class="form-control" id="upload_file-attachmentons<?= $shipment['shipment_id'] ?>" name="ktp[]" accept="image/*" hidden>
 										</div>
 
 									</div>

@@ -83,12 +83,17 @@ class SalesTracker extends CI_Controller
             $config['upload_path']         = './uploads/salestracker/';
             $config['allowed_types']     = 'gif|jpg|png|jpeg';
             $config['overwrite']          = true;
+            $config['encrypt_name'] = TRUE;
 
             $this->load->library('upload', $config);
-
-            if (!$this->upload->do_upload('photo')) {
+            // $this->upload->initialize($config);
+            $img = "photo";
+            if (!$this->upload->do_upload($img)) {
+                $error = array('error' => $this->upload->display_errors());
                 $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">Gagal Upload Photo</div>');
-                redirect($_SERVER['HTTP_REFERER']);
+                $this->session->set_flashdata('error_upload', $error['error']);
+                var_dump($error);
+                // redirect($_SERVER['HTTP_REFERER']);
             } else {
                 $img = $this->upload->data();
                 $dataCheckout['image'] = $img['file_name'];
@@ -118,6 +123,7 @@ class SalesTracker extends CI_Controller
             $config['upload_path']         = './uploads/salestracker/';
             $config['allowed_types']     = 'gif|jpg|png|jpeg';
             $config['overwrite']          = true;
+            $config['encrypt_name'] = TRUE;
 
             $this->load->library('upload', $config);
 

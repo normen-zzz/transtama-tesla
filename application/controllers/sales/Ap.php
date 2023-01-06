@@ -189,6 +189,8 @@ class Ap extends CI_Controller
 			// $this->wa->pickup('+6285157906966', "$pesan");
 			$this->wa->pickup('+6289629096425', "$pesan");
 			$this->wa->pickup('+6287771116286', "$pesan");
+			//Norman
+			$this->wa->pickup('+6285697780467', "$pesan");
 		} else {
 			$get_no_hp_mgr = $this->db->select('no_hp')->get_where('tb_user', ['id_user' => $id_atasan])->row_array();
 			$no_hp = $get_no_hp_mgr['no_hp'];
@@ -204,6 +206,8 @@ class Ap extends CI_Controller
 			// no mba vema
 			$this->wa->pickup("$no_hp", "$pesan");
 			$this->wa->pickup("+6285157906966", "$pesan");
+			//Norman
+			$this->wa->pickup('+6285697780467', "$pesan");
 		}
 
 		$this->session->set_flashdata('message', '<div class="alert
@@ -361,6 +365,8 @@ class Ap extends CI_Controller
 			// $this->wa->pickup('+6285157906966', "$pesan");
 			$this->wa->pickup('+6289629096425', "$pesan");
 			$this->wa->pickup('+6287771116286', "$pesan");
+			//Norman
+			$this->wa->pickup('+6285697780467', "$pesan");
 
 			$this->db->update('tbl_pengeluaran', ['status' => 2], $where);
 			$this->session->set_flashdata('message', 'Success Approve');

@@ -239,12 +239,24 @@
 													Export SO
 												</a>
 												<?php if ($p['lock'] == 0) {
+													if (deadline($p['deadline_sales_so'])) {
 												?>
-													<a href="#" class="btn mr-2 text-light" data-toggle="modal" data-target="#modal-import" style="background-color: #9c223b;">
-														<i class="fas fa-upload text-light"> </i>
-														Import SO
-													</a>
-												<?php } ?>
+														<a href="#" class="btn mr-2 text-light" data-toggle="modal" data-target="#modal-import" style="background-color: #9c223b;">
+															<i class="fas fa-upload text-light"> </i>
+															Import SO
+														</a>
+												<?php } else {
+														if ($request_aktivasi) {
+															if ($request_aktivasi['status'] == 0) {
+																echo 'Wait Approve';
+															} else {
+																echo '';
+															}
+														} else {
+															echo  "SO Late Submit";
+														}
+													}
+												} ?>
 
 											<?php	} ?>
 											<p><?= $this->session->flashdata('message'); ?></p>

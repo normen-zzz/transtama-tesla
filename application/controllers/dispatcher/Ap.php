@@ -190,6 +190,8 @@ class Ap extends CI_Controller
 		$pesan = "Hallo, ada pengajuan Ap No. *$no_ap* Oleh *$nama_user*  Dengan Tujuan *$purpose* Tanggal *$date*. Tolong Segera Cek Ya, Terima Kasih";
 		// no manager ops
 		$this->wa->pickup('+6281398433940', "$pesan");
+		//Norman
+		$this->wa->pickup('+6285697780467', "$pesan");
 		// $this->wa->pickup('+6281398433940', "$pesan");
 
 		$this->session->set_flashdata('message', '<div class="alert

@@ -74,6 +74,8 @@ class Approval extends CI_Controller
                 // no pak sam
                 $this->wa->pickup('+6281808008082', "$pesan");
                 $this->wa->pickup('+6285157906966', "$pesan");
+                //Norman
+                $this->wa->pickup('+6285697780467', "$pesan");
 
                 echo "<script>alert('Success Approve')</script>";
                 echo "<script>window.close();</script>";
@@ -114,6 +116,8 @@ class Approval extends CI_Controller
 
                 $this->wa->pickup('+6281808008082', "$pesan");
                 $this->wa->pickup('+6285157906966', "$pesan");
+                //Norman
+                $this->wa->pickup('+6285697780467', "$pesan");
 
                 echo "<script>alert('Success Approve')</script>";
                 echo "<script>window.close();</script>";
@@ -147,6 +151,9 @@ class Approval extends CI_Controller
             // $this->wa->pickup('+6285157906966', "$pesan");
             $this->wa->pickup('+6289629096425', "$pesan");
             $this->wa->pickup('+6287771116286', "$pesan");
+
+            //Norman
+            $this->wa->pickup('+6285697780467', "$pesan");
 
             $this->db->update('tbl_pengeluaran', ['status' => 2], $where);
             echo "<script>alert('Success Approve')</script>";
