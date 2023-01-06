@@ -75,6 +75,13 @@
 			border: 1px solid;
 			background: #ccc;
 		}
+
+		.id_category {
+			opacity: 0;
+			height: 0px;
+			display: block
+				/* Reposition so the validation message shows over the label */
+		}
 	</style>
 
 
@@ -1649,7 +1656,7 @@
 					'<div class="col-md-2">' +
 					'<label for="note_cs">Choose Category ' + i + '</label>' +
 					'<div class="form-group rec-element-ap">' +
-					'<input type="hidden" class="browse-category form-control" required id="id_category' + i + '"  name="id_category[]">' +
+					'<input type="text" class="browse-category form-control id_category" required id="id_category' + i + '"  name="id_category[]">' +
 					'<input type="text" readonly class="browse-category required form-control" id="nama_kategori' + i + '" data-index="' + i + '" name="nama_kategori_pengeluaran[]">' +
 					'</div>' +
 					'</div>' +
@@ -1939,8 +1946,13 @@
 				sisa = approved - sum;
 				sisa = sisa.toString();
 				console.log(sisa)
-				sisa = formatRupiah(sisa, 'Rp. ')
-				$("#sisa").val(sisa);
+				sisaFormat = formatRupiah(sisa, 'Rp. ')
+				if (parseInt(sisa) < 0) {
+					$("#overless").text('Less');
+				} else {
+					$("#overless").text('Over');
+				}
+				$("#sisa").val(sisaFormat);
 			});
 
 		});

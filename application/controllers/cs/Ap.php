@@ -115,7 +115,7 @@ class Ap extends CI_Controller
 				} else {
 					$this->session->set_flashdata('message', "<div class='alert
 					alert-danger' role='alert'>No CA with This $no_ca</div>");
-					redirect('shipper/ap/add');
+					redirect('cs/ap/add');
 				}
 			} else {
 				$potong = substr($cek_no_invoice['no_pengeluaran'], 3, 6);
@@ -196,20 +196,24 @@ class Ap extends CI_Controller
 				if ($id_jabatan == 10) {
 					$this->wa->pickup('+6289629096425', "$pesan");
 					$this->wa->pickup('+6287771116286', "$pesan");
+					//Norman
+					$this->wa->pickup('+6285697780467', "$pesan");
 				} else {
 					$this->wa->pickup('+6281293753199', "$pesan");
 					$this->wa->pickup('+6285157906966', "$pesan");
+					//Norman
+					$this->wa->pickup('+6285697780467', "$pesan");
 				}
 			} else {
 				$this->session->set_flashdata('message', '<div class="alert
 					alert-danger" role="alert">Failed</div>');
-				redirect('cs/ap/');
+				redirect('cs/ap');
 			}
 		}
 
 		$this->session->set_flashdata('message', '<div class="alert
 		alert-success" role="alert">Success</div>');
-		redirect('cs/ap/');
+		redirect('cs/ap');
 	}
 
 	public function processAddDetail()
@@ -331,6 +335,8 @@ class Ap extends CI_Controller
 			// no pak sam
 			$this->wa->pickup('+6281808008082', "$pesan");
 			// $this->wa->pickup('+6285157906966', "$pesan");
+			//Norman
+			$this->wa->pickup('+6285697780467', "$pesan");
 			$this->session->set_flashdata('message', 'Success Approve');
 			redirect('cs/ap');
 		} else {

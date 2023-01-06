@@ -76,7 +76,7 @@
 												<div class="col-md-2">
 													<label for="note_cs">Choose Category 1</label>
 													<div class="form-group rec-element-ap">
-														<input type="text" class="form-control" required hidden id="id_category1" name="id_category[]">
+														<input type="text" class="form-control id_category" required id="id_category1" name="id_category[]">
 														<input type="text" class="browse-category form-control" readonly data-index="1" id="nama_kategori1" name="nama_kategori_pengeluaran[]">
 													</div>
 												</div>
@@ -122,7 +122,9 @@
 
 												</div>
 												<div class="col-md-4" style="display: none;" id="car4">
-													<label for="note_cs">Over/Less</label>
+													<label for="note_cs">
+														<div id="overless"></div>
+													</label>
 
 													<input class="form-control" type="text" name="sisa" disabled id="sisa">
 
