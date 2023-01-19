@@ -69,6 +69,13 @@ class Ap extends CI_Controller
 		$this->backend->display('cs/v_add_ap', $data);
 	}
 
+	public function cekEksternal()
+	{
+		$cek_no_external = $this->db->select_max('no_po')->get('tbl_invoice_ap_final')->row_array();
+		$potong = substr($cek_no_external['no_po'], 3, 6);
+		var_dump($potong);
+	}
+
 	public function processAdd()
 	{
 		$id_kategori_pengeluaran = $this->input->post('id_category');
@@ -95,6 +102,7 @@ class Ap extends CI_Controller
 		$no_pengeluaran = '';
 		$pre = '';
 		$cek_no_invoice = $this->db->select_max('no_pengeluaran')->get_where('tbl_pengeluaran', ['id_kat_ap' => $id_kategori])->row_array();
+		$cek_no_external = $this->db->select_max('no_po')->get('tbl_invoice_ap_final')->row_array();
 		if ($id_kategori == 1) {
 			$pre = 'PO-';
 		} elseif ($id_kategori == 2) {
@@ -118,8 +126,19 @@ class Ap extends CI_Controller
 					redirect('cs/ap/add');
 				}
 			} else {
+				$potongExternal = substr($cek_no_external['no_po'], 3, 6);
 				$potong = substr($cek_no_invoice['no_pengeluaran'], 3, 6);
-				$no = $potong + 1;
+				if ($id_kategori == 1) {
+
+					if ($potongExternal > $potong) {
+						$no = $potongExternal + 1;
+					} else {
+						$no = $potong + 1;
+					}
+				} else {
+					$no = $potong + 1;
+				}
+
 				$kode =  sprintf("%06s", $no);
 
 				$no_pengeluaran  = "$pre$kode";
@@ -164,6 +183,7 @@ class Ap extends CI_Controller
 				$get_last_ap = $this->db->limit(1)->order_by('id_pengeluaran', 'DESC')->get('tbl_pengeluaran')->row_array();
 
 				$id_atasan = $this->session->userdata('id_atasan');
+				// jika dia manager 
 				if ($id_atasan == 0 || $id_atasan == NULL) {
 					// kali dia SM
 					$id_jabatan = $this->session->userdata('id_jabatan');
@@ -192,17 +212,27 @@ class Ap extends CI_Controller
 				$link = "https://tesla-smartwork.transtama.com/approval/detailCs/$no_ap";
 				$pesan = "Hallo, ada pengajuan Ap No. *$no_ap* Oleh *$nama_user*  Dengan Tujuan *$purpose* Tanggal *$date*. Silahkan Approve Melalu Link Berikut : $link . Terima Kasih";
 				// no mba lili
-				// kalo dia jabatannya bukan sm
+				// kalo dia jabatannya sm
 				if ($id_jabatan == 10) {
 					$this->wa->pickup('+6289629096425', "$pesan");
 					$this->wa->pickup('+6287771116286', "$pesan");
 					//Norman
 					$this->wa->pickup('+6285697780467', "$pesan");
 				} else {
-					$this->wa->pickup('+6281293753199', "$pesan");
-					$this->wa->pickup('+6285157906966', "$pesan");
-					//Norman
-					$this->wa->pickup('+6285697780467', "$pesan");
+					if ($id_atasan == 0 || $id_atasan == NULL) {
+						$linksm = "https://jobsheet.transtama.com/approval/detail/$no_ap";
+						$pesansm = "Hallo, ada pengajuan Ap No. *$no_ap* Dengan Tujuan *$purpose* Tanggal *$date*. Silahkan approve melalui link berikut : $linksm . Terima Kasih";
+						// no pak sam
+						// $this->wa->pickup('+6281808008082', "$pesansm");
+						// $this->wa->pickup('+6285157906966', "$pesan");
+						//Norman
+						$this->wa->pickup('+6285697780467', "$pesansm");
+					} else {
+						$this->wa->pickup('+6281293753199', "$pesan");
+						$this->wa->pickup('+6285157906966', "$pesan");
+						//Norman
+						$this->wa->pickup('+6285697780467', "$pesan");
+					}
 				}
 			} else {
 				$this->session->set_flashdata('message', '<div class="alert
