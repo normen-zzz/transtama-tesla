@@ -3,6 +3,8 @@
 <!--begin::Head-->
 
 <head>
+	<?php date_default_timezone_set('Asia/Jakarta');
+	setlocale(LC_TIME, "id_ID.UTF8"); ?>
 	<meta charset="utf-8" />
 	<title>Tesla Smartwork</title>
 	<meta name="description" content="Updates and statistics" />
@@ -237,6 +239,32 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.3.0/raphael.min.js" integrity="sha512-tBzZQxySO5q5lqwLWfu8Q+o4VkTcRGOeQGVQ0ueJga4A1RKuzmAu5HXDOXLEjpbKyV7ow9ympVoa6wZLEzRzDg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
 
+	<script src="https://cdn.datatables.net/buttons/2.3.2/js/dataTables.buttons.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+	<script src="https://cdn.datatables.net/buttons/2.3.2/js/buttons.html5.min.js"></script>
+	<script src="https://cdn.datatables.net/buttons/2.3.2/js/buttons.print.min.js"></script>
+
+	<script>
+		$(document).ready(function() {
+
+			$(document).ready(function() {
+				$('.do').select();
+			});
+
+			$('.check').change(function() {
+				if ($('.check:checked').length == 0) {
+					$('.hide').hide(); //Show all,when nothing is checked
+				} else {
+					$('.hide').show();
+
+				}
+
+			});
+		});
+	</script>
+
 	<script>
 		$(function() {
 			$(".dial").knob({
@@ -284,6 +312,40 @@
 
 		}
 	</script>
+
+	<script type="text/javascript">
+		if (<?= $date ?> == <?= date('d-m-y') ?>) {
+			$('#datepickidcs div').datepicker({
+				// minDate: '0',
+				// startDate: "+1d",
+				// dayNamesShort: ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+				// language: "id",
+				// dayNamesMin: ['Sunday', 'Monday', ],
+				todayHighlight: true
+
+			}).on('changeDate', function(e) {
+				// $('#datepickid div').datepicker('setDate', selected.date);
+				$('#dt_due').val(e.format('dd/mm/yy'));
+				var value = $('#dt_due').val();
+				// console.log(e);
+				window.location.replace("<?= base_url('cs/MeetingTracker/index/') ?>" + value);
+
+			});
+		} else {
+			var realDate = new Date('<?= $date ?>');
+			console.log(realDate);
+			$('#datepickidcs div').datepicker('setDate', realDate).on('changeDate', function(e) {
+				// $('#datepickid div').datepicker('setDate', selected.date);
+				$('#dt_due').val(e.format('dd/mm/yy'));
+				var value = $('#dt_due').val();
+				// console.log(e);
+				window.location.replace("<?= base_url('cs/MeetingTracker/index/') ?>" + value);
+
+			});
+
+		}
+	</script>
+
 
 
 
@@ -474,6 +536,41 @@
 			var myTable = $('#myTable2').DataTable({
 				"ordering": false,
 				"dom": '<"top"f>rt<"bottom"ilp><"clear">'
+			});
+		});
+
+		$(document).ready(function() {
+			var myTable = $('.datatable').DataTable({
+				"ordering": false,
+				"dom": '<"top"f>rt<"bottom"ilp><"clear">'
+			});
+		});
+
+		$(document).ready(function() {
+			$('#myTableSalesTracker').DataTable({
+				dom: 'Bfrtip',
+
+				buttons: [{
+					extend: 'pdf',
+					title: 'Sales Tracker',
+					exportOptions: {
+						columns: [0, 1, 2, 3, 4, 5, 6, 7, 8]
+					}
+				}, {
+					extend: 'excel',
+					title: 'Sales Tracker',
+					exportOptions: {
+						columns: [0, 1, 2, 3, 4, 5, 6, 7, 8]
+					}
+				}, {
+					extend: 'print',
+					title: 'Sales Tracker',
+					exportOptions: {
+						columns: [0, 1, 2, 3, 4, 5, 6, 7, 8]
+					},
+					footer: true
+				}],
+				ordering: false,
 			});
 		});
 
