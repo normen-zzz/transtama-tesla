@@ -20,6 +20,8 @@ class SalesTracker extends CI_Controller
         $awal = $this->input->post('awal');
         $akhir = $this->input->post('akhir');
         $sales = $this->input->post('sales');
+        $onGoing = 0;
+        $held = 0;
         $data['title'] = 'Sales Tracker Report';
         $data['users'] = $this->db->get_where('tb_user', ['id_role' => 4])->result_array();
         if ($awal == NULL && $akhir == NULL) {
@@ -27,23 +29,42 @@ class SalesTracker extends CI_Controller
             $data['awal'] = NULL;
             $data['akhir'] = NULL;
             if ($sales == NULL) {
-                $data['salestracker'] = $this->sales->getAllReportSalesTracker(0)->result_array();
+                $data['salestracker'] = $this->sales->getAllReportSalesTracker(0);
                 $data['sales'] = 0;
             } else {
-                $data['salestracker'] = $this->sales->getAllReportSalesTracker($sales)->result_array();
+                $data['salestracker'] = $this->sales->getAllReportSalesTracker($sales);
                 $data['sales'] = $sales;
             }
+            foreach ($data['salestracker']->result_array() as $r) {
+                if ($r['end_date'] != NULL) {
+                    $held += 1;
+                } else {
+                    $onGoing += 1;
+                }
+            }
+            $data['ongoing'] = $onGoing;
+            $data['held'] = $held;
         } else {
             $data['awal'] = $awal;
             $data['akhir'] = $akhir;
             if ($sales == NULL) {
-                $data['salestracker'] = $this->sales->getReportSalesTracker($awal, $akhir, 0)->result_array();
+                $data['salestracker'] = $this->sales->getReportSalesTracker($awal, $akhir, 0);
                 $data['sales'] = 0;
             } else {
-                $data['salestracker'] = $this->sales->getReportSalesTracker($awal, $akhir, $sales)->result_array();
+                $data['salestracker'] = $this->sales->getReportSalesTracker($awal, $akhir, $sales);
                 $data['sales'] = $sales;
             }
+            foreach ($data['salestracker']->result_array() as $r) {
+                if ($r['end_date'] != NULL) {
+                    $held += 1;
+                } else {
+                    $onGoing += 1;
+                }
+            }
+            $data['ongoing'] = $onGoing;
+            $data['held'] = $held;
         }
+        // var_dump($data['salestracker']->result_array());
         $this->backend->display('superadmin/v_salestracker_report', $data);
     }
 }
