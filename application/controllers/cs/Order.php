@@ -290,13 +290,14 @@ class Order extends CI_Controller
         $sheet->setCellValue('S1', 'STATUS DELIVERY');
         $sheet->setCellValue('T1', 'LEADTIME');
         $sheet->setCellValue('U1', 'REALISASI LEADTIME');
-        $sheet->setCellValue('V1', 'LEADTIME KPI SCORE');
-        $sheet->setCellValue('W1', 'REALISASI LEADTIME AGEN DAERAH');
-        $sheet->setCellValue('X1', 'KPI LEADTIME AGEN DAERAH');
-        $sheet->setCellValue('Y1', 'TANGGAL PENGISIAN NAMA PENERIMA');
-        $sheet->setCellValue('Z1', 'REALISASI LEADTIME INPUT NAMA PENERIMA');
-        $sheet->setCellValue('AA1', 'KPI LEADTIME INPUT NAMA PENERIMA');
-        $sheet->setCellValue('AB1', 'KASUS');
+        $sheet->setCellValue('V1', 'STATUS POD');
+        $sheet->setCellValue('W1', 'LEADTIME KPI SCORE');
+        $sheet->setCellValue('X1', 'REALISASI LEADTIME AGEN DAERAH');
+        $sheet->setCellValue('Y1', 'KPI LEADTIME AGEN DAERAH');
+        $sheet->setCellValue('Z1', 'TANGGAL PENGISIAN NAMA PENERIMA');
+        $sheet->setCellValue('AA1', 'REALISASI LEADTIME INPUT NAMA PENERIMA');
+        $sheet->setCellValue('AB1', 'KPI LEADTIME INPUT NAMA PENERIMA');
+        $sheet->setCellValue('AC1', 'KASUS');
 
         $no = 1;
         $x = 2;
@@ -328,6 +329,14 @@ class Order extends CI_Controller
             }
             $diterima = new DateTime($row['tgl_diterima']);
             $pickup = new DateTime($row['tgl_pickup']);
+            $pod = '';
+            if ($row['status_pod'] == 0) {
+                $pod = 'Pending';
+            } elseif ($row['status_pod'] == 1) {
+                $pod = 'Dikirim';
+            } elseif ($row['status_pod'] == 2) {
+                $pod = 'Diterima';
+            }
 
 
             $leadtime = $diterima->diff($pickup)->d;
@@ -374,7 +383,7 @@ class Order extends CI_Controller
                 ->setAutoSize(true);
             $sheet->setCellValue('U' . $x, '')->getColumnDimension('U')
                 ->setAutoSize(true);
-            $sheet->setCellValue('V' . $x, '')->getColumnDimension('V')
+            $sheet->setCellValue('V' . $x, $pod)->getColumnDimension('V')
                 ->setAutoSize(true);
             $sheet->setCellValue('W' . $x, '')->getColumnDimension('W')
                 ->setAutoSize(true);
@@ -387,6 +396,8 @@ class Order extends CI_Controller
             $sheet->setCellValue('AA' . $x, '')->getColumnDimension('AA')
                 ->setAutoSize(true);
             $sheet->setCellValue('AB' . $x, '')->getColumnDimension('AB')
+                ->setAutoSize(true);
+            $sheet->setCellValue('AC' . $x, '')->getColumnDimension('AB')
                 ->setAutoSize(true);
             $x++;
             $no++;

@@ -221,7 +221,7 @@ class Ap extends CI_Controller
 				} else {
 					if ($id_atasan == 0 || $id_atasan == NULL) {
 						$linksm = "https://jobsheet.transtama.com/approval/detail/$no_ap";
-						$pesansm = "Hallo, ada pengajuan Ap No. *$no_ap* Dengan Tujuan *$purpose* Tanggal *$date*. Silahkan approve melalui link berikut : $linksm . Terima Kasih";
+						$pesansm = "Hallo, ada pengajuan Ap Oleh *$nama_user* No. *$no_ap* Dengan Tujuan *$purpose* Tanggal *$date*. Silahkan approve melalui link berikut : $linksm . Terima Kasih";
 						// no pak sam
 						// $this->wa->pickup('+6281808008082', "$pesansm");
 						// $this->wa->pickup('+6285157906966', "$pesan");
