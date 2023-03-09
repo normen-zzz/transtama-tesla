@@ -85,7 +85,7 @@
 										</div>
 
 										<!--begin: Wizard Step 1-->
-										<?php if ($info['status'] <= 0) {
+										<?php if ($info['status'] <= 2) {
 										?>
 											<label for="exampleInputEmail1"><button type="button" class="btn btn-info tambah-ap"><i class="fa fa-plus"> Add Details</i> </button> </label>
 											<?= $this->session->userdata('message') ?>
@@ -107,7 +107,7 @@
 												<div class="col-md-3">
 													<label for="note_cs">Amount Proposed 1</label>
 													<div class="form-group rec-element-ap">
-														<input type="text" class="amount_proposed form-control" id="amount1" name="amount_proposed[]">
+														<input type="text" class="amount_proposed form-control" id="rupiah1" name="amount_proposed[]">
 													</div>
 												</div>
 												<div class="col-md-4">
@@ -126,7 +126,7 @@
 											</div>
 											<div class="d-flex justify-content-between border-top mt-5 pt-10">
 												<div>
-													<button class="btn btn font-weight-bolder text-uppercase px-9 py-4 text-light" style="background-color: #9c223b;">Submit</button>
+													<button onclick='$("#modalLoading").modal("show");' class="btn btn font-weight-bolder text-uppercase px-9 py-4 text-light" style="background-color: #9c223b;">Submit</button>
 												</div>
 											</div>
 

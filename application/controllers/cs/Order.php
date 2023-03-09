@@ -118,9 +118,15 @@ class Order extends CI_Controller
             'note_cs' => $no_do,
             // 'no_so' => $this->input->post('no_so'),
             'no_stp' => $this->input->post('no_stp'),
+            'no_smu' => $this->input->post('no_smu'),
+            'flight_at' => $this->input->post('flight_at'),
             'note_shipment' => $this->input->post('note_shipment'),
             'is_weight_print' => $this->input->post('is_weight_print'),
         );
+        $shipment = $this->db->get_where('tbl_shp_order', array('id' => $this->input->post('id')))->row_array();
+        if ($shipment['updatesistem_at'] == NULL) {
+            $data['updatesistem_at'] = date('Y-m-d H:i:s');
+        }
 
         $update =  $this->db->update('tbl_shp_order', $data, ['id' => $this->input->post('id')]);
         if ($update) {
@@ -298,6 +304,8 @@ class Order extends CI_Controller
         $sheet->setCellValue('AA1', 'REALISASI LEADTIME INPUT NAMA PENERIMA');
         $sheet->setCellValue('AB1', 'KPI LEADTIME INPUT NAMA PENERIMA');
         $sheet->setCellValue('AC1', 'KASUS');
+        $sheet->setCellValue('AD1', 'MILESTONE DIBUAT');
+
 
         $no = 1;
         $x = 2;
@@ -397,7 +405,9 @@ class Order extends CI_Controller
                 ->setAutoSize(true);
             $sheet->setCellValue('AB' . $x, '')->getColumnDimension('AB')
                 ->setAutoSize(true);
-            $sheet->setCellValue('AC' . $x, '')->getColumnDimension('AB')
+            $sheet->setCellValue('AC' . $x, '')->getColumnDimension('AC')
+                ->setAutoSize(true);
+            $sheet->setCellValue('AD' . $x, $tracking['created_at'])->getColumnDimension('AD')
                 ->setAutoSize(true);
             $x++;
             $no++;

@@ -1,0 +1,293 @@
+<?php
+defined('BASEPATH') or exit('No direct script access allowed');
+
+class Kpi extends CI_Controller
+{
+    public function __construct()
+    {
+        parent::__construct();
+        if (!$this->session->userdata('id_user')) {
+            redirect('backoffice');
+        }
+        $this->load->model('UserModel');
+        $this->load->model('KpiModel');
+        cek_role();
+    }
+
+    public function finance()
+    {
+        if ($this->input->post('awal') == NULL) {
+            $data['title'] = 'KPI FINANCE';
+            $data['awal'] = date('Y-m-d');
+            $data['akhir'] = date('Y-m-t');
+            $data['sales'] = $this->db->get_where('tb_user', array('id_role' => 6));
+            $this->backend->display('superadmin/kpi/finance/v_kpi_finance', $data);
+        } else {
+            $data['title'] = 'KPI FINANCE';
+            $data['awal'] = $this->input->post('awal');
+            $data['akhir'] = $this->input->post('akhir');
+            $data['sales'] = $this->db->get_where('tb_user', array('id_role' => 6));
+            $this->backend->display('superadmin/kpi/finance/v_kpi_finance', $data);
+        }
+    }
+
+    public function detailInvoice($user = NULL, $awal = NULL, $akhir = NULL)
+    {
+        if ($this->input->post('awal') != NULL) {
+            $data['title'] = 'KPI Invoice';
+            $data['awal'] = date('Y-m-d', strtotime($this->input->post('awal')));
+            $data['akhir'] = date('Y-m-d', strtotime($this->input->post('akhir')));
+            $data['user'] = $this->db->get_where('tb_user', array('id_user' => $this->input->post('user')))->row_array();
+            $data['noinvoice'] = $this->KpiModel->getInvoice($this->input->post('user'), strtotime($this->input->post('awal')), strtotime($this->input->post('akhir')));
+            $this->backend->display('superadmin/kpi/finance/v_detailInvoice', $data);
+        } else {
+            $data['title'] = 'KPI Invoice';
+            $data['awal'] = date('Y-m-d', $awal);
+            $data['akhir'] = date('Y-m-d', $akhir);
+            $data['user'] = $this->db->get_where('tb_user', array('id_user' => $user))->row_array();
+            $data['noinvoice'] = $this->KpiModel->getInvoice($user, $awal, $akhir);
+            $this->backend->display('superadmin/kpi/finance/v_detailInvoice', $data);
+        }
+    }
+
+    //KPI SALES
+    public function sales()
+    {
+        if ($this->input->post('awal') == NULL) {
+
+
+            $data['title'] = 'KPI SALES';
+            $data['awal'] = date('Y-m-d');
+            $data['akhir'] = date('Y-m-t');
+            $data['sales'] = $this->db->get_where('tb_user', array('id_role' => 4));
+            $this->backend->display('superadmin/kpi/sales/v_kpi_sales', $data);
+        } else {
+            $data['title'] = 'KPI SALES';
+            $data['awal'] = $this->input->post('awal');
+            $data['akhir'] = $this->input->post('akhir');
+            $data['sales'] = $this->db->get_where('tb_user', array('id_role' => 4));
+            $this->backend->display('superadmin/kpi/sales/v_kpi_sales', $data);
+        }
+    }
+
+    public function detailMeetingPlan($user, $awal, $akhir)
+    {
+        $data['title'] = 'KPI SALES';
+        $data['awal'] = date('Y-m-d', $awal);
+        $data['akhir'] = date('Y-m-d', $akhir);
+        $data['user'] = $this->db->get_where('tb_user', array('id_user' => $user))->row_array();
+        $data['salestracker'] = $this->KpiModel->getTrack($user, $awal, $akhir);
+        $this->backend->display('superadmin/kpi/sales/v_detailMeetingPlan', $data);
+    }
+
+    public function detailClosingMeeting($user, $awal, $akhir)
+    {
+        $data['title'] = 'KPI SALES';
+        $data['awal'] = date('Y-m-d', $awal);
+        $data['akhir'] = date('Y-m-d', $akhir);
+        $data['user'] = $this->db->get_where('tb_user', array('id_user' => $user))->row_array();
+        $data['salestracker'] = $this->KpiModel->getTrack($user, $awal, $akhir);
+        $this->backend->display('superadmin/kpi/sales/v_detailClosingMeeting', $data);
+    }
+
+    public function detailSO($user, $awal, $akhir)
+    {
+        $data['title'] = 'KPI SALES';
+        $data['awal'] = date('Y-m-d', $awal);
+        $data['akhir'] = date('Y-m-d', $akhir);
+        $data['user'] = $this->db->get_where('tb_user', array('id_user' => $user))->row_array();
+        $data['so'] = $this->KpiModel->getSo($user, $awal, $akhir);
+        $this->backend->display('superadmin/kpi/sales/v_detailSo', $data);
+    }
+    // END OF KPI SALES 
+
+    //KPI CS
+    public function cs()
+    {
+        $data['title'] = 'KPI CS';
+        $data['cs'] = $this->db->get_where('tb_user', array('id_role' => 3));
+        if ($this->input->post('awal') == NULL) {
+            $data['awal'] = date('Y-m-d');
+            $data['akhir'] = date('Y-m-t');
+            $data['resionjs'] = $this->KpiModel->getResiOnJs(strtotime(date('Y-m-d')), strtotime(date('Y-m-t')));
+        } else {
+            $data['awal'] = $this->input->post('awal');
+            $data['akhir'] = $this->input->post('akhir');
+            $data['resionjs'] = $this->KpiModel->getResiOnJs(strtotime($this->input->post('awal')), strtotime($this->input->post('akhir')));
+        }
+        $this->backend->display('superadmin/kpi/cs/v_kpi_cs', $data);
+    }
+
+    public function detailJobsheet($awal = NULL, $akhir = NULL)
+    {
+        if ($this->input->post('awal') == NULL) {
+            $data['title'] = 'KPI CS (Jobsheet)';
+            $data['awal'] = date('Y-m-d', $awal);
+            $data['akhir'] = date('Y-m-d', $akhir);
+            $data['resionjs'] = $this->KpiModel->getResiOnJs($awal, $akhir);
+            $this->backend->display('superadmin/kpi/cs/v_detail_jobsheet', $data);
+        } else {
+            $data['title'] = 'KPI CS (Jobsheet)';
+            $data['awal'] = date('Y-m-d', $this->input->post('awal'));
+            $data['akhir'] = date('Y-m-d', $this->input->post('akhir'));
+            $data['resionjs'] = $this->KpiModel->getResiOnJs($this->input->post('awal'), $this->input->post('akhir'));
+            $this->backend->display('superadmin/kpi/cs/v_detail_jobsheet', $data);
+        }
+    }
+
+    public function detailVisitCs($bulan = NULL, $tahun = NULL)
+    {
+        if ($this->input->post('date') == NULL) {
+            $data['title'] = 'KPI CS (Visit)';
+            $data['date'] =  $tahun . '-' . $bulan;
+            $data['visit'] = $this->KpiModel->getVisitCs($bulan, $tahun);
+            // var_dump(date('Y-m', strtotime($tahun . '-' . $bulan)));
+            $this->backend->display('superadmin/kpi/cs/v_detail_visit', $data);
+        } else {
+            $data['title'] = 'KPI CS (Visit)';
+            $data['date'] = $this->input->post('date');
+            $data['visit'] = $this->KpiModel->getVisitCs(date('m', strtotime($this->input->post('date'))), date('Y', strtotime($this->input->post('date'))));
+            $this->backend->display('superadmin/kpi/cs/v_detail_visit', $data);
+        }
+    }
+
+    public function detailDeliveryDaerah($bulan = NULL, $tahun = NULL)
+    {
+        if ($this->input->post('date') == NULL) {
+            $data['title'] = 'KPI CS (Delivery Daerah)';
+            $data['date'] =  $tahun . '-' . $bulan;
+            $data['resi'] = $this->KpiModel->getDeliveryDaerah($bulan, $tahun);
+            // var_dump(date('Y-m', strtotime($tahun . '-' . $bulan)));
+            $this->backend->display('superadmin/kpi/cs/v_detail_delivery_daerah', $data);
+        } else {
+            $data['title'] = 'KPI CS (Visit)';
+            $data['date'] = $this->input->post('date');
+            $data['resi'] = $this->KpiModel->getDeliveryDaerah(date('m', strtotime($this->input->post('date'))), date('Y', strtotime($this->input->post('date'))));
+            $this->backend->display('superadmin/kpi/cs/v_detail_delivery_daerah', $data);
+        }
+    }
+
+    public function detailReservasi($bulan = NULL, $tahun = NULL)
+    {
+        if ($this->input->post('date') == NULL) {
+            $data['title'] = 'KPI CS (Reservasi)';
+            $data['date'] =  $tahun . '-' . $bulan;
+            $data['resi'] = $this->KpiModel->getReservasi($bulan, $tahun);
+            // var_dump(date('Y-m', strtotime($tahun . '-' . $bulan)));
+            $this->backend->display('superadmin/kpi/cs/v_detail_reservasi', $data);
+        } else {
+            $data['title'] = 'KPI CS (Reservasi)';
+            $data['date'] = $this->input->post('date');
+            $data['resi'] = $this->KpiModel->getReservasi(date('m', strtotime($this->input->post('date'))), date('Y', strtotime($this->input->post('date'))));
+            $this->backend->display('superadmin/kpi/cs/v_detail_reservasi', $data);
+        }
+    }
+    //END OF KPI CS
+
+    //KPI OPS
+    public function ops()
+    {
+        $data['title'] = 'KPI OPS';
+        $data['cs'] = $this->db->get_where('tb_user', array('id_role' => 2));
+        if ($this->input->post('awal') == NULL) {
+            $data['awal'] = date('Y-m-d');
+            $data['akhir'] = date('Y-m-t');
+            $data['resionjs'] = $this->KpiModel->getResiOnJs(strtotime(date('Y-m-d')), strtotime(date('Y-m-t')));
+        } else {
+            $data['awal'] = $this->input->post('awal');
+            $data['akhir'] = $this->input->post('akhir');
+            $data['resionjs'] = $this->KpiModel->getResiOnJs(strtotime($this->input->post('awal')), strtotime($this->input->post('akhir')));
+        }
+        $this->backend->display('superadmin/kpi/ops/v_kpi_ops', $data);
+    }
+
+    public function detailPickup($bulan = NULL, $tahun = NULL)
+    {
+        if ($this->input->post('date') == NULL) {
+            $data['title'] = 'KPI OPS (Pickup)';
+            $data['date'] =  $tahun . '-' . $bulan;
+            $data['pickup'] = $this->KpiModel->getPickup($bulan, $tahun);
+            $this->backend->display('superadmin/kpi/ops/v_detail_pickup', $data);
+        } else {
+            $data['title'] = 'KPI OPS (Pickup)';
+            $data['date'] = $this->input->post('date');
+            $data['pickup'] = $this->KpiModel->getPickup(date('m', strtotime($this->input->post('date'))), date('Y', strtotime($this->input->post('date'))));
+            $this->backend->display('superadmin/kpi/ops/v_detail_pickup', $data);
+        }
+    }
+
+    public function detailOutbond($bulan = NULL, $tahun = NULL)
+    {
+        if ($this->input->post('date') == NULL) {
+            $data['title'] = 'KPI OPS (Outbond)';
+            $data['date'] =  $tahun . '-' . $bulan;
+            $data['pickup'] = $this->KpiModel->getOutbond($bulan, $tahun);
+            $this->backend->display('superadmin/kpi/ops/v_detail_pickup', $data);
+        } else {
+            $data['title'] = 'KPI OPS (Pickup)';
+            $data['date'] = $this->input->post('date');
+            $data['pickup'] = $this->KpiModel->getPickup(date('m', strtotime($this->input->post('date'))), date('Y', strtotime($this->input->post('date'))));
+            $this->backend->display('superadmin/kpi/ops/v_detail_pickup', $data);
+        }
+    }
+
+
+
+    // public function test()
+    // {
+    //     // Set your CSV feed
+    //     $feed = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTCs3uD17VT-stCbrk49pp30YW38H6mGOlZDAWlQWjiIMUwVuU7Qz_Nz6QLCfYX3T9qgeT_aL4iLyZz/pub?output=csv';
+
+    //     // Arrays we'll use later
+    //     $keys = array();
+    //     $newArray = array();
+
+    //     // Function to convert CSV into associative array
+    //     function csvToArray($file, $delimiter)
+    //     {
+    //         if (($handle = fopen($file, 'r')) !== FALSE) {
+    //             $i = 0;
+    //             while (($lineArray = fgetcsv($handle, 4000, $delimiter, '"')) !== FALSE) {
+    //                 for ($j = 0; $j < count($lineArray); $j++) {
+    //                     $arr[$i][$j] = $lineArray[$j];
+    //                 }
+    //                 $i++;
+    //             }
+    //             fclose($handle);
+    //         }
+    //         return $arr;
+    //     }
+
+    //     // Do it
+    //     $data = csvToArray($feed, ',');
+
+    //     // Set number of elements (minus 1 because we shift off the first row)
+    //     $count = count($data) - 1;
+
+    //     //Use first row for names  
+    //     $labels = array_shift($data);
+
+    //     foreach ($labels as $label) {
+    //         $keys[] = $label;
+    //     }
+
+    //     // Add Ids, just in case we want them later
+    //     $keys[] = 'id';
+
+    //     for ($i = 0; $i < $count; $i++) {
+    //         $data[$i][] = $i;
+    //     }
+
+    //     // Bring it all together
+    //     for ($j = 0; $j < $count; $j++) {
+    //         $d = array_combine($keys, $data[$j]);
+    //         $newArray[$j] = $d;
+    //     }
+
+    //     foreach ($newArray as $n) {
+    //         echo $n['nama'] . '<br>';
+    //         echo $n['leadtime'] . '<br>';
+    //         echo $n['harga'] . '<br>';
+    //     }
+    // }
+}

@@ -220,6 +220,19 @@
 																<input type="text" class="form-control" name="no_stp" value="<?= $p['no_stp'] ?>">
 															</div>
 														</div>
+														<div class="col-md-3">
+															<div class="form-group">
+																<label for="exampleInputEmail1">SMU</label>
+																<input type="text" class="form-control" name="no_smu" value="<?= $p['no_smu'] ?>">
+															</div>
+														</div>
+														<div class="col-md-3">
+															<div class="form-group">
+																<label for="exampleInputEmail1">Flight At</label>
+																<input type="datetime-local" class="form-control" name="flight_at" value="<?= $p['flight_at'] ?>">
+															</div>
+														</div>
+
 														<div class="col-md-4">
 															<div class="form-group">
 																<label for="exampleInputPassword1">Note Cs</label>

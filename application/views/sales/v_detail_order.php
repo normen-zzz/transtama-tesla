@@ -1,3 +1,10 @@
+	<?php
+	$getTanggalPickup = $this->db->select_max('created_at')->get_where('tbl_tracking_real', array('id_so' => $p['id_so'], 'flag' => 3))->row_array();
+	$getWaktuPickup = $this->db->select_max('time')->get_where('tbl_tracking_real', array('id_so' => $p['id_so'], 'flag' => 3))->row_array();
+	$WaktuPickup = date('H:i:s', strtotime($getWaktuPickup['time']));
+
+
+	?>
 	<!-- Main content -->
 	<section class="content d-flex flex-column flex-column-fluid" id="kt_content">
 		<div class="container">
@@ -245,15 +252,38 @@
 															<i class="fas fa-upload text-light"> </i>
 															Import SO
 														</a>
-												<?php } else {
+														<?php } else {
 														if ($request_aktivasi) {
 															if ($request_aktivasi['status'] == 0) {
 																echo 'Wait Approve';
 															} else {
-																echo '';
+																echo '-';
 															}
 														} else {
-															echo  "SO Late Submit";
+															$date1 = new DateTime(date('Y-m-d'));
+															$date2 = new DateTime(date('Y-m-d', strtotime($getTanggalPickup['created_at'])));
+															$interval = date_diff($date2, $date1);
+															// jika waktu pickup diatas jam 9 dan dibawah jam 12 
+															if ($WaktuPickup >= date('H:i:s', strtotime('21:00:00')) && $WaktuPickup <= date('H:i:s', strtotime('23:59:59'))) {
+																// jika tanggal sekarang dan tanggal pickup beda sehari
+																if ($interval->format('%a') == 1) {
+																	// jika jam sekarang diatas jam 12 malam dan dibawah jam 9 pagi
+																	if (date('H:i:s', strtotime('08:00:01')) >= date('H:i:s', strtotime('00:00:01')) && date('H:i:s', strtotime('08:00:01')) <= date('H:i:s', strtotime('09:00:00'))) {
+														?>
+																		<a href="#" class="btn mr-2 text-light" data-toggle="modal" data-target="#modal-import" style="background-color: #9c223b;">
+																			<i class="fas fa-upload text-light"> </i>
+																			Import SO
+																		</a>
+												<?php echo 'Karna pickup diatas jam 9 Malam, maka submit so bisa dilakukan sampai jam 9 pagi ';
+																	} else {
+																		echo  "SO Late Submit (Diatas Jam 9 Pagi)";
+																	}
+																} else {
+																	echo  "SO Late Submit";
+																}
+															} else {
+																echo  "SO Late Submit";
+															}
 														}
 													}
 												} ?>
@@ -430,9 +460,18 @@
 																		<small>Request Rejected</small>
 																	<?php	}
 																} else {
+																	// kalo dia udah ngajuin so
+																	if ($shp['status_so'] >= 1) {
+																	?>
+																		<a href="<?= base_url('sales/salesOrder/requestRevisi/' . $shp['id'] . '/' . $shp['id_so']) ?>" onclick="return confirm('Are you sure ?')" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Request Revisi</a>
+																		<a href="<?= base_url('sales/salesOrder/tracking/' . $shp['id'] . '/' . $shp['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Detail</a>
+
+																	<?php	} else {
 																	?>
 
-																	<a href="<?= base_url('sales/salesOrder/tracking/' . $shp['id'] . '/' . $shp['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Detail</a>
+																		<a href="<?= base_url('sales/salesOrder/tracking/' . $shp['id'] . '/' . $shp['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Detail</a>
+																	<?php }
+																	?>
 																<?php	} ?>
 
 															<?php	} ?>
@@ -442,6 +481,8 @@
 												<?php } ?>
 											</tbody>
 										</table>
+
+
 
 										<?php
 										$id_atasan = $this->session->userdata('id_atasan');
@@ -465,7 +506,26 @@
 																	echo '';
 																}
 															} else {
-																echo  "<h4>SO Late Submit </h4> <br> <a href=" . base_url('#') . " 'onclick='return confirm('Are You Sure ?')' class='btn btn-sm mb-1 text-light' data-toggle='modal' data-target='#modal-request' style='background-color: #9c223b;'>Request Aktivasi</a>";
+																$date1 = new DateTime(date('Y-m-d'));
+																$date2 = new DateTime(date('Y-m-d', strtotime($getTanggalPickup['created_at'])));
+																$interval = date_diff($date2, $date1);
+																// jika waktu pickup diatas jam 9 dan dibawah jam 12 
+																if ($WaktuPickup >= date('H:i:s', strtotime('21:00:00')) && $WaktuPickup <= date('H:i:s', strtotime('23:59:59'))) {
+																	// jika tanggal sekarang dan tanggal pickup beda sehari
+																	if ($interval->format('%a') == 1) {
+																		// jika jam sekarang diatas jam 12 malam dan dibawah jam 9 pagi
+																		if (date('H:i:s', strtotime('08:00:01')) >= date('H:i:s', strtotime('00:00:01')) && date('H:i:s', strtotime('08:00:01')) <= date('H:i:s', strtotime('09:00:00'))) {
+																			echo 'Karna pickup diatas jam 9 Malam, maka submit so bisa dilakukan sampai jam 9 pagi <br>';
+																			echo "<button type='submit' class='btn btn-success' onclick='return confirm('Are you sure ?')'>Submit SO</button>";
+																		} else {
+																			echo  "<h4>SO Late Submit (Diatas jam 9 pagi)</h4>  <br> <a href=" . base_url('#') . " 'onclick='return confirm('Are You Sure ?')' class='btn btn-sm mb-1 text-light' data-toggle='modal' data-target='#modal-request' style='background-color: #9c223b;'>Request Aktivasi</a>";
+																		}
+																	} else {
+																		echo  "<h4>SO Late Submit (Lebih dari sehari) </h4> <br> <a href=" . base_url('#') . " 'onclick='return confirm('Are You Sure ?')' class='btn btn-sm mb-1 text-light' data-toggle='modal' data-target='#modal-request' style='background-color: #9c223b;'>Request Aktivasi</a>";
+																	}
+																} else {
+																	echo  "<h4>SO Late Submit </h4> <br> <a href=" . base_url('#') . " 'onclick='return confirm('Are You Sure ?')' class='btn btn-sm mb-1 text-light' data-toggle='modal' data-target='#modal-request' style='background-color: #9c223b;'>Request Aktivasi</a>";
+																}
 															}
 														}
 														?>
@@ -475,6 +535,7 @@
 													?>
 											<?php	}
 											} else {
+												echo "-";
 											} ?>
 										<?php	} else {
 										?>
@@ -482,9 +543,9 @@
 											?>
 												<!-- kalo dia belum di lock -->
 												<?php if ($p['lock'] == 0) {
+
 												?>
 													<?php
-
 													if (deadline($p['deadline_sales_so'])) {
 														echo "<button type='submit' class='btn btn-success' onclick='return confirm('Are you sure ?')'>Submit SO</button>";
 													} else {
@@ -492,7 +553,7 @@
 															if ($request_aktivasi['status'] == 0) {
 																echo 'Wait Approve';
 															} else {
-																echo '';
+																echo '-';
 															}
 														} else {
 															echo  "<h4>SO Late Submit </h4> <br> <a href=" . base_url('#') . " 'onclick='return confirm('Are You Sure ?')' class='btn btn-sm mb-1 text-light' data-toggle='modal' data-target='#modal-request' style='background-color: #9c223b;'>Request Aktivasi</a>";
@@ -502,18 +563,18 @@
 													?>
 
 												<?php	} else {
-												?> <h4 class="title">So Submited</h4>
+													echo "<button type='submit' class='btn btn-success' onclick='return confirm('Are you sure ?')'>Submit SO</button>  SO Submited";
+												?>
 
 												<?php	} ?>
 
 											<?php } else {
-												echo '';
+												echo 'p';
 											} ?>
-										<?php	}
+										<?php
+										}
 
 										?>
-
-
 
 									</form>
 								</div>

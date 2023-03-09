@@ -12,7 +12,7 @@ class SalesOrder extends CI_Controller
         $this->load->library('upload');
         $this->load->model('M_Datatables');
         $this->load->library('form_validation');
-		$this->db->query("SET sql_mode=(SELECT REPLACE(@@sql_mode, 'ONLY_FULL_GROUP_BY', ''));");
+        $this->db->query("SET sql_mode=(SELECT REPLACE(@@sql_mode, 'ONLY_FULL_GROUP_BY', ''));");
         $this->load->model('PengajuanModel', 'order');
         $this->load->model('SalesModel', 'sales');
         $this->load->model('Api');
@@ -40,6 +40,31 @@ class SalesOrder extends CI_Controller
             // die;
             $data['title'] = 'My Shipment';
             $this->backend->display('shipper/v_shipment', $data);
+        }
+    }
+
+    public function asign($shipment_id = Null)
+    {
+        if ($shipment_id == NULL) {
+            $shipment_id = $this->input->post('shipment_id');
+            $data['users'] = $this->db->get_where('tb_user', ['id_role' => 2])->result_array();
+            $data['shipment_id'] = $shipment_id;
+            $data['resi'] = $shipment_id;
+            $data['tracking'] = $this->db->get_where('tbl_tracking_real', ['shipment_id' => $shipment_id])->result_array();
+            $data['shipment'] = $this->db->get_where('tbl_shp_order', ['shipment_id' => $shipment_id])->row_array();
+            $data['title'] = 'Sales Order';
+            if ($this->input->post('modal') == 1) {
+                $data['modal'] = '$("#modal-lg-dl-add' . $shipment_id . '").modal("show");';
+            }
+            $this->backend->display('shipper/v_asign', $data);
+        } else {
+            $data['shipment_id'] = $shipment_id;
+            $data['users'] = $this->db->get_where('tb_user', ['id_role' => 2])->result_array();
+            $data['resi'] = $shipment_id;
+            $data['tracking'] = $this->db->get_where('tbl_tracking_real', ['shipment_id' => $shipment_id])->result_array();
+            $data['shipment'] = $this->db->get_where('tbl_shp_order', ['shipment_id' => $shipment_id])->row_array();
+            $data['title'] = 'Sales Order';
+            $this->backend->display('shipper/v_asign', $data);
         }
     }
 
@@ -147,8 +172,51 @@ class SalesOrder extends CI_Controller
             }
         }
     }
-	
-	  public function assignDriverHub()
+
+    public function assignDriverDlDarurat()
+    {
+        date_default_timezone_set("Asia/Jakarta");
+        $cek_driver = $this->db->limit(1)->order_by('id_tracking', 'DESC')->get_where('tbl_tracking_real', ['shipment_id' => $this->input->post('shipment_id')])->row_array();
+        if ($cek_driver['status'] == 'Shipment Keluar Dari Hub Jakarta Pusat') {
+            $data = array(
+                'id_user' => $this->input->post('id_driver'),
+                'created_at' => date('Y-m-d'),
+                'time' => date('H:i:s'),
+                'flag' => 5,
+                'status_eksekusi' => 0,
+            );
+            $update = $this->db->update('tbl_tracking_real', $data, ['id_tracking' => $cek_driver['id_tracking']]);
+            if ($update) {
+                $this->session->set_flashdata('message', 'Success');
+                redirect('shipper/salesOrder/detail/' . $this->input->post('id_so'));
+            } else {
+                $this->session->set_flashdata('message', 'Failed');
+                redirect('shipper/salesOrder/detail/' . $this->input->post('id_so'));
+            }
+        } else {
+            $data = array(
+                'status' => 'Shipment Keluar Dari Hub Jakarta Pusat',
+                'id_so' => $this->input->post('id_so'),
+                'shipment_id' => $this->input->post('shipment_id'),
+                'id_user' => $this->input->post('id_driver'),
+                'created_at' => date('Y-m-d'),
+                'time' => date('H:i:s'),
+                'flag' => 5,
+                'status_eksekusi' => 0,
+            );
+            $insert = $this->db->insert('tbl_tracking_real', $data);
+
+            if ($insert) {
+                $this->session->set_flashdata('message', 'Success');
+                redirect('shipper/salesOrder/asign');
+            } else {
+                $this->session->set_flashdata('message', 'Failed');
+                redirect('shipper/salesOrder/asign');
+            }
+        }
+    }
+
+    public function assignDriverHub()
     {
         $gatway = $this->input->post('gateway');
         date_default_timezone_set("Asia/Jakarta");
@@ -208,7 +276,7 @@ class SalesOrder extends CI_Controller
         }
     }
 
-    
+
     public function receive($id, $id_tracking, $shipment_id)
     {
         $data = array(
@@ -288,9 +356,11 @@ class SalesOrder extends CI_Controller
         $data = array(
             'status_eksekusi' => 1,
         );
-        $this->db->update('tbl_tracking_real', $data, ['id_tracking' => $id]);
-        $this->session->set_flashdata('message', 'Terima Kasih');
-        redirect('shipper/salesOrder');
+        $update = $this->db->update('tbl_tracking_real', $data, ['id_tracking' => $id]);
+        if ($update) {
+            $this->session->set_flashdata('message', 'Terima Kasih');
+            redirect($_SERVER['HTTP_REFERER']);
+        }
     }
 
     public function updateEksekusiTracking($id_tracking)
@@ -341,8 +411,8 @@ class SalesOrder extends CI_Controller
         $config['encrypt_name'] = TRUE;
         $this->upload->initialize($config);
 
-       // $folderUpload = "./uploads/berkas/";
-		 $folderUpload = "./uploads/berkas_uncompress/";
+        // $folderUpload = "./uploads/berkas/";
+        $folderUpload = "./uploads/berkas_uncompress/";
         $files = $_FILES;
         $files = $_FILES;
         $jumlahFile = count($files['ktp']['name']);
@@ -367,7 +437,7 @@ class SalesOrder extends CI_Controller
                 // }
             }
             $namaBaru = implode("+", $listNamaBaru);
-			 $this->resizeImage($namaBaru);
+            $this->resizeImage($namaBaru);
             $ktp = array('bukti' => $namaBaru);
             $data = array_merge($data, $ktp);
         }
@@ -381,8 +451,8 @@ class SalesOrder extends CI_Controller
             'status_eksekusi' => 1,
         );
         $this->db->update('tbl_tracking_real', $data, ['shipment_id' => $shipment_id]);
-		  // update tgl diterima
-         
+        // update tgl diterima
+
         $data = array(
             'tgl_diterima' => date('Y-m-d'),
             // 'status_pod' => 2
@@ -396,7 +466,7 @@ class SalesOrder extends CI_Controller
         //     'created_by' => $this->session->userdata('nama_user')
         // );
         // $this->db->insert('tbl_tracking_pod', $data);
-		
+
         $this->session->set_flashdata('message', 'Terima Kasih');
         redirect('shipper/salesOrder');
     }
@@ -443,7 +513,7 @@ class SalesOrder extends CI_Controller
                 // }
             }
             $namaBaru = implode("+", $listNamaBaru);
-			$this->resizeImage($namaBaru);
+            $this->resizeImage($namaBaru);
             $ktp = array('bukti' => $namaBaru);
             $data = array_merge($data, $ktp);
         }
@@ -453,7 +523,7 @@ class SalesOrder extends CI_Controller
         );
         $this->db->update('tbl_so', $data, ['id_so' => $id_so]);
         $this->updateEksekusiTracking($id_tracking);
-		 // update tgl diterima
+        // update tgl diterima
         $data = array(
             'tgl_diterima' => date('Y-m-d'),
             // 'status_pod' => 2
@@ -467,7 +537,7 @@ class SalesOrder extends CI_Controller
         //     'created_by' => $this->session->userdata('nama_user')
         // );
         // $this->db->insert('tbl_tracking_pod', $data);
-		
+
         $this->session->set_flashdata('message', 'Terima Kasih');
         redirect('shipper/salesOrder');
     }
@@ -516,7 +586,7 @@ class SalesOrder extends CI_Controller
                 }
             }
             $namaBaru = implode("+", $listNamaBaru);
-			$this->resizeImage($namaBaru);
+            $this->resizeImage($namaBaru);
             $ktp = array('bukti' => $namaBaru);
             $data = array_merge($data, $ktp);
         }
@@ -526,7 +596,7 @@ class SalesOrder extends CI_Controller
         );
         $this->db->update('tbl_so', $data, ['id_so' => $id_so]);
         $this->updateEksekusiTracking($id_tracking);
-		 // update tgl diterima
+        // update tgl diterima
         $data = array(
             'tgl_diterima' => date('Y-m-d'),
             // 'status_pod' => 2
@@ -540,7 +610,7 @@ class SalesOrder extends CI_Controller
         //     'created_by' => $this->session->userdata('nama_user')
         // );
         // $this->db->insert('tbl_tracking_pod', $data);
-		
+
         $this->session->set_flashdata('message', 'Terima Kasih');
         redirect('shipper/salesOrder');
     }
@@ -561,7 +631,148 @@ class SalesOrder extends CI_Controller
         $data['shipment2'] =  $this->order->orderBySo($id)->result_array();
         $this->backend->display('shipper/v_detail_order_luar', $data);
     }
-	 public function edit($id, $id_so)
+
+    public function weight($id)
+    {
+        $data['title'] = 'Detail Sales Order';
+        $data['users'] = $this->db->get_where('tb_user', ['id_role' => 2])->result_array();
+        $data['shipment'] = $this->db->get_where('tbl_shp_order', array('id' => $id))->row_array();
+        $this->backend->display('shipper/v_weight', $data);
+    }
+    public function addWeight($id)
+    {
+        $shipment_id = $this->input->post('shipment_id');
+        $panjang = $this->input->post('panjang');
+        $lebar = $this->input->post('lebar');
+        $tinggi = $this->input->post('tinggi');
+        $berat = $this->input->post('berat');
+        $no_do = $this->input->post('no_do');
+        $total_berat = 0;
+        for ($i = 0; $i < sizeof($shipment_id); $i++) {
+            $data = array(
+                'urutan' => ($i + 1),
+                'shipment_id' => $shipment_id[$i],
+                'panjang' => $panjang[$i],
+                'lebar' => $lebar[$i],
+                'tinggi' => $tinggi[$i],
+                'berat_aktual' => $berat[$i],
+                'created_at' => date('Y-m-d H:i:s'),
+                'created_by' => $this->session->userdata('id_user'),
+
+            );
+            if ($no_do[$i] != NULL) {
+                $do = $this->db->get_where('tbl_no_do', array('no_do' => $no_do[$i], 'shipment_id' => $shipment_id[$i]))->row_array();
+                $data['no_do'] = $no_do[$i];
+                $this->db->where('no_do', $no_do[$i]);
+                $this->db->where('shipment_id', $shipment_id[$i]);
+                if ($do['koli'] != NULL) {
+                    $this->db->set('koli', '`koli`+ 1', FALSE);
+                } else {
+                    $this->db->set('koli', '1', FALSE);
+                }
+
+                if ($do['berat'] != NULL) {
+                    $this->db->set('berat', '`berat`+' . $berat[$i], FALSE);
+                } else {
+                    $this->db->set('berat', $berat[$i], FALSE);
+                }
+
+
+
+                $this->db->update('tbl_no_do');
+            }
+            $this->db->insert('tbl_dimension', $data);
+
+
+
+            $total_berat += $berat[$i];
+        }
+        $update = $this->db->update('tbl_shp_order', array('berat_js' => $total_berat), array('shipment_id' => $shipment_id[0]));
+        if ($update) {
+            $this->session->set_flashdata('message', '<div class="alert
+                alert-success" role="alert">Success</div>');
+            redirect('shipper/SalesOrder/weight/' . $id);
+        }
+    }
+
+    public function mergeWeight($id)
+    {
+        $id_dimension = $this->input->post('check');
+        $shipment_id = $this->db->get_where('tbl_dimension', array('id_dimension' => $id_dimension[0]))->row_array();
+        $dataMerge = [
+            'panjang' => $this->input->post('panjang'),
+            'lebar' => $this->input->post('lebar'),
+            'tinggi' => $this->input->post('tinggi'),
+            'berat_aktual' => 0,
+            'created_by' => $this->session->userdata('id_user'),
+            'created_at' => date('Y-m-d H:i:s'),
+            'shipment_id' => $shipment_id['shipment_id']
+        ];
+        $createMerge = $this->db->insert('tbl_merge_dimension', $dataMerge);
+        $total_berat = 0;
+        if ($createMerge) {
+            $getLastMerge = $this->db->select_max('id_merge')->get('tbl_merge_dimension')->row_array();
+            for ($i = 0; $i < sizeof($id_dimension); $i++) {
+                $dimension = $this->db->get_where('tbl_dimension', array('id_dimension' => $id_dimension[$i]))->row_array();
+                $data = array(
+                    'merge_to' => $getLastMerge['id_merge']
+                );
+                $this->db->update('tbl_dimension', $data, array('id_dimension' => $id_dimension[$i]));
+
+                $total_berat += $dimension['berat_aktual'];
+            }
+            $update = $this->db->update('tbl_merge_dimension', array('berat_aktual' => $total_berat), array('id_merge' => $getLastMerge['id_merge']));
+            if ($update) {
+                $this->session->set_flashdata('message', '<div class="alert
+                    alert-success" role="alert">Success</div>');
+                redirect('shipper/SalesOrder/weight/' . $id);
+            }
+        }
+    }
+
+    public function editWeight()
+    {
+        $id_dimension = $this->input->post('id_dimension');
+        $dimensionSebelum = $this->db->get_where('tbl_dimension', array('id_dimension' => $id_dimension))->row_array();
+        $shipmentSebelum = $this->db->get_where('tbl_shp_order', array('shipment_id' => $dimensionSebelum['shipment_id']))->row_array();
+        $doSebelum = $this->db->get_where('tbl_no_do', array('no_do' => $dimensionSebelum['no_do'], 'shipment_id' => $dimensionSebelum['shipment_id']))->row_array();
+        $panjang = $this->input->post('panjang');
+        $lebar = $this->input->post('lebar');
+        $tinggi = $this->input->post('tinggi');
+        $berat = $this->input->post('berat');
+        if ($dimensionSebelum['no_do'] != 0 || $dimensionSebelum['no_do'] != NULL) {
+            $no_do = $this->input->post('no_do');
+        }
+        // mengurangi yang ada di shp order
+        $this->db->update('tbl_shp_order', array('berat_js' => ($shipmentSebelum['berat_js'] - $dimensionSebelum['berat_aktual'] + $berat)), array('shipment_id' => $dimensionSebelum['shipment_id']));
+
+        $data = array(
+            'panjang' => $panjang,
+            'lebar' => $lebar,
+            'tinggi' => $tinggi,
+            'berat_aktual' => $berat,
+            'update_at' => date('Y-m-d H:i:s'),
+            'update_by' => $this->session->userdata('id_user'),
+
+        );
+        if ($no_do != NULL) {
+            $data['no_do'] = $no_do;
+            // mengurangi berat di do  sebelumnya
+            $this->db->update('tbl_no_do', array('berat' => ($doSebelum['berat'] - $dimensionSebelum['berat_aktual'])), array('shipment_id' => $dimensionSebelum['shipment_id'], 'no_do' => $dimensionSebelum['no_do']));
+            $doSekarang = $this->db->get_where('tbl_no_do', array('no_do' => $no_do, 'shipment_id' => $dimensionSebelum['shipment_id']))->row_array();
+            // menambah di do yang sekarang
+            $this->db->update('tbl_no_do', array('berat' => ($doSekarang['berat'] + $berat)), array('shipment_id' => $dimensionSebelum['shipment_id'], 'no_do' => $no_do));
+        }
+
+
+        $update = $this->db->update('tbl_dimension', $data, array('id_dimension' => $id_dimension));
+        if ($update) {
+            $this->session->set_flashdata('message', '<div class="alert
+                alert-success" role="alert">Success</div>');
+            redirect($_SERVER['HTTP_REFERER']);
+        }
+    }
+    public function edit($id, $id_so)
     {
         $data['title'] = 'Edit Order';
         $data['id_so'] = $id_so;
@@ -569,7 +780,7 @@ class SalesOrder extends CI_Controller
         $data['province'] = $this->db->get('tb_province')->result_array();
         $data['service'] = $this->db->get('tb_service_type')->result_array();
         $data['p'] = $this->order->order($id)->row_array();
-		  $data['moda'] = $this->db->get('tbl_moda')->result_array();
+        $data['moda'] = $this->db->get('tbl_moda')->result_array();
         $this->backend->display('shipper/v_edit_order2', $data);
     }
     public function processEdit()
@@ -577,10 +788,10 @@ class SalesOrder extends CI_Controller
         $data = array(
             'service_type' => $this->input->post('service_type'),
             'tree_shipper' => $this->input->post('tree_shipper'),
-			 'note_driver' => $this->input->post('note_driver'),
+            'note_driver' => $this->input->post('note_driver'),
             'pu_moda' => $this->input->post('moda'),
             'tree_consignee' => $this->input->post('tree_consignee'),
-			 'is_jabodetabek' => $this->input->post('is_jabodetabek'),
+            'is_jabodetabek' => $this->input->post('is_jabodetabek'),
         );
         $folderUpload = "./uploads/berkas_uncompress/";
         $files = $_FILES;
@@ -624,7 +835,7 @@ class SalesOrder extends CI_Controller
             redirect('shipper/salesOrder/edit/' . $this->input->post('id') . '/' . $this->input->post('id_so'));
         }
     }
-    
+
     function view_data_query()
     {
         $akses = $this->session->userdata('akses');
@@ -641,7 +852,7 @@ class SalesOrder extends CI_Controller
             echo $this->M_Datatables->get_tables_query($query, $search, $where, $isWhere);
         }
     }
-	public function resizeImage($filename)
+    public function resizeImage($filename)
     {
         $files = explode("+", $filename);
         // var_dump($files);
@@ -663,7 +874,7 @@ class SalesOrder extends CI_Controller
             $this->image_lib->clear();
         }
     }
-	public function completeTtd($id)
+    public function completeTtd($id)
     {
         $this->db->select('a.image,a.signature, a.shipment_id,a.id');
         $this->db->from('tbl_shp_order a');

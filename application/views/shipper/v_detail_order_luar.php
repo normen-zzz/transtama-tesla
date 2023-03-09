@@ -521,10 +521,12 @@
 													?>
 														<?php if ($get_last_status['flag'] >= 7  && $get_last_status['flag'] <= 10) {
 														?>
+															<a href="<?= base_url('shipper/salesOrder/weight/' . $shp['id']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Weight</a>
 															<a href="<?= base_url('shipper/salesOrder/edit/' . $shp['id'] . '/' . $shp['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Edit</a>
 															<a href="<?= base_url('shipper/order/detail/' . $shp['id'] . '/' . $shp['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Detail</a>
 														<?php } else {
 														?>
+															<a href="<?= base_url('shipper/salesOrder/weight/' . $shp['id']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Weight</a>
 															<a href="<?= base_url('shipper/salesOrder/edit/' . $shp['id'] . '/' . $shp['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Edit</a>
 															<a href="<?= base_url('shipper/order/detail/' . $shp['id'] . '/' . $shp['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Detail</a>
 														<?php	} ?>
@@ -664,6 +666,8 @@
 					</div>
 					</form>
 				</div>
+
+
 				<!-- /.modal-content -->
 			</div>
 			<!-- /.modal-dialog -->
@@ -880,6 +884,153 @@
 						<button onclick='$("#modalLoading").modal("show");' type="submit" class="btn btn-primary">Submit</button>
 					</div>
 					</form>
+				</div>
+				<!-- /.modal-content -->
+			</div>
+			<!-- /.modal-dialog -->
+		</div>
+	<?php  } ?>
+
+
+	<?php foreach ($shipment2 as $shp) {
+	?>
+		<div class="modal fade" id="modalWeight<?= $shp['id'] ?>">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h4 class="modal-title">Add Weight <b><?= $shp['shipment_id'] ?></b></h4>
+
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<form action="<?= base_url('shipper/salesOrder/assignDriverIncomingLangsung') ?>" method="POST">
+							<div class="card-body">
+								<div class="row">
+									<!-- <button type="submit" class="btn btn-success mb-2"> <i class="fa fa-plus"></i> Submit</button> -->
+									<table class="table table-striped text-center">
+										<thead>
+											<tr>
+
+												<th scope="col">No</th>
+												<th scope="col">P</th>
+												<th scope="col">L</th>
+												<th scope="col">T</th>
+												<th scope="col">Actual Weight</th>
+												<th scope="col">Volume Weight</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr>
+
+												<th scope="row">1</th>
+												<td><input pattern="[0-9]" style="float:none;margin:auto;" class="form-control col-md-6" type="text" name="panjang" id="panjang"></td>
+												<td><input pattern="[0-9]" style="float:none;margin:auto;" class="form-control col-md-6" type="text" name="lebar" id="lebar"></td>
+												<td><input pattern="[0-9]" style="float:none;margin:auto;" class="form-control col-md-6" type="text" name="tinggi" id="tinggi"></td>
+												<td><input pattern="[0-9]" style="float:none;margin:auto;" class="form-control col-md-6" type="text" name="berat" id="berat"></td>
+												<td>2</td>
+											</tr>
+											<tr>
+
+												<th scope="row">2</th>
+												<td>Jacob</td>
+												<td>Thornton</td>
+												<td>@fat</td>
+												<td>2</td>
+												<td>2</td>
+											</tr>
+											<tr>
+
+												<th scope="row">3</th>
+												<td>Larry</td>
+												<td>the Bird</td>
+												<td>@twitter</td>
+												<td>2</td>
+												<td>2</td>
+											</tr>
+										</tbody>
+									</table>
+
+								</div>
+							</div>
+							<!-- /.card-body -->
+							<div class="modal-footer justify-content-between">
+								<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+								<button onclick='$("#modalLoading").modal("show");' type="submit" class="btn btn-primary">Submit</button>
+							</div>
+						</form>
+					</div>
+
+				</div>
+				<!-- /.modal-content -->
+			</div>
+			<!-- /.modal-dialog -->
+		</div>
+	<?php  } ?>
+
+	<?php foreach ($shipment2 as $shp) {
+	?>
+		<div class="modal fade" id="modalMerge<?= $shp['id'] ?>">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h4 class="modal-title">Merge <b><?= $shp['shipment_id'] ?></b></h4>
+
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<form action="<?= base_url('shipper/salesOrder/assignDriverIncomingLangsung') ?>" method="POST">
+							<div class="card-body">
+								<div class="row">
+									<button type="submit" class="btn btn-success mb-2"> <i class="fa fa-plus"></i> Merge</button>
+									<table class="table table-striped">
+										<thead>
+											<tr>
+												<th scope="col">#</th>
+												<th scope="col">No</th>
+												<th scope="col">First</th>
+												<th scope="col">Last</th>
+												<th scope="col">Handle</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr>
+												<th><input type="checkbox" name="" id=""></th>
+												<th scope="row">1</th>
+												<td>Mark</td>
+												<td>Otto</td>
+												<td>@mdo</td>
+											</tr>
+											<tr>
+												<th><input type="checkbox" name="" id=""></th>
+												<th scope="row">2</th>
+												<td>Jacob</td>
+												<td>Thornton</td>
+												<td>@fat</td>
+											</tr>
+											<tr>
+												<th><input type="checkbox" name="" id=""></th>
+												<th scope="row">3</th>
+												<td>Larry</td>
+												<td>the Bird</td>
+												<td>@twitter</td>
+											</tr>
+										</tbody>
+									</table>
+
+								</div>
+							</div>
+							<!-- /.card-body -->
+							<div class="modal-footer justify-content-between">
+								<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+								<button onclick='$("#modalLoading").modal("show");' type="submit" class="btn btn-primary">Submit</button>
+							</div>
+						</form>
+					</div>
+
 				</div>
 				<!-- /.modal-content -->
 			</div>

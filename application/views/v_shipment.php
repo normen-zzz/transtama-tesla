@@ -11,7 +11,7 @@
 					<div class="card card-custom card-stretch">
 
 						<div class="flash-data" data-flashdata="<?= $this->session->flashdata('message'); ?>"></div>
-						 <div class="row">
+						<div class="row">
 							<div class="col-md-6">
 								<div class="panel-heading ml-2">
 									<div class="navbar-form navbar-left">
@@ -25,8 +25,8 @@
 							</div>
 							<div class="col-md-6">
 								<div class="well" style="position: middle;">
-									<form action="<?php echo base_url('scan1/cek_id'); ?>" method="POST">
-										<canvas id="cobascanOPS" width="400" height="400" ></canvas>
+									<form action="<?php echo base_url('scan/outbond'); ?>" method="POST">
+										<canvas id="scanOutbond" width="200" height="200"></canvas>
 										<br>
 										<input type="text" name="id_karyawan" autofocus>
 										<input type="submit">
@@ -34,7 +34,7 @@
 
 								</div>
 							</div>
-						</div> 
+						</div>
 						<!-- /.box-body -->
 						<div class="row m-4" style="overflow: auto;">
 							<div class="col-md-12">
@@ -47,32 +47,33 @@
 											<th style="width: 10%;">Shipment ID</th>
 											<th style="width: 15%;">Shipper</th>
 											<th style="width: 15%;">Consignee</th>
-											<th style="width: 5%;">Note</th>
-											<th style="width: 5%;">Excecution Status</th>
-											<th style="width: 5%;">Status</th>
+											<th style="width: 5%;">Last Status</th>
+											<th style="width: 5%;">Action</th>
+
 										</tr>
 									</thead>
 									<tbody>
-										<?php foreach ($gateway as $g) {
-										?>
-											<tr>
-												<td><?= $g['shipment_id'] ?></td>
-												<td><?= $g['shipper'] ?><br><?= $g['tree_shipper'] ?></td>
-												<td><?= $g['consigne'] ?><br><?= $g['tree_consignee'] ?></td>
-												<td><?= $g['sts'] ?></td>
-												<td><?= ($g['status_eksekusi'] == 1) ? '<span class="btn btn-sm btn-success">Success</span> <br>' . $g['created_at'] . ' ' : '<span class="btn btn-sm btn-danger">Pending</span><br>' . $g['created_at'] . ' '; ?></td>
-												<!-- <td><?= $g['created_at'] ?></td> -->
-												<td>
-													<?php if ($g['status_eksekusi'] == 0) {
-													?>
-														<a href="#" class="btn btn-sm text-light btn-edit" data-id="<?= $g['shipment_id']; ?>" style="background-color: #9c223b;">Update</a>
-													<?php } else {
-														echo '-';
-													} ?>
-												</td>
-											</tr>
+										<?php foreach ($outbond as $g) {
 
-										<?php } ?>
+											$getLast = $this->order->getLastTracking($g['shipment_id'])->row_array();
+
+											if ($getLast['flag'] >= 3 && $getLast['flag'] <= 4) {
+										?>
+												<tr>
+													<td><?= $g['shipment_id'] ?></td>
+													<td><?= $g['shipper'] ?><br><?= $g['tree_shipper'] ?></td>
+													<td><?= $g['consigne'] ?><br><?= $g['tree_consignee'] ?></td>
+													<td><?= $getLast['status'] ?></td>
+													<?php if ($getLast['flag'] == 3) { ?>
+														<td>Scan IN</td>
+													<?php } elseif ($getLast['flag'] == 4) { ?>
+														<td>Scan Out</td>
+													<?php } ?>
+
+												</tr>
+
+										<?php }
+										} ?>
 									</tbody>
 
 

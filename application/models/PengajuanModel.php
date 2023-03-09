@@ -30,6 +30,17 @@ class PengajuanModel extends CI_Model
         $query = $this->db->get();
         return $query;
     }
+    public function getLastTrackingOutbond($shipmnent_id)
+    {
+        $this->db->select('*');
+        $this->db->from('tbl_tracking_real a');
+        $this->db->join('tbl_shp_order b', 'a.shipment_id=b.shipment_id');
+        $this->db->where('a.shipment_id', $shipmnent_id);
+        $this->db->order_by('a.id_tracking', 'DESC');
+        $this->db->limit(1);
+        $query = $this->db->get();
+        return $query;
+    }
     public function dispatch()
     {
         $this->db->select('a.shipper,a.consigne,a.tree_shipper,a.tree_consignee,b.status as sts,b.is_incoming,b.id_gateway, b.created_at, b.shipment_id, b.status_eksekusi');
@@ -37,6 +48,16 @@ class PengajuanModel extends CI_Model
         $this->db->join('tbl_gateway b', 'a.shipment_id=b.shipment_id');
         $this->db->where('b.status_eksekusi', 0);
         $this->db->order_by('b.shipment_id', 'DESC');
+        return $this->db->get();
+    }
+
+    public function outbond()
+    {
+        $this->db->select('a.shipment_id,a.shipper,a.consigne,a.tree_shipper,a.tree_consignee');
+        $this->db->from('tbl_shp_order a');
+        $this->db->where('MONTH(a.tgl_pickup)', 10);
+        $this->db->where('YEAR(a.tgl_pickup)', 2022);
+        $this->db->order_by('a.shipment_id', 'DESC');
         return $this->db->get();
     }
     public function dispatchHistory()

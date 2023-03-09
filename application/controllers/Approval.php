@@ -19,6 +19,11 @@ class Approval extends CI_Controller
         //$this->wa->pickup('+62895358288395', "Tester Message Whatsapp Api");
     }
 
+    public function testreplace()
+    {
+        echo str_replace("&", "dan", 'saya & anu');
+    }
+
     public function detailCs($no_ap)
     {
         $data['title'] = 'Detail Account Payable';

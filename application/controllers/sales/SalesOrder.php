@@ -237,6 +237,9 @@ class SalesOrder extends CI_Controller
                 $this->wa->pickup('+6281293753199', "$pesan"); //Nomor Bu Lili
                 $this->wa->pickup('+6285894438583', "$pesan"); //Mba Yunita 
                 $this->wa->pickup('+6281385687290', "$pesan"); //Mba Lina
+                $this->wa->pickup('+6281212603705', "$pesan"); //Mba Lina
+                $this->wa->pickup('+62895332937616', "$pesan"); //Devira
+
 
                 $random = random_string('numeric', 8);
 
@@ -664,11 +667,38 @@ class SalesOrder extends CI_Controller
             echo 'dibawah 2';
         }
     }
+
+    public function isWeekend($date)
+    {
+        $weekend = date('N', strtotime($date)) >= 5;
+        if ($weekend == TRUE) {
+            echo 'LIBURRRRRR';
+        } else {
+            echo 'MASOKKKKK';
+        }
+        var_dump($weekend);
+    }
+
     public function prosesSo()
     {
 
         $date = date('Y-m-d');
-        $deadline_pic_js = date('Y-m-d', strtotime('+2 days', strtotime($date)));
+        $weekend = date('N', strtotime($date)) >= 5;
+
+        if ($weekend == TRUE) {
+            if (date('H:i:s') >= date('H:i:s', strtotime('21:00:01')) && date('H:i:s') <= date('H:i:s', strtotime('23:59:59'))) {
+                $deadline_pic_js = date('Y-m-d', strtotime('+4 days', strtotime($date)));
+            } else {
+                $deadline_pic_js = date('Y-m-d', strtotime('+3 days', strtotime($date)));
+            }
+        } else {
+            if (date('H:i:s') >= date('H:i:s', strtotime('21:00:01')) && date('H:i:s') <= date('H:i:s', strtotime('23:59:59'))) {
+                $deadline_pic_js = date('Y-m-d', strtotime('+3 days', strtotime($date)));
+            } else {
+                $deadline_pic_js = date('Y-m-d', strtotime('+2 days', strtotime($date)));
+            }
+        }
+
 
         $id_atasan = $this->session->userdata('id_atasan');
         if ($id_atasan == 0 || $id_atasan == NULL) {
@@ -725,7 +755,8 @@ class SalesOrder extends CI_Controller
             }
             $data = array(
                 'lock' => 1,
-                'status_approve' => 1
+                'status_approve' => 1,
+                'submitso_at' => date('Y-m-d H:i:s')
             );
             $this->db->update('tbl_so', $data, ['id_so' => $id_so]);
             $data = array(
@@ -772,7 +803,8 @@ class SalesOrder extends CI_Controller
                 $this->db->update('tbl_shp_order', $data, ['id' => $id[$i]]);
             }
             $data = array(
-                'lock' => 1
+                'lock' => 1,
+                'submitso_at' => date('Y-m-d H:i:s')
             );
             $this->db->update('tbl_so', $data, ['id_so' => $id_so]);
         }
@@ -898,12 +930,13 @@ class SalesOrder extends CI_Controller
         $sheet->setCellValue('H1', 'Surcharge');
         $sheet->setCellValue('I1', 'Discount');
         $sheet->setCellValue('J1', 'Commision (%) ex. 10');
-        $sheet->setCellValue('K1', 'Others');
-        $sheet->setCellValue('L1', 'Note');
-        $sheet->setCellValue('M1', 'PIC Invoice');
-        $sheet->setCellValue('N1', 'City');
-        $sheet->setCellValue('O1', 'Weight');
-        $sheet->setCellValue('P1', 'Pickup Poin');
+        $sheet->setCellValue('K1', 'Special Commision');
+        $sheet->setCellValue('L1', 'Others');
+        $sheet->setCellValue('M1', 'Note');
+        $sheet->setCellValue('N1', 'PIC Invoice');
+        $sheet->setCellValue('O1', 'City');
+        $sheet->setCellValue('P1', 'Weight');
+        $sheet->setCellValue('Q1', 'Pickup Poin');
 
         $no = 1;
         $x = 2;
@@ -928,15 +961,17 @@ class SalesOrder extends CI_Controller
                 ->setAutoSize(true);
             $sheet->setCellValue('J' . $x, $row['cn'] * 100)->getColumnDimension('J')
                 ->setAutoSize(true);
-            $sheet->setCellValue('K' . $x, $row['others'])->getColumnDimension('K')
+            $sheet->setCellValue('K' . $x, $row['specialcn'] * 100)->getColumnDimension('J')
                 ->setAutoSize(true);
-            $sheet->setCellValue('L' . $x, $row['so_note']);
-            $sheet->setCellValue('M' . $x, $row['pic_invoice'])->getColumnDimension('M')
+            $sheet->setCellValue('L' . $x, $row['others'])->getColumnDimension('K')
                 ->setAutoSize(true);
-            $sheet->setCellValue('N' . $x, $row['city_consigne'])->getColumnDimension('N')
+            $sheet->setCellValue('M' . $x, $row['so_note']);
+            $sheet->setCellValue('N' . $x, $row['pic_invoice'])->getColumnDimension('M')
                 ->setAutoSize(true);
-            $sheet->setCellValue('O' . $x, $row['berat_js']);
-            $sheet->setCellValue('P' . $x, $detail['pu_poin'])->getColumnDimension('P')
+            $sheet->setCellValue('O' . $x, $row['city_consigne'])->getColumnDimension('N')
+                ->setAutoSize(true);
+            $sheet->setCellValue('P' . $x, $row['berat_js']);
+            $sheet->setCellValue('Q' . $x, $detail['pu_poin'])->getColumnDimension('P')
                 ->setAutoSize(true);
             $x++;
         }
@@ -986,9 +1021,10 @@ class SalesOrder extends CI_Controller
                             'surcharge' => $rowdata[7],
                             'disc' => $rowdata[8] / 100,
                             'cn' => $rowdata[9] / 100,
-                            'others' => $rowdata[10],
-                            'so_note' => $rowdata[11],
-                            'pic_invoice' => $rowdata[12],
+                            'specialcn' => $rowdata[10],
+                            'others' => $rowdata[11],
+                            'so_note' => $rowdata[12],
+                            'pic_invoice' => $rowdata[13],
                             'status_so' => 1,
                             'deadline_pic_js' => $deadline_pic_js,
                         );
@@ -1014,9 +1050,10 @@ class SalesOrder extends CI_Controller
                             'surcharge' => $rowdata[7],
                             'disc' => $rowdata[8] / 100,
                             'cn' => $rowdata[9] / 100,
-                            'others' => $rowdata[10],
-                            'so_note' => $rowdata[11],
-                            'pic_invoice' => $rowdata[12],
+                            'specialcn' => $rowdata[10],
+                            'others' => $rowdata[11],
+                            'so_note' => $rowdata[12],
+                            'pic_invoice' => $rowdata[13],
                             'status_so' => 1,
                             'deadline_pic_js' => $deadline_pic_js,
                         );
