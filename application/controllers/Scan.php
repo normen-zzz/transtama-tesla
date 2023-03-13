@@ -20,6 +20,7 @@ class Scan extends CI_Controller
         // $data['gateway'] = $this->db->order_by('id_gateway', 'desc')->get('tbl_gateway')->result_array();
         $data['gateway'] = $this->order->dispatch()->result_array();
         $data['outbond'] = $this->order->outbond()->result_array();
+        
         $this->backend->display('v_shipment', $data);
         // $this->load->view('dispatcher/v_shipment', $data);
     }
@@ -144,8 +145,17 @@ class Scan extends CI_Controller
     {
         $id_user = $this->session->userdata('id_user');
         $result_code = $this->input->post('id_karyawan');
-        // untuk benhil
 
+        $data['result_code'] = $result_code;
+
+        // untuk benhil
+        $this->load->view('alert/scan', $data);
+        
+    }
+
+
+    public function successScan($result_code)
+    {
         // CEK APAKAHA ADA TUGAS YG BELUM DI SCAN
         $cek_tracking = $this->db->limit(1)->order_by('id_tracking', 'desc')->get_where('tbl_tracking_real', ['shipment_id' => $result_code])->row_array();
         // var_dump($cek_tracking);
@@ -166,23 +176,16 @@ class Scan extends CI_Controller
                     'status_eksekusi' => 1
                 );
                 $this->db->insert('tbl_tracking_real', $data);
-                $this->session->set_flashdata('message', 'SUKSES SCAN IN RESI ' . $result_code);
-                redirect('Scan/successScanIn/' . $result_code);
-                // scan out
-            } elseif ($cek_tracking['flag'] == 4) {
-                $data = array(
-                    'status' => "Shipment Keluar Dari Hub Jakarta Pusat",
-                    'id_so' => $cek_tracking['id_so'],
+                $dataOutbond=[
                     'shipment_id' => $result_code,
-                    'id_user' => $this->session->userdata('id_user'),
-                    'created_at' => date('Y-m-d'),
-                    'time' => date('H:i:s'),
-                    'flag' => 5,
-                    'status_eksekusi' => 1
-                );
-                $this->db->insert('tbl_tracking_real', $data);
-                $this->session->set_flashdata('message', 'Success');
-                redirect('Scan/successScanOut/' . $result_code);
+                    'created_at' => date('Y-m-d H:i:s'),
+                    'created_by' => $this->session->userdata('id_user'),
+                    'in_date' => date('Y-m-d H:i:s'),
+                ];
+                $this->db->insert('tbl_outbond', $dataOutbond);
+                $this->session->set_flashdata('message', 'SUKSES SCAN IN RESI ' . $result_code);
+                redirect('Scan');
+                // scan out
             } else {
                 $this->session->set_flashdata('message', 'No Data');
                 redirect('scan');

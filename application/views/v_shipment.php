@@ -67,7 +67,10 @@
 													<?php if ($getLast['flag'] == 3) { ?>
 														<td>Scan IN</td>
 													<?php } elseif ($getLast['flag'] == 4) { ?>
-														<td>Scan Out</td>
+														<td><a href="<?= base_url('shipper/salesOrder/weight/' . $g['shipment_id']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Weight</a>
+															<a href="<?= base_url('shipper/salesOrder/edit/' . $g['shipment_id'] . '/' . $g['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Edit</a>
+															<a href="<?= base_url('shipper/order/detail/' . $g['shipment_id'] . '/' . $g['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Detail</a>
+														</td>
 													<?php } ?>
 
 												</tr>

@@ -636,7 +636,7 @@ class SalesOrder extends CI_Controller
     {
         $data['title'] = 'Detail Sales Order';
         $data['users'] = $this->db->get_where('tb_user', ['id_role' => 2])->result_array();
-        $data['shipment'] = $this->db->get_where('tbl_shp_order', array('id' => $id))->row_array();
+        $data['shipment'] = $this->db->get_where('tbl_shp_order', array('shipment_id' => $id))->row_array();
         $this->backend->display('shipper/v_weight', $data);
     }
     public function addWeight($id)
