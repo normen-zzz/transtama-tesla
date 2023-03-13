@@ -647,7 +647,7 @@ class SalesOrder extends CI_Controller
         $tinggi = $this->input->post('tinggi');
         $berat = $this->input->post('berat');
         $no_do = $this->input->post('no_do');
-        $total_berat = 0;
+        $total_berat_aktual = 0;
         for ($i = 0; $i < sizeof($shipment_id); $i++) {
             $data = array(
                 'urutan' => ($i + 1),
@@ -685,9 +685,9 @@ class SalesOrder extends CI_Controller
 
 
 
-            $total_berat += $berat[$i];
+            $total_berat_aktual += $berat[$i];
         }
-        $update = $this->db->update('tbl_shp_order', array('berat_js' => $total_berat), array('shipment_id' => $shipment_id[0]));
+        $update = $this->db->update('tbl_shp_order', array('berat_js' => $total_berat_aktual), array('shipment_id' => $shipment_id[0]));
         if ($update) {
             $this->session->set_flashdata('message', '<div class="alert
                 alert-success" role="alert">Success</div>');
