@@ -249,6 +249,19 @@
 	<script src="https://cdn.datatables.net/responsive/2.4.0/js/dataTables.responsive.min.js"></script>
 
 	<script>
+		// $('#submitMerge').css('visibility', 'hidden');
+		function checkTotalCheckedBoxes() {
+			var atLeastOneIsChecked = $('input[name="check[]"]:checked').length;
+
+			if (atLeastOneIsChecked > 1) {
+				$('#submitMerge').css('visibility', 'visible');
+			} else {
+				$('#submitMerge').css('visibility', 'hidden');
+			}
+		}
+	</script>
+
+	<script>
 		$(document).ready(function() {
 
 			$(document).ready(function() {
@@ -502,6 +515,29 @@
 			});
 		});
 	</script>
+
+
+	<script>
+		$(document).ready(function() {
+
+			if (navigator.geolocation) {
+				navigator.geolocation.getCurrentPosition(showPosition);
+			} else {
+				alert("Geolocation is not supported by this browser.");
+			}
+
+			function showPosition(position) {
+				var latitude = position.coords.latitude;
+				var longitude = position.coords.longitude;
+				$('#koordinat').val(position.coords.latitude + ',' + position.coords.longitude);
+			}
+
+
+		});
+	</script>
+
+
+
 	<script type="text/javascript">
 		$('select').select2({
 			allowClear: true,
@@ -511,6 +547,20 @@
 	<script type="text/javascript">
 		function confirm_delete() {
 			return confirm('are you sure?');
+		}
+	</script>
+
+	<script>
+		function collapse(cell) {
+			var row = cell.parentElement;
+			var target_row = row.parentElement.children[row.rowIndex + 1];
+			if (target_row.style.display == 'table-row') {
+				cell.innerHTML = '+';
+				cell.style.display = 'none';
+			} else {
+				cell.innerHTML = '-';
+				target_row.style.display = 'table-row';
+			}
 		}
 	</script>
 

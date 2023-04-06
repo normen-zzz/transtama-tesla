@@ -60,11 +60,11 @@ class PengajuanModel extends CI_Model
         // $this->db->order_by('a.shipment_id', 'DESC');
         // return $this->db->get();
 
-        $this->db->select('a.shipment_id,b.shipper,b.consigne,b.tree_shipper,b.tree_consignee,b.id_so');
+        $this->db->select('b.id,a.shipment_id,b.shipper,b.consigne,b.tree_shipper,b.tree_consignee,b.id_so,b.is_jabodetabek');
         $this->db->from('tbl_outbond a');
         $this->db->join('tbl_shp_order b','a.shipment_id=b.shipment_id');
-        $this->db->where('MONTH(b.tgl_pickup)', 10);
-        $this->db->where('YEAR(b.tgl_pickup)', 2022);
+        // $this->db->where('MONTH(b.tgl_pickup)', 10);
+        // $this->db->where('YEAR(b.tgl_pickup)', 2022);
         $this->db->order_by('b.shipment_id', 'DESC');
         return $this->db->get();
     }

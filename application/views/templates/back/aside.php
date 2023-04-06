@@ -138,13 +138,13 @@
 						</a>
 					</li>
 					<li class="menu-item" aria-haspopup="true">
-						<a href="<?= base_url('superadmin/order') ?>" class="menu-link">
+						<a href="<?= base_url('superadmin/kpi/cs') ?>" class="menu-link">
 							<span class="menu-text"><i class="fa fa-car-side text-danger mr-2"></i>Cs</span>
 						</a>
 					</li>
 
 					<li class="menu-item" aria-haspopup="true">
-						<a href="<?= base_url('superadmin/order/report') ?>" class="menu-link">
+						<a href="<?= base_url('superadmin/kpi/ops') ?>" class="menu-link">
 							<span class="menu-text">
 								<i class="fa fa-chart-bar text-danger mr-2"></i>Ops</span>
 						</a>
@@ -228,7 +228,7 @@
 				</a>
 			</li>
 			<li class="menu-item menu-item" aria-haspopup="true">
-				<a href="<?= base_url('scan') ?>" class="menu-link">
+				<a href="<?= base_url('shipper/scan') ?>" class="menu-link">
 					<span class="menu-text"><span class="svg-icon svg-icon-danger svg-icon mr-2">
 							<i class="fa fa-eye text-danger mr-2">
 						</span></i>Scan In/Out</span>
@@ -242,13 +242,7 @@
 				</a>
 			</li>
 
-			<li class="menu-item menu-item" aria-haspopup="true">
-				<a href="<?= base_url('shipper/SalesOrder/asign') ?>" class="menu-link">
-					<span class="menu-text"><span class="svg-icon svg-icon-danger svg-icon mr-2">
-							<i class="fa fa-book text-danger mr-2">
-						</span></i>Asign</span>
-				</a>
-			</li>
+			
 
 		<?php	} else {
 		?>

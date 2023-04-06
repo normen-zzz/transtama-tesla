@@ -56,7 +56,7 @@ if ($("#scanOutbond").length) {
 			// scanOutbond.stop();
 			// $('.hasilscan').append($('<input name="id_karyawan" value=' + result.code + ' readonly><input type="submit" value="Cek"/>'));
 			// $.post("../cek.php", { noijazah: result.code} );
-			var redirect = "scan/outbond";
+			var redirect = "shipper/scan/outbond";
 
 			$.redirectPost(redirect, { id_karyawan: result.code });
 		},
@@ -65,9 +65,9 @@ if ($("#scanOutbond").length) {
 		.WebCodeCamJQuery(sendToOutbond)
 		.data().plugin_WebCodeCamJQuery;
 
-	scanOutbond.buildSelectMenu("select");
+	scanOutbond.buildSelectMenu('.selectCamera');
 	scanOutbond.play();
-	$("select").on("change", function () {
+	$('.selectCamera').on("change", function () {
 		scanOutbond.stop().play();
 	});
 }
