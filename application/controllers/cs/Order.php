@@ -124,8 +124,8 @@ class Order extends CI_Controller
             'is_weight_print' => $this->input->post('is_weight_print'),
         );
         $shipment = $this->db->get_where('tbl_shp_order', array('id' => $this->input->post('id')))->row_array();
-        if ($shipment['updatesistem_at'] == NULL) {
-            $data['updatesistem_at'] = date('Y-m-d H:i:s');
+        if ($shipment['update_at'] == NULL) {
+            $data['update_at'] = date('Y-m-d H:i:s');
         }
 
         $update =  $this->db->update('tbl_shp_order', $data, ['id' => $this->input->post('id')]);

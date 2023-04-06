@@ -169,6 +169,14 @@
                                     </div>
 
                                 </div>
+
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Special Cn</label>
+                                        <input type="number" class="form-control" id="exampleInputEmail1" required name="special_cn_baru" placeholder="ex: 10000">
+                                    </div>
+
+                                </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="exampleInputEmail1">Reason</label>

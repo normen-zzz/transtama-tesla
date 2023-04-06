@@ -223,7 +223,7 @@ class Ap extends CI_Controller
 						$linksm = "https://jobsheet.transtama.com/approval/detail/$no_ap";
 						$pesansm = "Hallo, ada pengajuan Ap Oleh *$nama_user* No. *$no_ap* Dengan Tujuan *$purpose* Tanggal *$date*. Silahkan approve melalui link berikut : $linksm . Terima Kasih";
 						// no pak sam
-						// $this->wa->pickup('+6281808008082', "$pesansm");
+						$this->wa->pickup('+6281808008082', "$pesansm");
 						// $this->wa->pickup('+6285157906966', "$pesan");
 						//Norman
 						$this->wa->pickup('+6285697780467', "$pesansm");
@@ -399,29 +399,31 @@ class Ap extends CI_Controller
 		// 	'description' => $description,
 		// 	'amount_proposed' => $amount_proposed,
 		// );
+		$data = [];
 
+		$folderUpload = "./uploads/ap/";
+		$files = $_FILES;
+		$attachment = $files['attachmentedit']['name'];
 
+		if ($attachment != NULL) {
+			$namaFile = $files['attachmentedit']['name'];
+			$lokasiTmp = $files['attachmentedit']['tmp_name'];
+			// # kita tambahkan uniqid() agar nama gambar bersifat unik
+			$namaBaru = uniqid() . '-' . $namaFile;
+			$lokasiBaru = "{$folderUpload}/{$namaBaru}";
+			move_uploaded_file($lokasiTmp, $lokasiBaru);
+			$ktp = array('attachment' => $namaBaru);
+			$data = array_merge($data, $ktp);
+		}
 
-		if (isset($_FILES['attachmentedit']['name'])) {
-			$config['upload_path'] = realpath(FCPATH . 'uploads/ap');
-			$config['allowed_types']     = 'gif|jpg|png|jpeg';
-			$config['overwrite']          = true;
-			$config['encrypt_name'] = TRUE;
-
-
-			$this->load->library('upload', $config);
-
-			if (!$this->upload->do_upload('attachmentedit')) {
-				$this->session->set_flashdata('message', 'swal("Ops!", "photo gagal diupload", "error");');
-			} else {
-				$img = $this->upload->data();
-				$data = [
-					'attachment' =>  $img['file_name']
-				];
-				$this->db->update('tbl_pengeluaran', $data, $where);
-				$this->session->set_flashdata('message', 'Diedit');
-				redirect('cs/ap/detail/' . $no_pengeluaran);
-			}
+		$update = $this->db->update('tbl_pengeluaran', $data, $where);
+		if ($update) {
+			// unlink('uploads/ap/' . $attachment_lama);
+			$this->session->set_flashdata('message', 'Diedit');
+			redirect('cs/ap/detail/' . $no_pengeluaran);
+		} else {
+			$this->session->set_flashdata('message', 'Diedit');
+			redirect('cs/ap/detail/' . $no_pengeluaran);
 		}
 	}
 

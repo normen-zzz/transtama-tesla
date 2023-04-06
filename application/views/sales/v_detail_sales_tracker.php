@@ -69,6 +69,11 @@
                                 </div>
 
                                 <div class="form-group">
+                                    <label for="exampleInputPassword1">Gps</label>
+                                    <a href="https://maps.google.com?q=<?= $dataSalesTracker['geo_location'] ?>" class="link-info">maps</a>
+                                </div>
+
+                                <div class="form-group">
                                     <label for="exampleInputPassword1">Image</label>
                                     <img class="img-fluid" src="<?= base_url('uploads/salestracker/' . $dataSalesTracker['image']) ?>" alt="<?= $dataSalesTracker['image'] ?>" width="400px">
                                     <label class="text-danger" for="">*Isi Jika Ingin Mengubah Photo*</label>

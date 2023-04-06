@@ -182,7 +182,7 @@
 																<p class="text-danger">***Choose file jika ingin mengubah foto dan klik submit***</p>
 																<!-- <a data-toggle="modal" data-target="#modal-edit<?= $c['id_pengeluaran'] ?>" class=" btn btn-sm text-light mt-1" style="background-color: #9c223b;"> <i class="fa fa-edit text-light"></i> Edit</a> -->
 
-																<form action="<?= base_url('cs/ap/edit') ?>" method="POST" enctype="multipart/form-data">
+																<form action="<?= base_url('sales/ap/edit') ?>" method="POST" enctype="multipart/form-data">
 																	<input type="text" name="id_pengeluaran" value="<?= $c['id_pengeluaran'] ?>" hidden>
 																	<input type="text" name="no_pengeluaran" value="<?= $c['no_pengeluaran'] ?>" hidden>
 																	<input type="file" class="form-control-file" id="attachmentedit<?= $c['id_pengeluaran'] ?>" data-idpengeluaran="<?= $c['id_pengeluaran'] ?>" name="attachment" onchange="handleImageUploadTracker(this.id);" accept="image/*" capture>

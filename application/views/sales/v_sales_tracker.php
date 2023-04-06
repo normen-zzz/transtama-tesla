@@ -171,10 +171,13 @@
                                 <label for="exampleInputPassword1">Summary</label>
                                 <input type="text" class="form-control" required name="summary">
                             </div>
+                            
+                                <input type="text" class="form-control" id="koordinat" required name="koordinat" hidden>
+                            
                             <div class="form-group">
                                 <label for="exampleInputPassword1">Picture</label>
                                 <input type="file" class="form-control" id="attachment<?= $d['id_sales_tracker'] ?>" name="attachmentbefore<?= $d['id_sales_tracker'] ?>" onchange="handleImageUploadTracker(this.id);" accept="image/*" required>
-                                <input type="file" class="form-control" id="upload_file-attachment<?= $d['id_sales_tracker'] ?>" name="photo" required>
+                                <input type="file" class="form-control" id="upload_file-attachment<?= $d['id_sales_tracker'] ?>" name="photo" required hidden>
                             </div>
                             <div class="form-group">
                                 <label for="exampleInputPassword1">End Date</label>

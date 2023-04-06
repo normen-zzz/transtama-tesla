@@ -76,7 +76,8 @@ class SalesTracker extends CI_Controller
         $dataCheckout = [
             'summary' => $this->input->post('summary'),
             'end_date' => $this->input->post('end_date'),
-            'closing_at' => date('Y-m-d H:i:s')
+            'closing_at' => date('Y-m-d H:i:s'),
+            'geo_location' => $this->input->post('koordinat'),
 
 
         ];
