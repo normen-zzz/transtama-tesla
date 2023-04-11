@@ -152,7 +152,7 @@ function getGrade($nilai)
                                                 <td><?= $no; ?></td>
                                                 <td><?= $s['nama_user'] ?></td>
                                                 <td><?= getGrade($nilai)  ?></td>
-                                                <td><a class="btn btn-primary" href="<?= base_url('superadmin/Kpi/detailMeetingPlan/' . $s['id_user'] . '/' . strtotime($awal) . '/' . strtotime($akhir)) ?>">Detail</a></td>
+                                                <td><a target="_blank" class="btn btn-primary" href="<?= base_url('superadmin/Kpi/detailMeetingPlan/' . $s['id_user'] . '/' . strtotime($awal) . '/' . strtotime($akhir)) ?>">Detail</a></td>
 
                                             </tr>
                                         <?php $no++;
@@ -220,7 +220,7 @@ function getGrade($nilai)
                                                 <td><?= $no ?></td>
                                                 <td><?= $s['nama_user'] ?></td>
                                                 <td><?= getGrade($nilai)  ?></td>
-                                                <td><a class="btn btn-primary" href="<?= base_url('superadmin/Kpi/detailClosingMeeting/' . $s['id_user'] . '/' . strtotime($awal) . '/' . strtotime($akhir)) ?>">Detail</a></td>
+                                                <td><a class="btn btn-primary" target="_blank" href="<?= base_url('superadmin/Kpi/detailClosingMeeting/' . $s['id_user'] . '/' . strtotime($awal) . '/' . strtotime($akhir)) ?>">Detail</a></td>
 
                                             </tr>
                                         <?php $no++;
@@ -295,7 +295,7 @@ function getGrade($nilai)
                                                 <td><?= $no; ?></td>
                                                 <td><?= $s['nama_user'] ?></td>
                                                 <td><?= getGrade($nilai); ?></td>
-                                                <td><a class="btn btn-primary" href="<?= base_url('superadmin/Kpi/detailSo/' . $s['id_user'] . '/' . strtotime($awal) . '/' . strtotime($akhir)) ?>">Detail</a></td>
+                                                <td><a target="_blank" class="btn btn-primary" href="<?= base_url('superadmin/Kpi/detailSo/' . $s['id_user'] . '/' . strtotime($awal) . '/' . strtotime($akhir)) ?>">Detail</a></td>
 
                                             </tr>
                                         <?php $no++;

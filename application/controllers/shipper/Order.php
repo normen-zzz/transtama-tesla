@@ -1234,6 +1234,25 @@ class Order extends CI_Controller
         $mpdf->WriteHTML($data);
         $mpdf->Output();
     }
+
+    public function printOutbond($id)
+    {
+
+        $mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => [74, 105]]);
+
+        $where = array('shipment_id' => $id);
+        $data['order'] = $this->db->get_where('tbl_shp_order', $where)->row_array();
+        $where2 = array('code' => $data['order']['service_type']);
+        $data['service'] = $this->db->get_where('tb_service_type', $where2)->row_array();
+        // var_dump($data['order']);
+        // die;
+        // $this->load->view('superadmin/v_cetak', $data);
+
+
+        $data = $this->load->view('superadmin/v_cetak_outbond', $data, TRUE);
+        $mpdf->WriteHTML($data);
+        $mpdf->Output();
+    }
     public function completeTtd($id, $id_tracking)
     {
         $this->db->select('a.image,a.signature, a.shipment_id,a.id');

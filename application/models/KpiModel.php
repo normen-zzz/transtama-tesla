@@ -47,6 +47,31 @@ class KpiModel extends CI_Model
         return $query;
     }
 
+    public function getResiOnReservasi($awal, $akhir)
+    {
+        $this->db->select('a.*');
+        $this->db->from('tbl_shp_order a');
+        $this->db->where('a.tgl_pickup >=', date('Y-m-d', $awal));
+        $this->db->where('a.tgl_pickup <=', date('Y-m-d', $akhir));
+        $this->db->where('a.status_so >=', 2);
+        $this->db->where('a.deleted', 0);
+        $this->db->where('service_type', 'f4e0915b-7487-4fae-a04c-c3363d959742');
+        $query = $this->db->get();
+        return $query;
+    }
+    public function getResiOnDaerah($awal, $akhir)
+    {
+        $this->db->select('a.*');
+        $this->db->from('tbl_shp_order a');
+        $this->db->where('a.tgl_pickup >=', date('Y-m-d', $awal));
+        $this->db->where('a.tgl_pickup <=', date('Y-m-d', $akhir));
+        $this->db->where('a.status_so >=', 2);
+        $this->db->where('a.deleted', 0);
+        $this->db->where('is_jabodetabek', 2);
+        $query = $this->db->get();
+        return $query;
+    }
+
     public function getVisitCs($bulan, $tahun)
     {
         $this->db->select('a.*,b.nama_user');
@@ -59,23 +84,23 @@ class KpiModel extends CI_Model
         return $query;
     }
 
-    public function getDeliveryDaerah($bulan, $tahun)
+    public function getDeliveryDaerah($awal, $akhir)
     {
         $this->db->select('a.*');
         $this->db->from('tbl_shp_order a');
-        $this->db->where('MONTH(a.tgl_pickup)', $bulan);
-        $this->db->where('YEAR(a.tgl_pickup)', $tahun);
+        $this->db->where('a.tgl_pickup >=', date('Y-m-d', $awal));
+        $this->db->where('a.tgl_pickup <=', date('Y-m-d', $akhir));
         $this->db->where('a.is_jabodetabek', 2);
         $query = $this->db->get();
         return $query;
     }
 
-    public function getReservasi($bulan, $tahun)
+    public function getReservasi($awal, $akhir)
     {
         $this->db->select('a.*');
         $this->db->from('tbl_shp_order a');
-        $this->db->where('MONTH(a.tgl_pickup)', $bulan);
-        $this->db->where('YEAR(a.tgl_pickup)', $tahun);
+        $this->db->where('a.tgl_pickup >=', date('Y-m-d', $awal));
+        $this->db->where('a.tgl_pickup <=', date('Y-m-d', $akhir));
         $this->db->where('a.service_type', 'f4e0915b-7487-4fae-a04c-c3363d959742');
         $query = $this->db->get();
         return $query;

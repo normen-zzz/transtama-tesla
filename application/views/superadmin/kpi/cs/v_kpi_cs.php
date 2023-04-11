@@ -142,7 +142,7 @@ function getGrade($nilai)
                                         <tr>
                                             <td><?= $resionjs->num_rows() ?></td>
                                             <td><?= getGrade($nilai)  ?></td>
-                                            <td><a class="btn btn-primary" href="<?= base_url('superadmin/Kpi/detailJobsheet/' . strtotime($awal) . '/' . strtotime($akhir)) ?>">Detail</a></td>
+                                            <td><a target="_blank" class="btn btn-primary" href="<?= base_url('superadmin/Kpi/detailJobsheet/' . strtotime($awal) . '/' . strtotime($akhir)) ?>">Detail</a></td>
 
                                         </tr>
 
@@ -155,7 +155,7 @@ function getGrade($nilai)
                                 <table class="table table-separate table-head-custom table-checkable datatable">
                                     <thead>
                                         <tr>
-                                            <th>Month</th>
+
                                             <th>Jumlah Resi</th>
                                             <th>Nilai</th>
                                             <th>Action</th>
@@ -164,51 +164,41 @@ function getGrade($nilai)
                                     <tbody>
                                         <?php
 
-                                        $start    = (new DateTime($awal))->modify('first day of this month');
-                                        $end      = (new DateTime($akhir))->modify('first day of next month');
-                                        $interval = DateInterval::createFromDateString('1 month');
-                                        $period   = new DatePeriod($start, $interval, $end);
 
-                                        foreach ($period as $dt) {
-                                            $nilai = 0;
-                                            $jumlahVisit = 0;
-                                            // echo $dt->format("Y-m") . "<br>\n";
-                                            $this->db->where('MONTH(tgl_pickup)', $dt->format("m"));
-                                            $this->db->where('YEAR(tgl_pickup)', $dt->format("Y"));
-                                            $this->db->where('service_type', 'f4e0915b-7487-4fae-a04c-c3363d959742');
-                                            $resi = $this->db->get('tbl_shp_order');
+                                        $nilai = 0;
+                                        $jumlahVisit = 0;
 
-                                            foreach ($resi->result_array() as $resi1) {
-                                                if ($resi1['flight_at'] != NULL) {
-                                                    if ($diff->format("%R%a") == 1) {
-                                                        // nilai A
-                                                        $nilai += 90;
-                                                    } elseif ($diff->format("%R%a") == 2) {
-                                                        // nilai B
-                                                        $nilai += 70;
-                                                    } elseif ($diff->format("%R%a") >= 3) {
-                                                        // nilai C
-                                                        $nilai += 50;
-                                                    }
+                                        foreach ($reservasi->result_array() as $resi1) {
+                                            if ($resi1['flight_at'] != NULL) {
+                                                if ($diff->format("%R%a") == 1) {
+                                                    // nilai A
+                                                    $nilai += 90;
+                                                } elseif ($diff->format("%R%a") == 2) {
+                                                    // nilai B
+                                                    $nilai += 70;
+                                                } elseif ($diff->format("%R%a") >= 3) {
+                                                    // nilai C
+                                                    $nilai += 50;
                                                 }
                                             }
-                                            if ($resi->num_rows() != 0) {
-                                                $nilai = ($nilai / $resi->num_rows());
-                                            }
+                                        }
+                                        if ($reservasi->num_rows() != 0) {
+                                            $nilai = ($nilai / $reservasi->num_rows());
+                                        }
 
 
 
                                         ?>
-                                            <tr>
+                                        <tr>
 
-                                                <td><?php echo $dt->format("F Y") ?></td>
-                                                <td><?= $resi->num_rows(); ?></td>
-                                                <td><?= getGrade($nilai) . '-' . $nilai; ?></td>
-                                                <td><a class="btn btn-primary" href="<?= base_url('superadmin/Kpi/detailReservasi/' . $dt->format("m") . '/' . $dt->format("Y")) ?>">Detail</a></td>
 
-                                            </tr>
+                                            <td><?= $reservasi->num_rows(); ?></td>
+                                            <td><?= getGrade($nilai) . '-' . $nilai; ?></td>
+                                            <td><a target="_blank" class="btn btn-primary" href="<?= base_url('superadmin/Kpi/detailReservasi/' . strtotime($awal) . '/' . strtotime($akhir)) ?>">Detail</a></td>
+
+                                        </tr>
                                         <?php
-                                        }
+
                                         ?>
                                     </tbody>
                                 </table>
@@ -219,7 +209,7 @@ function getGrade($nilai)
                                 <table class="table table-separate table-head-custom table-checkable datatable">
                                     <thead>
                                         <tr>
-                                            <th>Month</th>
+                                          
                                             <th>Jumlah Resi</th>
                                             <th>Nilai</th>
                                             <th>Action</th>
@@ -228,26 +218,19 @@ function getGrade($nilai)
                                     <tbody>
                                         <?php
 
-                                        $start    = (new DateTime($awal))->modify('first day of this month');
-                                        $end      = (new DateTime($akhir))->modify('first day of next month');
-                                        $interval = DateInterval::createFromDateString('1 month');
-                                        $period   = new DatePeriod($start, $interval, $end);
 
-                                        foreach ($period as $dt) {
-                                            $nilai = 0;
-                                            $jumlahVisit = 0;
-                                            // echo $dt->format("Y-m") . "<br>\n";
-                                            $this->db->where('MONTH(tgl_pickup)', $dt->format("m"));
-                                            $this->db->where('YEAR(tgl_pickup)', $dt->format("Y"));
-                                            $this->db->where('is_jabodetabek', 2);
-                                            $resi = $this->db->get('tbl_shp_order');
+                                        $nilai = 0;
+                                        $jumlahDeliveryValid = 0;
 
-                                            foreach ($resi->result_array() as $s) {
-                                                $date1 = date_create(date('Y-m-d', strtotime($s['tgl_pickup'])));
-                                                $date2 = date_create(date('Y-m-d', strtotime($s['tgl_diterima'])));
-                                                $diff = date_diff($date1, $date2);
 
-                                                $city = $this->db->get_where('tb_city', array('city_name' => $s['city_consigne']))->row_array();
+                                        foreach ($daerah->result_array() as $s) {
+                                            $date1 = date_create(date('Y-m-d', strtotime($s['tgl_pickup'])));
+                                            $date2 = date_create(date('Y-m-d', strtotime($s['tgl_diterima'])));
+                                            $diff = date_diff($date1, $date2);
+
+                                            $city = $this->db->get_where('tb_city', array('city_name' => $s['city_consigne']))->row_array();
+
+                                            if ($city != NULL) {
 
                                                 if ($city['lead_awal'] != NULL) {
 
@@ -264,26 +247,29 @@ function getGrade($nilai)
                                                         // nilai D
                                                         $nilai += 30;
                                                     }
+                                                    
                                                 }
+                                                $jumlahDeliveryValid += 1;
                                             }
+                                        }
 
-                                            if ($resi->num_rows() != 0) {
-                                                $nilai = ($nilai / $resi->num_rows());
-                                            }
+                                        if ($jumlahDeliveryValid!= 0) {
+                                            $nilai = ($nilai / $jumlahDeliveryValid);
+                                        }
 
 
 
                                         ?>
-                                            <tr>
+                                        <tr>
 
-                                                <td><?php echo $dt->format("F Y") ?></td>
-                                                <td><?= $resi->num_rows(); ?></td>
-                                                <td><?= getGrade($nilai) . '-' . $nilai; ?></td>
-                                                <td><a class="btn btn-primary" href="<?= base_url('superadmin/Kpi/detailDeliveryDaerah/' . $dt->format("m") . '/' . $dt->format("Y")) ?>">Detail</a></td>
 
-                                            </tr>
+                                            <td><?= $jumlahDeliveryValid; ?></td>
+                                            <td><?= getGrade($nilai) . '-' . $nilai; ?></td>
+                                            <td><a target="_blank" class="btn btn-primary" href="<?= base_url('superadmin/Kpi/detailDeliveryDaerah/' . strtotime($awal) . '/' . strtotime($akhir)) ?>">Detail</a></td>
+
+                                        </tr>
                                         <?php
-                                        }
+
                                         ?>
                                     </tbody>
                                 </table>
@@ -357,7 +343,7 @@ function getGrade($nilai)
                                                 <td><?= $no; ?></td>
                                                 <td><?= $s['nama_user'] ?></td>
                                                 <td><?= getGrade($nilai); ?></td>
-                                                <td><a class="btn btn-primary" href="<?= base_url('superadmin/Kpi/detailSo/' . $s['id_user'] . '/' . strtotime($awal) . '/' . strtotime($akhir)) ?>">Detail</a></td>
+                                                <td><a target="_blank" class="btn btn-primary" href="<?= base_url('superadmin/Kpi/detailSo/' . $s['id_user'] . '/' . strtotime($awal) . '/' . strtotime($akhir)) ?>">Detail</a></td>
 
                                             </tr>
                                         <?php $no++;
@@ -409,7 +395,7 @@ function getGrade($nilai)
                                                 <td><?php echo $dt->format("F Y") ?></td>
                                                 <td><?= $jumlahVisit; ?></td>
                                                 <td><?= getGrade($nilai); ?></td>
-                                                <td><a class="btn btn-primary" href="<?= base_url('superadmin/Kpi/detailVisitCs/' . $dt->format("m") . '/' . $dt->format("Y")) ?>">Detail</a></td>
+                                                <td><a target="_blank" class="btn btn-primary" href="<?= base_url('superadmin/Kpi/detailVisitCs/' . $dt->format("m") . '/' . $dt->format("Y")) ?>">Detail</a></td>
 
                                             </tr>
                                         <?php

@@ -39,7 +39,7 @@
 								<i class="fas fa-chevron-circle-left text-light"> </i>
 								Back
 							</a>
-							<a href="<?= base_url('shipper/order/print/' . $shipment['shipment_id']) ?>" class="btn mr-2 text-light" style="background-color: #9c223b;">
+							<a href="<?= base_url('shipper/order/printOutbond/' . $shipment['shipment_id']) ?>" class="btn mr-2 text-light" style="background-color: #9c223b;">
 	                                <i class="fas fa-print text-light"> </i>
 	                                Print
 	                            </a>

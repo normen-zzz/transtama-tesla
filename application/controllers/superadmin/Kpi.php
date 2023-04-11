@@ -110,10 +110,14 @@ class Kpi extends CI_Controller
             $data['awal'] = date('Y-m-d');
             $data['akhir'] = date('Y-m-t');
             $data['resionjs'] = $this->KpiModel->getResiOnJs(strtotime(date('Y-m-d')), strtotime(date('Y-m-t')));
+            $data['reservasi'] = $this->KpiModel->getResiOnReservasi(strtotime(date('Y-m-d')), strtotime(date('Y-m-t')));
+            $data['daerah'] = $this->KpiModel->getResiOnDaerah(strtotime(date('Y-m-d')), strtotime(date('Y-m-t')));
         } else {
             $data['awal'] = $this->input->post('awal');
             $data['akhir'] = $this->input->post('akhir');
             $data['resionjs'] = $this->KpiModel->getResiOnJs(strtotime($this->input->post('awal')), strtotime($this->input->post('akhir')));
+            $data['reservasi'] = $this->KpiModel->getResiOnReservasi(strtotime($this->input->post('awal')), strtotime($this->input->post('akhir')));
+            $data['daerah'] = $this->KpiModel->getResiOnDaerah(strtotime($this->input->post('awal')), strtotime($this->input->post('akhir')));
         }
         $this->backend->display('superadmin/kpi/cs/v_kpi_cs', $data);
     }
@@ -151,12 +155,12 @@ class Kpi extends CI_Controller
         }
     }
 
-    public function detailDeliveryDaerah($bulan = NULL, $tahun = NULL)
+    public function detailDeliveryDaerah($awal = NULL, $akhir = NULL)
     {
         if ($this->input->post('date') == NULL) {
             $data['title'] = 'KPI CS (Delivery Daerah)';
-            $data['date'] =  $tahun . '-' . $bulan;
-            $data['resi'] = $this->KpiModel->getDeliveryDaerah($bulan, $tahun);
+            $data['date'] =  $awal . '-' . $akhir;
+            $data['resi'] = $this->KpiModel->getDeliveryDaerah($awal, $akhir);
             // var_dump(date('Y-m', strtotime($tahun . '-' . $bulan)));
             $this->backend->display('superadmin/kpi/cs/v_detail_delivery_daerah', $data);
         } else {
@@ -167,12 +171,12 @@ class Kpi extends CI_Controller
         }
     }
 
-    public function detailReservasi($bulan = NULL, $tahun = NULL)
+    public function detailReservasi($awal = NULL, $akhir = NULL)
     {
         if ($this->input->post('date') == NULL) {
             $data['title'] = 'KPI CS (Reservasi)';
-            $data['date'] =  $tahun . '-' . $bulan;
-            $data['resi'] = $this->KpiModel->getReservasi($bulan, $tahun);
+            $data['date'] =  $awal . '-' . $akhir;
+            $data['resi'] = $this->KpiModel->getReservasi($awal, $akhir);
             // var_dump(date('Y-m', strtotime($tahun . '-' . $bulan)));
             $this->backend->display('superadmin/kpi/cs/v_detail_reservasi', $data);
         } else {

@@ -87,6 +87,7 @@ function getGrade($nilai)
                                     $nilai = 0;
                                     $city = $this->db->get_where('tb_city', array('city_name' => $s['city_consigne']))->row_array();
 
+                                    if ($city != NULL) {
                                     if ($city['lead_awal'] != NULL) {
 
                                         if ($diff->format("%R%a") < $city['lead_awal']) {
@@ -103,10 +104,7 @@ function getGrade($nilai)
                                             $nilai = 30;
                                         }
                                     }
-
-
-
-
+                                
                                 ?>
                                     <tr>
                                         <td><?= $s['shipment_id'] ?></td>
@@ -125,7 +123,7 @@ function getGrade($nilai)
 
                                     </tr>
                                 <?php
-                                } ?>
+                               } } ?>
                             </tbody>
 
 
