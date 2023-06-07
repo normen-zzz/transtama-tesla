@@ -21,12 +21,12 @@ class SalesOrder extends CI_Controller
 
     public function index()
     {
-        $this->db->select('a.*,b.nama_user');
-        $this->db->from('tbl_so a');
-        $this->db->join('tb_user b', 'b.id_user=a.id_sales');
-        $this->db->order_by('a.id_so', 'DESC');
-        $query = $this->db->get()->result_array();
-        $data['so'] = $query;
+        // $this->db->select('a.*,b.nama_user');
+        // $this->db->from('tbl_so a');
+        // $this->db->join('tb_user b', 'b.id_user=a.id_sales');
+        // $this->db->order_by('a.id_so', 'DESC');
+        // $query = $this->db->get()->result_array();
+        // $data['so'] = $query;
         $data['title'] = 'Sales Order';
         $this->backend->display('cs/v_so', $data);
     }
@@ -37,8 +37,8 @@ class SalesOrder extends CI_Controller
             $data['shipment_id'] = $shipment_id;
             $data['tracking'] = $this->db->get_where('tbl_tracking_real', ['shipment_id' => $shipment_id])->result_array();
             $data['shipment'] = $this->db->get_where('tbl_shp_order', ['shipment_id' => $shipment_id])->row_array();
-			$data['title'] = 'Sales Order';
-			if ($this->input->post('modal') == 1) {
+            $data['title'] = 'Sales Order';
+            if ($this->input->post('modal') == 1) {
                 $data['modal'] = '$("#modal-lg-dl-add' . $shipment_id . '").modal("show");';
             }
             $this->backend->display('cs/v_tracking', $data);
@@ -46,7 +46,7 @@ class SalesOrder extends CI_Controller
             $data['shipment_id'] = $shipment_id;
             $data['tracking'] = $this->db->get_where('tbl_tracking_real', ['shipment_id' => $shipment_id])->result_array();
             $data['shipment'] = $this->db->get_where('tbl_shp_order', ['shipment_id' => $shipment_id])->row_array();
-			$data['title'] = 'Sales Order';
+            $data['title'] = 'Sales Order';
             $this->backend->display('cs/v_tracking', $data);
         }
     }
@@ -66,13 +66,13 @@ class SalesOrder extends CI_Controller
         $status = $this->input->post('status');
         $flag = '';
         if ($status == 'Shipment Telah Tiba Di Hub') {
-            $flag = 8;
-        } else if ($status == 'Shipment Keluar Di Hub Tujuan') {
             $flag = 9;
-        } else if ($status == 'Shipment Dalam Proses Delivery') {
+        } else if ($status == 'Shipment Keluar Di Hub Tujuan') {
             $flag = 10;
-        } else {
+        } else if ($status == 'Shipment Dalam Proses Delivery') {
             $flag = 11;
+        } else {
+            $flag = 12;
         }
 
         $id_so = $this->input->post('id_so');
@@ -128,27 +128,29 @@ class SalesOrder extends CI_Controller
         $status = $this->input->post('status');
         $flag = '';
         if ($status == 'Shipment Telah Tiba Di Hub') {
-            $flag = 8;
-        } else if ($status == 'Shipment Keluar Di Hub Tujuan') {
             $flag = 9;
-        } else if ($status == 'Shipment Dalam Proses Delivery') {
+        } else if ($status == 'Shipment Keluar Di Hub Tujuan') {
             $flag = 10;
-        } elseif ($status == 'Shipment Telah Diterima Oleh') {
+        } else if ($status == 'Shipment Dalam Proses Delivery') {
             $flag = 11;
+        } elseif ($status == 'Shipment Telah Diterima Oleh') {
+            $flag = 12;
         } elseif ($status == 'Request Pickup From Shipper') {
             $flag = 1;
         } elseif ($status == 'Driver Menuju Lokasi Pickup') {
             $flag = 2;
-        } elseif ($status == 'Shipment Telah Dipickup Dari Shipper') {
+        } elseif ($status == 'Driver Telah Sampai Di Lokasi Pickup') {
             $flag = 3;
-        } elseif ($status == 'Shipment Telah Tiba Di Hub Jakarta Pusat') {
+        } elseif ($status == 'Shipment Telah Dipickup Dari Shipper') {
             $flag = 4;
-        } elseif ($status == 'Shipment Keluar Dari Hub Jakarta Pusat') {
+        } elseif ($status == 'Shipment Telah Tiba Di Hub Jakarta Pusat') {
             $flag = 5;
-        } elseif ($status == 'Shipment Telah Tiba Di Hub CGK' || $status == 'Shipment Telah Tiba Di Hub Jakarta Utara') {
+        } elseif ($status == 'Shipment Keluar Dari Hub Jakarta Pusat') {
             $flag = 6;
-        } elseif ($status == 'Shipment Keluar Dari Hub CGK' || $status == 'Shipment Keluar Dari Hub Jakarta Utara') {
+        } elseif ($status == 'Shipment Telah Tiba Di Hub CGK' || $status == 'Shipment Telah Tiba Di Hub Jakarta Utara') {
             $flag = 7;
+        } elseif ($status == 'Shipment Keluar Dari Hub CGK' || $status == 'Shipment Keluar Dari Hub Jakarta Utara') {
+            $flag = 8;
         }
 
         $id_so = $this->input->post('id_so');
@@ -200,7 +202,7 @@ class SalesOrder extends CI_Controller
         $data = array_merge($data, $ktp);
 
         $this->db->insert('tbl_tracking_real', $data);
-		 if ($status == "Shipment Telah Diterima Oleh") {
+        if ($status == "Shipment Telah Diterima Oleh") {
             // update tgl diterima
             $data = array(
                 'tgl_diterima' => $this->input->post('date')
@@ -213,7 +215,7 @@ class SalesOrder extends CI_Controller
     public function add($id_so)
     {
         $data['title'] = 'Add Order';
-       
+
         // $data['imagecamera'] = $img;
         $data['id_so'] = $id_so;
         $data['city'] = $this->db->get('tb_city')->result_array();
@@ -225,7 +227,7 @@ class SalesOrder extends CI_Controller
     public function bulk($id_so)
     {
         $data['title'] = 'Add Order';
-        
+
         $data['id_so'] = $id_so;
         $data['city'] = $this->db->get('tb_city')->result_array();
         $data['province'] = $this->db->get('tb_province')->result_array();
@@ -432,7 +434,7 @@ class SalesOrder extends CI_Controller
                                 'id_user' => $this->session->userdata('id_user'),
                                 'pic_task' => $this->input->post('sender'),
                                 'time' => date('H:i:s'),
-                                'flag' => 3,
+                                'flag' => 4,
                                 'status_eksekusi' => 0,
                             );
                             $this->db->insert('tbl_tracking_real', $data);
@@ -509,8 +511,8 @@ class SalesOrder extends CI_Controller
             redirect('shipper/order/bulk/' . $this->input->post('id_so') . '/' . $this->input->post('id_tracking'));
         }
     }
-	
-	 public function processAdd()
+
+    public function processAdd()
     {
         $this->form_validation->set_rules('consigne', 'consigne', 'required');
         $this->form_validation->set_rules('state_consigne', 'State_consigne', 'required');
@@ -555,7 +557,7 @@ class SalesOrder extends CI_Controller
             $potong = substr($no, 3);
             $noUrut = $potong + 1;
             $kode =  sprintf("%09s", $noUrut);
-            $kode  = "SO-$kode";// kode referensi so
+            $kode  = "SO-$kode"; // kode referensi so
             //Mencari ANgka terbesar
             $sql = $this->db->query("SELECT max(so_id) as kode FROM tbl_shp_order")->row_array();
             $no = $sql['kode'];
@@ -590,7 +592,7 @@ class SalesOrder extends CI_Controller
                 'id_so' => $this->input->post('id_so'),
                 'id_user' => $this->session->userdata('id_user'),
                 'signature' => $img,
-                 'tree_shipper' => $this->getTreeLetterCode($city_shipper),
+                'tree_shipper' => $this->getTreeLetterCode($city_shipper),
                 'tree_consignee' => $this->getTreeLetterCode($city_consigne),
                 'shipment_id' => $shipment_id,
                 'order_id' => null,
@@ -665,7 +667,7 @@ class SalesOrder extends CI_Controller
                         'id_user' => $this->session->userdata('id_user'),
                         'pic_task' => $this->input->post('sender'),
                         'time' => date('H:i:s'),
-                        'flag' => 3,
+                        'flag' => 4,
                         'status_eksekusi' => 0,
                     );
                     $data = array_merge($data, $bukti_tracking);
@@ -723,7 +725,7 @@ class SalesOrder extends CI_Controller
                         'id_user' => $this->session->userdata('id_user'),
                         'pic_task' => $this->input->post('sender'),
                         'time' => date('H:i:s'),
-                        'flag' => 3,
+                        'flag' => 4,
                         'status_eksekusi' => 0,
                     );
                     $data = array_merge($data, $bukti_tracking);
@@ -748,7 +750,7 @@ class SalesOrder extends CI_Controller
             }
         }
     }
-	 
+
     // public function processAdd()
     // {
     //     $this->form_validation->set_rules('consigne', 'consigne', 'required');
@@ -994,7 +996,7 @@ class SalesOrder extends CI_Controller
     //         }
     //     }
     // }
-    
+
     public function resizeImage($filename)
     {
         $files = explode("+", $filename);
@@ -1029,13 +1031,13 @@ class SalesOrder extends CI_Controller
         $status = $this->input->post('status');
         $flag = '';
         if ($status == 'Shipment Telah Tiba Di Hub') {
-            $flag = 8;
-        } else if ($status == 'Shipment Keluar Di Hub Tujuan') {
             $flag = 9;
-        } else if ($status == 'Shipment Dalam Proses Delivery') {
+        } else if ($status == 'Shipment Keluar Di Hub Tujuan') {
             $flag = 10;
-        } else {
+        } else if ($status == 'Shipment Dalam Proses Delivery') {
             $flag = 11;
+        } else {
+            $flag = 12;
         }
 
         $id_so = $this->input->post('id_so');
@@ -1095,9 +1097,9 @@ class SalesOrder extends CI_Controller
         $status = $this->input->post('status');
         $flag = '';
         if ($status == 'Shipment Telah Tiba Di Hub') {
-            $flag = 4;
-        } else {
             $flag = 5;
+        } else {
+            $flag = 6;
         }
 
         $id_so = $this->input->post('id_so');
@@ -1174,14 +1176,7 @@ class SalesOrder extends CI_Controller
     public function detail($id)
     {
         $data['title'] = 'Detail Sales Order';
-        $query  = "SELECT a.*, b.id_tracking,b.id_so, b.flag,c.service_name FROM tbl_shp_order a 
-                    JOIN tbl_tracking_real b ON a.shipment_id=b.shipment_id
-                    JOIN tb_service_type c ON a.service_type=c.code 
-                     WHERE a.id_so= ?  ORDER BY id_tracking DESC LIMIT 1 ";
-        $result = $this->db->query($query, array($id))->row_array();
-        $data['shipment'] = $result;
-        // var_dump($result);
-        // die;
+        
         $data['p'] = $this->db->get_where('tbl_so', ['id_so' => $id])->row_array();
         $data['users'] = $this->db->get_where('tb_user', ['id_role' => 2])->result_array();
         $data['shipment2'] =  $this->order->orderBySo($id)->result_array();
@@ -1231,7 +1226,7 @@ class SalesOrder extends CI_Controller
         header('Content-Type: application/json');
         echo $this->M_Datatables->get_tables_query($query, $search, $where, $isWhere);
     }
-     function getTreeLetterCode($city)
+    function getTreeLetterCode($city)
     {
         $code = $this->db->get_where('tb_city', ['city_name' => $city])->row_array();
         if ($code) {
@@ -1266,7 +1261,7 @@ class SalesOrder extends CI_Controller
     }
     public function print($id)
     {
-         $mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => [74, 105]]);
+        $mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => [74, 105]]);
 
         $where = array('shipment_id' => $id);
         $data['order'] = $this->db->get_where('tbl_shp_order', $where)->row_array();
@@ -1280,9 +1275,8 @@ class SalesOrder extends CI_Controller
         $data = $this->load->view('superadmin/v_cetak', $data, TRUE);
         $mpdf->WriteHTML($data);
         $mpdf->Output();
-
     }
-	public function printAll($id)
+    public function printAll($id)
     {
         $mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => [74, 105]]);
 

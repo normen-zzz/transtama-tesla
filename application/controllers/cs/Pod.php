@@ -43,25 +43,38 @@ class Pod extends CI_Controller
             $data['akhir'] = $akhir;
             $data['title'] = 'POD';
             $data['shipment'] = $this->pod->getListPod($awal, $akhir);
-            $data['shipmentOtw'] = $this->pod->getListPod($awal, $akhir);
-            $data['shipmentArrive'] = $this->pod->getListPod($awal, $akhir);
+            
             $this->backend->display('cs/v_list_pod', $data);
         } else {
             $data['awal'] = $awal;
             $data['akhir'] = $akhir;
             $data['title'] = 'POD';
             $data['shipment'] = $this->pod->getListPod($awal, $akhir);
-            $data['shipmentOtw'] = $this->pod->getListPod($awal, $akhir);
-            $data['shipmentArrive'] = $this->pod->getListPod($awal, $akhir);
+          
             $this->backend->display('cs/v_list_pod', $data);
         }
     }
 
-    public function scan($resi)
+    public function getModalPod()
+    {
+        $shipment_id = $this->input->get('shipment_id'); // Mengambil ID dari parameter GET
+        
+		$pod = $this->pod->getModalPod($shipment_id)->row();
+        // Kirim data sebagai respons JSON
+        echo json_encode($pod);
+    }
+
+    public function scan($resi = NULL)
     {
         $data['title'] = 'POD';
         $data['resi'] = $resi;
-        $data['shipment'] = $this->db->get_where('tbl_shp_order', array('shipment_id' => $resi))->row_array();
+        if ($resi != NULL){
+            $queryshipment = "SELECT shipment_id,shipper,tgl_diterima,no_smu,status_pod,consigne,destination,tgl_pickup FROM tbl_shp_order WHERE shipment_id = $resi";
+            // $data['shipment'] = $this->db->get_where('tbl_shp_order', array('shipment_id' => $resi))->row_array();
+            $data['shipment'] = $this->db->query($queryshipment)->row_array();
+        } else{
+            $data['shipment'] = NULL;
+        }
         $this->backend->display('cs/v_scan_pod', $data);
     }
 

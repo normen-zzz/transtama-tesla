@@ -48,6 +48,7 @@ class Order extends CI_Controller
         $data['province'] = $this->db->get('tb_province')->result_array();
         $data['service'] = $this->db->get('tb_service_type')->result_array();
         $data['p'] = $this->order->order($id)->row_array();
+        $data['invoice'] = $this->db->get_where('tbl_invoice',array('shipment_id' => $id))->row_array();
         $this->backend->display('cs/v_edit_order', $data);
     }
     public function editOrder($id, $id_so)
@@ -63,7 +64,7 @@ class Order extends CI_Controller
 
     function view_data_query()
     {
-        $query  = "SELECT a.*, b.nama_user FROM tbl_shp_order a JOIN tb_user b ON a.id_user=b.id_user";
+        $query  = "SELECT a.tgl_pickup,a.shipper,a.consigne,a.shipment_id,a.created_at,a.id_so,a.id, b.nama_user FROM tbl_shp_order a JOIN tb_user b ON a.id_user=b.id_user";
         $search = array('nama_user', 'shipment_id', 'order_id', 'shipper', 'consigne');
         $where  = array('a.deleted' => 0);
         // $where  = array('a.id_user' => $this->session->userdata('id_user'));
@@ -101,6 +102,7 @@ class Order extends CI_Controller
         $no_do = $this->input->post('note_cs');
         $no_do = implode(',', $no_do);
         $data = array(
+            'berat_js' => $total_weight,
             'weight' => $total_weight,
             'destination' => $this->input->post('destination'),
             'state_shipper' => $this->input->post('state_shipper'),
@@ -112,8 +114,7 @@ class Order extends CI_Controller
             'sender' => $this->input->post('sender'),
             'service_type' => $this->input->post('service_type'),
             'tree_shipper' => $this->input->post('tree_shipper'),
-            'tree_consignee' => $this->input->post('tree_consignee'),
-            'berat_js' => $total_weight,
+            'tree_consignee' => $this->input->post('tree_consignee'), 
             'koli' => $total_koli,
             'note_cs' => $no_do,
             // 'no_so' => $this->input->post('no_so'),
@@ -124,11 +125,38 @@ class Order extends CI_Controller
             'is_weight_print' => $this->input->post('is_weight_print'),
         );
         $shipment = $this->db->get_where('tbl_shp_order', array('id' => $this->input->post('id')))->row_array();
-        if ($shipment['update_at'] == NULL) {
-            $data['update_at'] = date('Y-m-d H:i:s');
+        $dataEdit = array(
+            'shipment_id' => $shipment['shipment_id'],
+            'berat_js' => $total_weight,
+            'destination' => $this->input->post('destination'),
+            'state_shipper' => $this->input->post('state_shipper'),
+            // 'city_shipper' => $this->input->post('city_shipper'),
+            'consigne' => $this->input->post('consigne'),
+            'state_consigne' => $this->input->post('state_consigne'),
+            'city_consigne' => $this->input->post('city_consigne'),
+            'pu_commodity' => $this->input->post('pu_commodity'),
+            'sender' => $this->input->post('sender'),
+            'service_type' => $this->input->post('service_type'),
+            'tree_shipper' => $this->input->post('tree_shipper'),
+            'tree_consignee' => $this->input->post('tree_consignee'), 
+            'koli' => $total_koli,
+            'note_cs' => $no_do,
+            // 'no_so' => $this->input->post('no_so'),
+            'no_stp' => $this->input->post('no_stp'),
+            'no_smu' => $this->input->post('no_smu'),
+            'flight_at' => $this->input->post('flight_at'),
+            'note_shipment' => $this->input->post('note_shipment'),
+            'is_weight_print' => $this->input->post('is_weight_print'),
+            'edited_at' => date('Y-m-d H:i:s'),
+            'edited_by' => $this->session->userdata('id_user')
+        );
+        
+        if ($shipment['updatesistem_at'] == NULL) {
+            $data['updatesistem_at'] = date('Y-m-d H:i:s');
         }
 
         $update =  $this->db->update('tbl_shp_order', $data, ['id' => $this->input->post('id')]);
+        $this->db->insert('tbl_shp_order_edit',$dataEdit);
         if ($update) {
             $this->session->set_flashdata('message', '<div class="alert
                 alert-success" role="alert">Success</div>');
@@ -248,7 +276,7 @@ class Order extends CI_Controller
     public function report()
     {
         $data['title'] = 'Report Order';
-        $data['order'] = $this->pengajuan->getLaporan()->result_array();
+        // $data['order'] = $this->pengajuan->getLaporan()->result_array();
         $this->backend->display('cs/v_report', $data);
     }
     public function filterLaporan()

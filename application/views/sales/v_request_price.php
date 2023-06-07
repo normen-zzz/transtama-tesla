@@ -24,14 +24,16 @@
                                 <div class="row ml-2">
                                     <div class="form-group mr-2">
                                         <label>Start</label><br>
-                                        <input type="date" <?php if ($awal != NULL) { ?> value="<?= $awal ?>" <?php } ?> name="awal" id="awal" class="form-control">
+                                        <input type="datetime-local" <?php if ($awal != NULL) { ?> value="<?= $awal ?>" <?php } ?> name="awal" id="awal" class="form-control">
 
 
                                     </div>
                                     <div class="form-group mr-3">
                                         <label>End</label> <br>
-                                        <input type="date" <?php if ($akhir != NULL) { ?> value="<?= $akhir ?>" <?php } ?> name="akhir" id="akhir" class="form-control">
+                                        <input type="datetime-local" <?php if ($akhir != NULL) { ?> value="<?= $akhir ?>" <?php } ?> name="akhir" id="akhir" class="form-control">
                                     </div>
+
+
 
                                     <div class="form-group"> <br>
                                         <button type="submit" class="btn btn-success ml-3">Tampilkan</button>
@@ -40,12 +42,20 @@
 
                             </form>
                         </div>
+
                     </div>
+
+
 
 
                     <div class="card-toolbar float-right">
 
                         <!--begin::Button-->
+                        <a href="#" class="btn font-weight-bolder text-light" data-toggle="modal" data-target="#modal-lg" style="background-color: #9c223b;">
+                            <span class="svg-icon svg-icon-md">
+                                <i class="fa fa-plus text-light"></i>
+                                <!--end::Svg Icon-->
+                            </span>Add Bulk</a>
                         <a href="#" class="btn font-weight-bolder text-light" data-toggle="modal" data-target="#modal-lg" style="background-color: #9c223b;">
                             <span class="svg-icon svg-icon-md">
                                 <i class="fa fa-plus text-light"></i>
@@ -92,8 +102,8 @@
                                         <?php foreach ($requestPrice->result_array() as $requestPrice) { ?>
                                             <tr>
                                                 <td><?= date('d F Y H:i:s', strtotime($requestPrice['date_request'])) ?></td>
-                                                <td><?= $requestPrice['alamat_from'] . ' ' .  $requestPrice['city_from'] . ', ' . $requestPrice['province_from']  ?></td>
-                                                <td><?= $requestPrice['alamat_to'] . ' ' .  $requestPrice['city_from'] . ', ' . $requestPrice['province_from']  ?></td>
+                                                <td><?= $requestPrice['subdistrict_from'] . ', ' .  $requestPrice['city_from'] . ', ' . $requestPrice['province_from']  ?></td>
+                                                <td><?= $requestPrice['subdistrict_to'] . ', ' .  $requestPrice['city_to'] . ', ' . $requestPrice['province_to']  ?></td>
                                                 <td><?= $requestPrice['moda'] ?></td>
                                                 <td><?= $requestPrice['berat'] ?></td>
                                                 <td><?= $requestPrice['koli'] ?></td>
@@ -102,7 +112,10 @@
                                                 <td><?= $requestPrice['notes_sales'] ?></td>
                                                 <td><?= rupiah($requestPrice['price']) ?></td>
                                                 <td><?= $requestPrice['notes_cs'] ?></td>
-                                                <td><a data-toggle="modal" data-target="#modal-lg<?= $requestPrice['id_request_price'] ?>" class="btn btn-primary ml-2 mt-2">Add Price</a></td>
+                                                <td>
+                                                    <button href="#" class="btn font-weight-bolder text-light modalEditRequest" data-toggle="modal" data-id_request="<?= $requestPrice['id_request_price'] ?>" data-target="#modal-edit-request" style="background-color: #9c223b;">
+                                                        Edit</button>
+                                                </td>
                                             <?php } ?>
                                     </tbody>
                                 </table>
@@ -177,51 +190,91 @@
                     <div class="card-body">
                         <input type="text" placeholder="Cth : Pt. ABC" class="form-control" value="<?= $this->session->userdata('id_user') ?>" hidden name="sales">
 
-                        <div class="form-group">
-                            <label for="exampleInputPassword1">Province From</label>
-                            <select name="province_from" class="form-control">
-                                <?php foreach ($province as $f) {
-                                ?>
-                                    <option value="<?= $f['name'] ?>"><?= $f['name'] ?></option>
-                                <?php  } ?>
-                            </select>
+                        <div class="row">
+                            From
                         </div>
-                        <div class="form-group">
-                            <label for="exampleInputPassword1">City From</label>
-                            <select name="city_from" class="form-control">
-                                <?php foreach ($city as $c) {
-                                ?>
-                                    <option value="<?= $c['city_name'] ?>"><?= $c['city_name'] ?></option>
-                                <?php  } ?>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="exampleInputPassword1">Address From</label>
-                            <textarea class="form-control" name="address_from" id="address_from"></textarea>
+                        <div class="row">
+
+                            <div class="col">
+                                <div class="form-group">
+                                    <label for="exampleInputEmail1">Provinsi <span style="color: red;">*</span></label>
+                                    <select name="provinsi_from" id="provinsi" class="form-control" style="width:200px">
+                                        <option value="">PIlih Provinsi</option>
+                                        <?php foreach ($provinsi as $provinsi1) {
+                                        ?>
+
+                                            <option data-id_prov="<?= $provinsi1->id ?>" value="<?= $provinsi1->name ?>"><?= $provinsi1->name ?></option>
+                                        <?php } ?>
+                                    </select>
+
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-group">
+                                    <label for="exampleInputEmail1">Kabupaten <span style="color: red;">*</span></label>
+                                    <select name="kabupaten_from" id="kabupaten" class="form-control" style="width:200px">
+                                        <option value="">Pilih Kabupaten</option>
+                                    </select>
+
+                                </div>
+                            </div>
+
+                            <div class="col">
+                                <div class="form-group">
+                                    <label for="exampleInputEmail1">Kecamatan <span style="color: red;">*</span></label>
+                                    <select name="kecamatan_from" id="kecamatan" class="form-control" style="width:200px">
+                                        <option value="">Pilih Kecamatan</option>
+                                    </select>
+
+                                </div>
+                            </div>
+
                         </div>
 
-                        <div class="form-group">
-                            <label for="exampleInputPassword1">Province To</label>
-                            <select name="province_to" class="form-control">
-                                <?php foreach ($province as $f) {
-                                ?>
-                                    <option value="<?= $f['name'] ?>"><?= $f['name'] ?></option>
-                                <?php  } ?>
-                            </select>
+                        <div class="row">
+                            To
                         </div>
-                        <div class="form-group">
-                            <label for="exampleInputPassword1">City To</label>
-                            <select name="city_to" class="form-control">
-                                <?php foreach ($city as $c) {
-                                ?>
-                                    <option value="<?= $c['city_name'] ?>"><?= $c['city_name'] ?></option>
-                                <?php  } ?>
-                            </select>
+                        <div class="row">
+
+                            <div class="col">
+                                <div class="form-group">
+                                    <label for="exampleInputEmail1">Provinsi <span style="color: red;">*</span></label>
+                                    <select name="provinsi_to" id="provinsi1" class="form-control" style="width:200px">
+                                        <option value="">PIlih Provinsi</option>
+                                        <?php foreach ($provinsi as $provinsi1) {
+                                        ?>
+
+                                            <option data-id_prov="<?= $provinsi1->id ?>" value="<?= $provinsi1->name ?>"><?= $provinsi1->name ?></option>
+                                        <?php } ?>
+                                    </select>
+
+                                </div>
+                            </div>
+                            <div class="col">
+                                <div class="form-group">
+                                    <label for="exampleInputEmail1">Kabupaten <span style="color: red;">*</span></label>
+                                    <select name="kabupaten_to" id="kabupaten1" class="form-control" style="width:200px">
+                                        <option value="">Pilih Kabupaten</option>
+                                    </select>
+
+                                </div>
+                            </div>
+
+                            <div class="col">
+                                <div class="form-group">
+                                    <label for="exampleInputEmail1">Kecamatan <span style="color: red;">*</span></label>
+                                    <select name="kecamatan_to" id="kecamatan1" class="form-control" style="width:200px">
+                                        <option value="">Pilih Kecamatan</option>
+                                    </select>
+
+                                </div>
+                            </div>
+
                         </div>
-                        <div class="form-group">
-                            <label for="exampleInputPassword1">Address To</label>
-                            <textarea class="form-control" name="address_to" id="address_to"></textarea>
-                        </div>
+
+
+
+
                         <div class="form-group">
                             <label for="exampleInputPassword1">Moda</label>
                             <input type="text" class="form-control" name="moda" id="moda"></input>
@@ -278,3 +331,259 @@
     <!-- /.modal-dialog -->
 </div>
 <!-- /.modal -->
+
+
+<div class="modal fade" id="modal-edit-request">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Edit Request Price</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="<?= base_url('sales/RequestPrice/editRequest') ?>" method="POST">
+                    <div class="card-body">
+                        <div id="contentEditRequest">
+
+                        </div>
+
+
+                    </div>
+
+
+
+                    <!-- /.card-body -->
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+            </form>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
+
+<script>
+    $(document).ready(function() {
+        $('.modalEditRequest').click(function() {
+            var id_request = $(this).data('id_request'); // Mendapatkan ID dari atribut data-id tombol yang diklik
+            $('#contentEditRequest').html('');
+            // Memuat data menggunakan AJAX dengan mengirimkan ID sebagai parameter
+            $.ajax({
+                url: '<?php echo base_url("sales/RequestPrice/getModalEditRequest"); ?>',
+                type: 'GET',
+                dataType: 'json',
+                data: {
+                    id_request: id_request
+                },
+                success: function(response) {
+                    // Menampilkan data ke dalam modal
+                    var content = '<input type="text" placeholder="Cth : Pt. ABC" class="form-control" value="<?= $this->session->userdata('id_user') ?>" hidden name="sales">' +
+                        '<div class="row">' +
+                        '<p>' +
+                        '**Isi Alamat Jika Ingin Mengubah**' +
+                        '</p>' +
+                        '</div>' +
+                        '<div class="row">' +
+                        'From' +
+                        '</div>' +
+                        '<div class="row">' +
+                        '<p>' +
+                        'Latest :' + response.subdistrict_from + ' ' + response.city_from + ' ' + response.province_from +
+                        '</p>' +
+                        '</div>' +
+                        '<div class="row">' +
+
+                        '<div class="col">' +
+                        '<div class="form-group">' +
+                        '<label for="exampleInputEmail1">Provinsi <span style="color: red;">*</span></label>' +
+                        '<select name="provinsi_from" id="provinsiModal" class="form-control selectField provinsiModal" style="width:200px">' +
+                        '<option value="">PIlih Provinsi</option>' +
+                        <?php foreach ($provinsi as $provinsi1) {
+                        ?>
+
+                    '<option data-id_prov="<?= $provinsi1->id ?>" value="<?= $provinsi1->name ?>"><?= $provinsi1->name ?></option>' +
+                <?php } ?>
+                    '</select>' +
+
+                    '</div>' +
+                    '</div>' +
+                    '<div class="col">' +
+                    '<div class="form-group">' +
+                    '<label for="exampleInputEmail1">Kabupaten <span style="color: red;">*</span></label>' +
+                    '<select name="kabupaten_from" id="kabupatenModal" class="form-control selectField kabupatenModal" style="width:200px">' +
+                    '<option value="">Pilih Kabupaten</option>' +
+                    '</select>' +
+
+                    '</div>' +
+                    '</div>' +
+
+                    '<div class="col">' +
+                    '<div class="form-group">' +
+                    '<label for="exampleInputEmail1">Kecamatan <span style="color: red;">*</span></label>' +
+                    '<select name="kecamatan_from" id="kecamatanModal" class="form-control selectField kecamatanModal" style="width:200px">' +
+                    '<option value="">Pilih Kecamatan</option>' +
+                    '</select>' +
+
+                    '</div>' +
+                    '</div>' +
+
+                    '</div>' +
+                    '<div class="row">' +
+                    'To' +
+                    '</div>' +
+                    '<div class="row">' +
+                    '<p>' +
+                    'Latest :' + response.subdistrict_to + ' ' + response.city_to + ' ' + response.province_to +
+                    '</p>' +
+                    '</div>' +
+                    '<div class="row">' +
+
+                    '<div class="col">' +
+                    '<div class="form-group">' +
+                    '<label for="exampleInputEmail1">Provinsi <span style="color: red;">*</span></label>' +
+                    '<select name="provinsi_to" id="provinsi1Modal" class="form-control selectField provinsi1Modal" style="width:200px">' +
+                    '<option value="">PIlih Provinsi</option>' +
+                    <?php foreach ($provinsi as $provinsi1) {
+                    ?>
+
+                '<option data-id_prov="<?= $provinsi1->id ?>" value="<?= $provinsi1->name ?>"><?= $provinsi1->name ?></option>' +
+                <?php } ?>
+                    '</select>' +
+
+                    '</div>' +
+                    '</div>' +
+                    '<div class="col">' +
+                    '<div class="form-group">' +
+                    '<label for="exampleInputEmail1">Kabupaten <span style="color: red;">*</span></label>' +
+                    '<select name="kabupaten_to" id="kabupaten1Modal" class="form-control selectField kabupaten1Modal" style="width:200px">' +
+                    '<option value="">Pilih Kabupaten</option>' +
+                    '</select>' +
+
+                    '</div>' +
+                    '</div>' +
+
+                    '<div class="col">' +
+                    '<div class="form-group">' +
+
+                    '<label for="exampleInputEmail1">Kecamatan <span style="color: red;">*</span></label>' +
+                    '<select name="kecamatan_to" id="kecamatan1Modal" class="form-control selectField kecamatan1Modal" style="width:200px">' +
+                    '<option value="">Pilih Kecamatan</option>' +
+                    '</select>' +
+
+                    '</div>' +
+                    '</div>' +
+
+                    '</div>' +
+
+                    '<div class="form-group">' +
+                    '<label for="exampleInputPassword1">Moda</label>' +
+                    '<input type="text" class="form-control" name="moda" value="' + response.moda + '" id="moda"></input>' +
+                    '</div>' +
+                    '<div class="form-group">' +
+                    '<label for="exampleInputPassword1">Jenis Barang</label>' +
+                    '<input type="text" class="form-control" name="jenis" value="' + response.jenis_barang + '" id="jenis"></input>' +
+                    '</div>' +
+                    '<div class="form-group">' +
+                    '<label for="exampleInputPassword1">Berat (KG)</label>' +
+                    '<input type="text" class="form-control" name="berat" value="' + response.berat + '" id="berat"></input>' +
+                    '</div>' +
+
+                    '<div class="form-group">' +
+                    '<label for="exampleInputPassword1">Koli</label>' +
+                    '<input type="text" class="form-control" name="koli" value="' + response.koli + '" id="koli"></input>' +
+                    '</div>' +
+                    '<div class="form-group">' +
+                    '<label for="exampleInputPassword1">Commodity</label>' +
+                    '<input type="text" class="form-control" name="komoditi" value="' + response.komoditi + '" id="komoditi"></input>' +
+                    '</div>' +
+                    '<div class="form-group">' +
+                    '<label for="exampleInputPassword1">Panjang (Cm)</label>' +
+                    '<input type="text" class="form-control" name="panjang" value="' + response.panjang + '" id="panjang"></input>' +
+                    '</div>' +
+                    '<div class="form-group">' +
+                    '<label for="exampleInputPassword1">Lebar (Cm)</label>' +
+                    '<input type="text" class="form-control" name="lebar" value="' + response.lebar + '" id="lebar"></input>' +
+                    '</div>' +
+                    '<div class="form-group">' +
+                    '<label for="exampleInputPassword1">Tinggi (Cm)</label>' +
+                    '<input type="text" class="form-control" name="tinggi" value="' + response.tinggi + '" id="tinggi"></input>' +
+                    '</div>' +
+
+                    '<div class="form-group">' +
+                    '<label for="exampleInputPassword1">Notes</label>' +
+                    '<textarea class="form-control" name="notes" value="' + response.notes_sales + '" id="notes"></textarea>' +
+                    '</div>';
+                $('#contentEditRequest').html(content);
+                $('.selectField').select2();
+
+                $(".provinsiModal").change(function() {
+                    // $("#modalLoading").modal("show");
+                    var url = "<?php echo site_url('sales/RequestPrice/getKabupaten'); ?>/" + $(this).find(':selected').data('id_prov');
+                    $('.kabupatenModal').load(url);
+                    var kecamatan = "<?php echo site_url('sales/RequestPrice/getKecamatan'); ?>/";
+                    $('.kecamatanModal').load(kecamatan);
+                    // setTimeout(function() {
+                    // 	// $('#modalLoading').modal('hide')
+                    // }, 500);
+
+
+
+                    return false;
+                })
+
+                $(".kabupatenModal").change(function() {
+                    // $("#modalLoading").modal("show");
+                    var url = "<?php echo site_url('sales/RequestPrice/getKecamatan'); ?>/" + $(this).find(':selected').data('id_prov') + "/" + $(this).find(':selected').data('id_kab');
+                    $('.kecamatanModal').load(url);
+                    // setTimeout(function() {
+                    // 	$('#modalLoading').modal('hide')
+                    // }, 500);
+                    return false;
+                })
+
+                $(".provinsi1Modal").change(function() {
+                    // $("#modalLoading").modal("show");
+                    var url = "<?php echo site_url('sales/RequestPrice/getKabupaten'); ?>/" + $(this).find(':selected').data('id_prov');
+                    $('.kabupaten1Modal').load(url);
+                    var kecamatan = "<?php echo site_url('sales/RequestPrice/getKecamatan'); ?>/";
+                    $('.kecamatan1Modal').load(kecamatan);
+                    // setTimeout(function() {
+                    // 	$('#modalLoading').modal('hide')
+                    // }, 500);
+
+                    return false;
+                })
+
+                $(".kabupaten1Modal").change(function() {
+                    // $("#modalLoading").modal("show");
+                    var url = "<?php echo site_url('sales/RequestPrice/getKecamatan'); ?>/" + $(this).find(':selected').data('id_prov') + "/" + $(this).find(':selected').data('id_kab');
+                    $('.kecamatan1Modal').load(url);
+                    // setTimeout(function() {
+                    // 	$('#modalLoading').modal('hide')
+                    // }, 500);
+                    return false;
+                })
+
+                },
+                error: function() {
+                    alert('Terjadi kesalahan dalam memuat data.');
+                }
+            });
+        });
+    });
+</script>
+
+
+<script>
+    $(document).ready(function() {
+
+
+
+    });
+</script>

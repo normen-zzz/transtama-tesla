@@ -25,6 +25,7 @@
 	<link href="<?= base_url('assets/back/metronic/') ?>css/pages/wizard/wizard-3.css" rel="stylesheet" type="text/css" />
 	<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/css/datepicker.css" rel="stylesheet" type="text/css" />
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.form/4.3.0/jquery.form.min.js" integrity="sha384-qlmct0AOBiA2VPZkMY3+2WqkHtIQ9lSdAsAn5RUJD/3vA5MKDgSGcdmIv4ycVxyn" crossorigin="anonymous"></script>
+	<script src="https://code.jquery.com/jquery-3.7.0.js" integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM=" crossorigin="anonymous"></script>
 
 
 	<!-- scan -->
@@ -255,8 +256,24 @@
 
 			if (atLeastOneIsChecked > 1) {
 				$('#submitMerge').css('visibility', 'visible');
+
 			} else {
 				$('#submitMerge').css('visibility', 'hidden');
+
+			}
+		}
+	</script>
+
+	<script>
+		function checkTotalCheckedBoxesDispatcher() {
+			var atLeastOneIsChecked = $('input[name="shipment_id[]"]:checked').length;
+
+			if (atLeastOneIsChecked >= 1) {
+				$('#submitMerge').css('visibility', 'visible');
+				$('#hide').css('visibility', 'visible');
+			} else {
+				$('#submitMerge').css('visibility', 'hidden');
+				$('#hide').css('visibility', 'hidden');
 			}
 		}
 	</script>
@@ -596,6 +613,20 @@
 			var myTable = $('.datatable').DataTable({
 				responsive: true,
 				"ordering": false,
+				"dom": '<"top"f>rt<"bottom"ilp><"clear">'
+			});
+
+		});
+
+		$(document).ready(function() {
+			var myTable = $('.datatabledispatcher').DataTable({
+				"searching": false,
+				"ordering": false,
+				aLengthMenu: [
+					[25, 50, 100, 200, -1],
+					[25, 50, 100, 200, "All"]
+				],
+				iDisplayLength: -1,
 				"dom": '<"top"f>rt<"bottom"ilp><"clear">'
 			});
 
@@ -1320,6 +1351,101 @@
 
 						}
 					},
+				],
+			});
+		});
+	</script>
+
+	<script>
+		var tabel = null;
+		$(document).ready(function() {
+			tabel = $('#mytablehistorydispatcher').DataTable({
+				"processing": true,
+				"serverSide": true,
+				"ordering": true, // Set true agar bisa di sorting
+				"dom": "<'row'<'col-lg-10 col-md-10 col-xs-12'f>>" +
+					"<'row'<'col-sm-12'tr>>" +
+					"<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>" +
+					"<'row'<'col-lg-10 col-md-10 col-xs-12'l>>",
+				"order": [
+					[2, 'desc']
+				], // Default sortingnya berdasarkan kolom / field ke 0 (paling pertama)
+				"ajax": {
+					"url": "<?= base_url('dispatcher/scan/querydispatchhistory'); ?>", // URL file untuk proses select datanya
+					"type": "POST"
+				},
+				"deferRender": true,
+				"aLengthMenu": [
+					[10, 25, 50, 100, "All"],
+					[10, 25, 50, 100, "All"]
+				], // Combobox Limit
+				"iDisplayLength": 10,
+				"columns": [{
+						"data": 'shipment_id',
+						"sortable": false,
+						render: function(data, type, row, meta) {
+							return '<input type="checkbox" class="form-control" name="shipment_id[]" value="' + data + '">';
+						}
+					},
+					{
+						"data": 'shipment_id',
+						// "sortable": false,
+						// render: function(data, type, row, meta) {
+						// 	return meta.row + meta.settings._iDisplayStart + 1;
+						// }
+					},
+					{
+						"data": 'created_at',
+						// "sortable": false,
+						// render: function(data, type, row, meta) {
+						// 	return meta.row + meta.settings._iDisplayStart + 1;
+						// }
+					},
+					{
+						"data": 'shipper',
+						// "sortable": false,
+						// render: function(data, type, row, meta) {
+						// 	return meta.row + meta.settings._iDisplayStart + 1;
+						// }
+					},
+					{
+						"data": 'consigne',
+						// "sortable": false,
+						// render: function(data, type, row, meta) {
+						// 	return meta.row + meta.settings._iDisplayStart + 1;
+						// }
+					},
+
+					{
+						"data": 'sts',
+						// "sortable": false,
+						// render: function(data, type, row, meta) {
+						// 	return meta.row + meta.settings._iDisplayStart + 1;
+						// }
+					},
+					{
+						"data": 'status_eksekusi',
+						// "sortable": false,
+						render: function(data, type, row, meta) {
+							if (data == 1) {
+								return '<td><span class="btn btn-sm btn-success">Success</span></td>';
+							} else {
+								return '<td><span class="btn btn-sm btn-danger">Pending</span></td>';
+							}
+
+						}
+					},
+					{
+						"data": 'shipment_id',
+						// "sortable": false,
+						render: function(data, type, row, meta) {
+							return '<a href="<?= base_url('dispatcher/Scan/detailHistory/') ?>' + data + '" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Detail</a>';
+
+						}
+					},
+
+					// Tampilkan kategori
+
 				],
 			});
 		});
@@ -2134,6 +2260,67 @@
 
 		});
 	</script>
+
+
+	<!-- wilayah di request Price  -->
+
+	<script>
+		$(document).ready(function() {
+			$("#provinsi").change(function() {
+				// $("#modalLoading").modal("show");
+				var url = "<?php echo site_url('sales/RequestPrice/getKabupaten'); ?>/" + $(this).find(':selected').data('id_prov');
+				$('#kabupaten').load(url);
+				var kecamatan = "<?php echo site_url('sales/RequestPrice/getKecamatan'); ?>/";
+				$('#kecamatan').load(kecamatan);
+				// setTimeout(function() {
+				// 	// $('#modalLoading').modal('hide')
+				// }, 500);
+
+
+
+				return false;
+			})
+
+			$("#kabupaten").change(function() {
+				// $("#modalLoading").modal("show");
+				var url = "<?php echo site_url('sales/RequestPrice/getKecamatan'); ?>/" + $(this).find(':selected').data('id_prov') + "/" + $(this).find(':selected').data('id_kab');
+				$('#kecamatan').load(url);
+				// setTimeout(function() {
+				// 	$('#modalLoading').modal('hide')
+				// }, 500);
+				return false;
+			})
+
+			$("#provinsi1").change(function() {
+				// $("#modalLoading").modal("show");
+				var url = "<?php echo site_url('sales/RequestPrice/getKabupaten'); ?>/" + $(this).find(':selected').data('id_prov');
+				$('#kabupaten1').load(url);
+				var kecamatan = "<?php echo site_url('sales/RequestPrice/getKecamatan'); ?>/";
+				$('#kecamatan1').load(kecamatan);
+				// setTimeout(function() {
+				// 	$('#modalLoading').modal('hide')
+				// }, 500);
+
+				return false;
+			})
+
+			$("#kabupaten1").change(function() {
+				// $("#modalLoading").modal("show");
+				var url = "<?php echo site_url('sales/RequestPrice/getKecamatan'); ?>/" + $(this).find(':selected').data('id_prov') + "/" + $(this).find(':selected').data('id_kab');
+				$('#kecamatan1').load(url);
+				// setTimeout(function() {
+				// 	$('#modalLoading').modal('hide')
+				// }, 500);
+				return false;
+			})
+
+
+		});
+	</script>
+
+
+
+
 
 
 

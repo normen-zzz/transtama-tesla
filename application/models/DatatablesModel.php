@@ -1,5 +1,5 @@
 <?php if (!defined('BASEPATH')) exit('No direct script access allowed');
-class M_Datatables extends CI_Model
+class DatatablesModel extends CI_Model
 {
   function __construct()
   {
@@ -164,6 +164,7 @@ class M_Datatables extends CI_Model
       // Untuk menentukan order by "ASC" atau "DESC"
       $order_ascdesc = $_POST['order'][0]['dir'];
       $order = " ORDER BY " . $_POST['columns'][$order_field]['data'] . " " . $order_ascdesc;
+
 
       if (!empty($iswhere)) {
         $sql_data = $this->db->query($query . " WHERE $iswhere AND " . $fwhere . " AND (" . $cari . ")" . $order . " LIMIT " . $limit . " OFFSET " . $start);

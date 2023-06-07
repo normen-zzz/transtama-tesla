@@ -326,13 +326,13 @@ class Order extends CI_Controller
         $status = $this->input->post('status');
         $flag = '';
         if ($status == 'Shipment Telah Tiba Di Hub') {
-            $flag = 8;
-        } else if ($status == 'Shipment Keluar Di Hub Tujuan') {
             $flag = 9;
-        } else if ($status == 'Shipment Dalam Proses Delivery') {
+        } else if ($status == 'Shipment Keluar Di Hub Tujuan') {
             $flag = 10;
-        } else {
+        } else if ($status == 'Shipment Dalam Proses Delivery') {
             $flag = 11;
+        } else {
+            $flag = 12;
         }
 
         $id_so = $this->input->post('id_so');
@@ -389,27 +389,29 @@ class Order extends CI_Controller
         $status = $this->input->post('status');
         $flag = '';
         if ($status == 'Shipment Telah Tiba Di Hub') {
-            $flag = 8;
-        } else if ($status == 'Shipment Keluar Di Hub Tujuan') {
             $flag = 9;
-        } else if ($status == 'Shipment Dalam Proses Delivery') {
+        } else if ($status == 'Shipment Keluar Di Hub Tujuan') {
             $flag = 10;
-        } elseif ($status == 'Shipment Telah Diterima Oleh') {
+        } else if ($status == 'Shipment Dalam Proses Delivery') {
             $flag = 11;
+        } elseif ($status == 'Shipment Telah Diterima Oleh') {
+            $flag = 12;
         } elseif ($status == 'Request Pickup From Shipper') {
             $flag = 1;
         } elseif ($status == 'Driver Menuju Lokasi Pickup') {
             $flag = 2;
-        } elseif ($status == 'Shipment Telah Dipickup Dari Shipper') {
+        }elseif ($status == 'Driver Telah Sampai Di Lokasi Pickup') {
             $flag = 3;
-        } elseif ($status == 'Shipment Telah Tiba Di Hub Jakarta Pusat') {
+        } elseif ($status == 'Shipment Telah Dipickup Dari Shipper') {
             $flag = 4;
-        } elseif ($status == 'Shipment Keluar Dari Hub Jakarta Pusat') {
+        } elseif ($status == 'Shipment Telah Tiba Di Hub Jakarta Pusat') {
             $flag = 5;
-        } elseif ($status == 'Shipment Telah Tiba Di Hub CGK' || $status == 'Shipment Telah Tiba Di Hub Jakarta Utara') {
+        } elseif ($status == 'Shipment Keluar Dari Hub Jakarta Pusat') {
             $flag = 6;
-        } elseif ($status == 'Shipment Keluar Dari Hub CGK' || $status == 'Shipment Keluar Dari Hub Jakarta Utara') {
+        } elseif ($status == 'Shipment Telah Tiba Di Hub CGK' || $status == 'Shipment Telah Tiba Di Hub Jakarta Utara') {
             $flag = 7;
+        } elseif ($status == 'Shipment Keluar Dari Hub CGK' || $status == 'Shipment Keluar Dari Hub Jakarta Utara') {
+            $flag = 8;
         }
 
         $id_so = $this->input->post('id_so');

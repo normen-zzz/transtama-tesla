@@ -889,7 +889,7 @@ class SalesOrder extends CI_Controller
         $data['service'] = $this->db->get('tb_service_type')->result_array();
         $data['moda'] = $this->db->get('tbl_moda')->result_array();
         $data['packing'] = $this->db->get('tbl_packing')->result_array();
-        $data['shipment2'] =  $this->order->orderBySo($id)->result_array();
+        $data['shipment2'] =  $this->order->orderBySoSales($id)->result_array();
         // var_dump($data['request_aktivasi']);
         // die;
 

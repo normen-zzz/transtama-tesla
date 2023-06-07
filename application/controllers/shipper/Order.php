@@ -315,7 +315,7 @@ class Order extends CI_Controller
                         'id_user' => $this->session->userdata('id_user'),
                         'pic_task' => $this->input->post('sender'),
                         'time' => date('H:i:s'),
-                        'flag' => 3,
+                        'flag' => 4,
                         'status_eksekusi' => 0,
                     );
                     //$data = array_merge($data, $bukti_tracking);
@@ -418,15 +418,27 @@ class Order extends CI_Controller
 
                         $dataTracking3 = array(
                             'shipment_id' => $shipment_id,
-                            'status' => 'Shipment Telah Dipickup Dari Shipper',
+                            'status' => 'Driver Telah Sampai Di Lokasi Pickup',
                             'id_so' => $this->input->post('id_so'),
                             'created_at' => date('Y-m-d'),
                             'id_user' => $this->session->userdata('id_user'),
                             'time' => date('H:i:s'),
                             'flag' => 3,
-                            'status_eksekusi' => 0,
+                            'status_eksekusi' => 1,
                         );
                         $this->db->insert('tbl_tracking_real', $dataTracking3);
+
+                        $dataTracking4 = array(
+                            'shipment_id' => $shipment_id,
+                            'status' => 'Shipment Telah Dipickup Dari Shipper',
+                            'id_so' => $this->input->post('id_so'),
+                            'created_at' => date('Y-m-d'),
+                            'id_user' => $this->session->userdata('id_user'),
+                            'time' => date('H:i:s'),
+                            'flag' => 4,
+                            'status_eksekusi' => 0,
+                        );
+                        $this->db->insert('tbl_tracking_real', $dataTracking4);
                     $data = array(
                         'status' => 2,
                         'deadline_sales_so' => $deadline_sales
@@ -742,7 +754,7 @@ class Order extends CI_Controller
                                 'id_user' => $this->session->userdata('id_user'),
                                 'pic_task' => $this->input->post('sender'),
                                 'time' => date('H:i:s'),
-                                'flag' => 3,
+                                'flag' => 4,
                                 'status_eksekusi' => 0,
                             );
                             $this->db->insert('tbl_tracking_real', $data);
@@ -905,7 +917,7 @@ class Order extends CI_Controller
                 'service_type' =>  $service_type,
                 'date_new' => date('Y-m-d'),
                 'so_id' => $kode,
-                'tgl_pickup' => $get_pickup['tgl_pickup'],
+                'tgl_pickup' => date('Y-m-d'),
                 'pu_moda' => $this->input->post('moda'),
                 'pu_poin' => $get_pickup['pu_poin'],
                 'time' => $get_pickup['time'],
@@ -991,7 +1003,7 @@ class Order extends CI_Controller
                         'id_user' => $this->session->userdata('id_user'),
                         'pic_task' => $this->input->post('sender'),
                         'time' => date('H:i:s'),
-                        'flag' => 3,
+                        'flag' => 4,
                         'status_eksekusi' => 0,
                         'bukti' => $namaBaru
                     );
@@ -1040,14 +1052,16 @@ class Order extends CI_Controller
                     $this->db->update('tbl_no_do', $data, ['shipment_id' => $shipment_id]);
                     $this->barcode($shipment_id);
                     $this->qrcode($shipment_id);
-                    $get_tracking = $this->db->limit(3)->order_by('id_tracking', 'ASC')->get_where('tbl_tracking_real', ['id_so' => $this->input->post('id_so')])->result_array();
+                    $getRequest = $this->db->limit(1)->order_by('id_tracking', 'ASC')->get_where('tbl_tracking_real', ['id_so' => $this->input->post('id_so'),'flag' => 1])->row_array();
+                    $getReceive = $this->db->limit(1)->order_by('id_tracking', 'ASC')->get_where('tbl_tracking_real', ['id_so' => $this->input->post('id_so'),'flag' => 2])->row_array();
+                    $getOnPointPickup = $this->db->limit(1)->order_by('id_tracking', 'ASC')->get_where('tbl_tracking_real', ['id_so' => $this->input->post('id_so'),'flag' => 3])->row_array();
                     $dataTracking1 = array(
                         'shipment_id' => $shipment_id,
                         'status' => 'Request Pickup From Shipper',
                         'id_so' => $this->input->post('id_so'),
-                        'created_at' => date('Y-m-d'),
+                        'created_at' => $getRequest['created_at'],
                         'id_user' => $this->session->userdata('id_user'),
-                        'time' => date('H:i:s'),
+                        'time' =>  $getRequest['time'],
                         'flag' => 1,
                         'status_eksekusi' => 1,
                     );
@@ -1057,9 +1071,9 @@ class Order extends CI_Controller
                         'shipment_id' => $shipment_id,
                         'status' => 'Driver Menuju Lokasi Pickup',
                         'id_so' => $this->input->post('id_so'),
-                        'created_at' => date('Y-m-d'),
+                        'created_at' =>  $getReceive['created_at'],
                         'id_user' => $this->session->userdata('id_user'),
-                        'time' => date('H:i:s'),
+                        'time' =>  $getReceive['time'],
                         'flag' => 2,
                         'status_eksekusi' => 1,
                     );
@@ -1067,15 +1081,27 @@ class Order extends CI_Controller
 
                     $dataTracking3 = array(
                         'shipment_id' => $shipment_id,
+                        'status' => 'Driver Telah Sampai Di Lokasi Pickup',
+                        'id_so' => $this->input->post('id_so'),
+                        'created_at' =>  $getOnPointPickup['created_at'],
+                        'id_user' => $this->session->userdata('id_user'),
+                        'time' =>  $getOnPointPickup['time'],
+                        'flag' => 3,
+                        'status_eksekusi' => 1,
+                    );
+                    $this->db->insert('tbl_tracking_real', $dataTracking3);
+
+                    $dataTracking4 = array(
+                        'shipment_id' => $shipment_id,
                         'status' => 'Shipment Telah Dipickup Dari Shipper',
                         'id_so' => $this->input->post('id_so'),
                         'created_at' => date('Y-m-d'),
                         'id_user' => $this->session->userdata('id_user'),
                         'time' => date('H:i:s'),
-                        'flag' => 3,
+                        'flag' => 4,
                         'status_eksekusi' => 0,
                     );
-                    $this->db->insert('tbl_tracking_real', $dataTracking3);
+                    $this->db->insert('tbl_tracking_real', $dataTracking4);
                     $data = array(
                         'status' => 2,
                         'deadline_sales_so' => $deadline_sales

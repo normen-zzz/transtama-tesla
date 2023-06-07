@@ -209,7 +209,6 @@ function getGrade($nilai)
                                 <table class="table table-separate table-head-custom table-checkable datatable">
                                     <thead>
                                         <tr>
-                                          
                                             <th>Jumlah Resi</th>
                                             <th>Nilai</th>
                                             <th>Action</th>
@@ -280,74 +279,49 @@ function getGrade($nilai)
                                 <table class="table table-separate table-head-custom table-checkable datatable">
                                     <thead>
                                         <tr>
-                                            <th>No</th>
-                                            <th>Name</th>
+                                            <th>Jumlah Resi</th>
                                             <th>Nilai</th>
-
                                             <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <?php $no = 1;
-                                        foreach ($cs->result_array() as $s) {
-                                            $nilai = 0;
-                                            $this->db->where('id_sales', $s['id_user']);
-                                            $this->db->where('tgl_pickup >=', date('Y-m-d', strtotime($awal)));
-                                            $this->db->where('tgl_pickup <=', date('Y-m-d', strtotime($akhir)));
-                                            $so = $this->db->get('tbl_so');
-                                            foreach ($so->result_array() as $so1) {
-                                                $this->db->where('id_so', $so1['id_so']);
-                                                $this->db->where('flag', 3);
-                                                $this->db->order_by('id_so', "DESC");
-                                                $this->db->limit(1);
-                                                $trackingResi = $this->db->get('tbl_tracking_real')->row_array();
+                                        <?php
+                                        $nilai = 0;
+                                        $jumlahUpdate = 0;
 
-                                                if ($so1['submitso_at'] != NULL && $trackingResi != NULL) {
-
-                                                    $date1 = date_create(date('Y-m-d', strtotime($so1['submitso_at'])));
-                                                    $date2 = date_create(date('Y-m-d', strtotime($trackingResi['created_at'])));
-                                                    $diff = date_diff($date2, $date1);
-                                                    // echo $so1['id_so'] . $diff->format(" %R%a days <br>");
-
-                                                    $datetime1 = strtotime($so1['submitso_at']);
-                                                    $datetime2 = strtotime($trackingResi['created_at']);
-                                                    $interval  = abs($datetime2 - $datetime1);
-                                                    $minutes   = round($interval / 60);
+                                        foreach ($update->result_array() as $update1) {
+                                            
 
 
-                                                    if ($diff->format("%R%a") == 0) {
-                                                        if ($minutes <= 300) {
-                                                            $nilai += 90;
-                                                        } else {
-                                                            $nilai += 70;
-                                                        }
-                                                    } elseif ($diff->format("%R%a") == 1) {
-                                                        if (date('H:i:s', strtotime($trackingResi['created_at'])) >= '21:00:00') {
-                                                            $nilai += 70;
-                                                        } else {
-                                                            $nilai += 50;
-                                                        }
-                                                    } elseif ($diff->format("%R%a") > 1) {
-                                                        $nilai += 30;
-                                                    }
+                                                $date1 = date_create(date('Y-m-d', strtotime($update1['tgl_pickup'])));
+                                                $date2 = date_create(date('Y-m-d', strtotime($update1['updatesistem_at'])));
+                                                $diff = date_diff($date1, $date2);
+
+                                                if ($diff->format("%R%a") <= 0) {
+                                                    // nilai A
+                                                    $nilai += 90;
+                                                } elseif ($diff->format("%R%a") == 1) {
+                                                    // nilai B
+                                                    $nilai += 70;
+                                                } elseif ($diff->format("%R%a") >= 2) {
+                                                    // nilai C
+                                                    $nilai += 50;
                                                 }
-                                                // echo $nilai . '<br>';
-                                            }
-                                            if ($so->num_rows() != 0) {
-                                                $nilai = $nilai / $so->num_rows();
-                                                // echo  $so->num_rows();
-                                            }
-
-                                        ?>
-                                            <tr>
-                                                <td><?= $no; ?></td>
-                                                <td><?= $s['nama_user'] ?></td>
-                                                <td><?= getGrade($nilai); ?></td>
-                                                <td><a target="_blank" class="btn btn-primary" href="<?= base_url('superadmin/Kpi/detailSo/' . $s['id_user'] . '/' . strtotime($awal) . '/' . strtotime($akhir)) ?>">Detail</a></td>
-
-                                            </tr>
-                                        <?php $no++;
+                                                
+                                            
+                                        }
+                                        if ($update->num_rows() != 0) {
+                                            $nilai = ($nilai / $update->num_rows());
                                         } ?>
+
+                                        <tr>
+                                            <td><?= $update->num_rows() ?></td>
+                                            <td><?= getGrade($nilai); ?></td>
+                                            <td><a target="_blank" class="btn btn-primary" href="<?= base_url('superadmin/Kpi/detailUpdateSistem/' . strtotime($awal) . '/' . strtotime($akhir)) ?>">Detail</a></td>
+
+                                        </tr>
+                                        <?php $no++;
+                                        ?>
                                     </tbody>
                                 </table>
                             </div>
@@ -357,7 +331,6 @@ function getGrade($nilai)
                                 <table class="table table-separate table-head-custom table-checkable datatable">
                                     <thead>
                                         <tr>
-                                            <th>Month</th>
                                             <th>Jumlah Visit</th>
                                             <th>Nilai</th>
                                             <th>Action</th>
@@ -365,41 +338,29 @@ function getGrade($nilai)
                                     </thead>
                                     <tbody>
                                         <?php
-
-                                        $start    = (new DateTime($awal))->modify('first day of this month');
-                                        $end      = (new DateTime($akhir))->modify('first day of next month');
-                                        $interval = DateInterval::createFromDateString('1 month');
-                                        $period   = new DatePeriod($start, $interval, $end);
                                         $nilai = 0;
-                                        foreach ($period as $dt) {
-
-                                            $jumlahVisit = 0;
-                                            // echo $dt->format("Y-m") . "<br>\n";
-                                            $this->db->where('MONTH(start_date)', $dt->format("m"));
-                                            $this->db->where('YEAR(start_date)', $dt->format("Y"));
-                                            $visit = $this->db->get('tbl_sales_tracker');
-
-                                            foreach ($visit->result_array() as $visit1) {
-                                                $user = $this->db->get_where('tb_user', array('id_user' => $visit1['id_sales']))->row_array();
-                                                if ($user['id_role'] == 3) {
-                                                    // echo $user['nama_user'] . '-' . $dt->format("F Y") . '<br>';
-                                                    $jumlahVisit += 1;
-                                                }
+                                        $jumlahVisit = 0;
+                                        foreach ($visit->result_array() as $visit1) {
+                                            $user = $this->db->get_where('tb_user', array('id_user' => $visit1['id_sales']))->row_array();
+                                            if ($user['id_role'] == 3) {
+                                                // echo $user['nama_user'] . '-' . $dt->format("F Y") . '<br>';
+                                                $jumlahVisit += 1;
                                             }
-                                            $nilai = ($jumlahVisit / 6) * 100;
+                                        }
+                                        $nilai = ($jumlahVisit / 6) * 100;
 
 
                                         ?>
-                                            <tr>
+                                        <tr>
 
-                                                <td><?php echo $dt->format("F Y") ?></td>
-                                                <td><?= $jumlahVisit; ?></td>
-                                                <td><?= getGrade($nilai); ?></td>
-                                                <td><a target="_blank" class="btn btn-primary" href="<?= base_url('superadmin/Kpi/detailVisitCs/' . $dt->format("m") . '/' . $dt->format("Y")) ?>">Detail</a></td>
 
-                                            </tr>
+                                            <td><?= $jumlahVisit; ?></td>
+                                            <td><?= getGrade($nilai); ?></td>
+                                            <td><a target="_blank" class="btn btn-primary" href="<?= base_url('superadmin/Kpi/detailVisitCs/' . strtotime($awal) . '/' . strtotime($akhir)) ?>">Detail</a></td>
+
+                                        </tr>
                                         <?php
-                                        }
+
                                         ?>
                                     </tbody>
                                 </table>

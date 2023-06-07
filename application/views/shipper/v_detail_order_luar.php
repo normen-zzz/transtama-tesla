@@ -230,11 +230,11 @@
 												<td><?= $shp['consigne'] ?></td>
 												<td style="color: green;"><?= $get_last_status['status'] ?> <?= $get_last_status['note'] ?>. <?= longdate_indo($get_last_status['created_at']), ' ' . $get_last_status['time'] ?>
 													<br>
-													<?php if ($get_last_status['flag'] == 11 || $get_last_status['flag'] == 5 || $get_last_status['flag'] == 7) {
+													<?php if ($get_last_status['flag'] == 11 || $get_last_status['flag'] == 5 || $get_last_status['flag'] == 8) {
 													?>
-														<a href="#" class="btn font-weight-bolder text-light" data-toggle="modal" data-target="#modal-pod<?= $shp['shipment_id'] ?>" style="background-color: #9c223b;">
+														<button class="btn font-weight-bolder text-light modalPod" data-toggle="modal"  data-target="#modal-pod" data-shipment_id="<?= $shp['shipment_id'] ?>" style="background-color: #9c223b;">
 															<span class="svg-icon svg-icon-md">
-															</span>View POD</a>
+															</span>View POD</button>
 													<?php	} ?>
 
 												</td>
@@ -247,13 +247,13 @@
 														?>
 															<!-- kalo sales ordernya sudah di pickup -->
 															<!-- kalo shipmentnya telah tiba di hub benhil -->
-															<?php if ($get_last_status['flag'] == 4 || $get_last_status['flag'] == 5) {
+															<?php if ($get_last_status['flag'] == 5 || $get_last_status['flag'] == 6) {
 															?>
 
-																<a href="#" class="btn btn-sm text-light" data-toggle="modal" data-target="#modal-lg-dl<?= $shp['shipment_id'] ?>" style="background-color: #9c223b;">
+																<button href="#" class="btn btn-sm text-light modalDelivery" data-toggle="modal" data-shipment_id="<?= $shp['shipment_id'] ?>" data-target="#modal-lg-dl" style="background-color: #9c223b;">
 																	Assign Driver DL
-																</a>
-																<?php $tracking_real = $this->db->limit(1)->order_by('id_tracking', 'DESC')->get_where('tbl_tracking_real', ['shipment_id' => $shp['shipment_id'], 'flag' => 5])->row_array();
+																</button>
+																<?php $tracking_real = $this->db->limit(1)->order_by('id_tracking', 'DESC')->get_where('tbl_tracking_real', ['shipment_id' => $shp['shipment_id'], 'flag' => 6])->row_array();
 																$order = $this->db->limit(1)->order_by('id_tracking', 'DESC')->get_where('tbl_tracking_real', ['shipment_id' => $shp['shipment_id']])->row_array();
 																// var_dump($tracking_real);
 																// die;
@@ -327,12 +327,12 @@
 														?>
 															<!-- kalo sales ordernya sudah di pickup -->
 															<!-- kalo shipmentnya telah tiba di hub benhil -->
-															<?php if ($get_last_status['flag'] == 4 || $get_last_status['flag'] == 5) {
+															<?php if ($get_last_status['flag'] == 5 || $get_last_status['flag'] == 6) {
 															?>
-																<a href="#" class="btn text-light" data-toggle="modal" data-target="#modal-lg-dl-luar<?= $shp['shipment_id'] ?>" style="background-color: #9c223b;">
+																<button class="btn text-light modalDeliveryLuar" data-toggle="modal" data-target="#modal-lg-dl-luar" data-shipment_id="<?= $shp['shipment_id'] ?>" style="background-color: #9c223b;">
 																	Scan Out
-																</a>
-																<?php $tracking_real = $this->db->limit(1)->order_by('id_tracking', 'DESC')->get_where('tbl_tracking_real', ['shipment_id' => $shp['shipment_id'], 'flag' => 5])->row_array();
+																</button>
+																<?php $tracking_real = $this->db->limit(1)->order_by('id_tracking', 'DESC')->get_where('tbl_tracking_real', ['shipment_id' => $shp['shipment_id'], 'flag' => 6])->row_array();
 																$order = $this->db->limit(1)->order_by('id_tracking', 'DESC')->get_where('tbl_tracking_real', ['shipment_id' => $shp['shipment_id']])->row_array();
 																// var_dump($tracking_real);
 																// die;
@@ -416,9 +416,9 @@
 															?>
 															<?php if ($tracking_real == NULL) {
 															?>
-																<a href="#" class="btn btn-sm text-light mb-4" data-toggle="modal" data-target="#modal-driver-incoming-langsung<?= $shp['shipment_id'] ?>" style="background-color: #9c223b;">
+																<button href="#" class="btn btn-sm text-light mb-4 modalDriverIncomingLangsung" data-toggle="modal" data-target="#modal-driver-incoming-langsung" data-shipment="<?= $shp['shipment_id'] ?>" style="background-color: #9c223b;">
 																	Asign Driver DL
-																</a>
+																</button>
 
 																<div class="d-flex align-items-center">
 																	<?php if ($tracking_real == null) {
@@ -447,9 +447,9 @@
 																</div>
 															<?php	} else {
 															?>
-																<a href="#" class="btn btn-sm text-light mb-4" data-toggle="modal" data-target="#modal-driver-incoming-langsung<?= $shp['shipment_id'] ?>" style="background-color: #9c223b;">
+																<button href="#" class="btn btn-sm text-light mb-4 modalDriverIncomingLangsung" data-toggle="modal" data-target="#modal-driver-incoming-langsung<?= $shp['shipment_id'] ?>" style="background-color: #9c223b;">
 																	Asign Driver DL
-																</a>
+																</button>
 																<div class="symbol symbol-40 symbol-light-success">
 																	<span class="symbol-label">
 																		<img src="<?= base_url('assets/back/metronic/') ?>media/avatars/009-boy-4.svg" class="h-75 align-self-end" alt="">
@@ -471,11 +471,11 @@
 														<td>
 															<?php $tracking_real = $this->db->limit(1)->order_by('id_tracking', 'DESC')->get_where('tbl_tracking_real', ['shipment_id' => $shp['shipment_id']])->row_array();
 															?>
-															<?php if ($tracking_real['flag'] == 9) {
+															<?php if ($tracking_real['flag'] == 10) {
 															?>
-																<a href="#" class="btn btn-sm text-light mb-4" data-toggle="modal" data-target="#modal-driver-incoming<?= $shp['shipment_id'] ?>" style="background-color: #9c223b;">
+																<button class="btn btn-sm text-light mb-4 modalDriverIncoming" data-toggle="modal" data-target="#modal-driver-incoming" data-shipment="<?= $shp['shipment_id'] ?>" style="background-color: #9c223b;">
 																	Asign Driver DL
-																</a>
+																</button>
 
 																<div class="d-flex align-items-center">
 																	<?php if ($tracking_real == null) {
@@ -519,7 +519,7 @@
 													<!-- kalo dia bukan incoming -->
 													<?php if ($p['is_incoming'] == 0) {
 													?>
-														<?php if ($get_last_status['flag'] >= 7  && $get_last_status['flag'] <= 10) {
+														<?php if ($get_last_status['flag'] >= 8  && $get_last_status['flag'] <= 11) {
 														?>
 															<a href="<?= base_url('shipper/salesOrder/weight/' . $shp['id']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Weight</a>
 															<a href="<?= base_url('shipper/salesOrder/edit/' . $shp['id'] . '/' . $shp['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Edit</a>
@@ -532,7 +532,7 @@
 														<?php	} ?>
 														<?php	} else {
 
-														if ($get_last_status['flag'] >= 5  && $get_last_status['flag'] <= 6) {
+														if ($get_last_status['flag'] >= 6  && $get_last_status['flag'] <= 7) {
 														?>
 															<span class="badge badge-secondary mb-1">Menunggu scan in/out HUB</span>
 															<!-- <a href="<?= base_url('shipper/order/edit/' . $shp['id'] . '/' . $shp['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Edit</a> -->
@@ -623,417 +623,404 @@
 		</div>
 		<!-- /.modal-dialog -->
 	</div>
+	<!-- Modal using jquery -->
 
-	<?php foreach ($shipment2 as $shp) {
-	?>
-		<?php $tracking_real = $this->db->limit(1)->order_by('id_tracking', 'DESC')->get_where('tbl_tracking_real', ['shipment_id' => $shp['shipment_id'], 'flag' => 9])->row_array();
-		?>
-		<div class="modal fade" id="modal-driver-incoming<?= $shp['shipment_id'] ?>">
-			<div class="modal-dialog modal-lg">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h4 class="modal-title">Assign Driver DL with <b><?= $shp['shipment_id'] ?></b></h4>
 
-						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-							<span aria-hidden="true">&times;</span>
-						</button>
-					</div>
-					<div class="modal-body">
-						<form action="<?= base_url('shipper/salesOrder/assignDriverIncoming') ?>" method="POST">
-							<div class="card-body">
-								<div class="row">
-									<input type="text" name="id_so" class="form-control" hidden value="<?= $p['id_so'] ?>">
-									<input type="text" name="shipment_id" hidden class="form-control" value="<?= $shp['shipment_id'] ?>">
-									<input type="text" name="id_tracking" hidden class="form-control" value="<?= $tracking_real['id_tracking'] ?>">
-									<div class="col-md-12">
-										<label for="id_driver">Choose Driver : </label>
-										<select name="id_driver" class="form-control" style="width: 200px;">
-											<?php foreach ($users as $u) {
-											?>
-												<option value="<?= $u['id_user'] ?>"><?= $u['nama_user'] ?></option>
-											<?php	} ?>
-										</select>
+	<div class="modal fade" id="modal-driver-incoming">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title">Assign Driver DL</b></h4>
 
-									</div>
-
-								</div>
-							</div>
-							<!-- /.card-body -->
-					</div>
-					<div class="modal-footer justify-content-between">
-						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-						<button onclick='$("#modalLoading").modal("show");' type="submit" class="btn btn-primary">Submit</button>
-					</div>
-					</form>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
 				</div>
+				<div class="modal-body">
+					<form action="<?= base_url('shipper/salesOrder/assignDriverIncoming') ?>" method="POST">
+						<div id="modal-content-driver-incoming">
 
+						</div>
 
-				<!-- /.modal-content -->
-			</div>
-			<!-- /.modal-dialog -->
-		</div>
-	<?php  } ?>
-	<?php foreach ($shipment2 as $shp) {
-	?>
-		<div class="modal fade" id="modal-lg-dl<?= $shp['shipment_id'] ?>">
-			<div class="modal-dialog modal-lg">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h4 class="modal-title">Assign Driver DL <b><?= $shp['shipment_id'] ?></b> </h4>
-
-						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-							<span aria-hidden="true">&times;</span>
-						</button>
-					</div>
-					<div class="modal-body">
-						<form action="<?= base_url('shipper/salesOrder/assignDriverDl') ?>" method="POST">
-							<div class="card-body">
-								<div class="row">
-									<input type="text" name="id_so" class="form-control" hidden value="<?= $p['id_so'] ?>">
-									<input type="text" name="shipment_id" class="form-control" hidden value="<?= $shp['shipment_id'] ?>">
-									<!-- <input type="text" name="id_tracking" class="form-control" value="<?= $shipment['id_tracking'] ?>"> -->
-									<div class="col-md-12">
-										<label for="id_driver">Choose Driver : </label>
-										<select name="id_driver" class="form-control" style="width: 200px;">
-											<?php foreach ($users as $u) {
-											?>
-												<option value="<?= $u['id_user'] ?>"><?= $u['nama_user'] ?></option>
-											<?php	} ?>
-										</select>
-
-									</div>
-
-								</div>
-							</div>
-							<!-- /.card-body -->
-					</div>
-					<div class="modal-footer justify-content-between">
-						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-						<button onclick='$("#modalLoading").modal("show");' type="submit" class="btn btn-primary">Submit</button>
-					</div>
-					</form>
+						<!-- /.card-body -->
 				</div>
-				<!-- /.modal-content -->
-			</div>
-			<!-- /.modal-dialog -->
-		</div>
-
-	<?php } ?>
-	<?php foreach ($shipment2 as $shp) {
-	?>
-		<div class="modal fade" id="modal-lg-dl-luar<?= $shp['shipment_id'] ?>">
-			<div class="modal-dialog modal-lg">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h4 class="modal-title">Assign Driver & Map Gateway <b><?= $shp['shipment_id'] ?></b></h4>
-
-						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-							<span aria-hidden="true">&times;</span>
-						</button>
-					</div>
-					<div class="modal-body">
-						<form action="<?= base_url('shipper/salesOrder/assignDriverHub') ?>" method="POST">
-							<div class="card-body">
-								<div class="row">
-									<input type="text" name="id_so" class="form-control" hidden value="<?= $p['id_so'] ?>">
-									<input type="text" name="shipment_id" class="form-control" hidden value="<?= $shp['shipment_id'] ?>">
-									<div class="col-md-6">
-										<label for="id_driver">Choose Driver : </label>
-										<select name="id_driver" class="form-control" style="width: 200px;">
-											<?php foreach ($users as $u) {
-											?>
-												<option value="<?= $u['id_user'] ?>"><?= $u['nama_user'] ?></option>
-											<?php	} ?>
-										</select>
-
-									</div>
-									<div class="col-md-6">
-										<div class="form-group">
-											<label for="exampleInputEmail1">Choose Gateway ?</label>
-											<div class="form-check">
-												<input class="radioBtnClass" type="radio" name="gateway" value="ops">
-												<label class="form-check-label" for="flexRadioDefault1">
-													OPS
-												</label>
-											</div>
-											<div class="form-check">
-												<input class="radioBtnClass" type="radio" name="gateway" value="cs">
-												<label class="form-check-label" for="flexRadioDefault1">
-													CS
-												</label>
-											</div>
-										</div>
-
-									</div>
-									<div class="col-md-6">
-										<div class="form-group">
-											<label for="exampleInputPassword1">HUB ? <span style="color: red;">Soekarno Hatta or, Cengkareng</span> </label>
-											<input type="text" class="form-control" name="note">
-										</div>
-
-									</div>
-									<!-- <div class="col-md-6" id="driver2" style="display: none;">
-									<label for="id_driver">Choose Gateway : </label>
-									<select name="driver_gateway" class="form-control" style="width: 200px;">
-										<?php foreach ($users as $u) {
-										?>
-											<option value="<?= $u['id_user'] ?>"><?= $u['nama_user'] ?></option>
-										<?php	} ?>
-									</select>
-								</div> -->
-
-								</div>
-							</div>
-							<!-- /.card-body -->
-					</div>
-					<div class="modal-footer justify-content-between">
-						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-						<button onclick='$("#modalLoading").modal("show");' type="submit" class="btn btn-primary">Submit</button>
-					</div>
-					</form>
+				<div class="modal-footer justify-content-between">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					<button onclick='$("#modalLoading").modal("show");' type="submit" class="btn btn-primary">Submit</button>
 				</div>
-				<!-- /.modal-content -->
+				</form>
 			</div>
-			<!-- /.modal-dialog -->
+
+
+			<!-- /.modal-content -->
 		</div>
+		<!-- /.modal-dialog -->
+	</div>
 
-	<?php } ?>
-	<?php foreach ($shipment2 as $shp) {
-	?>
-		<div class="modal fade" id="modal-pod<?= $shp['shipment_id'] ?>">
-			<div class="modal-dialog modal-lg">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h4 class="modal-title">POD</h4>
 
-						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-							<span aria-hidden="true">&times;</span>
-						</button>
-					</div>
-					<div class="modal-body">
-						<form action="<?= base_url('cs/salesOrder/updateShipment') ?>" method="POST" enctype="multipart/form-data">
-							<div class="card-body">
-								<div class="row">
-									<?php
-									$get_last_status = $this->db->limit(1)->order_by('id_tracking', 'desc')->get_where('tbl_tracking_real', ['shipment_id' => $shp['shipment_id']])->row_array();
-									?>
-									<?php $files = explode('+', $get_last_status['bukti']);
-									$no = 1;
-									foreach ($files as $file) {
-									?>
-										<div class="col-md-6">
-											<b>Image <?= $no ?> :</b> <img src="<?= base_url('uploads/berkas/') . $file ?>" height="100" width="200"> <br>
-											<?php $no++; ?>
-										</div>
-									<?php	} ?>
 
-								</div>
-							</div>
-							<!-- /.card-body -->
-					</div>
-					<div class="modal-footer justify-content-between">
-						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-						<!-- <button type="submit" class="btn btn-primary">Submit</button> -->
-					</div>
-					</form>
+	<div class="modal fade" id="modal-lg-dl">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title">Assign Driver DL</b> </h4>
+
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
 				</div>
-				<!-- /.modal-content -->
-			</div>
-			<!-- /.modal-dialog -->
-		</div>
-	<?php } ?>
+				<div class="modal-body">
+					<form action="<?= base_url('shipper/salesOrder/assignDriverDl') ?>" method="POST">
+						<div id="modal-content">
 
+						</div>
 
-
-	<?php foreach ($shipment2 as $shp) {
-	?>
-		<div class="modal fade" id="modal-driver-incoming-langsung<?= $shp['shipment_id'] ?>">
-			<div class="modal-dialog modal-lg">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h4 class="modal-title">Assign Driver DL with <b><?= $shp['shipment_id'] ?></b></h4>
-
-						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-							<span aria-hidden="true">&times;</span>
-						</button>
-					</div>
-					<div class="modal-body">
-						<form action="<?= base_url('shipper/salesOrder/assignDriverIncomingLangsung') ?>" method="POST">
-							<div class="card-body">
-								<div class="row">
-									<input type="text" name="id_so" class="form-control" hidden value="<?= $p['id_so'] ?>">
-									<input type="text" name="shipment_id" hidden class="form-control" value="<?= $shp['shipment_id'] ?>">
-									<!-- <input type="text" name="id_tracking" hidden class="form-control" value="<?= $tracking_real['id_tracking'] ?>"> -->
-									<div class="col-md-12">
-										<label for="id_driver">Choose Driver : </label>
-										<select name="id_driver" class="form-control" style="width: 200px;">
-											<?php foreach ($users as $u) {
-											?>
-												<option value="<?= $u['id_user'] ?>"><?= $u['nama_user'] ?></option>
-											<?php	} ?>
-										</select>
-
-									</div>
-
-								</div>
-							</div>
-							<!-- /.card-body -->
-					</div>
-					<div class="modal-footer justify-content-between">
-						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-						<button onclick='$("#modalLoading").modal("show");' type="submit" class="btn btn-primary">Submit</button>
-					</div>
-					</form>
+						<!-- /.card-body -->
 				</div>
-				<!-- /.modal-content -->
-			</div>
-			<!-- /.modal-dialog -->
-		</div>
-	<?php  } ?>
-
-
-	<?php foreach ($shipment2 as $shp) {
-	?>
-		<div class="modal fade" id="modalWeight<?= $shp['id'] ?>">
-			<div class="modal-dialog modal-lg">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h4 class="modal-title">Add Weight <b><?= $shp['shipment_id'] ?></b></h4>
-
-						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-							<span aria-hidden="true">&times;</span>
-						</button>
-					</div>
-					<div class="modal-body">
-						<form action="<?= base_url('shipper/salesOrder/assignDriverIncomingLangsung') ?>" method="POST">
-							<div class="card-body">
-								<div class="row">
-									<!-- <button type="submit" class="btn btn-success mb-2"> <i class="fa fa-plus"></i> Submit</button> -->
-									<table class="table table-striped text-center">
-										<thead>
-											<tr>
-
-												<th scope="col">No</th>
-												<th scope="col">P</th>
-												<th scope="col">L</th>
-												<th scope="col">T</th>
-												<th scope="col">Actual Weight</th>
-												<th scope="col">Volume Weight</th>
-											</tr>
-										</thead>
-										<tbody>
-											<tr>
-
-												<th scope="row">1</th>
-												<td><input pattern="[0-9]" style="float:none;margin:auto;" class="form-control col-md-6" type="text" name="panjang" id="panjang"></td>
-												<td><input pattern="[0-9]" style="float:none;margin:auto;" class="form-control col-md-6" type="text" name="lebar" id="lebar"></td>
-												<td><input pattern="[0-9]" style="float:none;margin:auto;" class="form-control col-md-6" type="text" name="tinggi" id="tinggi"></td>
-												<td><input pattern="[0-9]" style="float:none;margin:auto;" class="form-control col-md-6" type="text" name="berat" id="berat"></td>
-												<td>2</td>
-											</tr>
-											<tr>
-
-												<th scope="row">2</th>
-												<td>Jacob</td>
-												<td>Thornton</td>
-												<td>@fat</td>
-												<td>2</td>
-												<td>2</td>
-											</tr>
-											<tr>
-
-												<th scope="row">3</th>
-												<td>Larry</td>
-												<td>the Bird</td>
-												<td>@twitter</td>
-												<td>2</td>
-												<td>2</td>
-											</tr>
-										</tbody>
-									</table>
-
-								</div>
-							</div>
-							<!-- /.card-body -->
-							<div class="modal-footer justify-content-between">
-								<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-								<button onclick='$("#modalLoading").modal("show");' type="submit" class="btn btn-primary">Submit</button>
-							</div>
-						</form>
-					</div>
-
+				<div class="modal-footer justify-content-between">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					<button onclick='$("#modalLoading").modal("show");' type="submit" class="btn btn-primary">Submit</button>
 				</div>
-				<!-- /.modal-content -->
+				</form>
 			</div>
-			<!-- /.modal-dialog -->
+			<!-- /.modal-content -->
 		</div>
-	<?php  } ?>
+		<!-- /.modal-dialog -->
+	</div>
 
-	<?php foreach ($shipment2 as $shp) {
-	?>
-		<div class="modal fade" id="modalMerge<?= $shp['id'] ?>">
-			<div class="modal-dialog modal-lg">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h4 class="modal-title">Merge <b><?= $shp['shipment_id'] ?></b></h4>
+	<div class="modal fade" id="modal-lg-dl-luar">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title">Assign Driver & Map Gateway</h4>
 
-						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-							<span aria-hidden="true">&times;</span>
-						</button>
-					</div>
-					<div class="modal-body">
-						<form action="<?= base_url('shipper/salesOrder/assignDriverIncomingLangsung') ?>" method="POST">
-							<div class="card-body">
-								<div class="row">
-									<button type="submit" class="btn btn-success mb-2"> <i class="fa fa-plus"></i> Merge</button>
-									<table class="table table-striped">
-										<thead>
-											<tr>
-												<th scope="col">#</th>
-												<th scope="col">No</th>
-												<th scope="col">First</th>
-												<th scope="col">Last</th>
-												<th scope="col">Handle</th>
-											</tr>
-										</thead>
-										<tbody>
-											<tr>
-												<th><input type="checkbox" name="" id=""></th>
-												<th scope="row">1</th>
-												<td>Mark</td>
-												<td>Otto</td>
-												<td>@mdo</td>
-											</tr>
-											<tr>
-												<th><input type="checkbox" name="" id=""></th>
-												<th scope="row">2</th>
-												<td>Jacob</td>
-												<td>Thornton</td>
-												<td>@fat</td>
-											</tr>
-											<tr>
-												<th><input type="checkbox" name="" id=""></th>
-												<th scope="row">3</th>
-												<td>Larry</td>
-												<td>the Bird</td>
-												<td>@twitter</td>
-											</tr>
-										</tbody>
-									</table>
-
-								</div>
-							</div>
-							<!-- /.card-body -->
-							<div class="modal-footer justify-content-between">
-								<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-								<button onclick='$("#modalLoading").modal("show");' type="submit" class="btn btn-primary">Submit</button>
-							</div>
-						</form>
-					</div>
-
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
 				</div>
-				<!-- /.modal-content -->
+				<div class="modal-body">
+					<form action="<?= base_url('shipper/salesOrder/assignDriverHub') ?>" method="POST">
+
+						<div id="modal-content-delivery-luar">
+
+						</div>
+
+						<!-- /.card-body -->
+				</div>
+				<div class="modal-footer justify-content-between">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					<button onclick='$("#modalLoading").modal("show");' type="submit" class="btn btn-primary">Submit</button>
+				</div>
+				</form>
 			</div>
-			<!-- /.modal-dialog -->
+			<!-- /.modal-content -->
 		</div>
-	<?php  } ?>
+		<!-- /.modal-dialog -->
+	</div>
+
+	<div class="modal fade" id="modal-driver-incoming-langsung">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title">Assign Driver DL</b></h4>
+
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<form action="<?= base_url('shipper/salesOrder/assignDriverIncomingLangsung') ?>" method="POST">
+						<div id="modal-content-driver-incoming-langsung">
+
+						</div>
+
+						<!-- /.card-body -->
+				</div>
+				<div class="modal-footer justify-content-between">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					<button onclick='$("#modalLoading").modal("show");' type="submit" class="btn btn-primary">Submit</button>
+				</div>
+				</form>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal-dialog -->
+	</div>
+
+	<div class="modal fade" id="modal-pod">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title">PODd</h4>
+
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<form action="<?= base_url('cs/salesOrder/updateShipment') ?>" method="POST" enctype="multipart/form-data">
+						<div id="modal-content-pod">
+
+						</div>
+
+						<!-- /.card-body -->
+				</div>
+				<div class="modal-footer justify-content-between">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					<!-- <button type="submit" class="btn btn-primary">Submit</button> -->
+				</div>
+				</form>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal-dialog -->
+	</div>
+
+
+
+	<!-- BUAT MODAL OPS  -->
+
+	<script>
+		$(document).ready(function() {
+			$('.modalDriverIncoming').click(function() {
+				var shipment_id = $(this).data('shipment_id'); // Mendapatkan ID dari atribut data-id tombol yang diklik
+				$('#modal-content-driver-incoming').html('');
+				// Memuat data menggunakan AJAX dengan mengirimkan ID sebagai parameter
+				$.ajax({
+					url: '<?php echo base_url("shipper/SalesOrder/getModalDetailOrder"); ?>',
+					type: 'GET',
+					dataType: 'json',
+					data: {
+						shipment_id: shipment_id
+					},
+					success: function(response) {
+						// Menampilkan data ke dalam modal
+
+						var content = '<div class="card-body">' +
+							'<div class="row">' +
+							'Asign Delivery ' + response.shipment_id +
+							'<input type="text" name="id_so" class="form-control" hidden value="' + response.id_so + '">' +
+							'<input type="text" name="shipment_id" hidden class="form-control" value="' + response.shipment_id + '">' +
+							'<input type="text" name="id_tracking" hidden class="form-control" value="' + response.id_tracking + '">' +
+							'<div class="col-md-12">' +
+							'<label for="id_driver">Choose Driver : </label>' +
+							'<select name="id_driver" class="form-control" id="selectField" style="width: 200px;">' +
+							<?php foreach ($users as $u) {
+							?> '<option value="<?= $u['id_user'] ?>"><?= $u['nama_user'] ?></option>' +
+							<?php	} ?> '</select>' +
+
+							'</div>' +
+
+							'</div>' +
+							'</div>';
+						$('#modal-content-driver-incoming').html(content);
+						$('#selectField').select2();
+
+					},
+					error: function() {
+						alert('Terjadi kesalahan dalam memuat data.');
+					}
+				});
+			});
+		})
+	</script>
+
+	<script>
+		$(document).ready(function() {
+			$('.modalDelivery').click(function() {
+				var shipment_id = $(this).data('shipment_id'); // Mendapatkan ID dari atribut data-id tombol yang diklik
+				$('#modal-content').html('');
+				// Memuat data menggunakan AJAX dengan mengirimkan ID sebagai parameter
+				$.ajax({
+					url: '<?php echo base_url("shipper/SalesOrder/getModalDetailOrder"); ?>',
+					type: 'GET',
+					dataType: 'json',
+					data: {
+						shipment_id: shipment_id
+					},
+					success: function(response) {
+						// Menampilkan data ke dalam modal
+						var content = '<div class="card-body"><div class="row">' +
+							'Asign Delivery ' + response.shipment_id +
+							'<input type="text" name="id_so" class="form-control" hidden value="' + response.id_so + '">' +
+							'<input type="text" name="shipment_id" class="form-control" hidden value="' + response.shipment_id + '">' +
+							'<div class="col-md-12">' +
+							'<label for="id_driver">Choose Driver : </label>' +
+							'<select name="id_driver" class="form-select" id="selectField" style="width: 200px;">' +
+							<?php foreach ($users as $u) {
+							?> '<option value="<?= $u['id_user'] ?>"><?= $u['nama_user'] ?></option>' +
+							<?php	} ?> '</select>' +
+
+							'</div>' +
+
+							'</div>' +
+							'</div>';
+						$('#modal-content').html(content);
+						$('#selectField').select2();
+
+					},
+					error: function() {
+						alert('Terjadi kesalahan dalam memuat data.');
+					}
+				});
+			});
+		});
+	</script>
+
+	<script>
+		$(document).ready(function() {
+			$('.modalDeliveryLuar').click(function() {
+
+				var shipment_id = $(this).data('shipment_id'); // Mendapatkan ID dari atribut data-id tombol yang diklik
+				var selectHtml = $('#selectField').html();
+				$('#modal-content-delivery-luar').html('');
+				// Memuat data menggunakan AJAX dengan mengirimkan ID sebagai parameter
+				$.ajax({
+					url: '<?php echo base_url("shipper/SalesOrder/getModalDetailOrder"); ?>',
+					type: 'GET',
+					dataType: 'json',
+					data: {
+						shipment_id: shipment_id
+					},
+					success: function(response) {
+						// Menampilkan data ke dalam modal
+						var content = '<div class="card-body">' +
+							'<h2>Assign Driver & Map Gateway ' + response.shipment_id + '</h2>' +
+							'<br>' +
+							'<div class="row">' +
+							'<input type="text" name="id_so" class="form-control" hidden value="' + response.id_so + '">' +
+							'<input type="text" name="shipment_id" class="form-control" hidden value="' + response.shipment_id + '">' +
+							'<div class="col-md-6">' +
+							'<label for="id_driver">Choose Driver : </label>' +
+							'<select name="id_driver" class="form-control select" id="selectField" style="width: 200px;">' +
+							<?php foreach ($users as $u) {
+							?> '<option value="<?= $u['id_user'] ?>"><?= $u['nama_user'] ?></option>' +
+							<?php	} ?> '</select>' +
+
+							'</div>' +
+							'<div class="col-md-6">' +
+							'<div class="form-group">' +
+							'<label for="exampleInputEmail1">Choose Gateway ?</label>' +
+							'<div class="form-check">' +
+							'<input class="radioBtnClass" type="radio" name="gateway" value="ops">' +
+							'<label class="form-check-label" for="flexRadioDefault1">' +
+							'OPS' +
+							'</label>' +
+							'	</div>' +
+							'<div class="form-check">' +
+							'<input class="radioBtnClass" type="radio" name="gateway" value="cs">' +
+							'<label class="form-check-label" for="flexRadioDefault1">' +
+							'CS' +
+							'</label>' +
+							'</div>' +
+							'</div>' +
+
+							'</div>' +
+							'<div class="col-md-6">' +
+							'<div class="form-group">' +
+							'<label for="exampleInputPassword1">HUB ? <span style="color: red;">Soekarno Hatta or, Cengkareng</span> </label>' +
+							'<input type="text" class="form-control" name="note">' +
+							'</div>' +
+
+							'</div>' +
+
+
+
+							'</div>' +
+							'</div>';
+
+						$('#modal-content-delivery-luar').html(content);
+						$('#selectField').select2();
+
+
+					},
+					error: function() {
+						alert('Terjadi kesalahan dalam memuat data.');
+					}
+				});
+			});
+		});
+	</script>
+	<script>
+		$(document).ready(function() {
+			$('.modalDriverIncomingLangsung').click(function() {
+				var shipment_id = $(this).data('shipment_id'); // Mendapatkan ID dari atribut data-id tombol yang diklik
+				$('#modal-content-driver-incoming-langsung').html('');
+				// Memuat data menggunakan AJAX dengan mengirimkan ID sebagai parameter
+				$.ajax({
+					url: '<?php echo base_url("shipper/SalesOrder/getModalDetailOrder"); ?>',
+					type: 'GET',
+					dataType: 'json',
+					data: {
+						shipment_id: shipment_id
+					},
+					success: function(response) {
+						// Menampilkan data ke dalam modal
+						var content = '<div class="card-body">' +
+							'<div class="row">' +
+							'Asign Delivery ' + response.shipment_id +
+							'<input type="text" name="id_so" class="form-control" hidden value="<?= $p['id_so'] ?>">' +
+							'<input type="text" name="shipment_id" hidden class="form-control" value="<?= $shp['shipment_id'] ?>">' +
+
+							'<div class="col-md-12">' +
+							'<label for="id_driver">Choose Driver : </label>' +
+							'<select name="id_driver" class="form-control" style="width: 200px;">' +
+							<?php foreach ($users as $u) {
+							?> '<option value="<?= $u['id_user'] ?>"><?= $u['nama_user'] ?></option>' +
+							<?php	} ?> '</select>' +
+
+							'</div>' +
+
+							'</div>' +
+							'</div>';
+						$('#modal-content-driver-incoming-langsung').html(content);
+						$('#selectField').select2();
+
+					},
+					error: function() {
+						alert('Terjadi kesalahan dalam memuat data.');
+					}
+				});
+			});
+		});
+	</script>
+	<script>
+		$(document).ready(function() {
+			$('.modalPod').click(function() {
+				var shipment_id = $(this).data('shipment_id'); // Mendapatkan ID dari atribut data-id tombol yang diklik
+				$('#modal-content-pod').html('');
+				// Memuat data menggunakan AJAX dengan mengirimkan ID sebagai parameter
+				$.ajax({
+					url: '<?php echo base_url("shipper/SalesOrder/getModalDetailOrder"); ?>',
+					type: 'GET',
+					dataType: 'json',
+					data: {
+						shipment_id: shipment_id
+					},
+					success: function(response) {
+						// Menampilkan data ke dalam modal
+						
+						var content = '<div class="card-body">' +
+							'<div class="row">' +
+							'POD ' + response.shipment_id +
+							'<div class="col-md-6">' +
+							'<b>Image  :</b> <img src="<?= base_url("uploads/berkas_uncompress/") ?>' + response.bukti + '" height="100" width="200"> <br>' +
+
+							'</div>' +
+
+
+							'</div>' +
+							'</div>';
+							
+						$('#modal-content-pod').html(content);
+						$('#selectField').select2();
+						
+
+					},
+					error: function() {
+						alert('Terjadi kesalahan dalam memuat data.');
+					}
+				});
+			});
+		})
+	</script>

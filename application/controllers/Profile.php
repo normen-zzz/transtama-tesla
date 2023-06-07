@@ -10,11 +10,36 @@ class Profile extends CI_Controller
 			redirect('backoffice');
 		}
 		$this->load->model('UserModel');
+		$this->load->model('Sendwa', 'wa');
+		function hp($nohp) {
+			// kadang ada penulisan no hp 0811 239 345
+			$nohp = str_replace(" ","",$nohp);
+			// kadang ada penulisan no hp (0274) 778787
+			$nohp = str_replace("(","",$nohp);
+			// kadang ada penulisan no hp (0274) 778787
+			$nohp = str_replace(")","",$nohp);
+			// kadang ada penulisan no hp 0811.239.345
+			$nohp = str_replace(".","",$nohp);
+		
+			// cek apakah no hp mengandung karakter + dan 0-9
+			if(!preg_match('/[^0-9]/',trim($nohp))){
+				// cek apakah no hp karakter 1-3 adalah +62
+				if(substr(trim($nohp), 0, 2)=='62'){
+					$hp = substr_replace($nohp,'0',0,2);
+				}
+				// cek apakah no hp karakter 1 adalah 0
+				elseif(substr(trim($nohp), 0, 1)=='0'){
+					$hp = '62'.substr(trim($nohp), 1);
+				}
+			}
+			return $hp;
+		}
 	}
+
+	
+
 	public function index()
 	{
-		$data['title'] = 'My Profile | Siva Sistem Verifikasi dan Pengajuan Ijazah';
-
 		$idSession = $this->session->userdata('id_user');
 		$id = $this->uri->segment(4);
 		$data = $this->UserModel->getProfile($idSession);
@@ -23,6 +48,11 @@ class Profile extends CI_Controller
 		$x['username'] = $row['username'];
 		$x['email'] = $row['email'];
 		$x['nama_user'] = $row['nama_user'];
+		if ($row['no_hp'] != NULL) {
+			$x['no_hp'] = hp($row['no_hp']);
+		} else{
+			$x['no_hp'] = $row['no_hp'];
+		}
 		$this->backend->display('v_profile', $x);
 	}
 
@@ -39,6 +69,7 @@ class Profile extends CI_Controller
 				'nama_user' => $this->input->post('nama_user'),
 				'username' => $this->input->post('username'),
 				'email' => $this->input->post('email'),
+				'no_hp' => hp($this->input->post('no_hp')),
 				'password' => password_hash($this->input->post('password'), PASSWORD_DEFAULT),
 
 			);
@@ -50,15 +81,20 @@ class Profile extends CI_Controller
 				'nama_user' => $this->input->post('nama_user'),
 				'username' => $this->input->post('username'),
 				'email' => $this->input->post('email'),
+				'no_hp' => hp($this->input->post('no_hp')),
 
 			);
 		}
-		// var_dump($where);
-		// die;
+		
 		$update = $this->db->update('tb_user', $data, $where);
-		// var_dump($update);
-		// die;
+		$nama = $this->input->post('nama_user');
+		$username = $this->input->post('username');
+		$email = $this->input->post('email');
+		$no_hp =  $this->input->post('no_hp');
+		$pesan = "Data Anda Di Profil Tesla Smartwork Berhasil Diubah <br> Nama: $nama <br> Username: $username <br> Email: $email <br> No Telp: $no_hp";
+
 		if ($update) {
+			$this->wa->pickup(hp($this->input->post('no_hp')), $pesan);
 			$this->session->set_flashdata('message', 'Diedit');
 			redirect('profile');
 		} else {

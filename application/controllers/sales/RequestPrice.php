@@ -14,29 +14,31 @@ class RequestPrice extends CI_Controller
         $this->load->model('PengajuanModel', 'order');
         $this->load->model('SalesModel', 'sales');
         $this->load->model('Sendwa', 'wa');
+        $this->load->model('WilayahModel', 'wilayah');
         // $this->load->model('RequestPriceModel');
 
         cek_role();
     }
-    public function index($awal = NULL, $akhir = NULL)
+    public function index()
     {
         $awal = $this->input->post('awal');
         $akhir = $this->input->post('akhir');
         $dayNow = date('d');
         $monthNow = date('m');
         $yearNow = date('Y');
+        $provinsi = $this->wilayah->getDataProvinsi();
         if ($awal == NULL) {
-            $awal = date('Y-m-d', strtotime($yearNow . '-' . $monthNow . '-' . '1'));
-            $akhir = date('Y-m-t');
+            $awal = date('Y-m-d H:i:s', strtotime($yearNow . '-' . $monthNow . '-' . '1'));
+            $akhir = date('Y-m-t H:i:s');
 
             $data['awal'] = $awal;
             $data['akhir'] = $akhir;
-            $data['title'] = 'Request Price';
+            $data['title'] = 'Request Pricee';
             $data['requestPrice'] = $this->sales->getRequestPriceNotApprove($this->session->userdata('id_user'), $awal, $akhir);
             $data['requestPriceApprove'] = $this->sales->getRequestPriceApprove($this->session->userdata('id_user'), $awal, $akhir);
             $data['province'] = $this->db->get('tb_province')->result_array();
+            $data['provinsi'] = $provinsi->data;
             $data['city'] = $this->db->get('tb_city')->result_array();
-            $this->backend->display('sales/v_request_price', $data);
         } else {
             $data['awal'] = $awal;
             $data['akhir'] = $akhir;
@@ -44,35 +46,66 @@ class RequestPrice extends CI_Controller
             $data['requestPrice'] = $this->sales->getRequestPriceNotApprove($this->session->userdata('id_user'), $awal, $akhir);
             $data['requestPriceApprove'] = $this->sales->getRequestPriceApprove($this->session->userdata('id_user'), $awal, $akhir);
             $data['province'] = $this->db->get('tb_province')->result_array();
+            $data['provinsi'] = $provinsi->data;
             $data['city'] = $this->db->get('tb_city')->result_array();
-            $this->backend->display('sales/v_request_price', $data);
         }
+        $this->backend->display('sales/v_request_price', $data);
+    }
+
+    public function getModalEditRequest()
+    {
+        $id_request = $this->input->get('id_request'); // Mengambil ID dari parameter GET
+        $request = $this->db->get_where('tbl_request_price',array('id_request_price' => $id_request))->row();
+        
+        
+        
+
+        // Kirim data sebagai respons JSON
+        echo json_encode($request);
+    }
+
+    public function getdate()
+    {
+        var_dump(date('Y-m-t H:i:s'));
     }
 
     public function addNewRequest()
     {
+
+        $QuerylastRequest = "SELECT a.group FROM tbl_request_price a ORDER BY a.group DESC LIMIT 1";
+        $lastRequest = $this->db->query($QuerylastRequest)->row();
+        // var_dump($lastRequest->group);
         $request = [
             'id_sales' => $this->session->userdata('id_user'),
             'date_request' => date('Y-m-d H:i:s'),
-            'province_from' => $this->input->post('province_from'),
-            'city_from' => $this->input->post('city_from'),
-            'province_to' => $this->input->post('province_to'),
-            'city_to' => $this->input->post('city_to'),
+            'province_from' => $this->input->post('provinsi_from'),
+            'city_from' => $this->input->post('kabupaten_from'),
+            'subdistrict_from' => $this->input->post('kecamatan_from'),
+            'province_to' => $this->input->post('provinsi_to'),
+            'city_to' => $this->input->post('kabupaten_to'),
+            'subdistrict_to' => $this->input->post('kecamatan_to'),
             'moda' => $this->input->post('moda'),
             'jenis_barang' => $this->input->post('jenis'),
             'berat' => $this->input->post('berat'),
             'panjang' => $this->input->post('panjang'),
             'lebar' => $this->input->post('lebar'),
             'tinggi' => $this->input->post('tinggi'),
+            'koli' => $this->input->post('koli'),
+            'komoditi' => $this->input->post('komoditi'),
             'notes_sales' => $this->input->post('notes'),
+            'is_bulk' => 0,
+            'group' => $lastRequest->group + 1
         ];
 
 
         $update = $this->db->insert('tbl_request_price', $request);
         if ($update) {
-            $pesan = "Hallo Finance, ada pengajuan harga baru dari " . $this->session->userdata('nama_user') . " Tolong Segera Cek Ya, Terima Kasih";
-            $this->wa->pickup('+6285697780467', "$pesan");
+            // $pesan = "Hallo Finance, ada pengajuan harga baru dari " . $this->session->userdata('nama_user') . " Tolong Segera Cek Ya, Terima Kasih";
+            // $this->wa->pickup('+6285697780467', "$pesan");
             $this->session->set_flashdata('message', 'Anda Berhasil Menambah Request');
+            redirect('sales/RequestPrice');
+        }else{
+            $this->session->set_flashdata('message', 'Anda Gagal Menambah Request');
             redirect('sales/RequestPrice');
         }
     }
@@ -83,5 +116,39 @@ class RequestPrice extends CI_Controller
             $this->session->set_flashdata('message', 'Berhasil Menghapus');
             redirect('sales/RequestPrice');
         }
+    }
+
+    //untuk ambil wilayah kabupaten
+
+    public function getKabupaten($id_prov = NULL)
+    {
+
+        if ($id_prov != NULL) {
+            $kabupaten = $this->wilayah->getDataKabupaten($id_prov);
+            $data = "<option value=''>- Select Kabupaten -</option>";
+            foreach ($kabupaten->data as $value) {
+                $data .= "<option data-id_prov='" . $id_prov . "'  data-id_kab='" . $value->id . "' value='" . $value->name . "'>" . $value->name . "</option>";
+            }
+        } else {
+            $data = "<option value=''>- Select Kabupaten -</option>";
+        }
+        echo $data;
+    }
+
+    public function getKecamatan($id_prov = NULL, $id_kab = NULL)
+    {
+
+        if ($id_prov != NULL && $id_kab != NULL) {
+            $kecamatan = $this->wilayah->getDataKecamatan($id_prov, $id_kab);
+            $data = "<option value=''>- Select Kecamatan -</option>";
+            foreach ($kecamatan->data as $value) {
+                $data .= "<option data-id_kec='" . $value->id . "' value='" . $value->name . "'>" . $value->name . "</option>";
+            }
+            
+        } else {
+            $data = "<option value=''>- Select Kecamatan -</option>";
+            
+        }
+        echo $data;
     }
 }

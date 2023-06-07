@@ -1,11 +1,16 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
+date_default_timezone_set('Asia/Jakarta');
+setlocale(LC_TIME, "id_ID.UTF8");
 
 class Scan extends CI_Controller
 {
     public function __construct()
     {
         parent::__construct();
+        if (!$this->session->userdata('id_user')) {
+            redirect('backoffice');
+        }
         $this->load->library('upload');
         $this->load->model('M_Datatables');
         $this->load->library('form_validation');
@@ -21,11 +26,52 @@ class Scan extends CI_Controller
         $this->backend->display('dispatcher/v_shipment', $data);
         // $this->load->view('dispatcher/v_shipment', $data);
     }
-	 public function history()
+    public function history()
     {
         $data['title'] = 'History Task';
-        $data['gateway'] = $this->order->dispatchHistory()->result_array();
-        $this->backend->display('dispatcher/v_history_shipment', $data);
+        $data['order'] = $this->order->dispatchHistory()->result_array();
+        $this->backend->display('dispatcher/v_history_shipment2', $data);
+    }
+    function querydispatchhistory()
+    {
+        // $query  = "SELECT t1.shipment_id,t1.`created_at` AS 'tgl_masuk', t1.status,t2.created_at AS 'tgl_keluar',t1.status_eksekusi , t2.status,t3.`tgl_pickup`,t3.`shipper`,t3.`consigne`,t3.tgl_pickup
+        // FROM tbl_gateway t1
+        // JOIN (SELECT shipment_id, MAX(STATUS) AS STATUS,MAX(created_at) AS created_at FROM tbl_gateway GROUP BY shipment_id) t2
+        //     ON t1.shipment_id = t2.shipment_id JOIN tbl_shp_order t3 ON t1.`shipment_id` = t3.`shipment_id`";
+
+        $query = "SELECT a.shipper,a.consigne,a.tree_shipper,a.tree_consignee,b.status as sts,b.is_incoming,b.id_gateway,b.created_at,b.shipment_id,b.status_eksekusi,b.created_at FROM tbl_shp_order a JOIN tbl_gateway b ON a.shipment_id = b.shipment_id";
+        $search = array('a.shipment_id', 'a.shipper', 'a.consigne');
+        $where  = array('b.status_eksekusi' => 1, 'b.status' => 'out');
+        // $where  = array('a.id_user' => $this->session->userdata('id_user'));
+
+        // jika memakai IS NULL pada where sql
+        $isWhere = null;
+        // $isWhere = 'artikel.deleted_at IS NULL';
+        header('Content-Type: application/json');
+        echo $this->M_Datatables->get_tables_query($query, $search, $where, $isWhere);
+    }
+
+    public function processSubmitHistory()
+    {
+        $shipment_id = $this->input->post('shipment_id');
+        $no_flight = $this->input->post('no_flight');
+        $no_smu = $this->input->post('no_smu');
+        $status_flight = $this->input->post('status_flight');
+        $etd = $this->input->post('etd');
+        $eta = $this->input->post('eta');
+
+        for ($i = 0; $i < sizeof($shipment_id); $i++) {
+            $data = array(
+                'no_flight' => $no_flight,
+                'no_smu' => $no_smu,
+                'status_flight' => $status_flight,
+                'etd' => $etd,
+                'eta' => $eta
+            );
+            $this->db->update('tbl_gateway', $data, array('shipment_id' => $shipment_id[$i]));
+        }
+        $this->session->set_flashdata('message', 'Success');
+        redirect('dispatcher/Scan/history');
     }
     function cek_id()
     {

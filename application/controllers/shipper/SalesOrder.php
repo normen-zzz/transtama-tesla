@@ -26,7 +26,8 @@ class SalesOrder extends CI_Controller
             $data['title'] = 'Sales Order';
             $this->backend->display('shipper/v_so', $data);
         } else {
-            $query  = "SELECT a.*,b.id_tracking,b.id_so,b.note as catatan, b.flag,c.service_name,
+            $query  = "SELECT a.is_jabodetabek,a.shipper,a.tgl_pickup,a.time,a.pu_poin,a.pu_moda,a.koli,a.weight,a.destination,a.pu_commodity,a.pu_service,a.pu_note,a.shipment_id,a.consigne,a.city_consigne,a.state_consigne,b.note
+            ,b.id_tracking,b.id_so,b.note as catatan, b.flag,c.service_name,
              b.update_at,b.status_eksekusi,b.created_at as tgl_tugas,
               b.time as jam_tugas
             FROM tbl_tracking_real b 
@@ -105,14 +106,14 @@ class SalesOrder extends CI_Controller
     public function assignDriverIncomingLangsung()
     {
         date_default_timezone_set("Asia/Jakarta");
-        $tracking_real = $this->db->limit(1)->order_by('id_tracking', 'DESC')->get_where('tbl_tracking_real', ['shipment_id' => $this->input->post('shipment_id'), 'flag' => 9])->row_array();
+        $tracking_real = $this->db->limit(1)->order_by('id_tracking', 'DESC')->get_where('tbl_tracking_real', ['shipment_id' => $this->input->post('shipment_id'), 'flag' => 10])->row_array();
         $data = array(
             'status' => 'Shipment Dalam Proses Delivery',
             'id_so' => $this->input->post('id_so'),
             'shipment_id' => $this->input->post('shipment_id'),
             'created_at' => date('Y-m-d'),
             'time' => date('H:i:s'),
-            'flag' => 9,
+            'flag' => 10,
             'status_eksekusi' => 0,
             'id_user' => $this->input->post('id_driver'),
         );
@@ -139,7 +140,7 @@ class SalesOrder extends CI_Controller
                 'id_user' => $this->input->post('id_driver'),
                 'created_at' => date('Y-m-d'),
                 'time' => date('H:i:s'),
-                'flag' => 5,
+                'flag' => 6,
                 'status_eksekusi' => 0,
             );
             $update = $this->db->update('tbl_tracking_real', $data, ['id_tracking' => $cek_driver['id_tracking']]);
@@ -158,7 +159,7 @@ class SalesOrder extends CI_Controller
                 'id_user' => $this->input->post('id_driver'),
                 'created_at' => date('Y-m-d'),
                 'time' => date('H:i:s'),
-                'flag' => 5,
+                'flag' => 6,
                 'status_eksekusi' => 0,
             );
             $insert = $this->db->insert('tbl_tracking_real', $data);
@@ -182,7 +183,7 @@ class SalesOrder extends CI_Controller
                 'id_user' => $this->input->post('id_driver'),
                 'created_at' => date('Y-m-d'),
                 'time' => date('H:i:s'),
-                'flag' => 5,
+                'flag' => 6,
                 'status_eksekusi' => 0,
             );
             $update = $this->db->update('tbl_tracking_real', $data, ['id_tracking' => $cek_driver['id_tracking']]);
@@ -229,7 +230,7 @@ class SalesOrder extends CI_Controller
                 'id_user' => $this->input->post('id_driver'),
                 'created_at' => date('Y-m-d'),
                 'time' => date('H:i:s'),
-                'flag' => 5,
+                'flag' => 6,
                 'status_eksekusi' => 0,
                 'note' => $this->input->post('note')
             );
@@ -249,7 +250,7 @@ class SalesOrder extends CI_Controller
                 'id_user' => $this->input->post('id_driver'),
                 'created_at' => date('Y-m-d'),
                 'time' => date('H:i:s'),
-                'flag' => 5,
+                'flag' => 6,
                 'status_eksekusi' => 0,
                 'note' => $this->input->post('note')
             );
@@ -299,6 +300,29 @@ class SalesOrder extends CI_Controller
         $this->session->set_flashdata('message', 'Terima Kasih');
         redirect('shipper/salesOrder');
     }
+
+    public function arrivePu($id, $id_tracking, $shipment_id)
+    {
+        $data = array(
+            'status' => 'Driver Telah Sampai Di Lokasi Pickup',
+            'id_so' => $id,
+            'shipment_id' => $shipment_id,
+            'created_at' => date('Y-m-d'),
+            'time' => date('H:i:s'),
+            'flag' => 3,
+            'status_eksekusi' => 0,
+            'id_user' => $this->session->userdata('id_user'),
+        );
+        $insert = $this->db->insert('tbl_tracking_real', $data);
+        if ($insert) {
+            $data = array(
+                'status_eksekusi' => 1,
+            );
+            $this->db->update('tbl_tracking_real', $data, ['id_tracking' => $id_tracking]);
+        }
+        $this->session->set_flashdata('message', 'Terima Kasih');
+        redirect('shipper/salesOrder');
+    }
     public function receiveDelivery($id, $shipment_id, $id_tracking)
     {
 
@@ -308,7 +332,7 @@ class SalesOrder extends CI_Controller
             'shipment_id' => $shipment_id,
             'created_at' => date('Y-m-d'),
             'time' => date('H:i:s'),
-            'flag' => 6,
+            'flag' => 7,
             'status_eksekusi' => 0,
             'id_user' => $this->session->userdata('id_user'),
         );
@@ -326,7 +350,7 @@ class SalesOrder extends CI_Controller
             'shipment_id' => $shipment_id,
             'created_at' => date('Y-m-d'),
             'time' => date('H:i:s'),
-            'flag' => 10,
+            'flag' => 11,
             'id_user' => $this->session->userdata('id_user'),
         );
         $this->db->insert('tbl_tracking_real', $data);
@@ -342,7 +366,7 @@ class SalesOrder extends CI_Controller
             'shipment_id' => $shipment_id,
             'created_at' => date('Y-m-d'),
             'time' => date('H:i:s'),
-            'flag' => 4,
+            'flag' => 5,
             'status_eksekusi' => 0,
             'id_user' => $this->session->userdata('id_user'),
         );
@@ -359,7 +383,7 @@ class SalesOrder extends CI_Controller
         $update = $this->db->update('tbl_tracking_real', $data, ['id_tracking' => $id]);
         if ($update) {
             $this->session->set_flashdata('message', 'Terima Kasih');
-            redirect($_SERVER['HTTP_REFERER']);
+            redirect('shipper/salesOrder');
         }
     }
 
@@ -381,7 +405,7 @@ class SalesOrder extends CI_Controller
             'shipment_id' => $shipment_id,
             'created_at' => date('Y-m-d'),
             'time' => date('H:i:s'),
-            'flag' => 4,
+            'flag' => 5,
             'status_eksekusi' => 1,
             'id_user' => $this->session->userdata('id_user'),
         );
@@ -401,7 +425,7 @@ class SalesOrder extends CI_Controller
             'shipment_id' => $shipment_id,
             'created_at' => date('Y-m-d'),
             'time' => date('H:i:s'),
-            'flag' => 7,
+            'flag' => 8,
             'status_eksekusi' => 1,
             'pic_task' => $consignee,
             'id_user' => $this->session->userdata('id_user'),
@@ -479,7 +503,7 @@ class SalesOrder extends CI_Controller
             'shipment_id' => $shipment_id,
             'created_at' => date('Y-m-d'),
             'time' => date('H:i:s'),
-            'flag' => 11,
+            'flag' => 12,
             'pic_task' => $consignee,
             'id_user' => $this->session->userdata('id_user'),
         );
@@ -551,7 +575,7 @@ class SalesOrder extends CI_Controller
             'shipment_id' => $shipment_id,
             'created_at' => date('Y-m-d'),
             'time' => date('H:i:s'),
-            'flag' => 5,
+            'flag' => 6,
             'status_eksekusi' => 1,
             'pic_task' => $consignee,
             'id_user' => $this->session->userdata('id_user'),
@@ -618,18 +642,43 @@ class SalesOrder extends CI_Controller
     public function detail($id)
     {
         $data['title'] = 'Detail Sales Order';
-        $query  = "SELECT a.*, b.id_tracking,b.id_so, b.flag,c.service_name FROM tbl_shp_order a 
-                    JOIN tbl_tracking_real b ON a.shipment_id=b.shipment_id
-                    JOIN tb_service_type c ON a.service_type=c.code 
-                     WHERE a.id_so= ?  ORDER BY id_tracking DESC LIMIT 1 ";
-        $result = $this->db->query($query, array($id))->row_array();
-        $data['shipment'] = $result;
-        // var_dump($result);
-        // die;
+      
         $data['p'] = $this->db->get_where('tbl_so', ['id_so' => $id])->row_array();
         $data['users'] = $this->db->get_where('tb_user', ['id_role' => 2])->result_array();
         $data['shipment2'] =  $this->order->orderBySo($id)->result_array();
         $this->backend->display('shipper/v_detail_order_luar', $data);
+    }
+    public function getModalDetailOrder()
+    {
+        $shipment_id = $this->input->get('shipment_id'); // Mengambil ID dari parameter GET
+        
+		
+        // Ambil data dari database berdasarkan ID
+        $query = "SELECT id_so,shipment_id FROM tbl_shp_order WHERE shipment_id = $shipment_id";
+        // $shp = $this->db->get_where('tbl_shp_order', array('shipment_id' => $shipment_id))->row();
+        $shp = $this->db->query($query)->row();
+        $tracking_real = $this->db->limit(1)->order_by('id_tracking', 'DESC')->get_where('tbl_tracking_real', ['shipment_id' => $shipment_id, 'flag' => 9])->row();
+        $get_last_status = $this->db->limit(1)->order_by("id_tracking", "desc")->get_where("tbl_tracking_real", ["shipment_id" => $shipment_id])->row();
+        
+        if ($tracking_real != NULL) {
+            $data1 = array(
+                'id_so' => $shp->id_so,
+                'shipment_id' => $shp->shipment_id,
+                'id_tracking' => $tracking_real->id_tracking,
+                'bukti' => $get_last_status->bukti
+            );
+        } else{
+            $data1 = array(
+                'id_so' => $shp->id_so,
+                'shipment_id' => $shp->shipment_id,
+                'bukti' => $get_last_status->bukti
+               
+            );
+        }
+        
+
+        // Kirim data sebagai respons JSON
+        echo json_encode($data1);
     }
 
     public function weight($id)
@@ -782,7 +831,7 @@ class SalesOrder extends CI_Controller
         if ($update) {
             $this->session->set_flashdata('message', '<div class="alert
                 alert-success" role="alert">Success</div>');
-                redirect('shipper/SalesOrder/weight/' . $dimension['shipment_id']);
+            redirect('shipper/SalesOrder/weight/' . $dimension['shipment_id']);
         }
     }
 

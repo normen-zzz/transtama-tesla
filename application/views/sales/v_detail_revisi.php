@@ -105,6 +105,7 @@
                                                     <th>Insurance</th>
                                                     <th>Disc.</th>
                                                     <th>Cn</th>
+                                                    <th>Special Cn</th>
                                                     <!-- <th>Action</th> -->
 
                                                 </tr>
@@ -164,7 +165,11 @@
                                                     <td>
                                                         <?= $request['cn_baru'] ?> / <?= $request['cn_baru'] * 100 ?> %
                                                     </td>
+                                                    <td>
+                                                        <?= rupiah($request['special_cn_baru']) ?>
+                                                    </td>
 
+                                                    
                                                 </tr>
                                                 <tr>
                                                     <td>

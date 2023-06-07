@@ -7,7 +7,7 @@ class ApModel extends CI_Model
     public function getMyAp($id_user = NULL)
     {
         if ($id_user == NULL) {
-            $this->db->select('a.*, b.nama_kategori, c.nama_user');
+            $this->db->select('a.no_pengeluaran,a.id_kat_ap,a.purpose,a.date,a.total,a.status,a.is_approve_sm,a.total_approved, b.nama_kategori, c.nama_user');
             $this->db->from('tbl_pengeluaran a');
             $this->db->join('tbl_kat_ap b', 'a.id_kat_ap=b.id_kategori_ap');
             $this->db->join('tb_user c', 'a.id_user=c.id_user');
@@ -15,7 +15,7 @@ class ApModel extends CI_Model
             $this->db->order_by('a.id_pengeluaran', 'DESC');
             return $this->db->get();
         } else {
-            $this->db->select('a.*, b.nama_kategori, c.nama_user');
+            $this->db->select('a.no_pengeluaran,a.id_kat_ap,a.purpose,a.date,a.total,a.status,a.is_approve_sm,a.total_approved, b.nama_kategori, c.nama_user');
             $this->db->from('tbl_pengeluaran a');
             $this->db->join('tbl_kat_ap b', 'a.id_kat_ap=b.id_kategori_ap');
             $this->db->join('tb_user c', 'a.id_user=c.id_user');

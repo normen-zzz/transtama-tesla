@@ -3,7 +3,10 @@
 		<div class="container">
 			<!-- Info boxes -->
 			<div class="row">
-				<?php foreach ($shipments as $shipment) {
+
+				<?php 
+				
+				 foreach ($shipments as $shipment) {
 				?>
 					<div class="col-12">
 						<!-- ini jabodetabek -->
@@ -85,14 +88,52 @@
 												<p class="h-14"><i class="fa fa-info text-danger"></i> Tekan tombol <b>Add Shipment</b> Jika sudah tiba ditempat Pickup</p>
 												<!-- <div class="alert alert-success text-light" role="alert"> </div> -->
 												<div class="card-toolbar">
-													<a onclick='$("#modalLoading").modal("show");' href="<?= base_url('shipper/order/view/' . $shipment['id_so']) ?>" class="btn mr-2 text-light" style="background-color: #9c223b;">
+												<a href="<?= base_url('shipper/salesOrder/arrivePu/' . $shipment['id_so'] . '/' . $shipment['id_tracking'] . '/' . $shipment['shipment_id']) ?>" onclick='$("#modalLoading").modal("show");' class="btn text-light" style="background-color: #9c223b;">Receive Task</a>
+												</div>
+											</div>
+										</div>
+									<?php	}elseif ($shipment['flag'] == 3) {
+									?>
+										<div class="card-body">
+											<div class="d-flex align-items-center">
+												<div class="symbol symbol-40 mr-5 symbol-success">
+													<span class="symbol-label">
+														<p class="h-90 font-weight-bold mt-3">PU</p>
+													</span>
+												</div>
+												<div class="d-flex flex-column flex-grow-1">
+													<a href="#" class="text-dark-75 text-hover-primary mb-1 font-size-lg font-weight-bolder"><?= $shipment['shipper'] ?></a>
+													<span class="text-muted font-weight-bold"><?= longdate_indo($shipment['tgl_pickup']) ?> at <?= $shipment['time'] ?></span>
+												</div>
+											</div>
+											<div>
+												<span class="text-dark-75 font-size-lg font-weight-normal" style="text-align: justify;">
+													<b>Informasi Pickup: </b> Pickup di <b> <?= $shipment['pu_poin'] ?></b> menggunakan moda
+													<b><?= $shipment['pu_moda'] ?></b> jumlah koli <b><?= $shipment['koli'] ?></b> dan berat <b><?= $shipment['weight'] ?>Kg</b>
+													dengan tujuan <b><?= $shipment['destination'] ?></b> <br>
+													Jenis barang : <b><?= $shipment['pu_commodity'] ?></b> <br>
+													Service : <b><?= $shipment['pu_service'] ?></b>
+												</span>
+
+												<p class="text-dark-75 font-size-lg font-weight-normal" style="text-align: justify;">
+													Informasi Tambahan : <i><b><?= $shipment['pu_note'] ?></b></i>
+												</p>
+											</div>
+											<hr>
+
+											<!--edit::Editor-->
+											<div class="card-body">
+												<p class="h-14"><i class="fa fa-info text-danger"></i> Tekan tombol <b>Add Shipment</b> Jika sudah tiba ditempat Pickup</p>
+												<!-- <div class="alert alert-success text-light" role="alert"> </div> -->
+												<div class="card-toolbar">
+												<a onclick='$("#modalLoading").modal("show");' href="<?= base_url('shipper/order/view/' . $shipment['id_so']) ?>" class="btn mr-2 text-light" style="background-color: #9c223b;">
 														<i class="fas fa-plus-circle text-light"> </i>
 														Add Shipment
 													</a>
 												</div>
 											</div>
 										</div>
-									<?php	} elseif ($shipment['flag'] == 3) {
+									<?php	} elseif ($shipment['flag'] == 4) {
 									?>
 										<div class="card-body">
 											<div class="d-flex align-items-center">
@@ -140,7 +181,7 @@
 										</div>
 
 
-									<?php	} elseif ($shipment['flag'] == 4) {
+									<?php	} elseif ($shipment['flag'] == 5) {
 									?>
 										<div class="card-body">
 											<div class="d-flex align-items-center">
@@ -178,7 +219,7 @@
 												</a>
 											</div>
 										</div>
-									<?php	} elseif ($shipment['flag'] == 5) {
+									<?php	} elseif ($shipment['flag'] == 6) {
 									?>
 
 									<?php } else {
@@ -186,6 +227,7 @@
 
 								</div>
 
+								<!-- jika bukan charter/sds -->
 							<?php	} else {
 								// var_dump($shipment['flag']);
 								// die;
@@ -242,6 +284,41 @@
 											</div>
 											<div>
 												<span class="text-dark-75 font-size-lg font-weight-normal" style="text-align: justify;">
+													Hallo <?= $this->session->userdata('nama_user') ?>, Ada pickup di <b> <?= $shipment['pu_poin'] ?></b> menggunakan moda
+													<b><?= $shipment['pu_moda'] ?></b> jumlah koli <b><?= $shipment['koli'] ?></b> dan berat <b><?= $shipment['weight'] ?> Kg</b>
+													dengan tujuan <b><?= $shipment['destination'] ?></b> <br>
+													Jenis barang : <b><?= $shipment['pu_commodity'] ?></b> <br>
+													Service : <b><?= $shipment['pu_service'] ?></b>
+												</span>
+												<hr>
+												<p class="text-dark-75 font-size-lg font-weight-normal" style="text-align: justify;">
+													Informasi Tambahan : <i><b><?= $shipment['pu_note'] ?></b></i>
+												</p>
+											</div>
+											<div class="separator separator-solid mt-2 mb-4"></div>
+											<form class="position-relative" style="height: 20px;">
+												<div class="position-absolute top-0 right-0 mt-n1 mr-n2">
+													<a href="<?= base_url('shipper/salesOrder/arrivePu/' . $shipment['id_so'] . '/' . $shipment['id_tracking'] . '/' . $shipment['shipment_id']) ?>" onclick='$("#modalLoading").modal("show");' class="btn text-light" style="background-color: #9c223b;">Receive Task</a>
+												</div>
+											</form>
+											<!--edit::Editor-->
+										</div>
+									<?php	} elseif ($shipment['flag'] == 3) {
+									?>
+										<div class="card-body">
+											<div class="d-flex align-items-center">
+												<div class="symbol symbol-40 mr-5 symbol-success">
+													<span class="symbol-label">
+														<p class="h-90 font-weight-bold mt-3">PU</p>
+													</span>
+												</div>
+												<div class="d-flex flex-column flex-grow-1">
+													<a href="#" class="text-dark-75 text-hover-primary mb-1 font-size-lg font-weight-bolder"><?= $shipment['shipper'] ?></a>
+													<span class="text-muted font-weight-bold"><?= longdate_indo($shipment['tgl_pickup']) ?> at <?= $shipment['time'] ?></span>
+												</div>
+											</div>
+											<div>
+												<span class="text-dark-75 font-size-lg font-weight-normal" style="text-align: justify;">
 													<b>Informasi Pickup :</b> Pickup di <b> <?= $shipment['pu_poin'] ?></b> menggunakan moda
 													<b><?= $shipment['pu_moda'] ?></b> jumlah koli <b><?= $shipment['koli'] ?></b> dan berat <b><?= $shipment['weight'] ?> Kg</b>
 													dengan tujuan <b><?= $shipment['destination'] ?></b> <br>
@@ -254,7 +331,7 @@
 											</div>
 
 											<div class="separator separator-solid mt-2 mb-4"></div>
-											<p class="h-14"><i class="fa fa-info text-danger"></i> Tekan Tombol <b>Add Shipment</b> apabila sudah sampai tempat Pickup</p>
+											<p class="h-14"><i class="fa fa-info text-danger"></i> Tekan Tombol <b>Add Shipmentt</b> apabila sudah sampai tempat Pickup</p>
 											<!-- <div class="alert alert-success text-light" role="alert"> </div> -->
 
 											<a onclick='$("#modalLoading").modal("show");' href="<?= base_url('shipper/order/view/' . $shipment['id_so'] . '/' . $shipment['id_tracking']) ?>" class="btn mr-2 text-light" style="background-color: #9c223b;">
@@ -263,7 +340,7 @@
 											</a>
 
 										</div>
-									<?php	} elseif ($shipment['flag'] == 3) {
+									<?php	} elseif ($shipment['flag'] == 4) {
 									?>
 										<div class="card-body">
 											<div class="d-flex align-items-center">
@@ -307,19 +384,19 @@
 											<!--edit::Editor-->
 										</div>
 
-									<?php	} elseif ($shipment['flag'] == 4) {
+									<?php	} elseif ($shipment['flag'] == 5) {
 									?>
 										<div class="card-body">
 											<div>
 												<p class="text-dark-150 font-size-lg font-weight-normal" style="text-align: justify;">
 													<i class="fa fa-calendar-check text-success"></i> <span style="font-size: 
-					15px;">No Activity Right Now </span>
+						15px;">No Activity Right Now </span>
 												</p>
 											</div>
 
 											<!--edit::Editor-->
 										</div>
-									<?php	} elseif ($shipment['flag'] == 5) {
+									<?php	} elseif ($shipment['flag'] == 6) {
 									?>
 										<div class="card-body">
 											<div class="d-flex align-items-center">
@@ -353,7 +430,7 @@
 											</form>
 											<!--edit::Editor-->
 										</div>
-									<?php	} elseif ($shipment['flag'] == 6) {
+									<?php	} elseif ($shipment['flag'] == 7) {
 									?>
 										<div class="card-body">
 											<div class="d-flex align-items-center">
@@ -388,20 +465,20 @@
 												</a>
 											</div>
 										</div>
-									<?php	} elseif ($shipment['flag'] == 7) {
+									<?php	} elseif ($shipment['flag'] == 8) {
 									?>
 										<div class="card-body">
 											<div>
 												<p class="text-dark-150 font-size-lg font-weight-normal" style="text-align: justify;">
 													<i class="fa fa-calendar-check text-success"></i> <span style="font-size: 
-					15px;">No Activity Right Now </span>
+						15px;">No Activity Right Now </span>
 												</p>
 											</div>
 
 											<!--edit::Editor-->
 										</div>
 
-									<?php	} elseif ($shipment['flag'] == 9) {
+									<?php	} elseif ($shipment['flag'] == 10) {
 									?>
 										<?php if ($shipment['status_eksekusi'] == 0) {
 										?>
@@ -443,7 +520,7 @@
 												<div>
 													<p class="text-dark-150 font-size-lg font-weight-normal" style="text-align: justify;">
 														<i class="fa fa-calendar-check text-success"></i> <span style="font-size: 
-					15px;">On The Way To <?= $shipment['note'] ?></span>
+						15px;">On The Way To <?= $shipment['note'] ?></span>
 													</p>
 												</div>
 
@@ -453,7 +530,7 @@
 
 										<?php	} ?>
 
-									<?php	} elseif ($shipment['flag'] == 10) {
+									<?php	} elseif ($shipment['flag'] == 11) {
 									?>
 										<div class="card-body">
 											<div class="d-flex align-items-center">
@@ -566,6 +643,41 @@
 										</div>
 										<div>
 											<span class="text-dark-75 font-size-lg font-weight-normal" style="text-align: justify;">
+												Hallo <?= $this->session->userdata('nama_user') ?>, Ada pickup di <b> <?= $shipment['pu_poin'] ?></b> menggunakan moda
+												<b><?= $shipment['pu_moda'] ?></b> jumlah koli <b><?= $shipment['koli'] ?></b> dan berat <b><?= $shipment['weight'] ?> Kg</b>
+												dengan tujuan <b><?= $shipment['destination'] ?></b> <br>
+												Jenis barang : <b><?= $shipment['pu_commodity'] ?></b> <br>
+												Service : <b><?= $shipment['pu_service'] ?></b>
+											</span>
+											<hr>
+											<p class="text-dark-75 font-size-lg font-weight-normal" style="text-align: justify;">
+												Informasi Tambahan : <i><b><?= $shipment['pu_note'] ?></b></i>
+											</p>
+										</div>
+										<div class="separator separator-solid mt-2 mb-4"></div>
+										<form class="position-relative" style="height: 20px;">
+											<div class="position-absolute top-0 right-0 mt-n1 mr-n2">
+												<a href="<?= base_url('shipper/salesOrder/arrivePu/' . $shipment['id_so'] . '/' . $shipment['id_tracking'] . '/' . $shipment['shipment_id']) ?>" onclick='$("#modalLoading").modal("show");' class="btn text-light" style="background-color: #9c223b;">Arrive Pu</a>
+											</div>
+										</form>
+										<!--edit::Editor-->
+									</div>
+								<?php	} elseif ($shipment['flag'] == 3) {
+								?>
+									<div class="card-body">
+										<div class="d-flex align-items-center">
+											<div class="symbol symbol-40 mr-5 symbol-success">
+												<span class="symbol-label">
+													<p class="h-90 font-weight-bold mt-3">PU</p>
+												</span>
+											</div>
+											<div class="d-flex flex-column flex-grow-1">
+												<a href="#" class="text-dark-75 text-hover-primary mb-1 font-size-lg font-weight-bolder"><?= $shipment['shipper'] ?></a>
+												<span class="text-muted font-weight-bold"><?= longdate_indo($shipment['tgl_pickup']) ?> at <?= $shipment['time'] ?></span>
+											</div>
+										</div>
+										<div>
+											<span class="text-dark-75 font-size-lg font-weight-normal" style="text-align: justify;">
 												<b>Informasi Pickup : </b> Pickup di <b> <?= $shipment['pu_poin'] ?></b> menggunakan moda
 												<b><?= $shipment['pu_moda'] ?></b> jumlah koli <b><?= $shipment['koli'] ?></b> dan berat <b><?= $shipment['weight'] ?> Kg</b>
 												dengan tujuan <b><?= $shipment['destination'] ?></b> <br>
@@ -588,7 +700,7 @@
 										</div>
 										<!--edit::Editor-->
 									</div>
-								<?php	} elseif ($shipment['flag'] == 3) {
+								<?php	} elseif ($shipment['flag'] == 4) {
 								?>
 									<div class="card-body">
 										<div class="d-flex align-items-center">
@@ -599,6 +711,7 @@
 											</div>
 											<div class="d-flex flex-column flex-grow-1">
 												<a href="#" class="text-dark-75 text-hover-primary mb-1 font-size-lg font-weight-bolder"><?= $shipment['shipper'] ?></a>
+												<span class="text-muted font-weight-bold"><?= $shipment['shipment_id'] ?></span>
 												<span class="text-muted font-weight-bold"><?= longdate_indo($shipment['tgl_pickup']) ?> at <?= $shipment['time'] ?></span>
 											</div>
 										</div>
@@ -630,19 +743,19 @@
 									</div>
 
 
-								<?php	} elseif ($shipment['flag'] == 4) {
+								<?php	} elseif ($shipment['flag'] == 5) {
 								?>
 									<div class="card-body">
 										<div>
 											<p class="text-dark-150 font-size-lg font-weight-normal" style="text-align: justify;">
 												<i class="fa fa-calendar-check text-success"></i> <span style="font-size: 
-					15px;">No Activity Right Now </span>
+						15px;">No Activity Right Now </span>
 											</p>
 										</div>
 
 										<!--edit::Editor-->
 									</div>
-								<?php	} elseif ($shipment['flag'] == 5) {
+								<?php	} elseif ($shipment['flag'] == 6) {
 								?>
 									<?php if ($shipment['status_eksekusi'] == 0) {
 									?>
@@ -687,7 +800,7 @@
 											<div>
 												<p class="text-dark-150 font-size-lg font-weight-normal" style="text-align: justify;">
 													<i class="fa fa-calendar-check text-success"></i> <span style="font-size: 
-					15px;">On The Way To <?= $shipment['note'] ?></span>
+						15px;">On The Way To <?= $shipment['note'] ?></span>
 												</p>
 											</div>
 
@@ -696,7 +809,7 @@
 
 
 									<?php	} ?>
-								<?php	} elseif ($shipment['flag'] == 6) {
+								<?php	} elseif ($shipment['flag'] == 7) {
 								?>
 									<div class="card-body">
 										<p class="h-14 mt-4"><i class="fa fa-info text-danger"></i> If your shipment have been arrived, please click the button below !</p>
@@ -708,20 +821,20 @@
 											</a>
 										</div>
 									</div>
-								<?php	} elseif ($shipment['flag'] == 7) {
+								<?php	} elseif ($shipment['flag'] == 8) {
 								?>
 									<div class="card-body">
 										<div>
 											<p class="text-dark-150 font-size-lg font-weight-normal" style="text-align: justify;">
 												<i class="fa fa-calendar-check text-success"></i> <span style="font-size: 
-					15px;">No Activity Right Now </span>
+						15px;">No Activity Right Now </span>
 											</p>
 										</div>
 
 										<!--edit::Editor-->
 									</div>
 
-								<?php	} elseif ($shipment['flag'] == 9) {
+								<?php	} elseif ($shipment['flag'] == 10) {
 								?>
 									<?php if ($shipment['status_eksekusi'] == 0) {
 									?>
@@ -763,7 +876,7 @@
 											<div>
 												<p class="text-dark-150 font-size-lg font-weight-normal" style="text-align: justify;">
 													<i class="fa fa-calendar-check text-success"></i> <span style="font-size: 
-					15px;">On The Way To <?= $shipment['note'] ?></span>
+						15px;">On The Way To <?= $shipment['note'] ?></span>
 												</p>
 											</div>
 
@@ -773,7 +886,7 @@
 
 									<?php	} ?>
 
-								<?php	} elseif ($shipment['flag'] == 10) {
+								<?php	} elseif ($shipment['flag'] == 11) {
 								?>
 									<div class="card-body">
 										<div class="d-flex align-items-center">
@@ -816,7 +929,7 @@
 										<div>
 											<p class="text-dark-150 font-size-lg font-weight-normal" style="text-align: justify;">
 												<i class="fa fa-calendar-check text-success"></i> <span style="font-size: 
-					15px;">No Activity Right Now </span>
+						15px;">No Activity Right Now </span>
 											</p>
 										</div>
 

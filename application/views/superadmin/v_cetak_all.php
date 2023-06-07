@@ -114,7 +114,7 @@
             </table>
             <table style="width:100%; border-top:1px solid black;">
                 <tr>
-                    <td style=" font-size: 10px; text-align:left"><b>Consignee : <?php if ($order['consigne'] != NULL) {
+                    <td style=" font-size: 8px; text-align:left"><b>Consignee : <?php if ($order['consigne'] != NULL) {
                                                                                     ?></b> <?= ucwords(strtolower($order['consigne'])) . '<br>' . ucwords($order['destination']) . '. ' . '<br>'  . '<b>' . ucwords(strtolower($order['city_consigne'])) . '</b>' . ', ' . '<b>' . ucwords(strtolower($order['state_consigne'])) . '</b>'  ?>
                         <b>Indonesia</b> <?php } ?>
                     </td>

@@ -280,13 +280,32 @@
 																<div class="col-md-3">
 																	<div class="form-group">
 																		<label for="exampleInputEmail1">Collie <?= $no; ?></label>
-																		<input type="text" class="form-control" name="collie[]" value="<?= $do['koli'] ?>">
+																		
+
+																		<?php if ($invoice == NULL) { ?>
+																			<input type="text" class="form-control" name="collie[]" value="<?= $do['koli'] ?>">
+																			<?php } else {
+																			if ($invoice['status'] == 1 || $invoice['status'] == 2) { ?>
+																				<input type="text" class="form-control" name="collie[]" readonly value="<?= $do['koli'] ?>">
+																			<?php } else { ?>
+																				<input type="text" class="form-control" name="collie[]" value="<?= $do['koli'] ?>">
+																		<?php }
+																		} ?>
 																	</div>
 																</div>
 																<div class="col-md-3">
 																	<div class="form-group">
 																		<label for="exampleInputEmail1">Weight <?= $no; ?></label>
-																		<input type="text" class="form-control" name="weight[]" value="<?= $do['berat'] ?>">
+																		<?php if ($invoice == NULL) { ?>
+																			<input type="text" class="form-control" name="weight[]" value="<?= $do['berat'] ?>">
+																			<?php } else {
+																			if ($invoice['status'] == 1 || $invoice['status'] == 2) { ?>
+																				<input type="text" class="form-control" name="weight[]" readonly value="<?= $do['berat'] ?>">
+																			<?php } else { ?>
+																				<input type="text" class="form-control" name="weight[]" value="<?= $do['berat'] ?>">
+																		<?php }
+																		} ?>
+
 																	</div>
 																</div>
 																<br>
@@ -315,13 +334,32 @@
 															<div class="col-md-4">
 																<div class="form-group">
 																	<label for="exampleInputEmail1">Koli </label>
-																	<input type="text" class="form-control" name="koli" value="<?= $p['koli'] ?>">
+																	
+
+																	<?php if ($invoice == NULL) { ?>
+																		<input type="text" class="form-control" name="koli" value="<?= $p['koli'] ?>">
+																			<?php } else {
+																			if ( $invoice['status'] != 2) { ?>
+																				<input type="text" class="form-control" name="koli" readonly value="<?= $p['koli'] ?>">
+																			<?php } else { ?>
+																				<input type="text" class="form-control" name="koli" value="<?= $p['koli'] ?>">
+																		<?php }
+																		} ?>
 																</div>
 															</div>
 															<div class="col-md-6">
 																<div class="form-group">
 																	<label for="exampleInputEmail1">Weight </label>
-																	<input type="text" class="form-control" name="weight" value="<?= $p['berat_js'] ?>">
+																	<?php if ($invoice == NULL) { ?>
+																		<input type="text" class="form-control" name="weight" value="<?= $p['berat_js'] ?>">
+																			<?php } else {
+																			if ($invoice['status'] != 2) { ?>
+																				<input type="text" class="form-control" name="weight" readonly value="<?= $p['berat_js'] ?>">
+																			<?php } else { ?>
+																				<input type="text" class="form-control" name="weight" value="<?= $p['berat_js'] ?>">
+																		<?php }
+																		} ?>
+																	
 																</div>
 															</div>
 														<?php 	} ?>
@@ -332,8 +370,20 @@
 												<!--begin: Wizard Actions-->
 												<div class="d-flex justify-content-between border-top mt-5 pt-10">
 
+												
+
 													<div>
+													<?php if ($invoice == NULL) { ?>
+                                               
 														<button onclick='$("#modalLoading").modal("show");' type="submit" class="btn btn font-weight-bolder text-uppercase px-9 py-4 text-light" style="background-color: #9c223b;">Submit</button>
+											   <?php } else { 
+													if ($invoice['status'] == 1 || $invoice['status'] == 2) {
+												   ?>
+													
+													<?php } else{ ?>
+														<button onclick='$("#modalLoading").modal("show");' type="submit" class="btn btn font-weight-bolder text-uppercase px-9 py-4 text-light" style="background-color: #9c223b;">Submit</button>
+													<?php } }?>
+														
 
 													</div>
 												</div>
@@ -361,7 +411,18 @@
 														</div>
 
 														<div>
+														<?php if ($invoice == NULL) { ?>
+                                               
 															<button type="submit" class="btn btn font-weight-bolder text-uppercase px-9 py-4 text-light" style="background-color: #9c223b;">Submit Tambah Do</button>
+											   <?php } else { 
+													if ($invoice['status'] == 1 || $invoice['status'] == 2) {
+												   ?>
+												
+													<?php } else{ ?>
+														<button type="submit" class="btn btn font-weight-bolder text-uppercase px-9 py-4 text-light" style="background-color: #9c223b;">Submit Tambah Do</button>
+
+													<?php }}?>
+															
 														</div>
 													</form>
 												</div>

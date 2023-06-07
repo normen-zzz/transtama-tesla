@@ -29,12 +29,15 @@ function getGrade($nilai)
                         <h2 class="card-title">KPI VISIT CS
                             <div class="row">
                                 <form action="<?= base_url('superadmin/Kpi/detailVisitCs') ?>" method="POST">
-                                    <div class="row ml-2">
+                                <div class="row ml-2">
                                         <div class="form-group mr-2">
-                                            <label>Bulan</label><br>
-                                            <input type="month" <?php if ($date != NULL) { ?> value="<?= $date ?>" <?php } ?> name="date" id="date" class="form-control">
+                                            <label>Start</label><br>
+                                            <input type="date" <?php if ($awal != NULL) { ?> value="<?= $awal ?>" <?php } ?> name="awal" id="awal" class="form-control">
 
-
+                                        </div>
+                                        <div class="form-group mr-3">
+                                            <label>End</label> <br>
+                                            <input type="date" <?php if ($akhir != NULL) { ?> value="<?= $akhir ?>" <?php } ?> name="akhir" id="akhir" class="form-control">
                                         </div>
 
 

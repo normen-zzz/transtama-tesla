@@ -60,7 +60,7 @@ class PengajuanModel extends CI_Model
         // $this->db->order_by('a.shipment_id', 'DESC');
         // return $this->db->get();
 
-        $this->db->select('b.id,a.shipment_id,b.shipper,b.consigne,b.tree_shipper,b.tree_consignee,b.id_so,b.is_jabodetabek');
+        $this->db->select('b.id,a.shipment_id,b.shipper,b.consigne,b.tree_shipper,b.tree_consignee,b.id_so,b.is_jabodetabek,b.is_incoming');
         $this->db->from('tbl_outbond a');
         $this->db->join('tbl_shp_order b','a.shipment_id=b.shipment_id');
         // $this->db->where('MONTH(b.tgl_pickup)', 10);
@@ -70,16 +70,28 @@ class PengajuanModel extends CI_Model
     }
     public function dispatchHistory()
     {
-        $this->db->select('a.shipper,a.consigne,a.tree_shipper,a.tree_consignee,b.status as sts,b.is_incoming,b.id_gateway, b.created_at, b.shipment_id, b.status_eksekusi');
+        $this->db->select('a.shipper,a.consigne,a.tree_shipper,a.tree_consignee,b.status as sts,b.is_incoming,b.id_gateway, b.created_at, b.shipment_id, b.status_eksekusi,b.no_flight,b.no_smu,b.etd,b.eta');
         $this->db->from('tbl_shp_order a');
         $this->db->join('tbl_gateway b', 'a.shipment_id=b.shipment_id');
         $this->db->where('b.status_eksekusi', 1);
-        $this->db->order_by('b.shipment_id', 'DESC');
+        $this->db->where('b.status', 'out');
+        $this->db->order_by('a.tgl_pickup', 'DESC');
         return $this->db->get();
     }
     public function orderBySo($id)
     {
-        $this->db->select('a.*, b.service_name');
+        $this->db->select('a.shipment_id,a.koli,a.shipper,a.tree_shipper,a.consigne,a.created_at,a.note_cs,a.tree_consignee,a.id,a.id_so,a.destination,a.city_consigne,a.state_consigne,a.is_jabodetabek, b.service_name');
+        $this->db->from('tbl_shp_order a');
+        $this->db->join('tb_service_type b', 'a.service_type=b.code');
+        $this->db->where('a.id_so', $id);
+        $this->db->where('a.shipment_id !=', NULL);
+        $this->db->where('a.deleted', 0);
+        return $this->db->get();
+    }
+
+    public function orderBySoSales($id)
+    {
+        $this->db->select('a.shipment_id,a.shipper,a.tree_shipper,a.consigne,a.created_at,a.note_cs,a.tree_consignee,a.id,a.id_so,a.destination,a.city_consigne,a.state_consigne,a.is_jabodetabek,a.freight_kg,a.special_freight,a.packing,a.insurance,a.surcharge,a.disc,a.cn,a.specialcn,a.others,a.pic_invoice,a.so_note,a.status_so, b.service_name');
         $this->db->from('tbl_shp_order a');
         $this->db->join('tb_service_type b', 'a.service_type=b.code');
         $this->db->where('a.id_so', $id);
