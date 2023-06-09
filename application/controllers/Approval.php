@@ -11,7 +11,7 @@ class Approval extends CI_Controller
     }
     public function testWa($nomor = NULL)
     {
-        // $this->wa->pickup('6285697780467', "Tester Message Whatsapp");
+        // $this->wa->pickup('628569778gg0467', "Tester Message Whatsapp");
         $user = $this->db->get_where('tb_user',array('id_user' => 1))->row_array();
         $this->wa->pickup($user['no_hp'], "Tester Message Whatsapp");
         if ($nomor != NULL) {
