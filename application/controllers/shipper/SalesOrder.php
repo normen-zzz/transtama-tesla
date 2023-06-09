@@ -26,19 +26,7 @@ class SalesOrder extends CI_Controller
             $data['title'] = 'Sales Order';
             $this->backend->display('shipper/v_so', $data);
         } else {
-            $query  = "SELECT a.is_jabodetabek,a.shipper,a.tgl_pickup,a.time,a.pu_poin,a.pu_moda,a.koli,a.weight,a.destination,a.pu_commodity,a.pu_service,a.pu_note,a.shipment_id,a.consigne,a.city_consigne,a.state_consigne,b.note
-            ,b.id_tracking,b.id_so,b.note as catatan, b.flag,c.service_name,
-             b.update_at,b.status_eksekusi,b.created_at as tgl_tugas,
-              b.time as jam_tugas
-            FROM tbl_tracking_real b 
-          JOIN tbl_shp_order a  ON a.shipment_id=b.shipment_id
-            -- JOIN tbl_so d ON b.id_so=d.id_so
-          LEFT JOIN tb_service_type c ON a.service_type=c.code 
-             WHERE b.id_user= ?  AND b.status_eksekusi =0 AND a.deleted=0 GROUP BY a.shipment_id";
-            $result = $this->db->query($query, array($this->session->userdata('id_user')))->result_array();
-            $data['shipments'] = $result;
-            // var_dump($result);
-            // die;
+           
             $data['title'] = 'My Shipment';
             $this->backend->display('shipper/v_shipment', $data);
         }
@@ -710,11 +698,11 @@ class SalesOrder extends CI_Controller
         $no_do = $this->input->post('no_do');
         $total_berat_aktual = 0;
         $total_berat_volume = 0;
-        for ($i = 0; $i < sizeof($shipment_id); $i++) {
+        for ($i = 0; $i < sizeof($panjang); $i++) {
             $volume = ceil(($panjang[$i] * $lebar[$i] * $tinggi[$i]) / $pembagi);
             $data = array(
                 'urutan' => ($i + 1),
-                'shipment_id' => $shipment_id[$i],
+                'shipment_id' => $shipment_id,
                 'panjang' => $panjang[$i],
                 'lebar' => $lebar[$i],
                 'tinggi' => $tinggi[$i],
@@ -727,10 +715,10 @@ class SalesOrder extends CI_Controller
 
             // jika ada no DO
             if ($no_do[$i] != NULL) {
-                $do = $this->db->get_where('tbl_no_do', array('no_do' => $no_do[$i], 'shipment_id' => $shipment_id[$i]))->row_array();
+                $do = $this->db->get_where('tbl_no_do', array('no_do' => $no_do[$i], 'shipment_id' => $shipment_id))->row_array();
                 $data['no_do'] = $no_do[$i];
                 $this->db->where('no_do', $no_do[$i]);
-                $this->db->where('shipment_id', $shipment_id[$i]);
+                $this->db->where('shipment_id', $shipment_id);
                 // menambah koli disetiap do 
 
                 if ($do['koli'] != NULL) {
@@ -767,9 +755,9 @@ class SalesOrder extends CI_Controller
             $total_berat_volume += $volume;
         }
         if ($total_berat_aktual > $total_berat_volume) {
-            $update = $this->db->update('tbl_shp_order', array('berat_js' => $total_berat_aktual), array('shipment_id' => $shipment_id[0]));
+            $update = $this->db->update('tbl_shp_order', array('berat_js' => $total_berat_aktual), array('shipment_id' => $shipment_id));
         } else {
-            $update = $this->db->update('tbl_shp_order', array('berat_js' => $total_berat_volume), array('shipment_id' => $shipment_id[0]));
+            $update = $this->db->update('tbl_shp_order', array('berat_js' => $total_berat_volume), array('shipment_id' => $shipment_id));
         }
         if ($update) {
             $this->session->set_flashdata('message', '<div class="alert
