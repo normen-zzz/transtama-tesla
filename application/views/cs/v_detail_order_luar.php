@@ -146,7 +146,7 @@
 											<td><?= $shp['consigne'] ?></td>
 											<td style="color: green;"><?= $get_last_status['status'] ?> <br> <?= longdate_indo($get_last_status['created_at']), ' ' . $get_last_status['time'] ?>
 												<br>
-												<?php if ($get_last_status['flag'] == 11 || $get_last_status['flag'] == 5) {
+												<?php if ($get_last_status['flag'] == 12 || $get_last_status['flag'] == 6) {
 												?>
 													<a href="#" class="btn font-weight-bolder text-light" data-toggle="modal" data-target="#modal-pod<?= $shp['shipment_id'] ?>" style="background-color: #9c223b;">
 														<span class="svg-icon svg-icon-md">
@@ -160,7 +160,7 @@
 													// apakah dia jabodetabek
 													if ($shp['is_jabodetabek'] == 1) {
 												?>
-														<?php if ($get_last_status['flag'] >= 7  && $get_last_status['flag'] <= 10) {
+														<?php if ($get_last_status['flag'] >= 8  && $get_last_status['flag'] <= 11) {
 														?>
 															<!-- <a href="#" class="btn btn-sm text-light mb-1" data-toggle="modal" data-target="#modal-lg-dl-luar<?= $shp['shipment_id'] ?>" style="background-color: #9c223b;">
 																<span class="svg-icon svg-icon-md">
@@ -175,7 +175,7 @@
 														<!-- kalo bukan jabodetabek -->
 													<?php	} else {
 													?>
-														<?php if ($get_last_status['flag'] >= 7  && $get_last_status['flag'] <= 10) {
+														<?php if ($get_last_status['flag'] >= 8 && $get_last_status['flag'] <= 11) {
 														?>
 															<a href="#" class="btn btn-sm text-light mb-1" data-toggle="modal" data-target="#modal-lg-dl-luar<?= $shp['shipment_id'] ?>" style="background-color: #9c223b;">
 																<span class="svg-icon svg-icon-md">
@@ -192,12 +192,12 @@
 													?>
 													<?php	} else {
 
-													if ($get_last_status['flag'] >= 5  && $get_last_status['flag'] <= 7) {
+													if ($get_last_status['flag'] >= 6  && $get_last_status['flag'] <= 8) {
 													?>
 														<span class="badge badge-secondary mb-1">Menunggu scan in/out HUB</span>
 														<a onclick='$("#modalLoading").modal("show");' href="<?= base_url('cs/order/edit/' . $shp['id'] . '/' . $shp['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Edit</a>
 														<a onclick='$("#modalLoading").modal("show");' href="<?= base_url('cs/order/detail/' . $shp['id'] . '/' . $shp['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Detail</a>
-													<?php	} elseif ($get_last_status['flag'] == 11) {
+													<?php	} elseif ($get_last_status['flag'] == 12) {
 													?>
 														<!-- <a href="#" class="btn btn-sm text-light mb-1" data-toggle="modal" data-target="#modal-lg-dl-incoming<?= $shp['shipment_id'] ?>" style="background-color: #9c223b;">
 															<span class="svg-icon svg-icon-md">

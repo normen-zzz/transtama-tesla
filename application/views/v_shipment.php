@@ -62,16 +62,16 @@
 
 
 
-												if ($getLast['flag'] >= 3 && $getLast['flag'] <= 4) {
+												if ($getLast['flag'] >= 4 && $getLast['flag'] <= 5) {
 										?>
 													<tr>
 														<td><?= $g['shipment_id'] ?></td>
 														<td><?= $g['shipper'] ?><br><?= $g['tree_shipper'] ?></td>
 														<td><?= $g['consigne'] ?><br><?= $g['tree_consignee'] ?></td>
 														<td><?= $getLast['status'] ?></td>
-														<?php if ($getLast['flag'] == 3) { ?>
+														<?php if ($getLast['flag'] == 4) { ?>
 															<td>Scan IN</td>
-														<?php } elseif ($getLast['flag'] == 4) { ?>
+														<?php } elseif ($getLast['flag'] == 5) { ?>
 															<td><a href="<?= base_url('shipper/salesOrder/weight/' . $g['shipment_id']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Weight</a>
 																<a href="<?= base_url('shipper/salesOrder/edit/' . $g['id'] . '/' . $g['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Edit</a>
 																<a href="<?= base_url('shipper/order/detail/' . $g['id'] . '/' . $g['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Detail</a>
@@ -80,7 +80,7 @@
 																?>
 																	<!-- kalo sales ordernya sudah di pickup -->
 																	<!-- kalo shipmentnya telah tiba di hub benhil -->
-																	<?php if ($getLast['flag'] == 4 || $getLast['flag'] == 5) {
+																	<?php if ($getLast['flag'] == 5 || $getLast['flag'] == 6) {
 																	?>
 
 																		<a href="#" class="btn btn-sm text-light" data-toggle="modal" data-target="#modal-lg-dl<?= $g['shipment_id'] ?>" style="background-color: #9c223b;">
@@ -102,7 +102,9 @@
 
 														<?php	} else {
 														?>
-															<!--begin::Symbol-->
+															
+															<td>
+																<!--begin::Symbol-->
 															<div class="symbol symbol-40 symbol-light-success">
 																<span class="symbol-label">
 																	<img src="<?= base_url('assets/back/metronic/') ?>media/avatars/009-boy-4.svg" class="h-75 align-self-end" alt="">
@@ -115,12 +117,14 @@
 																<a href="#" class="text-dark text-hover-primary mb-1 font-size-lg"><?= $driver['nama_user'] ?></a>
 																<span class="text-muted">Driver</span>
 															</div>
+															</td>
+															
 															<!--end::Text-->
 														<?php	} ?>
 
 							</div>
 							<!-- kalo sales order nya belum di pickup -->
-						<?php } elseif ($getLast['flag'] == 1) {
+						<?php } elseif ($getLast['flag'] == 2) {
 						?>
 							<a href="#" class="btn font-weight-bolder text-light" data-toggle="modal" data-target="#modal-lg" style="background-color: #9c223b;">
 								Asign Driver PU
@@ -166,7 +170,7 @@
 					?>
 						<!-- kalo sales ordernya sudah di pickup -->
 						<!-- kalo shipmentnya telah tiba di hub benhil -->
-						<?php if ($getLast['flag'] == 4 || $getLast['flag'] == 5) {
+						<?php if ($getLast['flag'] == 5 || $getLast['flag'] == 6) {
 						?>
 							<a href="#" class="btn text-light" data-toggle="modal" data-target="#modal-lg-dl-luar<?= $g['shipment_id'] ?>" style="background-color: #9c223b;">
 								Scan Out
@@ -204,7 +208,7 @@
 
 							</div>
 							<!-- kalo sales order nya belum di pickup -->
-						<?php } elseif ($getLast['flag'] == 1) {
+						<?php } elseif ($getLast['flag'] == 2) {
 						?>
 							<a href="#" class="btn font-weight-bolder text-light" data-toggle="modal" data-target="#modal-lg" style="background-color: #9c223b;">
 								Asign Driver PU</a>
@@ -254,7 +258,7 @@
 			<?php }
 												// jika incoming
 											} else {
-												if ($getLast['flag'] == 8) { ?>
+												if ($getLast['flag'] == 9) { ?>
 
 				<tr>
 					<td><?= $g['shipment_id'] ?></td>

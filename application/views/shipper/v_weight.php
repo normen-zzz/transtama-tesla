@@ -101,7 +101,9 @@
 							<button id="tambahBarisBtn" class="btn btn-primary mb-2">Tambah Baris</button>
 						<?php } else { ?>
 
-							<table class="table table-bordered text-center" id="tableDimensionAkhir">
+							<button class="btn font-weight-bolder text-light" data-toggle="modal" data-target="#addDimension"  style="background-color: #9c223b;">Tambah</button>
+
+							<table class="table table-bordered text-center mt-2" id="tableDimensionAkhir">
 								<thead>
 									<tr>
 
@@ -112,30 +114,43 @@
 										<th>Berat Volume</th>
 
 										<th>No DO</th>
+										<th>Action</th>
 
 									</tr>
 								</thead>
 								<tbody>
 
-								<?php foreach ($dimension as $dimension1 ) { ?>
-									
-								
+									<?php foreach ($dimension as $dimension1) { ?>
 
-									<tr>
 
-										<td>
-											<?= $dimension1['panjang'] ?>
-										</td>
-										<td>
-										<?= $dimension1['lebar'] ?>
-										</td>
-										<td><?= $dimension1['tinggi'] ?></td>
-										<td><?= $dimension1['berat_aktual'] ?></td>
-										<td><?= $dimension1['berat_volume'] ?></td>
-								
-										<td><?= $dimension1['no_do'] ?></td>
-										
-									</tr>
+
+										<tr>
+
+											<td>
+												<?= $dimension1['panjang'] ?>
+											</td>
+											<td>
+												<?= $dimension1['lebar'] ?>
+											</td>
+											<td><?= $dimension1['tinggi'] ?></td>
+
+											<?php if ($dimension1['berat_aktual'] > $dimension1['berat_volume']) { ?>
+												<td><b><?= $dimension1['berat_aktual'] ?></b></td>
+												<td><?= $dimension1['berat_volume'] ?></td>
+											<?php } else { ?>
+
+												<td><?= $dimension1['berat_aktual'] ?></td>
+												<td><b><?= $dimension1['berat_volume'] ?></b></td>
+
+											<?php } ?>
+
+											<td><?= $dimension1['no_do'] ?></td>
+											<td><button class="btn font-weight-bolder text-light modalEditDimension" data-toggle="modal" data-target="#editDimension" data-id_dimension="<?= $dimension1['id_dimension'] ?>" style="background-color: #9c223b;">Edit</button>
+												<a class="btn font-weight-bolder text-light" href="<?= base_url('shipper/SalesOrder/deleteDimension/'.$dimension1['id_dimension']) ?>" onclick="return confirm('Apakah Anda Yakin?')" style="background-color: #9c223b;">Delete</a>
+											</td>
+
+
+										</tr>
 									<?php } ?>
 
 								</tbody>
@@ -162,7 +177,113 @@
 		<!--/. container-fluid -->
 </section>
 <!-- /.content -->
-<?php $do2 = $this->db->get_where('tbl_no_do', array('shipment_id' => $shipment['shipment_id']))->result_array(); ?>
+
+
+
+
+<div class="modal fade" id="editDimension">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title">Edit Dimension</h4>
+
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<form action="<?= base_url('shipper/salesOrder/editDimension') ?>" method="POST">
+					<div id="contentEditDimension">
+
+					</div>
+
+					<!-- /.card-body -->
+			</div>
+			<div class="modal-footer justify-content-between">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				<button onclick='$("#modalLoading").modal("show");' type="submit" class="btn btn-primary">Submit</button>
+			</div>
+			</form>
+		</div>
+		<!-- /.modal-content -->
+	</div>
+	<!-- /.modal-dialog -->
+</div>
+
+<div class="modal fade" id="addDimension">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title">Add Dimension</h4>
+
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				
+					<div class="row">
+					<form action="<?= base_url('shipper/SalesOrder/addWeight/' . $this->uri->segment(4)) ?>" method="post">
+								<button onclick='$("#modalLoading").modal("show");' type="submit" class="btn btn-primary mb-2">Submit Dimension</button>
+
+								<input type="text" name="shipment_id" value="<?= $shipment['shipment_id'] ?>" hidden id="shipment_id">
+
+								<?php $do = $this->db->get_where('tbl_no_do', array('shipment_id' => $shipment['shipment_id']))->result_array();
+								?>
+								<table class="table table-bordered text-center" id="tableDimension">
+									<thead>
+										<tr>
+
+											<th>Panjang (CM)</th>
+											<th>Lebar (CM)</th>
+											<th>Tinggi (CM)</th>
+											<th>Berat Aktual (KG)</th>
+											<?php if ($do != NULL) { ?>
+												<th>No DO</th>
+											<?php } ?>
+										</tr>
+									</thead>
+									<tbody>
+
+										<tr>
+
+											<td>
+												<input required class="form-control" type="number" name="panjang[]" id="panjang">
+											</td>
+											<td>
+												<input required class="form-control" type="text" name="lebar[]" id="lebar">
+											</td>
+											<td><input required class="form-control form-control-sm" type="text" name="tinggi[]" id="tinggi"></td>
+											<td><input required class="form-control form-control-sm" type="text" name="berat[]" id="berat"></td>
+											<?php if ($do != NULL) { ?>
+												<td>
+													<select class="form-control" style="width: 200px;" name="no_do[]" id="no_do">
+														<?php foreach ($do as $do) { ?>
+															<option><?= $do['no_do'] ?></option>
+														<?php } ?>
+													</select>
+												</td>
+											<?php } ?>
+										</tr>
+
+									</tbody>
+								</table>
+							</form>
+							<button id="tambahBarisBtn" class="btn btn-primary mb-2">Tambah Baris</button>
+					</div>
+					<!-- /.card-body -->
+			</div>
+			<div class="modal-footer justify-content-between">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				
+			</div>
+			
+		</div>
+		<!-- /.modal-content -->
+	</div>
+	<!-- /.modal-dialog -->
+</div>
+
 
 
 
@@ -173,9 +294,6 @@
 
 <?php $do1 = $this->db->get_where('tbl_no_do', array('shipment_id' => $shipment['shipment_id']))->result_array();
 ?>
-
-
-
 
 <script>
 	$(document).ready(function() {
@@ -188,15 +306,74 @@
 			var cell5 = $("<td>").append(getDoSelectOptions());
 			row.append(cell1, cell2, cell3, cell4, cell5);
 			$("#tableDimension tbody").append(row);
+			$('.selectField').select2();
+
 		});
 
 		function getDoSelectOptions() {
-			var select = $("<select>").attr("name", "no_do[]").addClass("form-control");
+			var select = $("<select>").attr("name", "no_do[]").addClass("form-control selectField");
 			<?php foreach ($do1 as $do2) : ?>
 				var option = $("<option>").attr("value", "<?php echo $do2['no_do']; ?>").text("<?php echo $do2['no_do']; ?>");
+
 				select.append(option);
+
 			<?php endforeach; ?>
 			return select;
 		}
+	});
+</script>
+
+<script>
+	$(document).ready(function() {
+		$('.modalEditDimension').click(function() {
+			var id_dimension = $(this).data('id_dimension'); // Mendapatkan ID dari atribut data-id tombol yang diklik
+			$('#ContentEditDimension').html('');
+			// Memuat data menggunakan AJAX dengan mengirimkan ID sebagai parameter
+			$.ajax({
+				url: '<?php echo base_url("shipper/SalesOrder/getModalEditDimension"); ?>',
+				type: 'GET',
+				dataType: 'json',
+				data: {
+					id_dimension: id_dimension
+				},
+				success: function(response) {
+					// Menampilkan data ke dalam modal
+					var content = '<div class="card-body">' +
+						'<div class="row">' +
+						'<input type="text" name="id_dimension" id="id_dimension" value="' + response.id_dimension + '" hidden>' +
+						'<div class="col-md-12">' +
+						'<label for="panjang">Panjang</label>' +
+						'<input type="text" name="panjang" class="form-control" value="' + response.panjang + '" id="panjang">' +
+
+						'</div>' +
+						'<div class="col-md-12 mt-2">' +
+						'<label for="lebar">Lebar</label>' +
+						'<input type="text" name="lebar" class="form-control" value="' + response.lebar + '" id="lebar">' +
+
+						'</div>' +
+
+						'<div class="col-md-12 mt-2">' +
+						'<label for="tinggi">Tinggi</label>' +
+						'<input type="text" name="tinggi" class="form-control" value="' + response.tinggi + '" id="tinggi">' +
+
+						'</div>' +
+						'<div class="col-md-12 mt-2">' +
+						'<label for="berat">Berat Aktual</label>' +
+						'<input type="text" name="berat" class="form-control" value="' + response.berat_aktual + '" id="berat">' +
+
+						'</div>' +
+
+
+						'</div>' +
+						'</div>';
+					$('#contentEditDimension').html(content);
+					$('#selectField').select2();
+
+				},
+				error: function() {
+					alert('Terjadi kesalahan dalam memuat data.');
+				}
+			});
+		});
 	});
 </script>

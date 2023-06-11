@@ -85,10 +85,10 @@
 
 											<!--edit::Editor-->
 											<div class="card-body">
-												<p class="h-14"><i class="fa fa-info text-danger"></i> Tekan tombol <b>Add Shipment</b> Jika sudah tiba ditempat Pickup</p>
+												<p class="h-14"><i class="fa fa-info text-danger"></i> Tekan tombol <b>Arrive PU</b> Jika sudah tiba ditempat Pickup</p>
 												<!-- <div class="alert alert-success text-light" role="alert"> </div> -->
 												<div class="card-toolbar">
-												<a href="<?= base_url('shipper/salesOrder/arrivePu/' . $shipment['id_so'] . '/' . $shipment['id_tracking'] . '/' . $shipment['shipment_id']) ?>" onclick='$("#modalLoading").modal("show");' class="btn text-light" style="background-color: #9c223b;">Receive Task</a>
+												<a href="<?= base_url('shipper/salesOrder/arrivePu/' . $shipment['id_so'] . '/' . $shipment['id_tracking'] . '/' . $shipment['shipment_id']) ?>" onclick='$("#modalLoading").modal("show");' class="btn text-light" style="background-color: #9c223b;">Arrive PU</a>
 												</div>
 											</div>
 										</div>
@@ -123,7 +123,7 @@
 
 											<!--edit::Editor-->
 											<div class="card-body">
-												<p class="h-14"><i class="fa fa-info text-danger"></i> Tekan tombol <b>Add Shipment</b> Jika sudah tiba ditempat Pickup</p>
+												<p class="h-14"><i class="fa fa-info text-danger"></i> Tekan tombol <b>Add Shipment</b> Jika Ingin Menambahkan Shipment</p>
 												<!-- <div class="alert alert-success text-light" role="alert"> </div> -->
 												<div class="card-toolbar">
 												<a onclick='$("#modalLoading").modal("show");' href="<?= base_url('shipper/order/view/' . $shipment['id_so']) ?>" class="btn mr-2 text-light" style="background-color: #9c223b;">
@@ -229,8 +229,7 @@
 
 								<!-- jika bukan charter/sds -->
 							<?php	} else {
-								// var_dump($shipment['flag']);
-								// die;
+								
 							?>
 								<div class="card card-custom gutter-b">
 									<?php if ($shipment['flag'] == 1) {
@@ -298,7 +297,7 @@
 											<div class="separator separator-solid mt-2 mb-4"></div>
 											<form class="position-relative" style="height: 20px;">
 												<div class="position-absolute top-0 right-0 mt-n1 mr-n2">
-													<a href="<?= base_url('shipper/salesOrder/arrivePu/' . $shipment['id_so'] . '/' . $shipment['id_tracking'] . '/' . $shipment['shipment_id']) ?>" onclick='$("#modalLoading").modal("show");' class="btn text-light" style="background-color: #9c223b;">Receive Task</a>
+													<a href="<?= base_url('shipper/salesOrder/arrivePu/' . $shipment['id_so'] . '/' . $shipment['id_tracking'] . '/' . $shipment['shipment_id']) ?>" onclick='$("#modalLoading").modal("show");' class="btn text-light" style="background-color: #9c223b;">Arrive PU</a>
 												</div>
 											</form>
 											<!--edit::Editor-->
@@ -331,7 +330,7 @@
 											</div>
 
 											<div class="separator separator-solid mt-2 mb-4"></div>
-											<p class="h-14"><i class="fa fa-info text-danger"></i> Tekan Tombol <b>Add Shipmentt</b> apabila sudah sampai tempat Pickup</p>
+											<p class="h-14"><i class="fa fa-info text-danger"></i> Tekan Tombol <b>Add Shipmentt</b> apabila ingin menambahkan shipment</p>
 											<!-- <div class="alert alert-success text-light" role="alert"> </div> -->
 
 											<a onclick='$("#modalLoading").modal("show");' href="<?= base_url('shipper/order/view/' . $shipment['id_so'] . '/' . $shipment['id_tracking']) ?>" class="btn mr-2 text-light" style="background-color: #9c223b;">

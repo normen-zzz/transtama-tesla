@@ -26,7 +26,19 @@ class SalesOrder extends CI_Controller
             $data['title'] = 'Sales Order';
             $this->backend->display('shipper/v_so', $data);
         } else {
-           
+            $query  = "SELECT a.is_jabodetabek,a.shipper,a.tgl_pickup,a.time,a.pu_poin,a.pu_moda,a.koli,a.weight,a.destination,a.pu_commodity,a.pu_service,a.pu_note,a.shipment_id,a.consigne,a.city_consigne,a.state_consigne,b.note
+            ,b.id_tracking,b.id_so,b.note as catatan, b.flag,c.service_name,
+             b.update_at,b.status_eksekusi,b.created_at as tgl_tugas,
+              b.time as jam_tugas
+            FROM tbl_tracking_real b 
+          JOIN tbl_shp_order a  ON a.shipment_id=b.shipment_id
+            -- JOIN tbl_so d ON b.id_so=d.id_so
+          LEFT JOIN tb_service_type c ON a.service_type=c.code 
+             WHERE b.id_user= ?  AND b.status_eksekusi =0 AND a.deleted=0 GROUP BY a.shipment_id";
+            $result = $this->db->query($query, array($this->session->userdata('id_user')))->result_array();
+            $data['shipments'] = $result;
+            // var_dump($result);
+            // die;;
             $data['title'] = 'My Shipment';
             $this->backend->display('shipper/v_shipment', $data);
         }
@@ -675,17 +687,32 @@ class SalesOrder extends CI_Controller
         $data['users'] = $this->db->get_where('tb_user', ['id_role' => 2])->result_array();
         $data['shipment'] = $this->db->get_where('tbl_shp_order', array('shipment_id' => $id))->row_array();
         $this->backend->display('shipper/v_weight', $data);
+
+    }
+
+    public function getModalEditDimension()
+    {
+        $id_dimension = $this->input->get('id_dimension'); // Mengambil ID dari parameter GET
+        
+		
+        $data  = $this->db->get_where('tbl_dimension',array('id_dimension' => $id_dimension))->row();
+        
+
+        // Kirim data sebagai respons JSON
+        echo json_encode($data);
     }
     public function addWeight($id)
     {
         $shipment_id = $this->input->post('shipment_id');
         $this->db->select('service_type');
-        $this->db->where('shipment_id', $shipment_id[0]);
+        $this->db->where('shipment_id', $shipment_id);
         $service_type = $this->db->get('tbl_shp_order');
         $panjang = $this->input->post('panjang');
         $lebar = $this->input->post('lebar');
         $tinggi = $this->input->post('tinggi');
         $berat = $this->input->post('berat');
+
+        $shipmentSebelum = $this->db->get_where('tbl_shp_order',array('shipment_id' => $shipment_id))->row_array();
 
         //pembagi untuk hitung berat volume 
         if ($service_type == 'f4e0915b-7487-4fae-a04c-c3363d959742') {
@@ -696,10 +723,10 @@ class SalesOrder extends CI_Controller
             $pembagi = 4000;
         }
         $no_do = $this->input->post('no_do');
-        $total_berat_aktual = 0;
-        $total_berat_volume = 0;
+        $berat_js = 0;
         for ($i = 0; $i < sizeof($panjang); $i++) {
             $volume = ceil(($panjang[$i] * $lebar[$i] * $tinggi[$i]) / $pembagi);
+            
             $data = array(
                 'urutan' => ($i + 1),
                 'shipment_id' => $shipment_id,
@@ -751,20 +778,23 @@ class SalesOrder extends CI_Controller
 
 
 
-            $total_berat_aktual += $berat[$i];
-            $total_berat_volume += $volume;
+            if ($volume > $berat[$i]) {
+                $berat_js += $volume;
+            } else {
+                $berat_js += $berat[$i];
+            }
         }
-        if ($total_berat_aktual > $total_berat_volume) {
-            $update = $this->db->update('tbl_shp_order', array('berat_js' => $total_berat_aktual), array('shipment_id' => $shipment_id));
-        } else {
-            $update = $this->db->update('tbl_shp_order', array('berat_js' => $total_berat_volume), array('shipment_id' => $shipment_id));
-        }
+
+        $update = $this->db->update('tbl_shp_order', array('berat_js' => $shipmentSebelum['berat_js'] + $berat_js, 'koli' => $shipmentSebelum['koli'] + sizeof($panjang)), array('shipment_id' => $shipment_id));
+        
         if ($update) {
             $this->session->set_flashdata('message', '<div class="alert
                 alert-success" role="alert">Success</div>');
             redirect('shipper/SalesOrder/weight/' . $id);
         }
     }
+    
+    
 
     public function mergeWeight($id)
     {
@@ -935,7 +965,9 @@ class SalesOrder extends CI_Controller
         }
     }
 
-    public function editWeight()
+
+
+    public function editDimension()
     {
         $id_dimension = $this->input->post('id_dimension');
         $dimensionSebelum = $this->db->get_where('tbl_dimension', array('id_dimension' => $id_dimension))->row_array();
@@ -943,13 +975,13 @@ class SalesOrder extends CI_Controller
         $doSebelum = $this->db->get_where('tbl_no_do', array('no_do' => $dimensionSebelum['no_do'], 'shipment_id' => $dimensionSebelum['shipment_id']))->row_array();
 
         $panjang = $this->input->post('panjang');
-        $panjang_handling = $this->input->post('panjang_handling');
+       
         $lebar = $this->input->post('lebar');
-        $lebar_handling = $this->input->post('lebar_handling');
+        
         $tinggi = $this->input->post('tinggi');
-        $tinggi_handling = $this->input->post('tinggi_handling');
+       
         $berat = $this->input->post('berat');
-        $berat_handling = $this->input->post('berat_handling');
+       
 
 
         if ($dimensionSebelum['service_type'] == 'f4e0915b-7487-4fae-a04c-c3363d959742') {
@@ -958,7 +990,6 @@ class SalesOrder extends CI_Controller
             $pembagi = 4000;
         }
         $berat_volume = ceil(($panjang * $lebar * $tinggi) / $pembagi);
-        $berat_volume_handling = ceil(($panjang_handling * $lebar_handling * $tinggi_handling) / $pembagi);
 
 
 
@@ -969,59 +1000,52 @@ class SalesOrder extends CI_Controller
             'tinggi' => $tinggi,
             'berat_aktual' => $berat,
             'berat_volume' => $berat_volume,
-            'panjang_handling' => $panjang_handling,
-            'lebar_handling' => $lebar_handling,
-            'tinggi_handling' => $tinggi_handling,
-            'berat_aktual_handling' => $berat_handling,
-            'berat_volume_handling' => $berat_volume_handling,
             'update_at' => date('Y-m-d H:i:s'),
             'update_by' => $this->session->userdata('id_user'),
 
         );
 
-        //check dimensi sebelum diedit apakah lebih besar aktual
-        if ($dimensionSebelum['berat_aktual_handling'] > $dimensionSebelum['berat_volume_handling']) {
+        
 
-            // cek apakah update data tersebut lebih berat aktual atau volume
-            if ($berat_handling > $berat_volume_handling) {
-                // mengurangi yang ada di shp order
-                $this->db->update('tbl_shp_order', array('berat_js' => ($shipmentSebelum['berat_js'] - $dimensionSebelum['berat_aktual_handling'] + $berat_handling)), array('shipment_id' => $dimensionSebelum['shipment_id']));
-            } else {
-                // mengurangi yang ada di shp order
-                $this->db->update('tbl_shp_order', array('berat_js' => ($shipmentSebelum['berat_js'] - $dimensionSebelum['berat_aktual_handling'] + $berat_volume_handling)), array('shipment_id' => $dimensionSebelum['shipment_id']));
+        //Cek apakah dimensi sebelumnya lebih berat aktual atau volume
+        if ($dimensionSebelum['berat_aktual'] > $dimensionSebelum['berat_volume']) {
+            // cek apakah berat sesudah itu lebih besar aktual atau volume 
+            if ($berat > $berat_volume) {
+                $this->db->update('tbl_shp_order', array('berat_js' => ($shipmentSebelum['berat_js'] - $dimensionSebelum['berat_aktual'] + $berat)), array('shipment_id' => $dimensionSebelum['shipment_id']));
+            }
+            else{
+                $this->db->update('tbl_shp_order', array('berat_js' => ($shipmentSebelum['berat_js'] - $dimensionSebelum['berat_aktual'] + $berat_volume)), array('shipment_id' => $dimensionSebelum['shipment_id']));
             }
 
             // cek apakah dia punya no do
             if ($dimensionSebelum['no_do'] != NULL) {
 
                 // cek apakah update data tersebut lebih berat aktual atau volume
-                if ($berat_handling > $berat_volume_handling) {
+                if ($berat > $berat_volume) {
                     // mengurangi berat di do  sebelumnya
-                    $this->db->update('tbl_no_do', array('berat' => ($doSebelum['berat'] - $dimensionSebelum['berat_aktual_handling'] + $berat_handling)), array('shipment_id' => $dimensionSebelum['shipment_id'], 'no_do' => $dimensionSebelum['no_do']));
+                    $this->db->update('tbl_no_do', array('berat' => ($doSebelum['berat'] - $dimensionSebelum['berat_aktual'] + $berat)), array('shipment_id' => $dimensionSebelum['shipment_id'], 'no_do' => $dimensionSebelum['no_do']));
                 } else {
-                    $this->db->update('tbl_no_do', array('berat' => ($doSebelum['berat'] - $dimensionSebelum['berat_aktual_handling'] + $berat_volume_handling)), array('shipment_id' => $dimensionSebelum['shipment_id'], 'no_do' => $dimensionSebelum['no_do']));
+                    $this->db->update('tbl_no_do', array('berat' => ($doSebelum['berat'] - $dimensionSebelum['berat_aktual'] + $berat_volume)), array('shipment_id' => $dimensionSebelum['shipment_id'], 'no_do' => $dimensionSebelum['no_do']));
                 }
             }
-        } else {
-
-            // cek apakah update data tersebut lebih berat aktual atau volume
-            if ($berat_handling > $berat_volume_handling) {
-                // mengurangi yang ada di shp order
-                $this->db->update('tbl_shp_order', array('berat_js' => ($shipmentSebelum['berat_js'] - $dimensionSebelum['berat_volume_handling'] + $berat_handling)), array('shipment_id' => $dimensionSebelum['shipment_id']));
-            } else {
-                // mengurangi yang ada di shp order
-                $this->db->update('tbl_shp_order', array('berat_js' => ($shipmentSebelum['berat_js'] - $dimensionSebelum['berat_volume_handling'] + $berat_volume_handling)), array('shipment_id' => $dimensionSebelum['shipment_id']));
+        }
+        else{
+            if ($berat > $berat_volume) {
+                $this->db->update('tbl_shp_order', array('berat_js' => ($shipmentSebelum['berat_js'] - $dimensionSebelum['berat_volume'] + $berat)), array('shipment_id' => $dimensionSebelum['shipment_id']));
+            }
+            else{
+                $this->db->update('tbl_shp_order', array('berat_js' => ($shipmentSebelum['berat_js'] - $dimensionSebelum['berat_volume'] + $berat_volume)), array('shipment_id' => $dimensionSebelum['shipment_id']));
             }
 
             // cek apakah dia punya no do
             if ($dimensionSebelum['no_do'] != NULL) {
 
                 // cek apakah update data tersebut lebih berat aktual atau volume
-                if ($berat_handling > $berat_volume_handling) {
-                    // mengurangi berat di do  sebelumnya
-                    $this->db->update('tbl_no_do', array('berat' => ($doSebelum['berat'] - $dimensionSebelum['berat_volume_handling'] + $berat_handling)), array('shipment_id' => $dimensionSebelum['shipment_id'], 'no_do' => $dimensionSebelum['no_do']));
+                if ($berat > $berat_volume) {
+                    // mengurangi berat di do  sebelumnya dan menambahkan yang baru
+                    $this->db->update('tbl_no_do', array('berat' => ($doSebelum['berat'] - $dimensionSebelum['berat_volume'] + $berat)), array('shipment_id' => $dimensionSebelum['shipment_id'], 'no_do' => $dimensionSebelum['no_do']));
                 } else {
-                    $this->db->update('tbl_no_do', array('berat' => ($doSebelum['berat'] - $dimensionSebelum['berat_volume_handling'] + $berat_volume_handling)), array('shipment_id' => $dimensionSebelum['shipment_id'], 'no_do' => $dimensionSebelum['no_do']));
+                    $this->db->update('tbl_no_do', array('berat' => ($doSebelum['berat'] - $dimensionSebelum['berat_volume'] + $berat_volume)), array('shipment_id' => $dimensionSebelum['shipment_id'], 'no_do' => $dimensionSebelum['no_do']));
                 }
             }
         }
@@ -1030,6 +1054,43 @@ class SalesOrder extends CI_Controller
         if ($update) {
             $this->session->set_flashdata('message', '<div class="alert
                 alert-success" role="alert">Success</div>');
+            redirect($_SERVER['HTTP_REFERER']);
+        }
+    }
+
+    public function deleteDimension($id_dimension)
+    {
+       
+        $dimensionSebelum = $this->db->get_where('tbl_dimension', array('id_dimension' => $id_dimension))->row_array();
+        $shipmentSebelum = $this->db->get_where('tbl_shp_order', array('shipment_id' => $dimensionSebelum['shipment_id']))->row_array();
+        $doSebelum = $this->db->get_where('tbl_no_do', array('no_do' => $dimensionSebelum['no_do'], 'shipment_id' => $dimensionSebelum['shipment_id']))->row_array();
+
+        //Cek apakah dimensi sebelumnya lebih berat aktual atau volume
+        if ($dimensionSebelum['berat_aktual'] > $dimensionSebelum['berat_volume']) {
+            // cek apakah berat sesudah itu lebih besar aktual atau volume 
+            
+                $this->db->update('tbl_shp_order', array('berat_js' => ($shipmentSebelum['berat_js'] - $dimensionSebelum['berat_aktual']), 'koli' => $shipmentSebelum['koli'] - 1), array('shipment_id' => $dimensionSebelum['shipment_id']));
+        
+            // cek apakah dia punya no do
+            if ($dimensionSebelum['no_do'] != NULL) {
+   
+                    $this->db->update('tbl_no_do', array('berat' => ($doSebelum['berat'] - $dimensionSebelum['berat_aktual']), 'koli' => $doSebelum['koli'] - 1), array('shipment_id' => $dimensionSebelum['shipment_id'], 'no_do' => $dimensionSebelum['no_do']));
+                
+            }
+        }
+        else{
+            $this->db->update('tbl_shp_order', array('berat_js' => ($shipmentSebelum['berat_js'] - $dimensionSebelum['berat_volume']), 'koli' => $shipmentSebelum['koli'] - 1), array('shipment_id' => $dimensionSebelum['shipment_id']));
+            // cek apakah dia punya no do
+            if ($dimensionSebelum['no_do'] != NULL) {      
+                    $this->db->update('tbl_no_do', array('berat' => ($doSebelum['berat'] - $dimensionSebelum['berat_volume']), 'koli' => $doSebelum['koli'] - 1), array('shipment_id' => $dimensionSebelum['shipment_id'], 'no_do' => $dimensionSebelum['no_do']));
+                }
+            }
+        
+
+        $hapus = $this->db->delete('tbl_dimension',array('id_dimension' => $id_dimension));
+        if ($hapus) {
+            $this->session->set_flashdata('message', '<div class="alert
+                alert-success" role="alert">Success Delete</div>');
             redirect($_SERVER['HTTP_REFERER']);
         }
     }

@@ -163,7 +163,7 @@ class Scan extends CI_Controller
 
         if ($cek_tracking) {
             // scan in
-            if ($cek_tracking['flag'] == 3) {
+            if ($cek_tracking['flag'] == 4) {
                 $this->db->update('tbl_tracking_real', array('status_eksekusi' => 1), array('id_tracking' => $cek_tracking['id_tracking']));
                 $data = array(
                     'status' => "Shipment Telah Tiba Di Hub Jakarta Pusat",
@@ -172,7 +172,7 @@ class Scan extends CI_Controller
                     'id_user' => $this->session->userdata('id_user'),
                     'created_at' => date('Y-m-d'),
                     'time' => date('H:i:s'),
-                    'flag' => 4,
+                    'flag' => 5,
                     'status_eksekusi' => 1
                 );
                 $this->db->insert('tbl_tracking_real', $data);
@@ -186,7 +186,7 @@ class Scan extends CI_Controller
                 $this->session->set_flashdata('message', 'SUKSES SCAN IN RESI ' . $result_code);
                 redirect('shipper/Scan');
                 // scan out
-            } elseif ($cek_tracking['flag'] == 7) {
+            } elseif ($cek_tracking['flag'] == 8) {
                 $data = array(
                     'status' => "Shipment Telah Tiba Di Hub Jakarta Pusat",
                     'id_so' => $cek_tracking['id_so'],
@@ -194,7 +194,7 @@ class Scan extends CI_Controller
                     'id_user' => $this->session->userdata('id_user'),
                     'created_at' => date('Y-m-d'),
                     'time' => date('H:i:s'),
-                    'flag' => 8,
+                    'flag' => 9,
                 );
                 $this->db->insert('tbl_tracking_real', $data);
                 $dataOutbond = [
@@ -277,7 +277,7 @@ class Scan extends CI_Controller
                 'id_user' => $this->input->post('id_driver'),
                 'created_at' => date('Y-m-d'),
                 'time' => date('H:i:s'),
-                'flag' => 5,
+                'flag' => 6,
                 'status_eksekusi' => 0,
             );
             $insert = $this->db->insert('tbl_tracking_real', $data);
@@ -304,7 +304,7 @@ class Scan extends CI_Controller
                 'id_user' => $this->input->post('id_driver'),
                 'created_at' => date('Y-m-d'),
                 'time' => date('H:i:s'),
-                'flag' => 5,
+                'flag' => 6,
                 'status_eksekusi' => 0,
                 'note' => $this->input->post('note')
             );
@@ -354,7 +354,7 @@ class Scan extends CI_Controller
     {
         // CEK APAKAHA ADA TUGAS YG BELUM DI SCAN
         $cek_tracking = $this->db->limit(1)->order_by('id_tracking', 'desc')->get_where('tbl_tracking_real', ['shipment_id' => $shipment_id])->row_array();
-        if ($cek_tracking['flag'] == 8) {
+        if ($cek_tracking['flag'] == 9) {
             $data = array(
                 'status' => "Shipment Keluar Dari Hub Jakarta Pusat",
                 'id_so' => $cek_tracking['id_so'],
@@ -362,7 +362,7 @@ class Scan extends CI_Controller
                 
                 'created_at' => date('Y-m-d'),
                 'time' => date('H:i:s'),
-                'flag' => 9,
+                'flag' => 10,
             );
             $this->db->insert('tbl_tracking_real', $data);
             $dataOutbond = [

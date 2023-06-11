@@ -188,7 +188,7 @@
 								<select name="status" class="form-control">
 									<option value="Request Pickup From Shipper">Request Pickup From Shipper</option>
 									<option value="Driver Menuju Lokasi Pickup">Driver Menuju Lokasi Pickup</option>
-									<option value="Driver Telah Sampai DI Lokasi Pickup">Driver Menuju Lokasi Pickup</option>
+									<option value="Driver Telah Sampai Di Lokasi Pickup">Driver Telah Sampai Di Lokasi Pickup</option>
 									<option value="Shipment Telah Dipickup Dari Shipper">Shipment Telah Dipickup Dari Shipper</option>
 									<option value="Shipment Telah Tiba Di Hub Jakarta Pusat">Shipment Telah Tiba Di Hub Jakarta Pusat</option>
 									<option value="Shipment Keluar Dari Hub Jakarta Pusat">Shipment Keluar Dari Hub Jakarta Pusat</option>
@@ -271,7 +271,7 @@
 								<select name="status" class="form-control">
 									<option value="Request Pickup From Shipper">Request Pickup From Shipper</option>
 									<option value="Driver Menuju Lokasi Pickup">Driver Menuju Lokasi Pickup</option>
-									<option value="Driver Telah Sampai Di Lokasi Pickup">Driver Menuju Lokasi Pickup</option>
+									<option value="Driver Telah Sampai Di Lokasi Pickup">Driver Telah Sampai Di Lokasi Pickup</option>
 									<option value="Shipment Telah Dipickup Dari Shipper">Shipment Telah Dipickup Dari Shipper</option>
 									<option value="Shipment Telah Tiba Di Hub Jakarta Pusat">Shipment Telah Tiba Di Hub Jakarta Pusat</option>
 									<option value="Shipment Keluar Dari Hub Jakarta Pusat">Shipment Keluar Dari Hub Jakarta Pusat</option>
