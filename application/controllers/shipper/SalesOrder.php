@@ -319,9 +319,11 @@ class SalesOrder extends CI_Controller
                 'status_eksekusi' => 1,
             );
             $this->db->update('tbl_tracking_real', $data, ['id_tracking' => $id_tracking]);
+            $this->session->set_flashdata('message', 'Terima Kasih');
+            redirect('shipper/salesOrder');
         }
-        $this->session->set_flashdata('message', 'Terima Kasih');
-        redirect('shipper/salesOrder');
+       
+        
     }
     public function receiveDelivery($id, $shipment_id, $id_tracking)
     {

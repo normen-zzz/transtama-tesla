@@ -99,21 +99,21 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <?php foreach ($requestPrice->result_array() as $requestPrice) { ?>
+                                        <?php foreach ($requestPrice->result_array() as $requestPrice1) { ?>
                                             <tr>
-                                                <td><?= date('d F Y H:i:s', strtotime($requestPrice['date_request'])) ?></td>
-                                                <td><?= $requestPrice['subdistrict_from'] . ', ' .  $requestPrice['city_from'] . ', ' . $requestPrice['province_from']  ?></td>
-                                                <td><?= $requestPrice['subdistrict_to'] . ', ' .  $requestPrice['city_to'] . ', ' . $requestPrice['province_to']  ?></td>
-                                                <td><?= $requestPrice['moda'] ?></td>
-                                                <td><?= $requestPrice['berat'] ?></td>
-                                                <td><?= $requestPrice['koli'] ?></td>
-                                                <td><?= $requestPrice['komoditi'] ?></td>
-                                                <td><?= $requestPrice['panjang'] . ' x ' . $requestPrice['lebar'] . ' x ' . $requestPrice['tinggi'] ?></td>
-                                                <td><?= $requestPrice['notes_sales'] ?></td>
-                                                <td><?= rupiah($requestPrice['price']) ?></td>
-                                                <td><?= $requestPrice['notes_cs'] ?></td>
+                                                <td><?= date('d F Y H:i:s', strtotime($requestPrice1['date_request'])) ?></td>
+                                                <td><?= $requestPrice1['subdistrict_from'] . ', ' .  $requestPrice1['city_from'] . ', ' . $requestPrice1['province_from']  ?></td>
+                                                <td><?= $requestPrice1['subdistrict_to'] . ', ' .  $requestPrice1['city_to'] . ', ' . $requestPrice1['province_to']  ?></td>
+                                                <td><?= $requestPrice1['moda'] ?></td>
+                                                <td><?= $requestPrice1['berat'] ?></td>
+                                                <td><?= $requestPrice1['koli'] ?></td>
+                                                <td><?= $requestPrice1['komoditi'] ?></td>
+                                                <td><?= $requestPrice1['panjang'] . ' x ' . $requestPrice1['lebar'] . ' x ' . $requestPrice1['tinggi'] ?></td>
+                                                <td><?= $requestPrice1['notes_sales'] ?></td>
+                                                <td><?= rupiah($requestPrice1['price']) ?></td>
+                                                <td><?= $requestPrice1['notes_cs'] ?></td>
                                                 <td>
-                                                    <button href="#" class="btn font-weight-bolder text-light modalEditRequest" data-toggle="modal" data-id_request="<?= $requestPrice['id_request_price'] ?>" data-target="#modal-edit-request" style="background-color: #9c223b;">
+                                                    <button href="#" class="btn font-weight-bolder text-light modalEditRequest" data-toggle="modal" data-id_request="<?= $requestPrice1['id_request_price'] ?>" data-target="#modal-edit-request" style="background-color: #9c223b;">
                                                         Edit</button>
                                                 </td>
                                             <?php } ?>
@@ -138,24 +138,24 @@
                                             <th>Notes Sales</th>
                                             <th>Price Approved</th>
                                             <th>Notes Cs</th>
-                                            <th>Action</th>
+                                            <!-- <th>Action</th> -->
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <?php foreach ($requestPriceApprove->result_array() as $requestPrice) { ?>
+                                        <?php foreach ($requestPriceApprove->result_array() as $requestPriceApprove1) { ?>
                                             <tr>
-                                                <td><?= date('d F Y H:i:s', strtotime($requestPrice['date_request'])) ?></td>
-                                                <td><?= $requestPrice['alamat_from'] . ' ' .  $requestPrice['city_from'] . ', ' . $requestPrice['province_from']  ?></td>
-                                                <td><?= $requestPrice['alamat_to'] . ' ' .  $requestPrice['city_to'] . ', ' .  $requestPrice['province_to'] ?></td>
-                                                <td><?= $requestPrice['moda'] ?></td>
-                                                <td><?= $requestPrice['berat'] ?></td>
-                                                <td><?= $requestPrice['koli'] ?></td>
-                                                <td><?= $requestPrice['komoditi'] ?></td>
-                                                <td><?= $requestPrice['panjang'] . ' x ' . $requestPrice['lebar'] . ' x ' . $requestPrice['tinggi'] ?></td>
-                                                <td><?= $requestPrice['notes_sales'] ?></td>
-                                                <td><?= rupiah($requestPrice['price']) ?></td>
-                                                <td><?= $requestPrice['notes_cs'] ?></td>
-                                                <td><a data-toggle="modal" data-target="#modal-lg<?= $requestPrice['id_request_price'] ?>" class="btn btn-primary ml-2 mt-2">Add Price</a></td>
+                                                <td><?= date('d F Y H:i:s', strtotime($requestPriceApprove1['date_request'])) ?></td>
+                                                <td><?= $requestPriceApprove1['alamat_from'] . ' ' .  $requestPriceApprove1['city_from'] . ', ' . $requestPriceApprove1['province_from']  ?></td>
+                                                <td><?= $requestPriceApprove1['alamat_to'] . ' ' .  $requestPriceApprove1['city_to'] . ', ' .  $requestPriceApprove1['province_to'] ?></td>
+                                                <td><?= $requestPriceApprove1['moda'] ?></td>
+                                                <td><?= $requestPriceApprove1['berat'] ?></td>
+                                                <td><?= $requestPriceApprove1['koli'] ?></td>
+                                                <td><?= $requestPriceApprove1['komoditi'] ?></td>
+                                                <td><?= $requestPriceApprove1['panjang'] . ' x ' . $requestPriceApprove1['lebar'] . ' x ' . $requestPriceApprove1['tinggi'] ?></td>
+                                                <td><?= $requestPriceApprove1['notes_sales'] ?></td>
+                                                <td><?= rupiah($requestPriceApprove1['price']) ?></td>
+                                                <td><?= $requestPriceApprove1['notes_cs'] ?></td>
+                                                <!-- <td><a data-toggle="modal" data-target="#modal-lg<?= $requestPriceApprove1['id_request_price'] ?>" class="btn btn-primary ml-2 mt-2">Add Price</a></td> -->
                                             </tr>
                                         <?php } ?>
                                     </tbody>
@@ -198,7 +198,7 @@
                             <div class="col">
                                 <div class="form-group">
                                     <label for="exampleInputEmail1">Provinsi <span style="color: red;">*</span></label>
-                                    <select name="provinsi_from" id="provinsi" class="form-control" style="width:200px">
+                                    <select name="provinsi_from" required id="provinsi" class="form-control" style="width:200px">
                                         <option value="">PIlih Provinsi</option>
                                         <?php foreach ($provinsi as $provinsi1) {
                                         ?>
@@ -212,7 +212,7 @@
                             <div class="col">
                                 <div class="form-group">
                                     <label for="exampleInputEmail1">Kabupaten <span style="color: red;">*</span></label>
-                                    <select name="kabupaten_from" id="kabupaten" class="form-control" style="width:200px">
+                                    <select name="kabupaten_from" required id="kabupaten" class="form-control" style="width:200px">
                                         <option value="">Pilih Kabupaten</option>
                                     </select>
 
@@ -222,12 +222,19 @@
                             <div class="col">
                                 <div class="form-group">
                                     <label for="exampleInputEmail1">Kecamatan <span style="color: red;">*</span></label>
-                                    <select name="kecamatan_from" id="kecamatan" class="form-control" style="width:200px">
+                                    <select required name="kecamatan_from" id="kecamatan" class="form-control" style="width:200px">
                                         <option value="">Pilih Kecamatan</option>
                                     </select>
 
                                 </div>
                             </div>
+
+
+
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputPassword1">Alamat From</label>
+                            <textarea class="form-control" name="alamat_from" id="alamat_from"></textarea>
 
                         </div>
 
@@ -239,7 +246,7 @@
                             <div class="col">
                                 <div class="form-group">
                                     <label for="exampleInputEmail1">Provinsi <span style="color: red;">*</span></label>
-                                    <select name="provinsi_to" id="provinsi1" class="form-control" style="width:200px">
+                                    <select required name="provinsi_to" id="provinsi1" class="form-control" style="width:200px">
                                         <option value="">PIlih Provinsi</option>
                                         <?php foreach ($provinsi as $provinsi1) {
                                         ?>
@@ -253,7 +260,7 @@
                             <div class="col">
                                 <div class="form-group">
                                     <label for="exampleInputEmail1">Kabupaten <span style="color: red;">*</span></label>
-                                    <select name="kabupaten_to" id="kabupaten1" class="form-control" style="width:200px">
+                                    <select required name="kabupaten_to" id="kabupaten1" class="form-control" style="width:200px">
                                         <option value="">Pilih Kabupaten</option>
                                     </select>
 
@@ -263,12 +270,18 @@
                             <div class="col">
                                 <div class="form-group">
                                     <label for="exampleInputEmail1">Kecamatan <span style="color: red;">*</span></label>
-                                    <select name="kecamatan_to" id="kecamatan1" class="form-control" style="width:200px">
+                                    <select required name="kecamatan_to" id="kecamatan1" class="form-control" style="width:200px">
                                         <option value="">Pilih Kecamatan</option>
                                     </select>
 
                                 </div>
                             </div>
+
+                        </div>
+
+                        <div class="form-group">
+                            <label for="exampleInputPassword1">Alamat To</label>
+                            <textarea class="form-control" name="alamat_to" id="alamat_to"></textarea>
 
                         </div>
 
@@ -432,6 +445,12 @@
 
                     '</div>' +
                     '</div>' +
+                    
+
+                    '</div>' +
+                    '<div class="form-group">' +
+                    '<label for="exampleInputPassword1">Alamat From</label>' +
+                    '<textarea class="form-control" name="alamat_from" id="alamat_from">' + response.alamat_from + '</textarea>' +
 
                     '</div>' +
                     '<div class="row">' +
@@ -478,6 +497,11 @@
 
                     '</div>' +
                     '</div>' +
+
+                    '</div>' +
+                    '<div class="form-group">' +
+                    '<label for="exampleInputPassword1">Alamat From</label>' +
+                    '<textarea class="form-control" name="alamat_to" id="alamat_to">' + response.alamat_to + '</textarea>' +
 
                     '</div>' +
 

@@ -129,8 +129,8 @@ class SalesModel extends CI_Model
         $this->db->select('*');
         $this->db->from('tbl_request_price a');
         $this->db->where('a.id_sales', $id);
+        $this->db->where('a.date_request >=', $awal);
         $this->db->where('a.date_request <=', $akhir);
-        // $this->db->where('a.date_request >=', $awal);
         $this->db->where('a.price', NULL);
         $this->db->order_by('a.id_request_price', 'desc');
         $this->db->group_by('a.group');

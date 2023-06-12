@@ -55,10 +55,10 @@ class RequestPrice extends CI_Controller
     public function getModalEditRequest()
     {
         $id_request = $this->input->get('id_request'); // Mengambil ID dari parameter GET
-        $request = $this->db->get_where('tbl_request_price',array('id_request_price' => $id_request))->row();
-        
-        
-        
+        $request = $this->db->get_where('tbl_request_price', array('id_request_price' => $id_request))->row();
+
+
+
 
         // Kirim data sebagai respons JSON
         echo json_encode($request);
@@ -81,9 +81,11 @@ class RequestPrice extends CI_Controller
             'province_from' => $this->input->post('provinsi_from'),
             'city_from' => $this->input->post('kabupaten_from'),
             'subdistrict_from' => $this->input->post('kecamatan_from'),
+            'alamat_from' => $this->input->post('alamat_from'),
             'province_to' => $this->input->post('provinsi_to'),
             'city_to' => $this->input->post('kabupaten_to'),
             'subdistrict_to' => $this->input->post('kecamatan_to'),
+            'alamat_to' => $this->input->post('alamat_to'),
             'moda' => $this->input->post('moda'),
             'jenis_barang' => $this->input->post('jenis'),
             'berat' => $this->input->post('berat'),
@@ -104,7 +106,50 @@ class RequestPrice extends CI_Controller
             // $this->wa->pickup('+6285697780467', "$pesan");
             $this->session->set_flashdata('message', 'Anda Berhasil Menambah Request');
             redirect('sales/RequestPrice');
-        }else{
+        } else {
+            $this->session->set_flashdata('message', 'Anda Gagal Menambah Request');
+            redirect('sales/RequestPrice');
+        }
+    }
+
+    public function editRequest()
+    {
+
+        $QuerylastRequest = "SELECT a.group FROM tbl_request_price a ORDER BY a.group DESC LIMIT 1";
+        $lastRequest = $this->db->query($QuerylastRequest)->row();
+        // var_dump($lastRequest->group);
+        $request = [
+            'id_sales' => $this->session->userdata('id_user'),
+            'date_request' => date('Y-m-d H:i:s'),
+            'province_from' => $this->input->post('provinsi_from'),
+            'city_from' => $this->input->post('kabupaten_from'),
+            'subdistrict_from' => $this->input->post('kecamatan_from'),
+            'alamat_from' => $this->input->post('alamat_from'),
+            'province_to' => $this->input->post('provinsi_to'),
+            'city_to' => $this->input->post('kabupaten_to'),
+            'subdistrict_to' => $this->input->post('kecamatan_to'),
+            'alamat_to' => $this->input->post('alamat_to'),
+            'moda' => $this->input->post('moda'),
+            'jenis_barang' => $this->input->post('jenis'),
+            'berat' => $this->input->post('berat'),
+            'panjang' => $this->input->post('panjang'),
+            'lebar' => $this->input->post('lebar'),
+            'tinggi' => $this->input->post('tinggi'),
+            'koli' => $this->input->post('koli'),
+            'komoditi' => $this->input->post('komoditi'),
+            'notes_sales' => $this->input->post('notes'),
+            'is_bulk' => 0,
+            'group' => $lastRequest->group + 1
+        ];
+
+
+        $update = $this->db->insert('tbl_request_price', $request);
+        if ($update) {
+            // $pesan = "Hallo Finance, ada pengajuan harga baru dari " . $this->session->userdata('nama_user') . " Tolong Segera Cek Ya, Terima Kasih";
+            // $this->wa->pickup('+6285697780467', "$pesan");
+            $this->session->set_flashdata('message', 'Anda Berhasil Menambah Request');
+            redirect('sales/RequestPrice');
+        } else {
             $this->session->set_flashdata('message', 'Anda Gagal Menambah Request');
             redirect('sales/RequestPrice');
         }
@@ -144,10 +189,8 @@ class RequestPrice extends CI_Controller
             foreach ($kecamatan->data as $value) {
                 $data .= "<option data-id_kec='" . $value->id . "' value='" . $value->name . "'>" . $value->name . "</option>";
             }
-            
         } else {
             $data = "<option value=''>- Select Kecamatan -</option>";
-            
         }
         echo $data;
     }

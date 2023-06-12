@@ -366,13 +366,13 @@
 													Informasi Tambahan : <i><b><?= $shipment['pu_note'] ?></b></i>
 												</p>
 											</div>
-											<p class="h-12"><i class="fa fa-info text-danger"></i> Apabila sudah sampai di Hub Benhil, tekan tombol <i>Arrive In Benhil Hub</i></p>
+											<p class="h-12"><i class="fa fa-info text-danger"></i>Data Akan terupdate jika sudah diinput outbond</p>
 											<!-- <div class="alert alert-success text-light" role="alert"> </div> -->
 											<div class="card-toolbar">
-												<a onclick="return confirm('Are you sure ?')" href="<?= base_url('shipper/salesOrder/arriveBenhil/' . $shipment['id_so'] . '/' . $shipment['shipment_id'] . '/' . $shipment['id_tracking']) ?>" class="btn mr-2 text-light" style="background-color: #9c223b;">
+												<!-- <a onclick="return confirm('Are you sure ?')" href="<?= base_url('shipper/salesOrder/arriveBenhil/' . $shipment['id_so'] . '/' . $shipment['shipment_id'] . '/' . $shipment['id_tracking']) ?>" class="btn mr-2 text-light" style="background-color: #9c223b;">
 													<i class="fas fa-check text-light"> </i>
 													Arrive In Benhil Hub
-												</a>
+												</a> -->
 
 												<a onclick='$("#modalLoading").modal("show");' href="<?= base_url('shipper/order/view/' . $shipment['id_so'] . '/' . $shipment['id_tracking']) ?>" class="btn mr-2 text-light" style="background-color: #9c223b;">
 													<i class="fas fa-plus-circle text-light"> </i>
@@ -727,13 +727,13 @@
 												Informasi Tambahan : <i><b><?= $shipment['pu_note'] ?></b></i>
 											</p>
 										</div>
-										<p class="h-14 mt-4"><i class="fa fa-info text-danger"></i> Tekan tombol <b>Arrive In Benhil Hub</b>apabila sudah sampai di Hub Benhil</p>
+										<p class="h-14 mt-4"><i class="fa fa-info text-danger"></i> Data Akan Terupdate jika sudah diinput outbond </p>
 										<!-- <div class="alert alert-success text-light" role="alert"> </div> -->
 										<div class="card-toolbar">
-											<a href="<?= base_url('shipper/salesOrder/arriveBenhil/' . $shipment['id_so'] . '/' . $shipment['shipment_id'] . '/' . $shipment['id_tracking']) ?>" class="btn mr-2 text-light" style="background-color: #9c223b;">
+											<!-- <a href="<?= base_url('shipper/salesOrder/arriveBenhil/' . $shipment['id_so'] . '/' . $shipment['shipment_id'] . '/' . $shipment['id_tracking']) ?>" class="btn mr-2 text-light" style="background-color: #9c223b;">
 												<i class="fas fa-check text-light"> </i>
 												Arrive In Benhil Hub
-											</a>
+											</a> -->
 											<a onclick='$("#modalLoading").modal("show");' href="<?= base_url('shipper/order/view/' . $shipment['id_so'] . '/' . $shipment['id_tracking']) ?>" class="btn mr-2 text-light" style="background-color: #9c223b;">
 												<i class="fas fa-plus-circle text-light"> </i>
 												View Shipment
