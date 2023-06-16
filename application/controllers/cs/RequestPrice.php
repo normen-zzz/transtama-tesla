@@ -32,9 +32,9 @@ class RequestPrice extends CI_Controller
             $data['akhir'] = $akhir;
             $data['title'] = 'Request Price';
             $data['requestPrice'] = $this->cs->getRequestPriceNotApprove($awal, $akhir);
-            $data['requestPrice2'] = $this->cs->getRequestPriceNotApprove($awal, $akhir);
+            // $data['requestPrice2'] = $this->cs->getRequestPriceNotApprove($awal, $akhir);
             $data['requestPriceApprove'] = $this->cs->getRequestPriceApprove($awal, $akhir);
-            $data['requestPriceApprove2'] = $this->cs->getRequestPriceApprove($awal, $akhir);
+            // $data['requestPriceApprove2'] = $this->cs->getRequestPriceApprove($awal, $akhir);
             $data['province'] = $this->db->get('tb_province')->result_array();
             $data['city'] = $this->db->get('tb_city')->result_array();
             $this->backend->display('cs/v_request_price', $data);
@@ -43,9 +43,9 @@ class RequestPrice extends CI_Controller
             $data['akhir'] = $akhir;
             $data['title'] = 'Request Price';
             $data['requestPrice'] = $this->cs->getRequestPriceNotApprove($awal, $akhir);
-            $data['requestPrice2'] = $this->cs->getRequestPriceNotApprove($awal, $akhir);
+            // $data['requestPrice2'] = $this->cs->getRequestPriceNotApprove($awal, $akhir);
             $data['requestPriceApprove'] = $this->cs->getRequestPriceApprove($awal, $akhir);
-            $data['requestPriceApprove2'] = $this->cs->getRequestPriceApprove($awal, $akhir);
+            // $data['requestPriceApprove2'] = $this->cs->getRequestPriceApprove($awal, $akhir);
             $data['province'] = $this->db->get('tb_province')->result_array();
             $data['city'] = $this->db->get('tb_city')->result_array();
             $this->backend->display('cs/v_request_price', $data);

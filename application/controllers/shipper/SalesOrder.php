@@ -706,18 +706,17 @@ class SalesOrder extends CI_Controller
     public function addWeight($id)
     {
         $shipment_id = $this->input->post('shipment_id');
-        $this->db->select('service_type');
-        $this->db->where('shipment_id', $shipment_id);
-        $service_type = $this->db->get('tbl_shp_order');
+        
         $panjang = $this->input->post('panjang');
         $lebar = $this->input->post('lebar');
         $tinggi = $this->input->post('tinggi');
         $berat = $this->input->post('berat');
 
         $shipmentSebelum = $this->db->get_where('tbl_shp_order',array('shipment_id' => $shipment_id))->row_array();
+        $dimensionSebelum = $this->db->get_where('tbl_dimension',array('shipment_id' => $shipment_id))->row_array();
 
         //pembagi untuk hitung berat volume 
-        if ($service_type == 'f4e0915b-7487-4fae-a04c-c3363d959742') {
+        if ($shipmentSebelum['service_type'] == 'f4e0915b-7487-4fae-a04c-c3363d959742') {
             //untuk udara
             $pembagi = 6000;
         } else {
@@ -787,7 +786,13 @@ class SalesOrder extends CI_Controller
             }
         }
 
-        $update = $this->db->update('tbl_shp_order', array('berat_js' => $shipmentSebelum['berat_js'] + $berat_js, 'koli' => $shipmentSebelum['koli'] + sizeof($panjang)), array('shipment_id' => $shipment_id));
+        if ($dimensionSebelum == null) {
+            $koliSebelum = 0;
+        }else{
+            $koliSebelum = $shipmentSebelum['koli'];
+        }
+
+        $update = $this->db->update('tbl_shp_order', array('berat_js' => $shipmentSebelum['berat_js'] + $berat_js, 'koli' => $koliSebelum + sizeof($panjang)), array('shipment_id' => $shipment_id));
         
         if ($update) {
             $this->session->set_flashdata('message', '<div class="alert

@@ -133,7 +133,7 @@ class SalesModel extends CI_Model
         $this->db->where('a.date_request <=', $akhir);
         $this->db->where('a.price', NULL);
         $this->db->order_by('a.id_request_price', 'desc');
-        $this->db->group_by('a.group');
+        $this->db->group_by('a.group_request');
         return $this->db->get();
     }
     public function getRequestPriceApprove($id, $awal, $akhir)

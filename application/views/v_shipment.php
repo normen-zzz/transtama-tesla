@@ -59,7 +59,7 @@
 											$getLast = $this->order->getLastTracking($g['shipment_id'])->row_array();
 											if ($g['is_incoming'] != 1) {
 
-
+												
 
 
 												if ($getLast['flag'] >= 4 && $getLast['flag'] <= 5) {
@@ -82,6 +82,7 @@
 																	<!-- kalo shipmentnya telah tiba di hub benhil -->
 																	<?php if ($getLast['flag'] == 5 || $getLast['flag'] == 6) {
 																	?>
+
 
 																		<a href="#" class="btn btn-sm text-light" data-toggle="modal" data-target="#modal-lg-dl<?= $g['shipment_id'] ?>" style="background-color: #9c223b;">
 																			Assign Driver DL
@@ -141,6 +142,7 @@
 
 								<?php	} else {
 								?>
+								<td>
 									<!--begin::Symbol-->
 									<div class="symbol symbol-40 symbol-light-success">
 										<span class="symbol-label">
@@ -155,6 +157,7 @@
 										<span class="text-muted">Driver</span>
 									</div>
 									<!--end::Text-->
+									</td>
 								<?php	} ?>
 
 							</div>
@@ -190,6 +193,7 @@
 
 								<?php	} else {
 								?>
+								<td>
 									<!--begin::Symbol-->
 									<div class="symbol symbol-40 symbol-light-success">
 										<span class="symbol-label">
@@ -204,6 +208,7 @@
 										<span class="text-muted">Driver</span>
 									</div>
 									<!--end::Text-->
+									</td>
 								<?php	} ?>
 
 							</div>
@@ -224,6 +229,7 @@
 
 								<?php	} else {
 								?>
+								<td>
 									<!--begin::Symbol-->
 									<div class="symbol symbol-40 symbol-light-success">
 										<span class="symbol-label">
@@ -238,6 +244,7 @@
 										<span class="text-muted">Driver</span>
 									</div>
 									<!--end::Text-->
+									</td>
 								<?php	} ?>
 
 							</div>

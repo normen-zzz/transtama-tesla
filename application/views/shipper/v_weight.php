@@ -62,7 +62,7 @@
 								<table class="table table-bordered text-center" id="tableDimension">
 									<thead>
 										<tr>
-
+											<th>No</th>
 											<th>Panjang (CM)</th>
 											<th>Lebar (CM)</th>
 											<th>Tinggi (CM)</th>
@@ -75,15 +75,15 @@
 									<tbody>
 
 										<tr>
-
+												<td>1</td>
 											<td>
 												<input required class="form-control" type="number" name="panjang[]" id="panjang">
 											</td>
 											<td>
-												<input required class="form-control" type="text" name="lebar[]" id="lebar">
+												<input required class="form-control" type="number" name="lebar[]" id="lebar">
 											</td>
-											<td><input required class="form-control form-control-sm" type="text" name="tinggi[]" id="tinggi"></td>
-											<td><input required class="form-control form-control-sm" type="text" name="berat[]" id="berat"></td>
+											<td><input required class="form-control form-control-sm" type="number" name="tinggi[]" id="tinggi"></td>
+											<td><input required class="form-control form-control-sm" type="number" name="berat[]" id="berat"></td>
 											<?php if ($do != NULL) { ?>
 												<td>
 													<select class="form-control" style="width: 200px;" name="no_do[]" id="no_do">
@@ -98,7 +98,9 @@
 									</tbody>
 								</table>
 							</form>
-							<button id="tambahBarisBtn" class="btn btn-primary mb-2">Tambah Baris</button>
+							
+							<button id="tambahBarisBtn" class="btn btn-primary mb-2  float-right">Tambah Baris</button>
+							<button id="hapusBaris" class="btn btn-danger mb-2 mr-4 float-right">Hapus Baris</button>
 						<?php } else { ?>
 
 							<button class="btn font-weight-bolder text-light" data-toggle="modal" data-target="#addDimension"  style="background-color: #9c223b;">Tambah</button>
@@ -230,10 +232,10 @@
 
 								<?php $do = $this->db->get_where('tbl_no_do', array('shipment_id' => $shipment['shipment_id']))->result_array();
 								?>
-								<table class="table table-bordered text-center" id="tableDimension">
+								<table class="table table-bordered text-center" id="tableDimensionModal">
 									<thead>
 										<tr>
-
+											<th>No</th>
 											<th>Panjang (CM)</th>
 											<th>Lebar (CM)</th>
 											<th>Tinggi (CM)</th>
@@ -246,6 +248,7 @@
 									<tbody>
 
 										<tr>
+											<td>1</td>
 
 											<td>
 												<input required class="form-control" type="number" name="panjang[]" id="panjang">
@@ -269,7 +272,8 @@
 									</tbody>
 								</table>
 							</form>
-							<button id="tambahBarisBtn" class="btn btn-primary mb-2">Tambah Baris</button>
+							<button id="tambahBarisBtn" class="btn btn-primary mb-2  float-right">Tambah Baris</button>
+							<button id="hapusBaris" class="btn btn-danger mb-2 mr-4 float-right">Hapus Baris</button>
 					</div>
 					<!-- /.card-body -->
 			</div>
@@ -298,13 +302,16 @@
 <script>
 	$(document).ready(function() {
 		$("#tambahBarisBtn").click(function() {
+			var rowCount = $('#tableDimension tbody tr').length;
+			var newRow = rowCount + 1;
 			var row = $("<tr>");
+			var cell0 = $("<td>").append(newRow);
 			var cell1 = $("<td>").append($("<input>").attr("type", "number").attr("name", "panjang[]").addClass("form-control").attr("required", true));
-			var cell2 = $("<td>").append($("<input>").attr("type", "text").attr("name", "lebar[]").addClass("form-control").attr("required", true));
-			var cell3 = $("<td>").append($("<input>").attr("type", "text").attr("name", "tinggi[]").addClass("form-control form-control-sm").attr("required", true));
-			var cell4 = $("<td>").append($("<input>").attr("type", "text").attr("name", "berat[]").addClass("form-control form-control-sm").attr("required", true));
+			var cell2 = $("<td>").append($("<input>").attr("type", "number").attr("name", "lebar[]").addClass("form-control").attr("required", true));
+			var cell3 = $("<td>").append($("<input>").attr("type", "number").attr("name", "tinggi[]").addClass("form-control form-control-sm").attr("required", true));
+			var cell4 = $("<td>").append($("<input>").attr("type", "number").attr("name", "berat[]").addClass("form-control form-control-sm").attr("required", true));
 			var cell5 = $("<td>").append(getDoSelectOptions());
-			row.append(cell1, cell2, cell3, cell4, cell5);
+			row.append(cell0, cell1, cell2, cell3, cell4, cell5);
 			$("#tableDimension tbody").append(row);
 			$('.selectField').select2();
 
@@ -322,6 +329,14 @@
 		}
 	});
 </script>
+
+<script>
+    $(document).ready(function() {
+      $('#hapusBaris').click(function() {
+        $('table tr:last').remove();
+      });
+    });
+  </script>
 
 <script>
 	$(document).ready(function() {
@@ -374,6 +389,8 @@
 					alert('Terjadi kesalahan dalam memuat data.');
 				}
 			});
+
+			
 		});
 	});
 </script>

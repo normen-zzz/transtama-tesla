@@ -218,6 +218,7 @@
 									</thead>
 									<tbody>
 										<?php foreach ($shipment2 as $shp) {
+											$dimensionSebelum = $this->db->get_where('tbl_dimension',array('shipment_id' => $shp['shipment_id']))->row_array();
 											$get_last_status = $this->db->limit(1)->order_by('id_tracking', 'desc')->get_where('tbl_tracking_real', ['shipment_id' => $shp['shipment_id']])->row_array();
 											// var_dump($get_last_status);
 											// die;
@@ -241,7 +242,9 @@
 												<!-- kalo dia bukan incoming -->
 												<?php if ($p['is_incoming'] == 0) {
 												?>
+
 													<td>
+														
 														<!-- ini jabodetabek -->
 														<?php if ($shp['is_jabodetabek'] == 1) {
 														?>
@@ -401,7 +404,8 @@
 															<?php	} ?>
 
 
-														<?php	} ?>
+															<?php	}?>
+																
 
 													</td>
 													<!-- kalo incoming -->
@@ -412,6 +416,7 @@
 													if ($shp['is_delivery'] == 1) {
 													?>
 														<td>
+															
 															<?php $tracking_real = $this->db->limit(1)->order_by('id_tracking', 'DESC')->get_where('tbl_tracking_real', ['shipment_id' => $shp['shipment_id'], 'flag' => 9])->row_array();
 															?>
 															<?php if ($tracking_real == NULL) {
@@ -463,12 +468,14 @@
 																	<span class="text-muted">Driver</span>
 																</div>
 
-															<?php	}
+															<?php	} 
 															?>
 														</td>
 													<?php } else {
 													?>
+
 														<td>
+														
 															<?php $tracking_real = $this->db->limit(1)->order_by('id_tracking', 'DESC')->get_where('tbl_tracking_real', ['shipment_id' => $shp['shipment_id']])->row_array();
 															?>
 															<?php if ($tracking_real['flag'] == 10) {
@@ -507,7 +514,8 @@
 															?>
 																<h4 class="title">-</h4>
 
-															<?php	} ?>
+															<?php	}?>
+																
 
 														</td>
 													<?php	}
@@ -521,12 +529,12 @@
 													?>
 														<?php if ($get_last_status['flag'] >= 8  && $get_last_status['flag'] <= 11) {
 														?>
-															<a href="<?= base_url('shipper/salesOrder/weight/' . $shp['id']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Weight</a>
+															<a href="<?= base_url('shipper/salesOrder/weight/' . $shp['shipment_id']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Weight</a>
 															<a href="<?= base_url('shipper/salesOrder/edit/' . $shp['id'] . '/' . $shp['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Edit</a>
 															<a href="<?= base_url('shipper/order/detail/' . $shp['id'] . '/' . $shp['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Detail</a>
 														<?php } else {
 														?>
-															<a href="<?= base_url('shipper/salesOrder/weight/' . $shp['id']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Weight</a>
+															<a href="<?= base_url('shipper/salesOrder/weight/' . $shp['shipment_id']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Weight</a>
 															<a href="<?= base_url('shipper/salesOrder/edit/' . $shp['id'] . '/' . $shp['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Edit</a>
 															<a href="<?= base_url('shipper/order/detail/' . $shp['id'] . '/' . $shp['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Detail</a>
 														<?php	} ?>
