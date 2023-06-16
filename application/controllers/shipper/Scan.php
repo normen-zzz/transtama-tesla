@@ -195,6 +195,7 @@ class Scan extends CI_Controller
                     'created_at' => date('Y-m-d'),
                     'time' => date('H:i:s'),
                     'flag' => 9,
+                    'status_eksekusi' => 1
                 );
                 $this->db->insert('tbl_tracking_real', $data);
                 $dataOutbond = [
