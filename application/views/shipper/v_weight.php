@@ -53,7 +53,7 @@
 						<?php if ($dimension == NULL) { ?>
 							<!-- <button id="tambahBarisBtn" class="btn btn-primary mb-2">Tambah Baris</button> -->
 							<form action="<?= base_url('shipper/SalesOrder/addWeight/' . $this->uri->segment(4)) ?>" method="post">
-								<button type="submit" class="btn btn-primary mb-2">Submit Dimension</button>
+								<button onclick='$("#modalLoading").modal("show");' type="submit" class="btn btn-primary mb-2">Submit Dimension</button>
 
 								<input type="text" name="shipment_id" value="<?= $shipment['shipment_id'] ?>" hidden id="shipment_id">
 
