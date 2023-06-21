@@ -46,15 +46,17 @@
 						</div>
 					</div>
 
-					<!-- /.card-header -->
+					<!-- /.cad-header -->
 					<div class="card-body" style="overflow: auto;">
 						<?php $dimension = $this->db->get_where('tbl_dimension', array('shipment_id' => $shipment['shipment_id']))->result_array(); ?>
 
 						<?php if ($dimension == NULL) { ?>
 							<!-- <button id="tambahBarisBtn" class="btn btn-primary mb-2">Tambah Baris</button> -->
-							<form action="<?= base_url('shipper/SalesOrder/addWeight/' . $this->uri->segment(4)) ?>" method="post">
-								<button onclick='$("#modalLoading").modal("show");' type="submit" class="btn btn-primary mb-2">Submit Dimension</button>
+							<button onclick='$("#modalLoading").modal("show");' type="submit" class="btn btn-primary mb-2">Submit Dimension</button>
+								<button class="btn font-weight-bolder text-light" data-toggle="modal" data-target="#addDimensionBulk" style="background-color: #9c223b;">Bulk Input</button>
 
+							<form action="<?= base_url('shipper/SalesOrder/addWeight/' . $this->uri->segment(4)) ?>" method="post">
+								
 								<input type="text" name="shipment_id" value="<?= $shipment['shipment_id'] ?>" hidden id="shipment_id">
 
 								<?php $do = $this->db->get_where('tbl_no_do', array('shipment_id' => $shipment['shipment_id']))->result_array();
@@ -75,7 +77,7 @@
 									<tbody>
 
 										<tr>
-												<td>1</td>
+											<td>1</td>
 											<td>
 												<input required class="form-control" type="number" name="panjang[]" id="panjang">
 											</td>
@@ -98,12 +100,12 @@
 									</tbody>
 								</table>
 							</form>
-							
+
 							<button id="tambahBarisBtn" class="btn btn-primary mb-2  float-right">Tambah Baris</button>
 							<button id="hapusBaris" class="btn btn-danger mb-2 mr-4 float-right">Hapus Baris</button>
 						<?php } else { ?>
 
-							<button class="btn font-weight-bolder text-light" data-toggle="modal" data-target="#addDimension"  style="background-color: #9c223b;">Tambah</button>
+							<button class="btn font-weight-bolder text-light" data-toggle="modal" data-target="#addDimension" style="background-color: #9c223b;">Tambah</button>
 
 							<table class="table table-bordered text-center mt-2" id="tableDimensionAkhir">
 								<thead>
@@ -148,7 +150,7 @@
 
 											<td><?= $dimension1['no_do'] ?></td>
 											<td><button class="btn font-weight-bolder text-light modalEditDimension" data-toggle="modal" data-target="#editDimension" data-id_dimension="<?= $dimension1['id_dimension'] ?>" style="background-color: #9c223b;">Edit</button>
-												<a class="btn font-weight-bolder text-light" href="<?= base_url('shipper/SalesOrder/deleteDimension/'.$dimension1['id_dimension']) ?>" onclick="return confirm('Apakah Anda Yakin?')" style="background-color: #9c223b;">Delete</a>
+												<a class="btn font-weight-bolder text-light" href="<?= base_url('shipper/SalesOrder/deleteDimension/' . $dimension1['id_dimension']) ?>" onclick="return confirm('Apakah Anda Yakin?')" style="background-color: #9c223b;">Delete</a>
 											</td>
 
 
@@ -223,71 +225,122 @@
 				</button>
 			</div>
 			<div class="modal-body">
-				
-					<div class="row">
+
+				<div class="row">
 					<form action="<?= base_url('shipper/SalesOrder/addWeight/' . $this->uri->segment(4)) ?>" method="post">
-								<button onclick='$("#modalLoading").modal("show");' type="submit" class="btn btn-primary mb-2">Submit Dimension</button>
+						<button onclick='$("#modalLoading").modal("show");' type="submit" class="btn btn-primary mb-2">Submit Dimension</button>
 
-								<input type="text" name="shipment_id" value="<?= $shipment['shipment_id'] ?>" hidden id="shipment_id">
+						<input type="text" name="shipment_id" value="<?= $shipment['shipment_id'] ?>" hidden id="shipment_id">
 
-								<?php $do = $this->db->get_where('tbl_no_do', array('shipment_id' => $shipment['shipment_id']))->result_array();
-								?>
-								<table class="table table-bordered text-center" id="tableDimensionModal">
-									<thead>
-										<tr>
-											<th>No</th>
-											<th>Panjang (CM)</th>
-											<th>Lebar (CM)</th>
-											<th>Tinggi (CM)</th>
-											<th>Berat Aktual (KG)</th>
-											<?php if ($do != NULL) { ?>
-												<th>No DO</th>
-											<?php } ?>
-										</tr>
-									</thead>
-									<tbody>
+						<?php $do = $this->db->get_where('tbl_no_do', array('shipment_id' => $shipment['shipment_id']))->result_array();
+						?>
+						<table class="table table-bordered text-center" id="tableDimensionModal">
+							<thead>
+								<tr>
+									<th>No</th>
+									<th>Panjang (CM)</th>
+									<th>Lebar (CM)</th>
+									<th>Tinggi (CM)</th>
+									<th>Berat Aktual (KG)</th>
+									<?php if ($do != NULL) { ?>
+										<th>No DO</th>
+									<?php } ?>
+								</tr>
+							</thead>
+							<tbody>
 
-										<tr>
-											<td>1</td>
+								<tr>
+									<td>1</td>
 
-											<td>
-												<input required class="form-control" type="number" name="panjang[]" id="panjang">
-											</td>
-											<td>
-												<input required class="form-control" type="text" name="lebar[]" id="lebar">
-											</td>
-											<td><input required class="form-control form-control-sm" type="text" name="tinggi[]" id="tinggi"></td>
-											<td><input required class="form-control form-control-sm" type="text" name="berat[]" id="berat"></td>
-											<?php if ($do != NULL) { ?>
-												<td>
-													<select class="form-control" style="width: 200px;" name="no_do[]" id="no_do">
-														<?php foreach ($do as $do) { ?>
-															<option><?= $do['no_do'] ?></option>
-														<?php } ?>
-													</select>
-												</td>
-											<?php } ?>
-										</tr>
+									<td>
+										<input required class="form-control" type="number" name="panjang[]" id="panjang">
+									</td>
+									<td>
+										<input required class="form-control" type="text" name="lebar[]" id="lebar">
+									</td>
+									<td><input required class="form-control form-control-sm" type="text" name="tinggi[]" id="tinggi"></td>
+									<td><input required class="form-control form-control-sm" type="text" name="berat[]" id="berat"></td>
+									<?php if ($do != NULL) { ?>
+										<td>
+											<select class="form-control" style="width: 200px;" name="no_do[]" id="no_do">
+												<?php foreach ($do as $do) { ?>
+													<option><?= $do['no_do'] ?></option>
+												<?php } ?>
+											</select>
+										</td>
+									<?php } ?>
+								</tr>
 
-									</tbody>
-								</table>
-							</form>
-							<button id="tambahBarisBtn" class="btn btn-primary mb-2  float-right">Tambah Baris</button>
-							<button id="hapusBaris" class="btn btn-danger mb-2 mr-4 float-right">Hapus Baris</button>
-					</div>
-					<!-- /.card-body -->
+							</tbody>
+						</table>
+					</form>
+					<button id="tambahBarisBtn" class="btn btn-primary mb-2  float-right">Tambah Baris</button>
+					<button id="hapusBaris" class="btn btn-danger mb-2 mr-4 float-right">Hapus Baris</button>
+				</div>
+				<!-- /.card-body -->
 			</div>
 			<div class="modal-footer justify-content-between">
 				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-				
+
 			</div>
-			
+
 		</div>
 		<!-- /.modal-content -->
 	</div>
 	<!-- /.modal-dialog -->
 </div>
 
+<div class="modal fade" id="addDimensionBulk">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title">Add Dimension Bulk</h4>
+
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<a href="<?= base_url('uploads/import.xlsx') ?>" class="btn mr-2 text-light" style="background-color: #9c223b;">
+					<i class="fas fa-download text-light"> </i>
+					Download Template
+				</a>
+
+				<div class="card-body">
+					
+
+
+						<form id="kt_form" novalidate="novalidate" action="<?= base_url('shipper/SalesOrder/importWeight/'. $shipment['shipment_id']) ?>" method="POST" enctype="multipart/form-data">
+							<div class="form-group">
+								<label class="col-form-label text-lg-right font-weight-bold">Upload File</label>
+								<input type="file" id="input-file-now" required name="upload_file" class="dropify" />
+
+
+							</div>
+							<!--begin: Wr ons-->
+
+
+							<button type="submit" class="btn mr-2 text-light" style="background-color: #9c223b;">Submit</button>
+
+
+
+							<!--end: Wizard Actio-->
+						</form>
+					</div>
+				
+			</div>
+			<!-- /.card-body -->
+		</div>
+		<div class="modal-footer justify-content-between">
+			<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+
+		</div>
+
+	</div>
+	<!-- /.modal-content -->
+</div>
+<!-- /.modal-dialog -->
+</div>
 
 
 
@@ -331,12 +384,12 @@
 </script>
 
 <script>
-    $(document).ready(function() {
-      $('#hapusBaris').click(function() {
-        $('table tr:last').remove();
-      });
-    });
-  </script>
+	$(document).ready(function() {
+		$('#hapusBaris').click(function() {
+			$('table tr:last').remove();
+		});
+	});
+</script>
 
 <script>
 	$(document).ready(function() {
@@ -390,7 +443,7 @@
 				}
 			});
 
-			
+
 		});
 	});
 </script>

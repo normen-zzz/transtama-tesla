@@ -32,7 +32,7 @@
 													<input type="text" name="id_tracking" value="<?= $id_tracking ?>">
 												</div>
 												<!--begin: Wizard Actions-->
-												<div class="d-flex justify-content-between border-top mt-5 pt-10">
+												
 
 													<button type="submit" class="btn mr-2 text-light" style="background-color: #9c223b;">Submit</button>
 													<a href="<?= base_url('shipper/order/view/' . $id_so.'/'.$id_tracking) ?>" class="btn mr-2 text-light" style="background-color: #9c223b;">
@@ -40,7 +40,7 @@
 														Back
 													</a>
 
-												</div>
+												
 												<!--end: Wizard Actions-->
 											</form>
 											<!--end: Wizard Form-->

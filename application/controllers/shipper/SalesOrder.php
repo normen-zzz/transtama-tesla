@@ -1,6 +1,12 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Reader\Csv;
+use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx as WriterXlsx;
+
 class SalesOrder extends CI_Controller
 {
     public function __construct()
@@ -1242,7 +1248,7 @@ class SalesOrder extends CI_Controller
                 $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
             }
             $spreadsheet = $reader->load($_FILES['upload_file']['tmp_name']);
-            $sheetData = $spreadsheet->getActiveSheet()->toArray(null, false, false, true);
+            $sheetData = $spreadsheet->getActiveSheet()->toArray();
 
             $shipmentSebelum = $this->db->get_where('tbl_shp_order', array('shipment_id' => $shipment_id))->row_array();
             $dimensionSebelum = $this->db->get_where('tbl_dimension', array('shipment_id' => $shipment_id))->row_array();
@@ -1257,33 +1263,38 @@ class SalesOrder extends CI_Controller
             $urutan = 0;
             $berat_js = 0;
             $total_koli = 0;
+            $queue = 0;
             foreach ($sheetData as $rowdata) {
-                $panjang = $rowdata[0];
-                $lebar = $rowdata[1];
-                $tinggi = $rowdata[2];
-                $berat = $rowdata[3];
-
-                $volume = ceil(($panjang * $lebar * $tinggi) / $pembagi);
-
-                $data = array(
-                    'urutan' => ($urutan + 1),
-                    'shipment_id' => $shipment_id,
-                    'panjang' => $panjang,
-                    'lebar' => $lebar,
-                    'tinggi' => $tinggi,
-                    'berat_aktual' => $berat,
-                    'berat_volume' => $volume,
-                    'created_at' => date('Y-m-d H:i:s'),
-                    'created_by' => $this->session->userdata('id_user'),
-
-                );
-                $this->db->insert('tbl_dimension', $data);
-                if ($volume > $berat) {
-                    $berat_js += $volume;
+                if ($queue == 0) {
+                    $queue += 1;
                 } else {
-                    $berat_js += $berat;
+                    $panjang = $rowdata[0];
+                    $lebar = $rowdata[1];
+                    $tinggi = $rowdata[2];
+                    $berat = $rowdata[3];
+
+                    $volume = ceil(($panjang * $lebar * $tinggi) / $pembagi);
+
+                    $data = array(
+                        'urutan' => ($urutan + 1),
+                        'shipment_id' => $shipment_id,
+                        'panjang' => $panjang,
+                        'lebar' => $lebar,
+                        'tinggi' => $tinggi,
+                        'berat_aktual' => $berat,
+                        'berat_volume' => $volume,
+                        'created_at' => date('Y-m-d H:i:s'),
+                        'created_by' => $this->session->userdata('id_user'),
+
+                    );
+                    $this->db->insert('tbl_dimension', $data);
+                    if ($volume > $berat) {
+                        $berat_js += $volume;
+                    } else {
+                        $berat_js += $berat;
+                    }
+                    $urutan += 1;
                 }
-                $urutan += 1;
             }
 
 
@@ -1298,15 +1309,33 @@ class SalesOrder extends CI_Controller
             if ($update) {
                 $this->session->set_flashdata('message', '<div class="alert
                     alert-success" role="alert">Success</div>');
-                redirect('shipper/SalesOrder/weight/'.$shipment_id);
+                redirect('shipper/SalesOrder/weight/' . $shipment_id);
             }
-            $this->session->set_flashdata('message', '<div class="alert
-                        alert-success" role="alert">Success</div>');
-            redirect('shipper/order/view/' . $this->input->post('id_so') . '/' . $this->input->post('id_tracking'));
         } else {
             $this->session->set_flashdata('message', '<div class="alert
                     alert-danger" role="alert">Silahkan Upload File</div>');
-            redirect('shipper/order/bulk/' . $this->input->post('id_so') . '/' . $this->input->post('id_tracking'));
+            redirect('shipper/SalesOrder/weight/' . $shipment_id);
         }
+    }
+
+    public function createExcelWeight($shipment_id)
+    {
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setCellValue('A1', 'Hello');
+        $sheet->setCellValue('B1', 'World!');
+        $writer = new WriterXlsx($spreadsheet);
+
+        // Simpan file ke tempat sementara
+        $filename = 'weight.xlsx';
+        $tempFile = tempnam(sys_get_temp_dir(), $filename);
+        
+
+        // Mengatur header untuk tipe konten dan nama file
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment; filename="' . $filename . '"');
+        header('Cache-Control: max-age=0');
+
+        $writer->save('php://output');
     }
 }
