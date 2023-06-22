@@ -48,15 +48,13 @@
 
 					<!-- /.cad-header -->
 					<div class="card-body" style="overflow: auto;">
-						<?php $dimension = $this->db->get_where('tbl_dimension', array('shipment_id' => $shipment['shipment_id']))->result_array(); ?>
-
 						<?php if ($dimension == NULL) { ?>
 							<!-- <button id="tambahBarisBtn" class="btn btn-primary mb-2">Tambah Baris</button> -->
-							<button onclick='$("#modalLoading").modal("show");' type="submit" class="btn btn-primary mb-2">Submit Dimension</button>
-								<button class="btn font-weight-bolder text-light" data-toggle="modal" data-target="#addDimensionBulk" style="background-color: #9c223b;">Bulk Input</button>
-
+							
 							<form action="<?= base_url('shipper/SalesOrder/addWeight/' . $this->uri->segment(4)) ?>" method="post">
-								
+							<button onclick='$("#modalLoading").modal("show");' type="submit" class="btn btn-primary mb-2">Submit Dimension</button>
+							<button class="btn font-weight-bolder text-light" data-toggle="modal" data-target="#addDimensionBulk" style="background-color: #9c223b;">Bulk Input</button>
+
 								<input type="text" name="shipment_id" value="<?= $shipment['shipment_id'] ?>" hidden id="shipment_id">
 
 								<?php $do = $this->db->get_where('tbl_no_do', array('shipment_id' => $shipment['shipment_id']))->result_array();
@@ -65,6 +63,7 @@
 									<thead>
 										<tr>
 											<th>No</th>
+											<th>Koli</th>
 											<th>Panjang (CM)</th>
 											<th>Lebar (CM)</th>
 											<th>Tinggi (CM)</th>
@@ -78,6 +77,9 @@
 
 										<tr>
 											<td>1</td>
+											<td>
+												<input style="width: 50px;" required class="form-control" type="number" name="koli[]" id="koli">
+											</td>
 											<td>
 												<input required class="form-control" type="number" name="panjang[]" id="panjang">
 											</td>
@@ -110,7 +112,7 @@
 							<table class="table table-bordered text-center mt-2" id="tableDimensionAkhir">
 								<thead>
 									<tr>
-
+							<th>Koli</th>
 										<th>Panjang (CM)</th>
 										<th>Lebar (CM)</th>
 										<th>Tinggi (CM)</th>
@@ -129,7 +131,9 @@
 
 
 										<tr>
-
+										<td>
+												<?= $dimension1['koli'] ?>
+											</td>
 											<td>
 												<?= $dimension1['panjang'] ?>
 											</td>
@@ -226,7 +230,8 @@
 			</div>
 			<div class="modal-body">
 
-				<div class="row">
+			<div class="card-body">
+				<div style="overflow-x:auto;">
 					<form action="<?= base_url('shipper/SalesOrder/addWeight/' . $this->uri->segment(4)) ?>" method="post">
 						<button onclick='$("#modalLoading").modal("show");' type="submit" class="btn btn-primary mb-2">Submit Dimension</button>
 
@@ -238,6 +243,7 @@
 							<thead>
 								<tr>
 									<th>No</th>
+									<th>Koli</th>
 									<th>Panjang (CM)</th>
 									<th>Lebar (CM)</th>
 									<th>Tinggi (CM)</th>
@@ -251,7 +257,9 @@
 
 								<tr>
 									<td>1</td>
-
+									<td>
+										<input required class="form-control" type="number" name="koli[]" id="koli">
+									</td>
 									<td>
 										<input required class="form-control" type="number" name="panjang[]" id="panjang">
 									</td>
@@ -274,10 +282,11 @@
 							</tbody>
 						</table>
 					</form>
-					<button id="tambahBarisBtn" class="btn btn-primary mb-2  float-right">Tambah Baris</button>
+					<button id="tambahBarisBtnModal" class="btn btn-primary mb-2  float-right">Tambah Baris</button>
 					<button id="hapusBaris" class="btn btn-danger mb-2 mr-4 float-right">Hapus Baris</button>
 				</div>
 				<!-- /.card-body -->
+				</div>
 			</div>
 			<div class="modal-footer justify-content-between">
 				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -301,33 +310,33 @@
 				</button>
 			</div>
 			<div class="modal-body">
-				<a href="<?= base_url('uploads/import.xlsx') ?>" class="btn mr-2 text-light" style="background-color: #9c223b;">
+				<a href="<?= base_url('shipper/SalesOrder/createExcelWeight/' . $shipment['shipment_id']) ?>" class="btn mr-2 text-light" style="background-color: #9c223b;">
 					<i class="fas fa-download text-light"> </i>
 					Download Template
 				</a>
 
 				<div class="card-body">
-					
-
-
-						<form id="kt_form" novalidate="novalidate" action="<?= base_url('shipper/SalesOrder/importWeight/'. $shipment['shipment_id']) ?>" method="POST" enctype="multipart/form-data">
-							<div class="form-group">
-								<label class="col-form-label text-lg-right font-weight-bold">Upload File</label>
-								<input type="file" id="input-file-now" required name="upload_file" class="dropify" />
-
-
-							</div>
-							<!--begin: Wr ons-->
-
-
-							<button type="submit" class="btn mr-2 text-light" style="background-color: #9c223b;">Submit</button>
 
 
 
-							<!--end: Wizard Actio-->
-						</form>
-					</div>
-				
+					<form id="kt_form" novalidate="novalidate" action="<?= base_url('shipper/SalesOrder/importWeight/' . $shipment['shipment_id']) ?>" method="POST" enctype="multipart/form-data">
+						<div class="form-group">
+							<label class="col-form-label text-lg-right font-weight-bold">Upload File</label>
+							<input type="file" id="input-file-now" required name="upload_file" class="dropify" />
+
+
+						</div>
+						<!--begin: Wr ons-->
+
+
+						<button type="submit" class="btn mr-2 text-light" style="background-color: #9c223b;">Submit</button>
+
+
+
+						<!--end: Wizard Actio-->
+					</form>
+				</div>
+
 			</div>
 			<!-- /.card-body -->
 		</div>
@@ -359,13 +368,46 @@
 			var newRow = rowCount + 1;
 			var row = $("<tr>");
 			var cell0 = $("<td>").append(newRow);
-			var cell1 = $("<td>").append($("<input>").attr("type", "number").attr("name", "panjang[]").addClass("form-control").attr("required", true));
-			var cell2 = $("<td>").append($("<input>").attr("type", "number").attr("name", "lebar[]").addClass("form-control").attr("required", true));
-			var cell3 = $("<td>").append($("<input>").attr("type", "number").attr("name", "tinggi[]").addClass("form-control form-control-sm").attr("required", true));
-			var cell4 = $("<td>").append($("<input>").attr("type", "number").attr("name", "berat[]").addClass("form-control form-control-sm").attr("required", true));
-			var cell5 = $("<td>").append(getDoSelectOptions());
-			row.append(cell0, cell1, cell2, cell3, cell4, cell5);
+			var cell1 = $("<td>").append($("<input>").attr("type", "number").attr("name", "koli[]").addClass("form-control").attr("required", true));
+			var cell2 = $("<td>").append($("<input>").attr("type", "number").attr("name", "panjang[]").addClass("form-control").attr("required", true));
+			var cell3 = $("<td>").append($("<input>").attr("type", "number").attr("name", "lebar[]").addClass("form-control").attr("required", true));
+			var cell4 = $("<td>").append($("<input>").attr("type", "number").attr("name", "tinggi[]").addClass("form-control form-control-sm").attr("required", true));
+			var cell5 = $("<td>").append($("<input>").attr("type", "number").attr("name", "berat[]").addClass("form-control form-control-sm").attr("required", true));
+			var cell6 = $("<td>").append(getDoSelectOptions());
+			row.append(cell0, cell1, cell2, cell3, cell4, cell5, cell6);
 			$("#tableDimension tbody").append(row);
+			$('.selectField').select2();
+
+		});
+
+		function getDoSelectOptions() {
+			var select = $("<select>").attr("name", "no_do[]").addClass("form-control selectField");
+			<?php foreach ($do1 as $do2) : ?>
+				var option = $("<option>").attr("value", "<?php echo $do2['no_do']; ?>").text("<?php echo $do2['no_do']; ?>");
+
+				select.append(option);
+
+			<?php endforeach; ?>
+			return select;
+		}
+	});
+</script>
+
+<script>
+	$(document).ready(function() {
+		$("#tambahBarisBtnModal").click(function() {
+			var rowCount = $('#tableDimensionModal tbody tr').length;
+			var newRow = rowCount + 1;
+			var row = $("<tr>");
+			var cell0 = $("<td>").append(newRow);
+			var cell1 = $("<td>").append($("<input>").attr("type", "number").attr("name", "koli[]").addClass("form-control").attr("required", true));
+			var cell2 = $("<td>").append($("<input>").attr("type", "number").attr("name", "panjang[]").addClass("form-control").attr("required", true));
+			var cell3 = $("<td>").append($("<input>").attr("type", "number").attr("name", "lebar[]").addClass("form-control").attr("required", true));
+			var cell4 = $("<td>").append($("<input>").attr("type", "number").attr("name", "tinggi[]").addClass("form-control form-control-sm").attr("required", true));
+			var cell5 = $("<td>").append($("<input>").attr("type", "number").attr("name", "berat[]").addClass("form-control form-control-sm").attr("required", true));
+			var cell6 = $("<td>").append(getDoSelectOptions());
+			row.append(cell0, cell1, cell2, cell3, cell4, cell5, cell6);
+			$("#tableDimensionModal tbody").append(row);
 			$('.selectField').select2();
 
 		});
@@ -410,6 +452,11 @@
 						'<div class="row">' +
 						'<input type="text" name="id_dimension" id="id_dimension" value="' + response.id_dimension + '" hidden>' +
 						'<div class="col-md-12">' +
+						'<label for="koli">Koli</label>' +
+						'<input type="text" name="koli" class="form-control" value="' + response.koli + '" id="koli">' +
+
+						'</div>' +
+						'<div class="col-md-12 mt-2">' +
 						'<label for="panjang">Panjang</label>' +
 						'<input type="text" name="panjang" class="form-control" value="' + response.panjang + '" id="panjang">' +
 
@@ -447,3 +494,6 @@
 		});
 	});
 </script>
+
+
+

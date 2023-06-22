@@ -18,7 +18,7 @@ class Scan extends CI_Controller
     {
         $data['title'] = 'Scan';
         // $data['gateway'] = $this->db->order_by('id_gateway', 'desc')->get('tbl_gateway')->result_array();
-        $data['gateway'] = $this->order->dispatch()->result_array();
+        // $data['gateway'] = $this->order->dispatch()->result_array();
         $data['outbond'] = $this->order->outbond()->result_array();
         $data['users'] = $this->db->get_where('tb_user', ['id_role' => 2])->result_array();
 

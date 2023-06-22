@@ -59,7 +59,7 @@
 											$getLast = $this->order->getLastTracking($g['shipment_id'])->row_array();
 											if ($g['is_incoming'] != 1) {
 
-												
+
 
 
 												if ($getLast['flag'] >= 4 && $getLast['flag'] <= 5) {
@@ -84,9 +84,9 @@
 																	?>
 
 
-																		<a href="#" class="btn btn-sm text-light" data-toggle="modal" data-target="#modal-lg-dl<?= $g['shipment_id'] ?>" style="background-color: #9c223b;">
+																		<button  class="btn btn-sm text-light modalDelivery" data-toggle="modal" data-shipment_id="<?= $g['shipment_id'] ?>" data-id_so="<?= $g['id_so'] ?>" data-target="#modal-lg-dl" style="background-color: #9c223b;">
 																			Assign Driver DL
-																		</a>
+																		</button>
 																		<?php $tracking_real = $this->db->limit(1)->order_by('id_tracking', 'DESC')->get_where('tbl_tracking_real', ['shipment_id' => $g['shipment_id'], 'flag' => 5])->row_array();
 																		$order = $this->db->limit(1)->order_by('id_tracking', 'DESC')->get_where('tbl_tracking_real', ['shipment_id' => $g['shipment_id']])->row_array();
 																		// var_dump($tracking_real);
@@ -103,23 +103,23 @@
 
 														<?php	} else {
 														?>
-															
+
 															<td>
 																<!--begin::Symbol-->
-															<div class="symbol symbol-40 symbol-light-success">
-																<span class="symbol-label">
-																	<img src="<?= base_url('assets/back/metronic/') ?>media/avatars/009-boy-4.svg" class="h-75 align-self-end" alt="">
-																</span>
-															</div>
-															<!--end::Symbol-->
-															<!--begin::Text-->
-															<?php $driver = $this->db->get_where('tb_user', ['id_user' => $tracking_real['id_user']])->row_array(); ?>
-															<div class="d-flex flex-column flex-grow-1 font-weight-bold">
-																<a href="#" class="text-dark text-hover-primary mb-1 font-size-lg"><?= $driver['nama_user'] ?></a>
-																<span class="text-muted">Driver</span>
-															</div>
+																<div class="symbol symbol-40 symbol-light-success">
+																	<span class="symbol-label">
+																		<img src="<?= base_url('assets/back/metronic/') ?>media/avatars/009-boy-4.svg" class="h-75 align-self-end" alt="">
+																	</span>
+																</div>
+																<!--end::Symbol-->
+																<!--begin::Text-->
+																<?php $driver = $this->db->get_where('tb_user', ['id_user' => $tracking_real['id_user']])->row_array(); ?>
+																<div class="d-flex flex-column flex-grow-1 font-weight-bold">
+																	<a href="#" class="text-dark text-hover-primary mb-1 font-size-lg"><?= $driver['nama_user'] ?></a>
+																	<span class="text-muted">Driver</span>
+																</div>
 															</td>
-															
+
 															<!--end::Text-->
 														<?php	} ?>
 
@@ -142,21 +142,21 @@
 
 								<?php	} else {
 								?>
-								<td>
-									<!--begin::Symbol-->
-									<div class="symbol symbol-40 symbol-light-success">
-										<span class="symbol-label">
-											<img src="<?= base_url('assets/back/metronic/') ?>media/avatars/009-boy-4.svg" class="h-75 align-self-end" alt="">
-										</span>
-									</div>
-									<!--end::Symbol-->
-									<!--begin::Text-->
-									<?php $driver = $this->db->get_where('tb_user', ['id_user' => $tracking['id_user']])->row_array(); ?>
-									<div class="d-flex flex-column flex-grow-1 font-weight-bold">
-										<a href="#" class="text-dark text-hover-primary mb-1 font-size-lg"><?= $driver['nama_user'] ?></a>
-										<span class="text-muted">Driver</span>
-									</div>
-									<!--end::Text-->
+									<td>
+										<!--begin::Symbol-->
+										<div class="symbol symbol-40 symbol-light-success">
+											<span class="symbol-label">
+												<img src="<?= base_url('assets/back/metronic/') ?>media/avatars/009-boy-4.svg" class="h-75 align-self-end" alt="">
+											</span>
+										</div>
+										<!--end::Symbol-->
+										<!--begin::Text-->
+										<?php $driver = $this->db->get_where('tb_user', ['id_user' => $tracking['id_user']])->row_array(); ?>
+										<div class="d-flex flex-column flex-grow-1 font-weight-bold">
+											<a href="#" class="text-dark text-hover-primary mb-1 font-size-lg"><?= $driver['nama_user'] ?></a>
+											<span class="text-muted">Driver</span>
+										</div>
+										<!--end::Text-->
 									</td>
 								<?php	} ?>
 
@@ -175,9 +175,9 @@
 						<!-- kalo shipmentnya telah tiba di hub benhil -->
 						<?php if ($getLast['flag'] == 5 || $getLast['flag'] == 6) {
 						?>
-							<a href="#" class="btn text-light" data-toggle="modal" data-target="#modal-lg-dl-luar<?= $g['shipment_id'] ?>" style="background-color: #9c223b;">
+							<button class="btn text-light modalDeliveryLuar" data-toggle="modal" data-target="#modal-lg-dl-luar" data-shipment_id="<?= $g['shipment_id'] ?>" data-id_so="<?= $g['id_so'] ?>" style="background-color: #9c223b;">
 								Scan Out
-							</a>
+							</button>
 							<?php $tracking_real = $this->db->limit(1)->order_by('id_tracking', 'DESC')->get_where('tbl_tracking_real', ['shipment_id' => $g['shipment_id'], 'flag' => 5])->row_array();
 																		$order = $this->db->limit(1)->order_by('id_tracking', 'DESC')->get_where('tbl_tracking_real', ['shipment_id' => $g['shipment_id']])->row_array();
 																		// var_dump($tracking_real);
@@ -193,21 +193,21 @@
 
 								<?php	} else {
 								?>
-								<td>
-									<!--begin::Symbol-->
-									<div class="symbol symbol-40 symbol-light-success">
-										<span class="symbol-label">
-											<img src="<?= base_url('assets/back/metronic/') ?>media/avatars/009-boy-4.svg" class="h-75 align-self-end" alt="">
-										</span>
-									</div>
-									<!--end::Symbol-->
-									<!--begin::Text-->
-									<?php $driver = $this->db->get_where('tb_user', ['id_user' => $tracking_real['id_user']])->row_array(); ?>
-									<div class="d-flex flex-column flex-grow-1 font-weight-bold">
-										<a href="#" class="text-dark text-hover-primary mb-1 font-size-lg"><?= $driver['nama_user'] ?></a>
-										<span class="text-muted">Driver</span>
-									</div>
-									<!--end::Text-->
+									<td>
+										<!--begin::Symbol-->
+										<div class="symbol symbol-40 symbol-light-success">
+											<span class="symbol-label">
+												<img src="<?= base_url('assets/back/metronic/') ?>media/avatars/009-boy-4.svg" class="h-75 align-self-end" alt="">
+											</span>
+										</div>
+										<!--end::Symbol-->
+										<!--begin::Text-->
+										<?php $driver = $this->db->get_where('tb_user', ['id_user' => $tracking_real['id_user']])->row_array(); ?>
+										<div class="d-flex flex-column flex-grow-1 font-weight-bold">
+											<a href="#" class="text-dark text-hover-primary mb-1 font-size-lg"><?= $driver['nama_user'] ?></a>
+											<span class="text-muted">Driver</span>
+										</div>
+										<!--end::Text-->
 									</td>
 								<?php	} ?>
 
@@ -229,21 +229,21 @@
 
 								<?php	} else {
 								?>
-								<td>
-									<!--begin::Symbol-->
-									<div class="symbol symbol-40 symbol-light-success">
-										<span class="symbol-label">
-											<img src="<?= base_url('assets/back/metronic/') ?>media/avatars/009-boy-4.svg" class="h-75 align-self-end" alt="">
-										</span>
-									</div>
-									<!--end::Symbol-->
-									<!--begin::Text-->
-									<?php $driver = $this->db->get_where('tb_user', ['id_user' => $tracking['id_user']])->row_array(); ?>
-									<div class="d-flex flex-column flex-grow-1 font-weight-bold">
-										<a href="#" class="text-dark text-hover-primary mb-1 font-size-lg"><?= $driver['nama_user'] ?></a>
-										<span class="text-muted">Driver</span>
-									</div>
-									<!--end::Text-->
+									<td>
+										<!--begin::Symbol-->
+										<div class="symbol symbol-40 symbol-light-success">
+											<span class="symbol-label">
+												<img src="<?= base_url('assets/back/metronic/') ?>media/avatars/009-boy-4.svg" class="h-75 align-self-end" alt="">
+											</span>
+										</div>
+										<!--end::Symbol-->
+										<!--begin::Text-->
+										<?php $driver = $this->db->get_where('tb_user', ['id_user' => $tracking['id_user']])->row_array(); ?>
+										<div class="d-flex flex-column flex-grow-1 font-weight-bold">
+											<a href="#" class="text-dark text-hover-primary mb-1 font-size-lg"><?= $driver['nama_user'] ?></a>
+											<span class="text-muted">Driver</span>
+										</div>
+										<!--end::Text-->
 									</td>
 								<?php	} ?>
 
@@ -325,13 +325,16 @@
 	</div>
 </form>
 
-<?php foreach ($outbond as $shp) {
-?>
-	<div class="modal fade" id="modal-lg-dl<?= $shp['shipment_id'] ?>">
+
+
+
+
+
+<div class="modal fade" id="modal-lg-dl">
 		<div class="modal-dialog modal-lg">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h4 class="modal-title">Assign Driver DL <b><?= $shp['shipment_id'] ?></b> </h4>
+					<h4 class="modal-title">Assign Driver DL</b> </h4>
 
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 						<span aria-hidden="true">&times;</span>
@@ -339,24 +342,10 @@
 				</div>
 				<div class="modal-body">
 					<form action="<?= base_url('shipper/Scan/assignDriverDl') ?>" method="POST">
-						<div class="card-body">
-							<div class="row">
-								<input type="text" name="id_so" class="form-control" hidden value="<?= $shp['id_so'] ?>">
-								<input type="text" name="shipment_id" class="form-control" hidden value="<?= $shp['shipment_id'] ?>">
-								<!-- <input type="text" name="id_tracking" class="form-control" value="<?= $shipment['id_tracking'] ?>"> -->
-								<div class="col-md-12">
-									<label for="id_driver">Choose Driver : </label>
-									<select name="id_driver" class="form-control" style="width: 200px;">
-										<?php foreach ($users as $u) {
-										?>
-											<option value="<?= $u['id_user'] ?>"><?= $u['nama_user'] ?></option>
-										<?php	} ?>
-									</select>
+						<div id="modal-content">
 
-								</div>
-
-							</div>
 						</div>
+
 						<!-- /.card-body -->
 				</div>
 				<div class="modal-footer justify-content-between">
@@ -370,131 +359,129 @@
 		<!-- /.modal-dialog -->
 	</div>
 
-<?php } ?>
+<div class="modal fade" id="modal-lg-dl-luar">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title">Assign Driver & Map Gateway</h4>
 
-<?php foreach ($outbond as $shp) {
-?>
-	<div class="modal fade" id="modal-dl-incoming<?= $shp['shipment_id'] ?>">
-		<div class="modal-dialog modal-lg">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h4 class="modal-title">Assign Driver DL <b><?= $shp['shipment_id'] ?></b> </h4>
-
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-						<span aria-hidden="true">&times;</span>
-					</button>
-				</div>
-				<div class="modal-body">
-					<form action="<?= base_url('shipper/Scan/assignDriverDlIncoming') ?>" method="POST">
-						<div class="card-body">
-							<div class="row">
-								<input type="text" name="id_so" class="form-control" hidden value="<?= $shp['id_so'] ?>">
-								<input type="text" name="shipment_id" class="form-control" hidden value="<?= $shp['shipment_id'] ?>">
-								<!-- <input type="text" name="id_tracking" class="form-control" value="<?= $shipment['id_tracking'] ?>"> -->
-								<div class="col-md-12">
-									<label for="id_driver">Choose Driver : </label>
-									<select name="id_driver" class="form-control" style="width: 200px;">
-										<?php foreach ($users as $u) {
-										?>
-											<option value="<?= $u['id_user'] ?>"><?= $u['nama_user'] ?></option>
-										<?php	} ?>
-									</select>
-
-								</div>
-
-							</div>
-						</div>
-						<!-- /.card-body -->
-				</div>
-				<div class="modal-footer justify-content-between">
-					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-					<button onclick='$("#modalLoading").modal("show");' type="submit" class="btn btn-primary">Submit</button>
-				</div>
-				</form>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
 			</div>
-			<!-- /.modal-content -->
-		</div>
-		<!-- /.modal-dialog -->
-	</div>
+			<div class="modal-body">
+				<form action="<?= base_url('shipper/Scan/assignDriverHub') ?>" method="POST">
 
-<?php } ?>
+					<div id="modal-content-delivery-luar">
 
-<?php foreach ($outbond as $shp) {
-?>
-	<div class="modal fade" id="modal-lg-dl-luar<?= $shp['shipment_id'] ?>">
-		<div class="modal-dialog modal-lg">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h4 class="modal-title">Assign Driver & Map Gateway <b><?= $shp['shipment_id'] ?></b></h4>
+					</div>
 
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-						<span aria-hidden="true">&times;</span>
-					</button>
-				</div>
-				<div class="modal-body">
-					<form action="<?= base_url('shipper/Scan/assignDriverHub') ?>" method="POST">
-						<div class="card-body">
-							<div class="row">
-								<input type="text" name="id_so" class="form-control" hidden value="<?= $shp['id_so'] ?>">
-								<input type="text" name="shipment_id" class="form-control" hidden value="<?= $shp['shipment_id'] ?>">
-								<div class="col-md-6">
-									<label for="id_driver">Choose Driver : </label>
-									<select name="id_driver" class="form-control" style="width: 200px;">
-										<?php foreach ($users as $u) {
-										?>
-											<option value="<?= $u['id_user'] ?>"><?= $u['nama_user'] ?></option>
-										<?php	} ?>
-									</select>
-
-								</div>
-								<div class="col-md-6">
-									<div class="form-group">
-										<label for="exampleInputEmail1">Choose Gateway ?</label>
-										<div class="form-check">
-											<input class="radioBtnClass" type="radio" name="gateway" value="ops">
-											<label class="form-check-label" for="flexRadioDefault1">
-												OPS
-											</label>
-										</div>
-										<div class="form-check">
-											<input class="radioBtnClass" type="radio" name="gateway" value="cs">
-											<label class="form-check-label" for="flexRadioDefault1">
-												CS
-											</label>
-										</div>
-									</div>
-
-								</div>
-								<div class="col-md-6">
-									<div class="form-group">
-										<label for="exampleInputPassword1">HUB ? <span style="color: red;">Soekarno Hatta or, Cengkareng</span> </label>
-										<input type="text" class="form-control" name="note">
-									</div>
-
-								</div>
-								<!-- <div class="col-md-6" id="driver2" style="display: none;">
-									<label for="id_driver">Choose Gateway : </label>
-									<select name="driver_gateway" class="form-control" style="width: 200px;">
-										<?php foreach ($users as $u) {
-										?>
-											<option value="<?= $u['id_user'] ?>"><?= $u['nama_user'] ?></option>
-										<?php	} ?>
-									</select>
-								</div> -->
-
-							</div>
-						</div>
-						<!-- /.card-body -->
-				</div>
-				<div class="modal-footer justify-content-between">
-					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-					<button onclick='$("#modalLoading").modal("show");' type="submit" class="btn btn-primary">Submit</button>
-				</div>
-				</form>
+					<!-- /.card-body -->
 			</div>
-			<!-- /.modal-content -->
+			<div class="modal-footer justify-content-between">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				<button onclick='$("#modalLoading").modal("show");' type="submit" class="btn btn-primary">Submit</button>
+			</div>
+			</form>
 		</div>
-		<!-- /.modal-dialog -->
+		<!-- /.modal-content -->
 	</div>
+	<!-- /.modal-dialog -->
+</div>
 
-<?php } ?>
+
+<script>
+		$(document).ready(function() {
+			$('.modalDelivery').click(function() {
+				var shipment_id = $(this).data('shipment_id'); // Mendapatkan ID dari atribut data-id tombol yang diklik
+				var id_so = $(this).data('id_so');
+				$('#modal-content').html('<p>Please Wait </p>');
+				// Memuat data menggunakan AJAX dengan mengirimkan ID sebagai parameter
+				
+						// Menampilkan data ke dalam modal
+						var content = '<div class="card-body"><div class="row">' +
+							'Asign Delivery ' + shipment_id +
+							'<input type="text" name="id_so" class="form-control" hidden value="' + id_so + '">' +
+							'<input type="text" name="shipment_id" class="form-control" hidden value="' + shipment_id + '">' +
+							'<div class="col-md-12">' +
+							'<label for="id_driver">Choose Driver : </label>' +
+							'<select name="id_driver" class="form-select" id="selectField" style="width: 200px;">' +
+							<?php foreach ($users as $u) {
+							?> '<option value="<?= $u['id_user'] ?>"><?= $u['nama_user'] ?></option>' +
+							<?php	} ?> '</select>' +
+
+							'</div>' +
+
+							'</div>' +
+							'</div>';
+						$('#modal-content').html(content);
+						$('#selectField').select2();
+
+					
+			});
+		});
+	</script>
+<script>
+	$(document).ready(function() {
+		$('.modalDeliveryLuar').click(function() {
+
+			var shipment_id = $(this).data('shipment_id'); // Mendapatkan ID dari atribut data-id tombol yang diklik
+			var id_so = $(this).data('id_so');
+			var selectHtml = $('#selectField').html();
+			$('#modal-content-delivery-luar').html('<p>Please Wait </p>');
+			// Memuat data menggunakan AJAX dengan mengirimkan ID sebagai parameter
+			
+					// Menampilkan data ke dalam modal
+					var content = '<div class="card-body">' +
+						'<h2>Assign Driver & Map Gateway ' + shipment_id + '</h2>' +
+						'<br>' +
+						'<div class="row">' +
+						'<input type="text" name="id_so" class="form-control" hidden value="' + id_so + '">' +
+						'<input type="text" name="shipment_id" class="form-control" hidden value="' + shipment_id + '">' +
+						'<div class="col-md-6">' +
+						'<label for="id_driver">Choose Driver : </label>' +
+						'<select name="id_driver" class="form-control select" id="selectField" style="width: 200px;">' +
+						<?php foreach ($users as $u) {
+						?> '<option value="<?= $u['id_user'] ?>"><?= $u['nama_user'] ?></option>' +
+						<?php	} ?> '</select>' +
+
+						'</div>' +
+						'<div class="col-md-6">' +
+						'<div class="form-group">' +
+						'<label for="exampleInputEmail1">Choose Gateway ?</label>' +
+						'<div class="form-check">' +
+						'<input class="radioBtnClass" type="radio" name="gateway" value="ops">' +
+						'<label class="form-check-label" for="flexRadioDefault1">' +
+						'OPS' +
+						'</label>' +
+						'	</div>' +
+						'<div class="form-check">' +
+						'<input class="radioBtnClass" type="radio" name="gateway" value="cs">' +
+						'<label class="form-check-label" for="flexRadioDefault1">' +
+						'CS' +
+						'</label>' +
+						'</div>' +
+						'</div>' +
+
+						'</div>' +
+						'<div class="col-md-6">' +
+						'<div class="form-group">' +
+						'<label for="exampleInputPassword1">HUB ? <span style="color: red;">Soekarno Hatta or, Cengkareng</span> </label>' +
+						'<input type="text" class="form-control" name="note">' +
+						'</div>' +
+
+						'</div>' +
+
+
+
+						'</div>' +
+						'</div>';
+
+					$('#modal-content-delivery-luar').html(content);
+					$('#selectField').select2();
+
+
+				
+		});
+	});
+</script>

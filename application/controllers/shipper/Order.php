@@ -618,7 +618,7 @@ class Order extends CI_Controller
                     if ($insert) {
                         $this->barcode($shipment_id);
                         $this->qrcode($shipment_id);
-                        $get_tracking = $this->db->limit(3)->order_by('id_tracking', 'ASC')->get_where('tbl_tracking_real', ['id_so' => $this->input->post('id_so')])->result_array();
+                        $get_tracking = $this->db->limit(4)->order_by('id_tracking', 'ASC')->get_where('tbl_tracking_real', ['id_so' => $this->input->post('id_so')])->result_array();
                         foreach ($get_tracking as $track) {
                             $data = array(
                                 'shipment_id' => $shipment_id,
@@ -1313,7 +1313,7 @@ class Order extends CI_Controller
         $mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => [74, 105]]);
 
         $where = array('id_so' => $id);
-        $this->db->select('*, b.service_name, b.prefix');
+        $this->db->select('a.shipment_id,a.id_so,a.shipper,a.tree_shipper,a.tree_consignee,a.consigne,a.destination,a.city_consigne,a.state_consigne,a.city_shipper,a.koli,a.is_weight_print,a.state_shipper,a.signature,a.created_at,a.sender,a.tgl_pickup, b.service_name, b.prefix');
         $this->db->from('tbl_shp_order a');
         $this->db->join('tb_service_type b', 'a.service_type=b.code');
         $this->db->where('a.id_so', $id);
