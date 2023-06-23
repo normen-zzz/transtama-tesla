@@ -65,6 +65,7 @@ class PengajuanModel extends CI_Model
         $this->db->join('tbl_shp_order b','a.shipment_id=b.shipment_id');
         // $this->db->where('MONTH(b.tgl_pickup)', 10);
         // $this->db->where('YEAR(b.tgl_pickup)', 2022);
+        $this->db->where('b.deleted',0);
         $this->db->order_by('b.shipment_id', 'DESC');
         return $this->db->get();
     }

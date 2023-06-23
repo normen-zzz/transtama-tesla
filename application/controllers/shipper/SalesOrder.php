@@ -782,11 +782,11 @@ class SalesOrder extends CI_Controller
 
 
             if ($volume > $berat[$i]) {
-                $berat_js += $volume;
+                $berat_js += $volume * $koli[$i];
             } else {
-                $berat_js += $berat[$i];
+                $berat_js += $berat[$i] * $koli[$i];
             }
-            $totalKoli += $koli[$i];
+           
         }
 
         if ($dimensionSebelum == null) {
@@ -795,7 +795,7 @@ class SalesOrder extends CI_Controller
             $koliSebelum = $shipmentSebelum['koli'];
         }
 
-        $update = $this->db->update('tbl_shp_order', array('berat_js' => $shipmentSebelum['berat_js'] + ($berat_js * $totalKoli) , 'koli' => $koliSebelum + $totalKoli), array('shipment_id' => $shipment_id));
+        $update = $this->db->update('tbl_shp_order', array('berat_js' => $shipmentSebelum['berat_js'] + $berat_js , 'koli' => $koliSebelum + $totalKoli), array('shipment_id' => $shipment_id));
 
         if ($update) {
             $this->session->set_flashdata('message', '<div class="alert

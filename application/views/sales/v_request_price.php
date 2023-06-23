@@ -51,7 +51,7 @@
                     <div class="card-toolbar float-right">
 
                         <!--begin::Button-->
-                        <a href="#" class="btn font-weight-bolder text-light" data-toggle="modal" data-target="#modal-lg" style="background-color: #9c223b;">
+                        <a href="#" class="btn font-weight-bolder text-light" data-toggle="modal" data-target="#addRequestBulk" style="background-color: #9c223b;">
                             <span class="svg-icon svg-icon-md">
                                 <i class="fa fa-plus text-light"></i>
                                 <!--end::Svg Icon-->
@@ -380,6 +380,48 @@
     <!-- /.modal-dialog -->
 </div>
 <!-- /.modal -->
+
+
+<div class="modal fade" id="addRequestBulk">
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title">Add Request Bulk</h4>
+
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				<a href="<?= base_url('sales/RequestPrice/createExcelTemplate') ?>" class="btn mr-2 text-light" style="background-color: #9c223b;">
+					<i class="fas fa-download text-light"> </i>
+					Download Template
+				</a>
+
+				<div class="card-body">
+
+
+
+					<form id="kt_form" novalidate="novalidate" action="<?= base_url('sales/RequestPrice/importRequest') ?>" method="POST" enctype="multipart/form-data">
+						<div class="form-group">
+							<label class="col-form-label text-lg-right font-weight-bold">Upload File</label>
+							<input type="file" id="input-file-now" required name="upload_file" class="dropify" />
+						</div>
+						<button type="submit" class="btn mr-2 text-light" style="background-color: #9c223b;">Submit</button>
+					</form>
+				</div>
+			</div>
+		</div>
+		<div class="modal-footer justify-content-between">
+			<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+
+		</div>
+
+	</div>
+	<!-- /.modal-content -->
+</div>
+<!-- /.modal-dialog -->
+</div>
 
 <script>
     $(document).ready(function() {
