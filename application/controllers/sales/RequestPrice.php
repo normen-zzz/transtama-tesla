@@ -54,6 +54,7 @@ class RequestPrice extends CI_Controller
             $data['provinsi'] = $provinsi->data;
             $data['city'] = $this->db->get('tb_city')->result_array();
         }
+        
         $this->backend->display('sales/v_request_price', $data);
     }
 
@@ -77,11 +78,13 @@ class RequestPrice extends CI_Controller
     public function addNewRequest()
     {
 
-        $QuerylastRequest = "SELECT a.group_request FROM tbl_request_price a ORDER BY a.group_request DESC LIMIT 1";
+        $QuerylastRequest = "SELECT a.group FROM tbl_request_price a ORDER BY a.group DESC LIMIT 1";
         $lastRequest = $this->db->query($QuerylastRequest)->row();
+        $code = $this->sales->getCodeRequestPrice();
         // var_dump($lastRequest->group);
         $request = [
             'id_sales' => $this->session->userdata('id_user'),
+            'code_request_price' => $code,
             'date_request' => date('Y-m-d H:i:s'),
             'province_from' => $this->input->post('provinsi_from'),
             'city_from' => $this->input->post('kabupaten_from'),
@@ -101,14 +104,14 @@ class RequestPrice extends CI_Controller
             'komoditi' => $this->input->post('komoditi'),
             'notes_sales' => $this->input->post('notes'),
             'is_bulk' => 0,
-            'group_request' => $lastRequest->group_request + 1
+            'group' => $lastRequest->group + 1
         ];
 
 
         $update = $this->db->insert('tbl_request_price', $request);
         if ($update) {
-            // $pesan = "Hallo Finance, ada pengajuan harga baru dari " . $this->session->userdata('nama_user') . " Tolong Segera Cek Ya, Terima Kasih";
-            // $this->wa->pickup('+6285697780467', "$pesan");
+            $pesan = "Hallo CS, ada pengajuan harga baru dari " . $this->session->userdata('nama_user') . " Tolong Segera Cek Ya, Terima Kasih";
+            $this->wa->pickup('+6285697780467', "$pesan");
             $this->session->set_flashdata('message', 'Anda Berhasil Menambah Request');
             redirect('sales/RequestPrice');
         } else {
@@ -144,7 +147,7 @@ class RequestPrice extends CI_Controller
             'komoditi' => $this->input->post('komoditi'),
             'notes_sales' => $this->input->post('notes'),
             'is_bulk' => 0,
-            'group' => $lastRequest->group_request + 1
+            'group' => $lastRequest->group + 1
         ];
 
 
@@ -221,7 +224,7 @@ class RequestPrice extends CI_Controller
             $spreadsheet = $reader->load($_FILES['upload_file']['tmp_name']);
             $sheetData = $spreadsheet->getActiveSheet()->toArray();
             $getLastRequest = $this->db->limit(1)->order_by('id_request_price', 'DESC')->get('tbl_request_price')->row_array();
-
+            $code = $this->sales->getCodeRequestPrice();
             $queue = 0;
             foreach ($sheetData as $rowdata) {
                 if ($queue == 0) {
@@ -229,6 +232,7 @@ class RequestPrice extends CI_Controller
                 } else {
                     $data = array(
                         'id_sales' => $this->session->userdata('id_user'),
+                        'code_request_price' => $code,
                         'date_request' => date('Y-m-d H:i:s'),
                         'province_from' => $rowdata[1],
                         'city_from' => $rowdata[2],

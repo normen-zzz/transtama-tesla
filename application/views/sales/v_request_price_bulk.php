@@ -48,36 +48,14 @@
 
 
 
-                    <div class="card-toolbar float-right">
-
-                        <!--begin::Button-->
-                        <a href="#" class="btn font-weight-bolder text-light" data-toggle="modal" data-target="#addRequestBulk" style="background-color: #9c223b;">
-                            <span class="svg-icon svg-icon-md">
-                                <i class="fa fa-plus text-light"></i>
-                                <!--end::Svg Icon-->
-                            </span>Add Bulk</a>
-                        <a href="#" class="btn font-weight-bolder text-light" data-toggle="modal" data-target="#modal-lg" style="background-color: #9c223b;">
-                            <span class="svg-icon svg-icon-md">
-                                <i class="fa fa-plus text-light"></i>
-                                <!--end::Svg Icon-->
-                            </span>Add</a>
-                        <!--end::Button-->
-                    </div>
+                  
                 </div>
-                <div class="col-md-12">
-                    <nav>
-                        <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
-                            <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">On Request</a>
-                            <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false">Approved</a>
-                        </div>
-                    </nav>
-                </div>
+              
                 <div class="card-body" style="overflow: auto;">
 
                     <div class="col-md-12">
 
-                        <div class="tab-content" id="nav-tabContent">
-                            <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+                        
                                 <table class="table table-separate table-head-custom table-checkable" id="myTable">
 
                                     <div class="flash-data" data-flashdata="<?= $this->session->flashdata('message'); ?>"></div>
@@ -125,51 +103,7 @@
                                             <?php } ?>
                                     </tbody>
                                 </table>
-                            </div>
-                            <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
-                                <table class="table table-separate table-head-custom table-checkable" id="myTable2">
-
-                                    <div class="flash-data" data-flashdata="<?= $this->session->flashdata('message'); ?>"></div>
-                                    <div class="flash-data" data-flashdata="<?= $this->session->flashdata('error_upload'); ?>"></div>
-                                    <thead>
-                                        <tr>
-                                            <th>Code</th>
-                                            <th>Date</th>
-                                            <th>From</th>
-                                            <th>To</th>
-                                            <th>Moda</th>
-                                            <th>Weight</th>
-                                            <th>Collie</th>
-                                            <th>Commodity</th>
-                                            <th>Dimension (P x L x T) CM</th>
-                                            <th>Notes Sales</th>
-                                            <th>Price Approved</th>
-                                            <th>Notes Cs</th>
-                                            <!-- <th>Action</th> -->
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php foreach ($requestPriceApprove->result_array() as $requestPriceApprove1) { ?>
-                                            <tr>
-                                                <td><?= $requestPriceApprove1['code_request_price'] ?></td>
-                                                <td><?= date('d F Y H:i:s', strtotime($requestPriceApprove1['date_request'])) ?></td>
-                                                <td><?= $requestPriceApprove1['alamat_from'] . ' ' .  $requestPriceApprove1['city_from'] . ', ' . $requestPriceApprove1['province_from']  ?></td>
-                                                <td><?= $requestPriceApprove1['alamat_to'] . ' ' .  $requestPriceApprove1['city_to'] . ', ' .  $requestPriceApprove1['province_to'] ?></td>
-                                                <td><?= $requestPriceApprove1['moda'] ?></td>
-                                                <td><?= $requestPriceApprove1['berat'] ?></td>
-                                                <td><?= $requestPriceApprove1['koli'] ?></td>
-                                                <td><?= $requestPriceApprove1['komoditi'] ?></td>
-                                                <td><?= $requestPriceApprove1['panjang'] . ' x ' . $requestPriceApprove1['lebar'] . ' x ' . $requestPriceApprove1['tinggi'] ?></td>
-                                                <td><?= $requestPriceApprove1['notes_sales'] ?></td>
-                                                <td><?= rupiah($requestPriceApprove1['price']) ?></td>
-                                                <td><?= $requestPriceApprove1['notes_cs'] ?></td>
-                                                <!-- <td><a data-toggle="modal" data-target="#modal-lg<?= $requestPriceApprove1['id_request_price'] ?>" class="btn btn-primary ml-2 mt-2">Add Price</a></td> -->
-                                            </tr>
-                                        <?php } ?>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
+                            
                     </div>
                     <!--begin: Datatable-->
 

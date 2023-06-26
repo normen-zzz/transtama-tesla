@@ -132,8 +132,11 @@ class SalesModel extends CI_Model
         $this->db->where('a.date_request >=', $awal);
         $this->db->where('a.date_request <=', $akhir);
         $this->db->where('a.price', NULL);
-        $this->db->order_by('a.id_request_price', 'desc');
+        $this->db->where('a.is_deleted', 0);
         $this->db->group_by('a.group');
+        $this->db->order_by('a.id_request_price', 'desc');
+       
+
         return $this->db->get();
     }
     public function getRequestPriceApprove($id, $awal, $akhir)
@@ -144,7 +147,27 @@ class SalesModel extends CI_Model
         $this->db->where('a.date_request >=', $awal);
         $this->db->where('a.date_request <=', $akhir);
         $this->db->where('a.price !=', NULL);
+        $this->db->where('a.is_deleted', 0);
         $this->db->order_by('a.id_request_price', 'desc');
+        $this->db->group_by('a.group');
         return $this->db->get();
+    }
+
+    public function getCodeRequestPrice()
+    {
+        $this->db->select_max('code_request_price');
+        $query = $this->db->get('tbl_request_price');
+        $result = $query->row_array();
+
+        if ($result['code_request_price'] === null) {
+            return 'REQP-1'; // Jika tabel kosong, mulai dari B1
+        }
+
+        $last_kode = $result['code_request_price'];
+        $last_number = (int) substr($last_kode, 5);
+        $next_number = $last_number + 1;
+        $next_kode = 'REQP-' . $next_number;
+
+        return $next_kode;
     }
 }
