@@ -93,7 +93,6 @@
                                             <th>Commodity</th>
                                             <th>Dimension (P x L x T) CM</th>
                                             <th>Notes Sales</th>
-                                            <th>Price Approved</th>
                                             <th>Notes Cs</th>
                                             <th>Action</th>
                                         </tr>
@@ -110,11 +109,16 @@
                                                 <td><?= $requestPrice1['komoditi'] ?></td>
                                                 <td><?= $requestPrice1['panjang'] . ' x ' . $requestPrice1['lebar'] . ' x ' . $requestPrice1['tinggi'] ?></td>
                                                 <td><?= $requestPrice1['notes_sales'] ?></td>
-                                                <td><?= rupiah($requestPrice1['price']) ?></td>
                                                 <td><?= $requestPrice1['notes_cs'] ?></td>
                                                 <td>
-                                                    <button href="#" class="btn font-weight-bolder text-light modalEditRequest" data-toggle="modal" data-id_request="<?= $requestPrice1['id_request_price'] ?>" data-target="#modal-edit-request" style="background-color: #9c223b;">
+                                                    <?php if ($requestPrice1['is_bulk'] == 1) {?>
+                                                        <a href="#" class="btn font-weight-bolder text-light"  style="background-color: #9c223b;">
+                                                        Detail</a>
+                                                   <?php  } else{ ?>
+                                                    <button  class="btn font-weight-bolder text-light modalEditRequest" data-toggle="modal" data-id_request="<?= $requestPrice1['id_request_price'] ?>" data-target="#modal-edit-request" style="background-color: #9c223b;">
                                                         Edit</button>
+                                                    <?php } ?>
+                                                   
                                                 </td>
                                             <?php } ?>
                                     </tbody>
@@ -282,12 +286,7 @@
                         <div class="form-group">
                             <label for="exampleInputPassword1">Alamat To</label>
                             <textarea class="form-control" name="alamat_to" id="alamat_to"></textarea>
-
                         </div>
-
-
-
-
                         <div class="form-group">
                             <label for="exampleInputPassword1">Moda</label>
                             <input type="text" class="form-control" name="moda" id="moda"></input>
@@ -402,7 +401,7 @@
 
 
 
-					<form id="kt_form" novalidate="novalidate" action="<?= base_url('sales/RequestPrice/importRequest') ?>" method="POST" enctype="multipart/form-data">
+					<form id="kt_form" novalidate="novalidate" action="<?= base_url('sales/RequestPrice/importRequestPrice') ?>" method="POST" enctype="multipart/form-data">
 						<div class="form-group">
 							<label class="col-form-label text-lg-right font-weight-bold">Upload File</label>
 							<input type="file" id="input-file-now" required name="upload_file" class="dropify" />

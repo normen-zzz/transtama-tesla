@@ -80,20 +80,20 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <?php foreach ($requestPrice->result_array() as $requestPrice) { ?>
+                                        <?php foreach ($requestPrice->result_array() as $requestPrice1) { ?>
                                             <tr>
-                                                <td><?= date('d F Y H:i:s', strtotime($requestPrice['date_request'])) ?></td>
-                                                <td><?= $requestPrice['alamat_from'] . ' ' .  $requestPrice['city_from'] . ', ' . $requestPrice['province_from']  ?></td>
-                                                <td><?= $requestPrice['alamat_to'] . ' ' .  $requestPrice['city_from'] . ', ' . $requestPrice['province_from']  ?></td>
-                                                <td><?= $requestPrice['moda'] ?></td>
-                                                <td><?= $requestPrice['berat'] ?></td>
-                                                <td><?= $requestPrice['koli'] ?></td>
-                                                <td><?= $requestPrice['komoditi'] ?></td>
-                                                <td><?= $requestPrice['panjang'] . ' x ' . $requestPrice['lebar'] . ' x ' . $requestPrice['tinggi'] ?></td>
-                                                <td><?= $requestPrice['notes_sales'] ?></td>
-                                                <td><?= rupiah($requestPrice['price']) ?></td>
-                                                <td><?= $requestPrice['notes_cs'] ?></td>
-                                                <td><a data-toggle="modal" data-target="#modal-lg<?= $requestPrice['id_request_price'] ?>" class="btn btn-primary ml-2 mt-2">Add Price</a></td>
+                                                <td><?= date('d F Y H:i:s', strtotime($requestPrice1['date_request'])) ?></td>
+                                                <td><?= $requestPrice1['alamat_from'] . ' ' .  $requestPrice1['city_from'] . ', ' . $requestPrice1['province_from']  ?></td>
+                                                <td><?= $requestPrice1['alamat_to'] . ' ' .  $requestPrice1['city_from'] . ', ' . $requestPrice1['province_from']  ?></td>
+                                                <td><?= $requestPrice1['moda'] ?></td>
+                                                <td><?= $requestPrice1['berat'] ?></td>
+                                                <td><?= $requestPrice1['koli'] ?></td>
+                                                <td><?= $requestPrice1['komoditi'] ?></td>
+                                                <td><?= $requestPrice1['panjang'] . ' x ' . $requestPrice1['lebar'] . ' x ' . $requestPrice1['tinggi'] ?></td>
+                                                <td><?= $requestPrice1['notes_sales'] ?></td>
+                                                <td><?= rupiah($requestPrice1['price']) ?></td>
+                                                <td><?= $requestPrice1['notes_cs'] ?></td>
+                                                <td><a data-toggle="modal" data-target="#modal-lg<?= $requestPrice1['id_request_price'] ?>" class="btn btn-primary ml-2 mt-2">Add Price</a></td>
                                             <?php } ?>
                                     </tbody>
                                 </table>
@@ -120,20 +120,20 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <?php foreach ($requestPriceApprove->result_array() as $requestPrice) { ?>
+                                        <?php foreach ($requestPriceApprove->result_array() as $requestPriceApprove1) { ?>
                                             <tr>
-                                                <td><?= date('d F Y H:i:s', strtotime($requestPrice['date_request'])) ?></td>
-                                                <td><?= $requestPrice['alamat_from'] . ' ' .  $requestPrice['city_from'] . ', ' . $requestPrice['province_from']  ?></td>
-                                                <td><?= $requestPrice['alamat_to'] . ' ' .  $requestPrice['city_to'] . ', ' .  $requestPrice['province_to'] ?></td>
-                                                <td><?= $requestPrice['moda'] ?></td>
-                                                <td><?= $requestPrice['berat'] ?></td>
-                                                <td><?= $requestPrice['koli'] ?></td>
-                                                <td><?= $requestPrice['komoditi'] ?></td>
-                                                <td><?= $requestPrice['panjang'] . ' x ' . $requestPrice['lebar'] . ' x ' . $requestPrice['tinggi'] ?></td>
-                                                <td><?= $requestPrice['notes_sales'] ?></td>
-                                                <td><?= rupiah($requestPrice['price']) ?></td>
-                                                <td><?= $requestPrice['notes_cs'] ?></td>
-                                                <td><a data-toggle="modal" data-target="#modal-lg<?= $requestPrice['id_request_price'] ?>" class="btn btn-primary ml-2 mt-2">Add Price</a></td>
+                                                <td><?= date('d F Y H:i:s', strtotime($requestPriceApprove1['date_request'])) ?></td>
+                                                <td><?= $requestPriceApprove1['alamat_from'] . ' ' .  $requestPriceApprove1['city_from'] . ', ' . $requestPriceApprove1['province_from']  ?></td>
+                                                <td><?= $requestPriceApprove1['alamat_to'] . ' ' .  $requestPriceApprove1['city_to'] . ', ' .  $requestPriceApprove1['province_to'] ?></td>
+                                                <td><?= $requestPriceApprove1['moda'] ?></td>
+                                                <td><?= $requestPriceApprove1['berat'] ?></td>
+                                                <td><?= $requestPriceApprove1['koli'] ?></td>
+                                                <td><?= $requestPriceApprove1['komoditi'] ?></td>
+                                                <td><?= $requestPriceApprove1['panjang'] . ' x ' . $requestPriceApprove1['lebar'] . ' x ' . $requestPriceApprove1['tinggi'] ?></td>
+                                                <td><?= $requestPriceApprove1['notes_sales'] ?></td>
+                                                <td><?= rupiah($requestPriceApprove1['price']) ?></td>
+                                                <td><?= $requestPriceApprove1['notes_cs'] ?></td>
+                                                <td><a data-toggle="modal" data-target="#modal-lg<?= $requestPriceApprove1['id_request_price'] ?>" class="btn btn-primary ml-2 mt-2">Add Price</a></td>
                                             </tr>
                                         <?php } ?>
                                     </tbody>
@@ -154,12 +154,12 @@
     <!--end::Entry-->
 </div>
 
-<?php foreach ($requestPrice2->result_array() as $request) { ?>
-    <div class="modal fade" id="modal-lg<?= $request['id_request_price'] ?>">
+<?php foreach ($requestPrice->result_array() as $requestPrice2) { ?>
+    <div class="modal fade" id="modal-lg<?= $requestPrice2['id_request_price'] ?>">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Add Price <?= $request['id_request_price'] ?></h4>
+                    <h4 class="modal-title">Add Price <?= $requestPrice2['id_request_price'] ?></h4>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -167,7 +167,7 @@
                 <div class="modal-body">
                     <form action="<?= base_url('cs/RequestPrice/addPrice') ?>" method="POST">
                         <div class="card-body">
-                            <input type="text" placeholder="Cth : Pt. ABC" class="form-control" value="<?= $request['id_request_price'] ?>" hidden name="id">
+                            <input type="text" placeholder="Cth : Pt. ABC" class="form-control" value="<?= $requestPrice2['id_request_price'] ?>" hidden name="id">
 
                             <div class="form-group">
                                 <label for="exampleInputPassword1">Price (Rp.)</label>
@@ -198,12 +198,12 @@
 <?php } ?>
 <!-- /.modal -->
 
-<?php foreach ($requestPriceApprove2->result_array() as $request) { ?>
-    <div class="modal fade" id="modal-lg<?= $request['id_request_price'] ?>">
+<?php foreach ($requestPriceApprove->result_array() as $requestPriceApprove2) { ?>
+    <div class="modal fade" id="modal-lg<?= $requestPriceApprove2['id_request_price'] ?>">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Add Price <?= $request['id_request_price'] ?></h4>
+                    <h4 class="modal-title">Add Price <?= $requestPriceApprove2['id_request_price'] ?></h4>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -211,16 +211,16 @@
                 <div class="modal-body">
                     <form action="<?= base_url('cs/RequestPrice/addPrice') ?>" method="POST">
                         <div class="card-body">
-                            <input type="text" placeholder="Cth : Pt. ABC" class="form-control" value="<?= $request['id_request_price'] ?>" hidden name="id">
+                            <input type="text" placeholder="Cth : Pt. ABC" class="form-control" value="<?= $requestPriceApprove2['id_request_price'] ?>" hidden name="id">
 
                             <div class="form-group">
                                 <label for="exampleInputPassword1">Price (Rp.)</label>
-                                <input type="text" class="form-control" name="price" value="<?= $request['price'] ?>" id="price"></input>
+                                <input type="text" class="form-control" name="price" value="<?= $requestPriceApprove2['price'] ?>" id="price"></input>
                             </div>
 
                             <div class="form-group">
                                 <label for="exampleInputPassword1">Notes</label>
-                                <textarea class="form-control" name="notes_cs" id="notes_cs"><?= $request['notes_cs'] ?></textarea>
+                                <textarea class="form-control" name="notes_cs" id="notes_cs"><?= $requestPriceApprove2['notes_cs'] ?></textarea>
                             </div>
 
                         </div>
