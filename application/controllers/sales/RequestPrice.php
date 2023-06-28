@@ -265,4 +265,20 @@ class RequestPrice extends CI_Controller
             
         }
     }
+
+    public function detailRequestPriceBulk($code) {
+
+       
+            $data['title'] = 'Request Price Detail Bulk';
+            $data['requestPrice'] = $this->sales->getRequestPriceBulk($this->session->userdata('id_user'), $awal, $akhir);
+            $data['requestPriceApprove'] = $this->sales->getRequestPriceApprove($this->session->userdata('id_user'), $awal, $akhir);
+            $data['province'] = $this->db->get('tb_province')->result_array();
+            $data['provinsi'] = $provinsi->data;
+            $data['city'] = $this->db->get('tb_city')->result_array();
+        
+        
+        $this->backend->display('sales/v_request_price', $data);
+    }
+
+    
 }
