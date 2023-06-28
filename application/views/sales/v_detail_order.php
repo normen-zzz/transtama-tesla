@@ -1,6 +1,6 @@
 	<?php
-	$getTanggalPickup = $this->db->select_max('created_at')->get_where('tbl_tracking_real', array('id_so' => $p['id_so'], 'flag' => 3))->row_array();
-	$getWaktuPickup = $this->db->select_max('time')->get_where('tbl_tracking_real', array('id_so' => $p['id_so'], 'flag' => 3))->row_array();
+	$getTanggalPickup = $this->db->select_max('created_at')->get_where('tbl_tracking_real', array('id_so' => $p['id_so'], 'flag' => 4))->row_array();
+	$getWaktuPickup = $this->db->select_max('time')->get_where('tbl_tracking_real', array('id_so' => $p['id_so'], 'flag' => 4))->row_array();
 	$WaktuPickup = date('H:i:s', strtotime($getWaktuPickup['time']));
 
 
@@ -335,6 +335,7 @@
 																	<span class="svg-icon svg-icon-md">
 																	</span>View POD</a>
 															<?php	} ?>
+															
 
 														</td>
 													<?php } else {

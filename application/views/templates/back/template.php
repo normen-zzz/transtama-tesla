@@ -92,11 +92,15 @@
 <!--end::Head-->
 
 <body id="kt_body" class="header-fixed header-mobile-fixed header-bottom-enabled page-loading" style="background-color: #eee;">
-
+	<audio id="myAudio" src="<?= base_url('assets/1.mp3') ?>" autoplay>
+		Browser Anda tidak mendukung elemen audio.
+	</audio>
 
 	<?php $this->load->view('templates/back/navbar'); ?>
 	<?= $_content; ?>
 	<?php $this->load->view('templates/back/footer'); ?>
+
+	<button onclick="playAudio()">Mulai Audio</button>
 
 	<!-- Modal -->
 	<div class="modal fade" id="modalLoading" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
@@ -107,6 +111,12 @@
 		</div>
 	</div>
 
+	<script>
+  function playAudio() {
+    var audio = document.getElementById('myAudio');
+    audio.play();
+  }
+</script>
 
 
 	<!-- REQUIRED SCRIPTS -->
@@ -1506,7 +1516,7 @@
 	</script>
 
 
-	
+
 
 
 

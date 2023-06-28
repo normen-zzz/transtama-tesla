@@ -7,6 +7,7 @@ use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Reader\Csv;
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
 use PhpOffice\PhpSpreadsheet\IOFactory;
+
 class RequestPrice extends CI_Controller
 {
     public function __construct()
@@ -54,7 +55,7 @@ class RequestPrice extends CI_Controller
             $data['provinsi'] = $provinsi->data;
             $data['city'] = $this->db->get('tb_city')->result_array();
         }
-        
+
         $this->backend->display('sales/v_request_price', $data);
     }
 
@@ -206,7 +207,7 @@ class RequestPrice extends CI_Controller
 
     public function importRequestPrice()
     {
-        
+
         $file_mimes = array(
             'text/x-comma-separated-values', 'text/comma-separated-values', 'application/octet-stream',
             'application/vnd.ms-excel', 'application/x-csv', 'text/x-csv', 'text/csv', 'application/csv',
@@ -253,32 +254,24 @@ class RequestPrice extends CI_Controller
                         'notes_sales' => $rowdata[17],
                         'group' => $getLastRequest['group'] + 1,
                         'is_bulk' => 1
-                    ); 
-                    $this->db->insert('tbl_request_price',$data);
+                    );
+                    $this->db->insert('tbl_request_price', $data);
                 }
-                
             }
-              
-                $this->session->set_flashdata('message', '<div class="alert
+
+            $this->session->set_flashdata('message', '<div class="alert
                     alert-success" role="alert">Success</div>');
-                redirect('sales/RequestPrice');
-            
+            redirect('sales/RequestPrice');
         }
     }
 
-    public function detailRequestPriceBulk($code) {
-
-       
-            $data['title'] = 'Request Price Detail Bulk';
-            $data['requestPrice'] = $this->sales->getRequestPriceBulk($this->session->userdata('id_user'), $awal, $akhir);
-            $data['requestPriceApprove'] = $this->sales->getRequestPriceApprove($this->session->userdata('id_user'), $awal, $akhir);
-            $data['province'] = $this->db->get('tb_province')->result_array();
-            $data['provinsi'] = $provinsi->data;
-            $data['city'] = $this->db->get('tb_city')->result_array();
-        
-        
-        $this->backend->display('sales/v_request_price', $data);
+    public function detailRequestPriceBulk($code)
+    {
+        $provinsi = $this->wilayah->getDataProvinsi();
+        $data['title'] = 'Request Price Detail Bulk';
+        $data['requestPrice'] = $this->sales->getRequestPriceBulk($code);
+        $data['provinsi'] = $provinsi->data;
+        $data['city'] = $this->db->get('tb_city')->result_array();
+        $this->backend->display('sales/v_request_price_bulk', $data);
     }
-
-    
 }

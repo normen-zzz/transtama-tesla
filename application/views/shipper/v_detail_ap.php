@@ -170,7 +170,7 @@
 
 														<td <?php $approve = $this->db->get_where('tbl_approve_pengeluaran', array('no_pengeluaran' => $c['no_pengeluaran']));
 															if ($approve->num_rows() == 0) { ?> class='edit' <?php } ?>><span>Rp. <?= $c['amount_proposed'] ?></span>
-															<input type='number' name="jumlah" class='form-control txtedit' data-id="<?= $c['id_pengeluaran'] ?>" data-url='<?= base_url() ?>/shipper/ap/editApSatuanAjax' data-field='amount_proposed' id='amount_proposedtxt_<?= $c['amount_proposed'] ?>' value='<?= $c['amount_proposed'] ?>'>
+															<input type='number' name="jumlah" class='form-control txtedit' data-id="<?= $c['id_pengeluaran'] ?>" data-field='amount_proposed' data-url='<?= base_url() ?>/shipper/ap/editApSatuanAjax' id='amount_proposedtxt_<?= $c['amount_proposed'] ?>' value='<?= $c['amount_proposed'] ?>'>
 														</td>
 
 														<td>
