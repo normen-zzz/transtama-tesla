@@ -19,31 +19,16 @@
                         <h3 class="card-label"><?= $title ?>
                             <span class="d-block text-muted pt-2 font-size-sm"></span>
                         </h3>
-                        <div class="row">
-                            <form action="<?= base_url('sales/RequestPrice') ?>" method="POST">
-                                <div class="row ml-2">
-                                    <div class="form-group mr-2">
-                                        <label>Start</label><br>
-                                        <input type="datetime-local" <?php if ($awal != NULL) { ?> value="<?= $awal ?>" <?php } ?> name="awal" id="awal" class="form-control">
-
-
-                                    </div>
-                                    <div class="form-group mr-3">
-                                        <label>End</label> <br>
-                                        <input type="datetime-local" <?php if ($akhir != NULL) { ?> value="<?= $akhir ?>" <?php } ?> name="akhir" id="akhir" class="form-control">
-                                    </div>
-
-
-
-                                    <div class="form-group"> <br>
-                                        <button type="submit" class="btn btn-success ml-3">Tampilkan</button>
-                                    </div>
-                                </div>
-
-                            </form>
-                        </div>
+                        
 
                     </div>
+
+                    <div class="card-toolbar">
+								<a onclick='$("#modalLoading").modal("show");' href="<?= base_url('sales/RequestPrice') ?>" class="btn mr-2 text-light" style="background-color: #9c223b;">
+									<i class="fas fa-chevron-circle-left text-light"> </i>
+									Back
+								</a>
+							</div>
 
 
 
@@ -91,13 +76,8 @@
                                                 <td><?=  ($requestPrice1['notes_sales'] != NULL) ? $requestPrice1['notes_sales'] : '-'  ?></td>
 
                                                 <td>
-                                                    <?php if ($requestPrice1['is_bulk'] == 1) { ?>
-                                                        <a href="<?= base_url('sales/RequestPrice/getDetailBulk') ?>" class="btn font-weight-bolder text-light" style="background-color: #9c223b;">
-                                                            Detail</a>
-                                                    <?php  } else { ?>
-                                                        <button class="btn font-weight-bolder text-light modalEditRequest" data-toggle="modal" data-id_request="<?= $requestPrice1['id_request_price'] ?>" data-target="#modal-edit-request" style="background-color: #9c223b;">
+                                                <button class="btn font-weight-bolder text-light modalEditRequest" data-toggle="modal" data-id_request="<?= $requestPrice1['id_request_price'] ?>" data-target="#modal-edit-request" style="background-color: #9c223b;">
                                                             Edit</button>
-                                                    <?php } ?>
 
                                                 </td>
                                             <?php } ?>
@@ -118,6 +98,8 @@
     <!--end::Entry-->
 </div>
 
+
+<!-- modal Tambah Request  -->
 <div class="modal fade" id="modal-lg">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -296,7 +278,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form action="<?= base_url('sales/RequestPrice/editRequest') ?>" method="POST">
+                <form action="<?= base_url('sales/RequestPrice/editRequestBulk') ?>" method="POST">
                     <div class="card-body">
                         <div id="contentEditRequest">
 
@@ -379,6 +361,8 @@
                 success: function(response) {
                     // Menampilkan data ke dalam modal
                     var content = '<input type="text" placeholder="Cth : Pt. ABC" class="form-control" value="<?= $this->session->userdata('id_user') ?>" hidden name="sales">' +
+                    '<input type="text" class="form-control" value="'+id_request+'" hidden name="id_request">' +
+                    '<input type="text" class="form-control" value="'+response.code_request_price+'" hidden name="code">' +
                         '<div class="row">' +
                         '<p>' +
                         '**Isi Alamat Jika Ingin Mengubah**' +
@@ -523,7 +507,7 @@
 
                     '<div class="form-group">' +
                     '<label for="exampleInputPassword1">Notes</label>' +
-                    '<textarea class="form-control" name="notes" value="' + response.notes_sales + '" id="notes"></textarea>' +
+                    '<textarea class="form-control" name="notes"  id="notes">'+response.notes_sales+'</textarea>' +
                     '</div>';
                 $('#contentEditRequest').html(content);
                 $('.selectField').select2();

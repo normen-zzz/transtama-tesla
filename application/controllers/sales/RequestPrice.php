@@ -124,9 +124,6 @@ class RequestPrice extends CI_Controller
     public function editRequest()
     {
 
-        $QuerylastRequest = "SELECT a.group FROM tbl_request_price a ORDER BY a.group DESC LIMIT 1";
-        $lastRequest = $this->db->query($QuerylastRequest)->row();
-        // var_dump($lastRequest->group)
         $request = [
             'id_sales' => $this->session->userdata('id_user'),
             'date_request' => date('Y-m-d H:i:s'),
@@ -147,12 +144,10 @@ class RequestPrice extends CI_Controller
             'koli' => $this->input->post('koli'),
             'komoditi' => $this->input->post('komoditi'),
             'notes_sales' => $this->input->post('notes'),
-            'is_bulk' => 0,
-            'group' => $lastRequest->group + 1
         ];
 
 
-        $update = $this->db->insert('tbl_request_price', $request);
+        $update = $this->db->update('tbl_request_price', $request,array('id_request_price' => $this->input->post('id_request')));
         if ($update) {
             // $pesan = "Hallo Finance, ada pengajuan harga baru dari " . $this->session->userdata('nama_user') . " Tolong Segera Cek Ya, Terima Kasih";
             // $this->wa->pickup('+6285697780467', "$pesan");
@@ -161,6 +156,44 @@ class RequestPrice extends CI_Controller
         } else {
             $this->session->set_flashdata('message', 'Anda Gagal Menambah Request');
             redirect('sales/RequestPrice');
+        }
+    }
+
+    public function editRequestBulk()
+    {
+
+        $request = [
+            'id_sales' => $this->session->userdata('id_user'),
+            'date_request' => date('Y-m-d H:i:s'),
+            'province_from' => $this->input->post('provinsi_from'),
+            'city_from' => $this->input->post('kabupaten_from'),
+            'subdistrict_from' => $this->input->post('kecamatan_from'),
+            'alamat_from' => $this->input->post('alamat_from'),
+            'province_to' => $this->input->post('provinsi_to'),
+            'city_to' => $this->input->post('kabupaten_to'),
+            'subdistrict_to' => $this->input->post('kecamatan_to'),
+            'alamat_to' => $this->input->post('alamat_to'),
+            'moda' => $this->input->post('moda'),
+            'jenis_barang' => $this->input->post('jenis'),
+            'berat' => $this->input->post('berat'),
+            'panjang' => $this->input->post('panjang'),
+            'lebar' => $this->input->post('lebar'),
+            'tinggi' => $this->input->post('tinggi'),
+            'koli' => $this->input->post('koli'),
+            'komoditi' => $this->input->post('komoditi'),
+            'notes_sales' => $this->input->post('notes'),
+        ];
+
+
+        $update = $this->db->update('tbl_request_price', $request,array('id_request_price' => $this->input->post('id_request')));
+        if ($update) {
+            // $pesan = "Hallo Finance, ada pengajuan harga baru dari " . $this->session->userdata('nama_user') . " Tolong Segera Cek Ya, Terima Kasih";
+            // $this->wa->pickup('+6285697780467', "$pesan");
+            $this->session->set_flashdata('message', 'Anda Berhasil Menambah Request');
+            redirect('sales/RequestPrice/detailRequestPriceBulk/'.$this->input->post('code'));
+        } else {
+            $this->session->set_flashdata('message', 'Anda Gagal Menambah Request');
+            redirect('sales/RequestPrice/detailRequestPriceBulk/' . $this->input->post('code'));
         }
     }
 
@@ -269,7 +302,7 @@ class RequestPrice extends CI_Controller
     {
         $provinsi = $this->wilayah->getDataProvinsi();
         $data['title'] = 'Request Price Detail Bulk';
-        $data['requestPrice'] = $this->sales->getRequestPriceBulk($code);
+        $data['requestPrice'] = $this->sales->getDetailRequestPriceBulk($code);
         $data['provinsi'] = $provinsi->data;
         $data['city'] = $this->db->get('tb_city')->result_array();
         $this->backend->display('sales/v_request_price_bulk', $data);

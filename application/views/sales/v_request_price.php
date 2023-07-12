@@ -114,7 +114,7 @@
 
                                                 <td>
                                                     <?php if ($requestPrice1['is_bulk'] == 1) { ?>
-                                                        <a href="<?= base_url('sales/RequestPrice/getDetailBulk') ?>" class="btn font-weight-bolder text-light" style="background-color: #9c223b;">
+                                                        <a href="<?= base_url('sales/RequestPrice/detailRequestPriceBulk/'.$requestPrice1['code_request_price']) ?>" class="btn font-weight-bolder text-light" style="background-color: #9c223b;">
                                                             Detail</a>
                                                     <?php  } else { ?>
                                                         <button class="btn font-weight-bolder text-light modalEditRequest" data-toggle="modal" data-id_request="<?= $requestPrice1['id_request_price'] ?>" data-target="#modal-edit-request" style="background-color: #9c223b;">
