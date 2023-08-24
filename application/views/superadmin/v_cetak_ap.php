@@ -185,18 +185,18 @@
 
         <?php
         $pemohon = $this->db->get_where('tb_user', ['id_user' => $info['id_user']])->row_array();
-        // $ttd_atasan = $this->db->get_where('tb_user', ['id_user' => $approval['approve_by_atasan']])->row_array();
-        // $ttd_sm = $this->db->get_where('tb_user', ['id_user' => $approval['approve_by_sm']])->row_array();
-        // $ttd_gm = $this->db->get_where('tb_user', ['id_user' => $approval['approve_by_gm']])->row_array();
-        // $ttd_finance = $this->db->get_where('tb_user', ['id_user' => $approval['received_by']])->row_array();
-        // $ttd_mgr_finance = $this->db->get_where('tb_user', ['id_user' => $approval['approve_mgr_finance']])->row_array();
-        // if ($ttd_sm == NULL) {
-        //     $nama_sm = '-';
-        // } else {
-        //     $nama_sm = $ttd_sm['nama_user'];
-        // }
+        $ttd_atasan = $this->db->get_where('tb_user', ['id_user' => $approval['approve_by_atasan']])->row_array();
+        $ttd_sm = $this->db->get_where('tb_user', ['id_user' => $approval['approve_by_sm']])->row_array();
+        $ttd_gm = $this->db->get_where('tb_user', ['id_user' => $approval['approve_by_gm']])->row_array();
+        $ttd_finance = $this->db->get_where('tb_user', ['id_user' => $approval['received_by']])->row_array();
+        $ttd_mgr_finance = $this->db->get_where('tb_user', ['id_user' => $approval['approve_mgr_finance']])->row_array();
+        if ($ttd_sm == NULL) {
+            $nama_sm = '-';
+        } else {
+            $nama_sm = $ttd_sm['nama_user'];
+        }
 
-        // 
+        
         ?>
 
         <?php if ($info['is_approve_sm'] == 1) {

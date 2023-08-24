@@ -858,7 +858,7 @@ class Order extends CI_Controller
             $tgl = date("d");
 
 
-            $sql = $this->db->query("SELECT max(no_resi) as shipment_id FROM tbl_no_resi  ORDER BY id_no_resi DESC LIMIT 1")->row_array();
+            $sql = $this->db->query("SELECT no_resi as shipment_id FROM tbl_no_resi  ORDER BY id_no_resi DESC LIMIT 1")->row_array();
             // var_dump($sql);
             // die;
             if ($sql == NULL) {
@@ -868,7 +868,7 @@ class Order extends CI_Controller
             } else {
                 $last_shipment_id = $sql['shipment_id'];
                 $no = $last_shipment_id + 1;
-                $shipment_id =  ltrim($no, '0');
+                $shipment_id =  $no;
             }
 
             // var_dump($shipment_id);
@@ -1313,7 +1313,7 @@ class Order extends CI_Controller
         $mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => [74, 105]]);
 
         $where = array('id_so' => $id);
-        $this->db->select('a.shipment_id,a.id_so,a.shipper,a.tree_shipper,a.tree_consignee,a.consigne,a.destination,a.city_consigne,a.state_consigne,a.city_shipper,a.koli,a.is_weight_print,a.state_shipper,a.signature,a.created_at,a.sender,a.tgl_pickup, b.service_name, b.prefix');
+        $this->db->select('a.berat_js,a.shipment_id,a.id_so,a.shipper,a.tree_shipper,a.tree_consignee,a.consigne,a.destination,a.city_consigne,a.state_consigne,a.city_shipper,a.koli,a.is_weight_print,a.state_shipper,a.signature,a.created_at,a.sender,a.tgl_pickup, b.service_name, b.prefix');
         $this->db->from('tbl_shp_order a');
         $this->db->join('tb_service_type b', 'a.service_type=b.code');
         $this->db->where('a.id_so', $id);

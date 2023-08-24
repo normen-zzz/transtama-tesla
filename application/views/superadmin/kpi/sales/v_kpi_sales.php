@@ -106,10 +106,10 @@ function getGrade($nilai)
                                         <?php $no = 1;
                                         foreach ($sales->result_array() as $s) {
                                             $nilai = 0;
-                                            $this->db->where('id_sales', $s['id_user']);
-                                            $this->db->where('start_date >=', date('Y-m-d', strtotime($awal)));
-                                            $this->db->where('start_date <=', date('Y-m-d', strtotime($akhir)));
-                                            $salesTracker = $this->db->get('tbl_sales_tracker');
+
+
+                                            $salesTracker = $this->db->query('SELECT start_date,created_at FROM tbl_sales_tracker WHERE id_sales = ' . $s["id_user"] . ' AND start_date >= "' . date('Y-m-d', strtotime($awal)) . '" AND start_date <= "' . date('Y-m-d', strtotime($akhir)) . '"');
+
 
                                             foreach ($salesTracker->result_array() as $track) {
 
@@ -177,10 +177,7 @@ function getGrade($nilai)
                                         <?php $no = 1;
                                         foreach ($sales->result_array() as $s) {
                                             $nilai = 0;
-                                            $this->db->where('id_sales', $s['id_user']);
-                                            $this->db->where('start_date >=', date('Y-m-d', strtotime($awal)));
-                                            $this->db->where('start_date <=', date('Y-m-d', strtotime($akhir)));
-                                            $salesTracker = $this->db->get_where('tbl_sales_tracker', array('id_sales' => $s['id_user']));
+                                            $salesTracker = $this->db->query('SELECT closing_at,end_date FROM tbl_sales_tracker WHERE id_sales = ' . $s["id_user"] . ' AND start_date >= "' . date('Y-m-d', strtotime($awal)) . '" AND start_date <= "' . date('Y-m-d', strtotime($akhir)) . '"');
                                             foreach ($salesTracker->result_array() as $track) {
                                                 $date1 = date_create(date('Y-m-d', strtotime($track['closing_at'])));
                                                 $date2 = date_create(date('Y-m-d', strtotime($track['end_date'])));
@@ -243,16 +240,16 @@ function getGrade($nilai)
                                         <?php $no = 1;
                                         foreach ($sales->result_array() as $s) {
                                             $nilai = 0;
-                                            $this->db->where('id_sales', $s['id_user']);
-                                            $this->db->where('tgl_pickup >=', date('Y-m-d', strtotime($awal)));
-                                            $this->db->where('tgl_pickup <=', date('Y-m-d', strtotime($akhir)));
-                                            $so = $this->db->get('tbl_so');
+                                             
+                                            $so = $this->db->query('SELECT id_so,submitso_at,tgl_pickup FROM tbl_so WHERE id_sales =' . $s['id_user'] . ' AND tgl_pickup >= "' . date('Y-m-d', strtotime($awal)) . '" AND tgl_pickup <= "' . date('Y-m-d', strtotime($akhir)) . '"');
                                             foreach ($so->result_array() as $so1) {
-                                                $this->db->where('id_so', $so1['id_so']);
-                                                $this->db->where('flag', 3);
-                                                $this->db->order_by('id_so', "DESC");
-                                                $this->db->limit(1);
-                                                $trackingResi = $this->db->get('tbl_tracking_real')->row_array();
+                                        
+
+                                                $queryTrackingResi = $this->db->query("SELECT created_at,time FROM tbl_tracking_real WHERE id_so =" . $so1['id_so'] . " AND flag = 4 ORDER BY id_so DESC LIMIT 1 ");
+                                                $trackingResi = $queryTrackingResi->row_array();
+
+                                                
+
 
                                                 if ($so1['submitso_at'] != NULL && $trackingResi != NULL) {
 
@@ -262,7 +259,7 @@ function getGrade($nilai)
                                                     // echo $so1['id_so'] . $diff->format(" %R%a days <br>");
 
                                                     $datetime1 = strtotime($so1['submitso_at']);
-                                                    $datetime2 = strtotime($trackingResi['created_at']);
+                                                    $datetime2 = strtotime($trackingResi['created_at'] . $trackingResi['time']);
                                                     $interval  = abs($datetime2 - $datetime1);
                                                     $minutes   = round($interval / 60);
 
@@ -274,7 +271,7 @@ function getGrade($nilai)
                                                             $nilai += 70;
                                                         }
                                                     } elseif ($diff->format("%R%a") == 1) {
-                                                        if (date('H:i:s', strtotime($trackingResi['created_at'])) >= '21:00:00') {
+                                                        if (date('H:i:s', strtotime($trackingResi['created_at'] . $trackingResi['time'])) >= '21:00:00') {
                                                             $nilai += 70;
                                                         } else {
                                                             $nilai += 50;
@@ -283,6 +280,7 @@ function getGrade($nilai)
                                                         $nilai += 30;
                                                     }
                                                 }
+
                                                 // echo $nilai . '<br>';
                                             }
                                             if ($so->num_rows() != 0) {
@@ -294,7 +292,7 @@ function getGrade($nilai)
                                             <tr>
                                                 <td><?= $no; ?></td>
                                                 <td><?= $s['nama_user'] ?></td>
-                                                <td><?= getGrade($nilai); ?></td>
+                                                <td><?= getGrade($nilai) . '/' . $nilai; ?></td>
                                                 <td><a target="_blank" class="btn btn-primary" href="<?= base_url('superadmin/Kpi/detailSo/' . $s['id_user'] . '/' . strtotime($awal) . '/' . strtotime($akhir)) ?>">Detail</a></td>
 
                                             </tr>

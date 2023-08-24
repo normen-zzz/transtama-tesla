@@ -538,7 +538,7 @@ class SalesOrder extends CI_Controller
             $img = str_replace('data:image/png;base64,', '', $img);
             $service_type = $this->input->post('service_type');
 
-            $sql = $this->db->query("SELECT max(no_resi) as shipment_id FROM tbl_no_resi  ORDER BY id_no_resi DESC LIMIT 1")->row_array();
+            $sql = $this->db->query("SELECT no_resi as shipment_id FROM tbl_no_resi  ORDER BY id_no_resi DESC LIMIT 1")->row_array();
             // var_dump($sql);
             // die;
             if ($sql == NULL) {
@@ -548,7 +548,7 @@ class SalesOrder extends CI_Controller
             } else {
                 $last_shipment_id = $sql['shipment_id'];
                 $no = $last_shipment_id + 1;
-                $shipment_id =  ltrim($no, '0');
+                $shipment_id =  $no;
             }
 
             // kode referensi so

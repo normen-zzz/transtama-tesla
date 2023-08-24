@@ -58,6 +58,25 @@
 
 					<!-- /.card-header -->
 					<div class="card-body" style="overflow: auto;">
+					<table class="table table-bordered">
+						<tr>
+							<td>Nama</td>
+							<td>Total Visit</td>
+						</tr>
+						<?php foreach ($users as $users1) {
+							if ($awal != NULL) {
+								$dataSales = $this->sales->getReportSalesTracker($awal,$akhir,$users1['id_user']);
+							} else{
+								$dataSales = $this->sales->getAllReportSalesTracker($users1['id_user']);
+							}
+							
+							?>
+						<tr>
+							<td><?= $users1['nama_user'] ?></td>
+							<td><?= $dataSales->num_rows() ?></td>
+						</tr>
+						<?php } ?>
+					</table>
 						<div class="row text-center">
 							<div class="col-xl-4 col-md-6">
 								<h4>TOTAL REPORT</h4>
@@ -75,6 +94,7 @@
 
 							</div><!-- end col -->
 						</div>
+
 						<table class="table table-bordered" id="myTableSalesTracker">
 							<!-- <a href="<?= base_url('shipper/order/add') ?>" class="btn btn-success mr-2 mb-4">
 									<i class="fas fa-plus-circle"> </i>Add

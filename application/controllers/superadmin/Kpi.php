@@ -62,13 +62,13 @@ class Kpi extends CI_Controller
             $data['title'] = 'KPI SALES';
             $data['awal'] = date('Y-m-d');
             $data['akhir'] = date('Y-m-t');
-            $data['sales'] = $this->db->get_where('tb_user', array('id_role' => 4));
+            $data['sales'] = $this->db->get_where('tb_user', array('id_role' => 4,'status' => 1));
             $this->backend->display('superadmin/kpi/sales/v_kpi_sales', $data);
         } else {
             $data['title'] = 'KPI SALES';
             $data['awal'] = $this->input->post('awal');
             $data['akhir'] = $this->input->post('akhir');
-            $data['sales'] = $this->db->get_where('tb_user', array('id_role' => 4));
+            $data['sales'] = $this->db->get_where('tb_user', array('id_role' => 4,'status' => 1));
             $this->backend->display('superadmin/kpi/sales/v_kpi_sales', $data);
         }
     }

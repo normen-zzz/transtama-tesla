@@ -104,6 +104,7 @@ class SalesModel extends CI_Model
             $this->db->where('b.id_user', $sales);
         }
         $this->db->where('a.is_deleted', 0);
+        $this->db->where('b.status',1);
         $this->db->order_by('a.start_date', 'desc');
         return $this->db->get();
     }
@@ -117,6 +118,7 @@ class SalesModel extends CI_Model
             $this->db->where('b.id_user', $sales);
         }
         $this->db->where('a.is_deleted', 0);
+        $this->db->where('b.status',1);
         $this->db->where('a.start_date >=', $awal);
         $this->db->where('a.start_date <=', $akhir);
         return $this->db->get();

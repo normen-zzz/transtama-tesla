@@ -112,11 +112,11 @@
 	</div>
 
 	<script>
-  function playAudio() {
-    var audio = document.getElementById('myAudio');
-    audio.play();
-  }
-</script>
+		function playAudio() {
+			var audio = document.getElementById('myAudio');
+			audio.play();
+		}
+	</script>
 
 
 	<!-- REQUIRED SCRIPTS -->
@@ -2185,7 +2185,6 @@
 	<script>
 		$(document).ready(function() {
 			$("#provinsi").change(function() {
-				// $("#modalLoading").modal("show");
 				var url = "<?php echo site_url('sales/RequestPrice/getKabupaten'); ?>/" + $(this).find(':selected').data('id_prov');
 				$('#kabupaten').load(url);
 				var kecamatan = "<?php echo site_url('sales/RequestPrice/getKecamatan'); ?>/";
@@ -2223,12 +2222,10 @@
 			})
 
 			$("#kabupaten1").change(function() {
-				// $("#modalLoading").modal("show");
+				
 				var url = "<?php echo site_url('sales/RequestPrice/getKecamatan'); ?>/" + $(this).find(':selected').data('id_prov') + "/" + $(this).find(':selected').data('id_kab');
 				$('#kecamatan1').load(url);
-				// setTimeout(function() {
-				// 	$('#modalLoading').modal('hide')
-				// }, 500);
+
 				return false;
 			})
 
