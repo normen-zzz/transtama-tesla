@@ -30,6 +30,18 @@ class PengajuanModel extends CI_Model
         $query = $this->db->get();
         return $query;
     }
+
+    public function getLastTracking2($shipmnent_id)
+    {
+        $this->db->select('flag,status');
+        $this->db->from('tbl_tracking_real a');
+        $this->db->where('a.shipment_id', $shipmnent_id);
+        $this->db->order_by('a.id_tracking', 'DESC');
+        $this->db->limit(1);
+        $query = $this->db->get();
+        return $query;
+    }
+    
     public function getLastTrackingOutbond($shipmnent_id)
     {
         $this->db->select('*');

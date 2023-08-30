@@ -92,13 +92,7 @@ function getGrade($nilai)
                                 foreach ($salestracker->result_array() as $s) {
                                     $date1 = date_create(date('Y-m-d', strtotime($s['start_date'])));
                                     $date2 = date_create(date('Y-m-d', strtotime($s['created_at'])));
-
                                     $diff = date_diff($date2, $date1);
-                                    // echo $track['start_date'] . '<br>';
-                                    // echo $track['created_at'] .s '<br>';
-                                    // echo $sales['nama_user'] . $diff->format(" %R%a days <br>");
-
-
                                     // jika meeting plan disubmit hari yang sama
                                     if ($diff->format("%R%a") == 0) {
 

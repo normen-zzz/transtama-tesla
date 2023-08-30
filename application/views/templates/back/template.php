@@ -100,7 +100,7 @@
 	<?= $_content; ?>
 	<?php $this->load->view('templates/back/footer'); ?>
 
-	<button onclick="playAudio()">Mulai Audio</button>
+	
 
 	<!-- Modal -->
 	<div class="modal fade" id="modalLoading" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">

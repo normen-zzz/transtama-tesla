@@ -56,7 +56,7 @@
 									<tbody>
 										<?php foreach ($outbond as $g) {
 											//cek outgoing or incoming
-											$getLast = $this->order->getLastTracking($g['shipment_id'])->row_array();
+											$getLast = $this->order->getLastTracking2($g['shipment_id'])->row_array();
 											if ($g['is_incoming'] != 1) {
 
 
@@ -84,13 +84,13 @@
 																	?>
 
 
-																		<button  class="btn btn-sm text-light modalDelivery" data-toggle="modal" data-shipment_id="<?= $g['shipment_id'] ?>" data-id_so="<?= $g['id_so'] ?>" data-target="#modal-lg-dl" style="background-color: #9c223b;">
+																		<button class="btn btn-sm text-light modalDelivery" data-toggle="modal" data-shipment_id="<?= $g['shipment_id'] ?>" data-id_so="<?= $g['id_so'] ?>" data-target="#modal-lg-dl" style="background-color: #9c223b;">
 																			Assign Driver DL
 																		</button>
-																		<?php $tracking_real = $this->db->limit(1)->order_by('id_tracking', 'DESC')->get_where('tbl_tracking_real', ['shipment_id' => $g['shipment_id'], 'flag' => 5])->row_array();
-																		$order = $this->db->limit(1)->order_by('id_tracking', 'DESC')->get_where('tbl_tracking_real', ['shipment_id' => $g['shipment_id']])->row_array();
-																		// var_dump($tracking_real);
-																		// die;
+																		<?php
+																		$queryTrackingReal = $this->db->query('SELECT id_user FROM tbl_tracking_real WHERE shipment_id = "' . $g['shipment_id'] . '" AND flag = "5" ORDER BY id_tracking DESC LIMIT 1 ');
+																		$tracking_real = $queryTrackingReal->row_array();
+																		
 																		?>
 																		<div class="d-flex align-items-center">
 																			<?php if ($tracking_real == null) {
@@ -130,7 +130,9 @@
 							<a href="#" class="btn font-weight-bolder text-light" data-toggle="modal" data-target="#modal-lg" style="background-color: #9c223b;">
 								Asign Driver PU
 							</a>
-							<?php $tracking = $this->db->order_by('id_tracking', 'asc')->get_where('tbl_tracking_real', ['id_so' => $p['id_so']])->row_array();
+							<?php
+																		$queryTracking = $this->db->query('SELECT id_user FROM tbl_tracking_real WHERE id_so = ' . $p['id_so'] . ' ORDER BY id_tracking ASC ');
+																		$tracking = $queryTracking->row_array();
 
 							?>
 							<div class="d-flex align-items-center">
@@ -178,10 +180,15 @@
 							<button class="btn text-light modalDeliveryLuar" data-toggle="modal" data-target="#modal-lg-dl-luar" data-shipment_id="<?= $g['shipment_id'] ?>" data-id_so="<?= $g['id_so'] ?>" style="background-color: #9c223b;">
 								Scan Out
 							</button>
-							<?php $tracking_real = $this->db->limit(1)->order_by('id_tracking', 'DESC')->get_where('tbl_tracking_real', ['shipment_id' => $g['shipment_id'], 'flag' => 5])->row_array();
-																		$order = $this->db->limit(1)->order_by('id_tracking', 'DESC')->get_where('tbl_tracking_real', ['shipment_id' => $g['shipment_id']])->row_array();
-																		// var_dump($tracking_real);
-																		// die;
+
+							<?php
+																		$queryTrackingReal = $this->db->query('SELECT id_user FROM tbl_tracking_real WHERE shipment_id = "' . $g['shipment_id'] . '" AND flag = "5" ORDER BY id_tracking DESC LIMIT 1 ');
+																		$tracking_real = $queryTrackingReal->row_array();
+
+																		$queryOrder
+
+																		
+
 							?>
 							<div class="d-flex align-items-center">
 								<?php if ($tracking_real == null) {
@@ -217,7 +224,10 @@
 						?>
 							<a href="#" class="btn font-weight-bolder text-light" data-toggle="modal" data-target="#modal-lg" style="background-color: #9c223b;">
 								Asign Driver PU</a>
-							<?php $tracking = $this->db->order_by('id_tracking', 'asc')->get_where('tbl_tracking_real', ['id_so' => $p['id_so']])->row_array();
+
+							<?php
+																		$queryTracking = $this->db->query('SELECT id_user FROM tbl_tracking_real WHERE id_so = ' . $p['id_so'] . ' ORDER BY id_tracking ASC ');
+																		$tracking = $queryTracking->row_array();
 
 							?>
 							<div class="d-flex align-items-center">
@@ -331,33 +341,33 @@
 
 
 <div class="modal fade" id="modal-lg-dl">
-		<div class="modal-dialog modal-lg">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h4 class="modal-title">Assign Driver DL</b> </h4>
+	<div class="modal-dialog modal-lg">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title">Assign Driver DL</b> </h4>
 
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-						<span aria-hidden="true">&times;</span>
-					</button>
-				</div>
-				<div class="modal-body">
-					<form action="<?= base_url('shipper/Scan/assignDriverDl') ?>" method="POST">
-						<div id="modal-content">
-
-						</div>
-
-						<!-- /.card-body -->
-				</div>
-				<div class="modal-footer justify-content-between">
-					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-					<button onclick='$("#modalLoading").modal("show");' type="submit" class="btn btn-primary">Submit</button>
-				</div>
-				</form>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
 			</div>
-			<!-- /.modal-content -->
+			<div class="modal-body">
+				<form action="<?= base_url('shipper/Scan/assignDriverDl') ?>" method="POST">
+					<div id="modal-content">
+
+					</div>
+
+					<!-- /.card-body -->
+			</div>
+			<div class="modal-footer justify-content-between">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				<button onclick='$("#modalLoading").modal("show");' type="submit" class="btn btn-primary">Submit</button>
+			</div>
+			</form>
 		</div>
-		<!-- /.modal-dialog -->
+		<!-- /.modal-content -->
 	</div>
+	<!-- /.modal-dialog -->
+</div>
 
 <div class="modal fade" id="modal-lg-dl-luar">
 	<div class="modal-dialog modal-lg">
@@ -391,36 +401,36 @@
 
 
 <script>
-		$(document).ready(function() {
-			$('.modalDelivery').click(function() {
-				var shipment_id = $(this).data('shipment_id'); // Mendapatkan ID dari atribut data-id tombol yang diklik
-				var id_so = $(this).data('id_so');
-				$('#modal-content').html('<p>Please Wait </p>');
-				// Memuat data menggunakan AJAX dengan mengirimkan ID sebagai parameter
-				
-						// Menampilkan data ke dalam modal
-						var content = '<div class="card-body"><div class="row">' +
-							'Asign Delivery ' + shipment_id +
-							'<input type="text" name="id_so" class="form-control" hidden value="' + id_so + '">' +
-							'<input type="text" name="shipment_id" class="form-control" hidden value="' + shipment_id + '">' +
-							'<div class="col-md-12">' +
-							'<label for="id_driver">Choose Driver : </label>' +
-							'<select name="id_driver" class="form-select" id="selectField" style="width: 200px;">' +
-							<?php foreach ($users as $u) {
-							?> '<option value="<?= $u['id_user'] ?>"><?= $u['nama_user'] ?></option>' +
-							<?php	} ?> '</select>' +
+	$(document).ready(function() {
+		$('.modalDelivery').click(function() {
+			var shipment_id = $(this).data('shipment_id'); // Mendapatkan ID dari atribut data-id tombol yang diklik
+			var id_so = $(this).data('id_so');
+			$('#modal-content').html('<p>Please Wait </p>');
+			// Memuat data menggunakan AJAX dengan mengirimkan ID sebagai parameter
 
-							'</div>' +
+			// Menampilkan data ke dalam modal
+			var content = '<div class="card-body"><div class="row">' +
+				'Asign Delivery ' + shipment_id +
+				'<input type="text" name="id_so" class="form-control" hidden value="' + id_so + '">' +
+				'<input type="text" name="shipment_id" class="form-control" hidden value="' + shipment_id + '">' +
+				'<div class="col-md-12">' +
+				'<label for="id_driver">Choose Driver : </label>' +
+				'<select name="id_driver" class="form-select" id="selectField" style="width: 200px;">' +
+				<?php foreach ($users as $u) {
+				?> '<option value="<?= $u['id_user'] ?>"><?= $u['nama_user'] ?></option>' +
+				<?php	} ?> '</select>' +
 
-							'</div>' +
-							'</div>';
-						$('#modal-content').html(content);
-						$('#selectField').select2();
+				'</div>' +
 
-					
-			});
+				'</div>' +
+				'</div>';
+			$('#modal-content').html(content);
+			$('#selectField').select2();
+
+
 		});
-	</script>
+	});
+</script>
 <script>
 	$(document).ready(function() {
 		$('.modalDeliveryLuar').click(function() {
@@ -430,58 +440,58 @@
 			var selectHtml = $('#selectField').html();
 			$('#modal-content-delivery-luar').html('<p>Please Wait </p>');
 			// Memuat data menggunakan AJAX dengan mengirimkan ID sebagai parameter
-			
-					// Menampilkan data ke dalam modal
-					var content = '<div class="card-body">' +
-						'<h2>Assign Driver & Map Gateway ' + shipment_id + '</h2>' +
-						'<br>' +
-						'<div class="row">' +
-						'<input type="text" name="id_so" class="form-control" hidden value="' + id_so + '">' +
-						'<input type="text" name="shipment_id" class="form-control" hidden value="' + shipment_id + '">' +
-						'<div class="col-md-6">' +
-						'<label for="id_driver">Choose Driver : </label>' +
-						'<select name="id_driver" class="form-control select" id="selectField" style="width: 200px;">' +
-						<?php foreach ($users as $u) {
-						?> '<option value="<?= $u['id_user'] ?>"><?= $u['nama_user'] ?></option>' +
-						<?php	} ?> '</select>' +
 
-						'</div>' +
-						'<div class="col-md-6">' +
-						'<div class="form-group">' +
-						'<label for="exampleInputEmail1">Choose Gateway ?</label>' +
-						'<div class="form-check">' +
-						'<input class="radioBtnClass" type="radio" name="gateway" value="ops">' +
-						'<label class="form-check-label" for="flexRadioDefault1">' +
-						'OPS' +
-						'</label>' +
-						'	</div>' +
-						'<div class="form-check">' +
-						'<input class="radioBtnClass" type="radio" name="gateway" value="cs">' +
-						'<label class="form-check-label" for="flexRadioDefault1">' +
-						'CS' +
-						'</label>' +
-						'</div>' +
-						'</div>' +
+			// Menampilkan data ke dalam modal
+			var content = '<div class="card-body">' +
+				'<h2>Assign Driver & Map Gateway ' + shipment_id + '</h2>' +
+				'<br>' +
+				'<div class="row">' +
+				'<input type="text" name="id_so" class="form-control" hidden value="' + id_so + '">' +
+				'<input type="text" name="shipment_id" class="form-control" hidden value="' + shipment_id + '">' +
+				'<div class="col-md-6">' +
+				'<label for="id_driver">Choose Driver : </label>' +
+				'<select name="id_driver" class="form-control select" id="selectField" style="width: 200px;">' +
+				<?php foreach ($users as $u) {
+				?> '<option value="<?= $u['id_user'] ?>"><?= $u['nama_user'] ?></option>' +
+				<?php	} ?> '</select>' +
 
-						'</div>' +
-						'<div class="col-md-6">' +
-						'<div class="form-group">' +
-						'<label for="exampleInputPassword1">HUB ? <span style="color: red;">Soekarno Hatta or, Cengkareng</span> </label>' +
-						'<input type="text" class="form-control" name="note">' +
-						'</div>' +
+				'</div>' +
+				'<div class="col-md-6">' +
+				'<div class="form-group">' +
+				'<label for="exampleInputEmail1">Choose Gateway ?</label>' +
+				'<div class="form-check">' +
+				'<input class="radioBtnClass" type="radio" name="gateway" value="ops">' +
+				'<label class="form-check-label" for="flexRadioDefault1">' +
+				'OPS' +
+				'</label>' +
+				'	</div>' +
+				'<div class="form-check">' +
+				'<input class="radioBtnClass" type="radio" name="gateway" value="cs">' +
+				'<label class="form-check-label" for="flexRadioDefault1">' +
+				'CS' +
+				'</label>' +
+				'</div>' +
+				'</div>' +
 
-						'</div>' +
+				'</div>' +
+				'<div class="col-md-6">' +
+				'<div class="form-group">' +
+				'<label for="exampleInputPassword1">HUB ? <span style="color: red;">Soekarno Hatta or, Cengkareng</span> </label>' +
+				'<input type="text" class="form-control" name="note">' +
+				'</div>' +
 
-
-
-						'</div>' +
-						'</div>';
-
-					$('#modal-content-delivery-luar').html(content);
-					$('#selectField').select2();
+				'</div>' +
 
 
-				
+
+				'</div>' +
+				'</div>';
+
+			$('#modal-content-delivery-luar').html(content);
+			$('#selectField').select2();
+
+
+
 		});
 	});
 </script>

@@ -82,14 +82,8 @@ function getGrade($nilai)
                             <tbody>
                                 <?php $nilai = 0;
                                 foreach ($so->result_array() as $so1) {
-
-                                    
-
                                     $query = $this->db->query("SELECT created_at,time FROM tbl_tracking_real WHERE id_so =" . $so1['id_so'] . " AND flag = 4 ORDER BY id_so DESC LIMIT 1 ");
                                     $trackingResi = $query->row_array();
-
-                                  
-
                                     if ($so1['submitso_at'] != NULL && $trackingResi != NULL) {
 
                                         $date1 = date_create(date('Y-m-d', strtotime($so1['submitso_at'])));

@@ -177,40 +177,44 @@ function getGrade($nilai)
                                         <?php $no = 1;
                                         foreach ($sales->result_array() as $s) {
                                             $nilai = 0;
+                                            $jumlahTracker = 1;
                                             $salesTracker = $this->db->query('SELECT closing_at,end_date FROM tbl_sales_tracker WHERE id_sales = ' . $s["id_user"] . ' AND start_date >= "' . date('Y-m-d', strtotime($awal)) . '" AND start_date <= "' . date('Y-m-d', strtotime($akhir)) . '"');
                                             foreach ($salesTracker->result_array() as $track) {
-                                                $date1 = date_create(date('Y-m-d', strtotime($track['closing_at'])));
-                                                $date2 = date_create(date('Y-m-d', strtotime($track['end_date'])));
-                                                $diff = date_diff($date2, $date1);
+                                                if ($track['closing_at'] != NULL) {
+                                                    $date1 = date_create(date('Y-m-d', strtotime($track['closing_at'])));
+                                                    $date2 = date_create(date('Y-m-d', strtotime($track['end_date'])));
+                                                    $diff = date_diff($date2, $date1);
 
-                                                $datetime1 = strtotime($track['closing_at']);
-                                                $datetime2 = strtotime($track['end_date']);
-                                                $interval  = abs($datetime2 - $datetime1);
-                                                $minutes   = round($interval / 60);
-                                                // echo 'Diff. in minutes is: ' . $minutes . '<br>';
-                                                if ($diff->format("%R%a") == 0) {
-                                                    if ($minutes <= 10 && $minutes > 0) {
+                                                    $datetime1 = strtotime($track['closing_at']);
+                                                    $datetime2 = strtotime($track['end_date']);
+                                                    $interval  = abs($datetime2 - $datetime1);
+                                                    $minutes   = round($interval / 60);
+                                                    // echo 'Diff. in minutes is: ' . $minutes . '<br>';
+                                                    if ($diff->format("%R%a") == 0) {
+                                                        if ($minutes <= 10 && $minutes > 0) {
 
-                                                        // echo $s['nama_user'] . 'Kurang 10 <br>';
-                                                        // nilai A
-                                                        $nilai += 90;
-                                                    } elseif ($minutes > 10) {
-                                                        // nilai B 
-                                                        $nilai += 70;
-                                                    } elseif ($minutes < 0) {
+                                                            // echo $s['nama_user'] . 'Kurang 10 <br>';
+                                                            // nilai A
+                                                            $nilai += 90;
+                                                        } elseif ($minutes > 10) {
+                                                            // nilai B 
+                                                            $nilai += 70;
+                                                        } elseif ($minutes < 0) {
+                                                            $nilai += 50;
+                                                        }
+                                                    } elseif ($diff->format("%R%a") == 1) {
+                                                        // nilai C
                                                         $nilai += 50;
+                                                    } else {
+                                                        $nilai += 30;
+                                                        // Nilai D
                                                     }
-                                                } elseif ($diff->format("%R%a") == 1) {
-                                                    // nilai C
-                                                    $nilai += 50;
-                                                } else {
-                                                    $nilai += 30;
-                                                    // Nilai D
                                                 }
                                             }
                                             if ($nilai != 0) {
                                                 $nilai = $nilai / $salesTracker->num_rows();
                                             }
+
 
                                         ?>
                                             <tr>
@@ -240,15 +244,15 @@ function getGrade($nilai)
                                         <?php $no = 1;
                                         foreach ($sales->result_array() as $s) {
                                             $nilai = 0;
-                                             
+
                                             $so = $this->db->query('SELECT id_so,submitso_at,tgl_pickup FROM tbl_so WHERE id_sales =' . $s['id_user'] . ' AND tgl_pickup >= "' . date('Y-m-d', strtotime($awal)) . '" AND tgl_pickup <= "' . date('Y-m-d', strtotime($akhir)) . '"');
                                             foreach ($so->result_array() as $so1) {
-                                        
+
 
                                                 $queryTrackingResi = $this->db->query("SELECT created_at,time FROM tbl_tracking_real WHERE id_so =" . $so1['id_so'] . " AND flag = 4 ORDER BY id_so DESC LIMIT 1 ");
                                                 $trackingResi = $queryTrackingResi->row_array();
 
-                                                
+
 
 
                                                 if ($so1['submitso_at'] != NULL && $trackingResi != NULL) {
