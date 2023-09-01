@@ -89,6 +89,7 @@ function getGrade($nilai)
                             </thead>
                             <tbody>
                                 <?php $nilai = 0;
+                                $totalNilai = 0;
                                 foreach ($salestracker->result_array() as $s) {
                                     if ($s['closing_at'] != NULL) {
                                     $date1 = date_create(date('Y-m-d', strtotime($s['closing_at'])));
@@ -121,7 +122,11 @@ function getGrade($nilai)
                                         $nilai = 30;
                                         // Nilai D
                                     }
-                                    }}
+                                    }
+                                } else{
+                                    $nilai = 30;
+                                    // Nilai D
+                                }
                                 ?>
                                     <tr>
                                         <td <?php if ($s['end_date'] == NULL) { ?> class="text-danger" <?php } ?>><?= $s['subject'] ?></td>
@@ -144,12 +149,13 @@ function getGrade($nilai)
                                     <td><?= getGrade($nilai)  ?></td>
                                     </tr>
                                 <?php
-                                    
+                                    $totalNilai += $nilai;
                                 } ?>
                             </tbody>
 
 
                         </table>
+                        <p>total nilai = <?= $totalNilai/$salestracker->num_rows() ?> </p>
                     </div>
                     <!-- /.card-body -->
                 </div>

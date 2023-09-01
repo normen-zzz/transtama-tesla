@@ -209,6 +209,9 @@ function getGrade($nilai)
                                                         $nilai += 30;
                                                         // Nilai D
                                                     }
+                                                } else {
+                                                    $nilai += 30;
+                                                    // Nilai D
                                                 }
                                             }
                                             if ($nilai != 0) {
@@ -220,7 +223,7 @@ function getGrade($nilai)
                                             <tr>
                                                 <td><?= $no ?></td>
                                                 <td><?= $s['nama_user'] ?></td>
-                                                <td><?= getGrade($nilai)  ?></td>
+                                                <td><?= getGrade($nilai) . ' / ' . $nilai  ?></td>
                                                 <td><a class="btn btn-primary" target="_blank" href="<?= base_url('superadmin/Kpi/detailClosingMeeting/' . $s['id_user'] . '/' . strtotime($awal) . '/' . strtotime($akhir)) ?>">Detail</a></td>
 
                                             </tr>
@@ -244,7 +247,8 @@ function getGrade($nilai)
                                         <?php $no = 1;
                                         foreach ($sales->result_array() as $s) {
                                             $nilai = 0;
-
+                                            $totalSo = 0;
+                                            $totalNilai = 0;
                                             $so = $this->db->query('SELECT id_so,submitso_at,tgl_pickup FROM tbl_so WHERE id_sales =' . $s['id_user'] . ' AND tgl_pickup >= "' . date('Y-m-d', strtotime($awal)) . '" AND tgl_pickup <= "' . date('Y-m-d', strtotime($akhir)) . '"');
                                             foreach ($so->result_array() as $so1) {
 
@@ -283,12 +287,14 @@ function getGrade($nilai)
                                                     } elseif ($diff->format("%R%a") > 1) {
                                                         $nilai += 30;
                                                     }
-                                                }
+                                                    $totalSo += 1;
+                                                } 
+                                               
 
                                                 // echo $nilai . '<br>';
                                             }
-                                            if ($so->num_rows() != 0) {
-                                                $nilai = $nilai / $so->num_rows();
+                                            if ($totalSo != 0) {
+                                                $totalNilai = $nilai / $totalSo;
                                                 // echo  $so->num_rows();
                                             }
 
@@ -296,7 +302,7 @@ function getGrade($nilai)
                                             <tr>
                                                 <td><?= $no; ?></td>
                                                 <td><?= $s['nama_user'] ?></td>
-                                                <td><?= getGrade($nilai) . '/' . $nilai; ?></td>
+                                                <td><?= getGrade($totalNilai) . '/' . $totalNilai.' / '.$totalSo; ?></td>
                                                 <td><a target="_blank" class="btn btn-primary" href="<?= base_url('superadmin/Kpi/detailSo/' . $s['id_user'] . '/' . strtotime($awal) . '/' . strtotime($akhir)) ?>">Detail</a></td>
 
                                             </tr>

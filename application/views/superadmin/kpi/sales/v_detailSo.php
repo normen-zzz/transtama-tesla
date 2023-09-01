@@ -81,6 +81,8 @@ function getGrade($nilai)
                             </thead>
                             <tbody>
                                 <?php $nilai = 0;
+                                $totalNilai = 0;
+                                $totalSo = 0;
                                 foreach ($so->result_array() as $so1) {
                                     $query = $this->db->query("SELECT created_at,time FROM tbl_tracking_real WHERE id_so =" . $so1['id_so'] . " AND flag = 4 ORDER BY id_so DESC LIMIT 1 ");
                                     $trackingResi = $query->row_array();
@@ -92,7 +94,7 @@ function getGrade($nilai)
                                         // echo $so1['id_so'] . $diff->format(" %R%a days <br>");
 
                                         $datetime1 = strtotime($so1['submitso_at']);
-                                        $datetime2 = strtotime($trackingResi['created_at'].$trackingResi['time']);
+                                        $datetime2 = strtotime($trackingResi['created_at'] . $trackingResi['time']);
                                         $interval  = abs($datetime2 - $datetime1);
                                         $minutes   = round($interval / 60);
 
@@ -104,7 +106,7 @@ function getGrade($nilai)
                                                 $nilai = 70;
                                             }
                                         } elseif ($diff->format("%R%a") == 1) {
-                                            if (date('H:i:s', strtotime($trackingResi['time'])) >= '21:00:00') {
+                                            if (date('H:i:s', strtotime($trackingResi['created_at'].$trackingResi['time'])) >= '21:00:00') {
                                                 $nilai = 70;
                                             } else {
                                                 $nilai = 50;
@@ -112,25 +114,30 @@ function getGrade($nilai)
                                         } elseif ($diff->format("%R%a") > 1) {
                                             $nilai = 30;
                                         }
-                                    
+
 
 
                                 ?>
-                                    <tr>
-                                        <td><?= $user['nama_user'] ?></td>
-                                        <td><?= date('d-m-Y H:i:s', strtotime($trackingResi['created_at'].$trackingResi['time']))  ?></td>
-                                        <td><?= date('d-m-Y H:i:s', strtotime($so1['submitso_at']) )  ?></td>
-                                        <td><?= $so1['shipper'] ?></td>
-                                        <td><?= $so1['destination'] ?></td>
-                                        <td><?= getGrade($nilai)  ?></td>
-                                    </tr>
+                                        <tr>
+                                            <td><?= $user['nama_user'] ?></td>
+                                            <td><?= date('d-m-Y H:i:s', strtotime($trackingResi['created_at'] . $trackingResi['time']))  ?></td>
+                                            <td><?= date('d-m-Y H:i:s', strtotime($so1['submitso_at']))  ?></td>
+                                            <td><?= $so1['shipper'] ?></td>
+                                            <td><?= $so1['destination'] ?></td>
+                                            <td><?= getGrade($nilai)  ?></td>
+                                        </tr>
                                 <?php
-                                } }?>
+                                        $totalSo += 1;
+                                    }
+                                    $totalNilai += $nilai;
+                                } ?>
                             </tbody>
 
 
                         </table>
                     </div>
+                    <p>total nilai = <?= $totalNilai / $totalSo ?></p>
+                    <p>total so = <?= $totalSo ?></p>
                     <!-- /.card-body -->
                 </div>
                 <!-- /.card -->

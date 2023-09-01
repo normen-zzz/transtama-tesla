@@ -16,7 +16,7 @@ class KpiModel extends CI_Model
 
     public function getSo($user, $awal, $akhir)
     {
-        $this->db->select('*');
+        $this->db->select('id_so,submitso_at,tgl_pickup,shipper,destination');
         $this->db->from('tbl_so a');
         $this->db->where('a.id_sales', $user);
         $this->db->where('a.tgl_pickup >=', date('Y-m-d', $awal));
