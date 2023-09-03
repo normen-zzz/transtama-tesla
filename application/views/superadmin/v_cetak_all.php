@@ -114,7 +114,7 @@
             </table>
             <table style="width:100%; border-top:1px solid black;">
                 <tr>
-                    <td <?php if (strlen($order['consigne'].$order['destination'].$order['city_consigne'].$order['state_consigne']) > 75) { ?> style="font-size: 6px; text-align:left" <?php } else { ?> style="font-size: 8px; text-align:left" <?php } ?> ><b>Consignee : <?php if ($order['consigne'] != NULL) {
+                    <td <?php if (strlen($order['consigne'].$order['destination'].$order['city_consigne'].$order['state_consigne']) > 75) { ?> style="font-size: 7px; text-align:left" <?php } else { ?> style="font-size: 8px; text-align:left" <?php } ?> ><b>Consignee : <?php if ($order['consigne'] != NULL) {
                                                                                     ?></b> <?= ucwords(strtolower($order['consigne'])) . '<br>' . ucwords($order['destination']) . '. ' . '<br>'  . '<b>' . ucwords(strtolower($order['city_consigne'])) . '</b>' . ', ' . '<b>' . ucwords(strtolower($order['state_consigne'])) . '</b>'  ?>
                         <b>Indonesia</b> <?php } ?>
                     </td>
