@@ -90,6 +90,8 @@ function getGrade($nilai)
 
                         <div class="tab-content" id="nav-tabContent">
                             <div class="tab-pane fade show active" id="nav-plan" role="tabpanel" aria-labelledby="nav-plan-tab">
+
+                            <!-- meeting plan  -->
                                 <table class="table table-separate table-head-custom table-checkable datatable">
 
                                     <div class="flash-data" data-flashdata="<?= $this->session->flashdata('message'); ?>"></div>
@@ -151,7 +153,7 @@ function getGrade($nilai)
                                             <tr>
                                                 <td><?= $no; ?></td>
                                                 <td><?= $s['nama_user'] ?></td>
-                                                <td><?= getGrade($nilai)  ?></td>
+                                                <td><?= getGrade($nilai).' / '.$nilai  ?></td>
                                                 <td><a target="_blank" class="btn btn-primary" href="<?= base_url('superadmin/Kpi/detailMeetingPlan/' . $s['id_user'] . '/' . strtotime($awal) . '/' . strtotime($akhir)) ?>">Detail</a></td>
 
                                             </tr>

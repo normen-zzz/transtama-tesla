@@ -274,57 +274,7 @@ function getGrade($nilai)
                                 </table>
                             </div>
 
-                            <!-- Update Sistem  -->
-                            <div class="tab-pane fade" id="nav-update" role="tabpanel" aria-labelledby="nav-profile-update">
-                                <table class="table table-separate table-head-custom table-checkable datatable">
-                                    <thead>
-                                        <tr>
-                                            <th>Jumlah Resi</th>
-                                            <th>Nilai</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php
-                                        $nilai = 0;
-                                        $jumlahUpdate = 0;
-
-                                        foreach ($update->result_array() as $update1) {
-                                            
-
-
-                                                $date1 = date_create(date('Y-m-d', strtotime($update1['tgl_pickup'])));
-                                                $date2 = date_create(date('Y-m-d', strtotime($update1['updatesistem_at'])));
-                                                $diff = date_diff($date1, $date2);
-
-                                                if ($diff->format("%R%a") <= 0) {
-                                                    // nilai A
-                                                    $nilai += 90;
-                                                } elseif ($diff->format("%R%a") == 1) {
-                                                    // nilai B
-                                                    $nilai += 70;
-                                                } elseif ($diff->format("%R%a") >= 2) {
-                                                    // nilai C
-                                                    $nilai += 50;
-                                                }
-                                                
-                                            
-                                        }
-                                        if ($update->num_rows() != 0) {
-                                            $nilai = ($nilai / $update->num_rows());
-                                        } ?>
-
-                                        <tr>
-                                            <td><?= $update->num_rows() ?></td>
-                                            <td><?= getGrade($nilai); ?></td>
-                                            <td><a target="_blank" class="btn btn-primary" href="<?= base_url('superadmin/Kpi/detailUpdateSistem/' . strtotime($awal) . '/' . strtotime($akhir)) ?>">Detail</a></td>
-
-                                        </tr>
-                                        <?php $no++;
-                                        ?>
-                                    </tbody>
-                                </table>
-                            </div>
+                            
 
                             <!-- Visit  -->
                             <div class="tab-pane fade" id="nav-visit" role="tabpanel" aria-labelledby="nav-profile-visit">

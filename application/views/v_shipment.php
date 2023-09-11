@@ -58,17 +58,13 @@
 											//cek outgoing or incoming
 											$getLast = $this->order->getLastTracking2($g['shipment_id'])->row_array();
 											if ($g['is_incoming'] != 1) {
-
-
-
-
 												if ($getLast['flag'] >= 4 && $getLast['flag'] <= 5) {
 										?>
 													<tr>
 														<td><?= $g['shipment_id'] ?></td>
 														<td><?= $g['shipper'] ?><br><?= $g['tree_shipper'] ?></td>
 														<td><?= $g['consigne'] ?><br><?= $g['tree_consignee'] ?></td>
-														<td><?= $getLast['status'] ?></td>
+														<td><?= $getLast['status'] ?> <?= $getLast['flag'] ?> </td>
 														<?php if ($getLast['flag'] == 4) { ?>
 															<td>Scan IN</td>
 														<?php } elseif ($getLast['flag'] == 5) { ?>
@@ -113,7 +109,7 @@
 																</div>
 																<!--end::Symbol-->
 																<!--begin::Text-->
-																<?php $driver = $this->db->get_where('tb_user', ['id_user' => $tracking_real['id_user']])->row_array(); ?>
+																<?php $driver = $this->db->query("SELECT nama_user FROM tb_user WHERE id_user = ".$tracking_real['id_user']." ")->row_array();?>
 																<div class="d-flex flex-column flex-grow-1 font-weight-bold">
 																	<a href="#" class="text-dark text-hover-primary mb-1 font-size-lg"><?= $driver['nama_user'] ?></a>
 																	<span class="text-muted">Driver</span>
@@ -153,7 +149,9 @@
 										</div>
 										<!--end::Symbol-->
 										<!--begin::Text-->
-										<?php $driver = $this->db->get_where('tb_user', ['id_user' => $tracking['id_user']])->row_array(); ?>
+										<?php 
+										$driver = $this->db->query("SELECT nama_user FROM tb_user WHERE id_user = ".$tracking['id_user']." ")->row_array();
+										?>
 										<div class="d-flex flex-column flex-grow-1 font-weight-bold">
 											<a href="#" class="text-dark text-hover-primary mb-1 font-size-lg"><?= $driver['nama_user'] ?></a>
 											<span class="text-muted">Driver</span>
@@ -209,7 +207,10 @@
 										</div>
 										<!--end::Symbol-->
 										<!--begin::Text-->
-										<?php $driver = $this->db->get_where('tb_user', ['id_user' => $tracking_real['id_user']])->row_array(); ?>
+										<?php 
+										$driver = $this->db->query("SELECT nama_user FROM tb_user WHERE id_user = ".$tracking_real['id_user']." ")->row_array();
+										?>
+										
 										<div class="d-flex flex-column flex-grow-1 font-weight-bold">
 											<a href="#" class="text-dark text-hover-primary mb-1 font-size-lg"><?= $driver['nama_user'] ?></a>
 											<span class="text-muted">Driver</span>
@@ -248,7 +249,7 @@
 										</div>
 										<!--end::Symbol-->
 										<!--begin::Text-->
-										<?php $driver = $this->db->get_where('tb_user', ['id_user' => $tracking['id_user']])->row_array(); ?>
+										<?php $driver = $this->db->query("SELECT nama_user FROM tb_user WHERE id_user = ".$tracking['id_user']." ")->row_array(); ?>
 										<div class="d-flex flex-column flex-grow-1 font-weight-bold">
 											<a href="#" class="text-dark text-hover-primary mb-1 font-size-lg"><?= $driver['nama_user'] ?></a>
 											<span class="text-muted">Driver</span>

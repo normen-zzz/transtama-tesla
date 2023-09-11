@@ -53,7 +53,7 @@ class Kpi extends CI_Controller
         }
     }
 
-    //KPI SALES
+    //KPI SALES DONEEEEEEEEEEEEEEEEEEEEEEEEEE
     public function sales()
     {
         if ($this->input->post('awal') == NULL) {
@@ -115,12 +115,14 @@ class Kpi extends CI_Controller
             $data['resionjs'] = $this->KpiModel->getResiOnJs(strtotime(date('Y-m-d')), strtotime(date('Y-m-t')));
             $data['reservasi'] = $this->KpiModel->getResiOnReservasi(strtotime(date('Y-m-d')), strtotime(date('Y-m-t')));
             $data['daerah'] = $this->KpiModel->getResiOnDaerah(strtotime(date('Y-m-d')), strtotime(date('Y-m-t')));
+            // $data['update'] = $this->KpiModel->getUpdateSistem(strtotime(date('Y-m-d')), strtotime(date('Y-m-t')));
         } else {
             $data['awal'] = $this->input->post('awal');
             $data['akhir'] = $this->input->post('akhir');
             $data['resionjs'] = $this->KpiModel->getResiOnJs(strtotime($this->input->post('awal')), strtotime($this->input->post('akhir')));
             $data['reservasi'] = $this->KpiModel->getResiOnReservasi(strtotime($this->input->post('awal')), strtotime($this->input->post('akhir')));
             $data['daerah'] = $this->KpiModel->getResiOnDaerah(strtotime($this->input->post('awal')), strtotime($this->input->post('akhir')));
+            // $data['update'] = $this->KpiModel->getUpdateSistem(strtotime($this->input->post('awal')), strtotime($this->input->post('akhir')));
         }
         $this->backend->display('superadmin/kpi/cs/v_kpi_cs', $data);
     }
