@@ -56,18 +56,18 @@
 									<tbody>
 										<?php foreach ($outbond as $g) {
 											//cek outgoing or incoming
-											$getLast = $this->order->getLastTracking2($g['shipment_id'])->row_array();
+											// $g = $this->order->getLastTracking2($g['shipment_id'])->row_array();
 											if ($g['is_incoming'] != 1) {
-												if ($getLast['flag'] >= 4 && $getLast['flag'] <= 5) {
+												if ($g['flag'] >= 4 && $g['flag'] <= 5) {
 										?>
 													<tr>
 														<td><?= $g['shipment_id'] ?></td>
 														<td><?= $g['shipper'] ?><br><?= $g['tree_shipper'] ?></td>
 														<td><?= $g['consigne'] ?><br><?= $g['tree_consignee'] ?></td>
-														<td><?= $getLast['status'] ?> <?= $getLast['flag'] ?> </td>
-														<?php if ($getLast['flag'] == 4) { ?>
+														<td><?= $g['status'] ?> <?= $g['flag'] ?> </td>
+														<?php if ($g['flag'] == 4) { ?>
 															<td>Scan IN</td>
-														<?php } elseif ($getLast['flag'] == 5) { ?>
+														<?php } elseif ($g['flag'] == 5) { ?>
 															<td><a href="<?= base_url('shipper/salesOrder/weight/' . $g['shipment_id']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Weight</a>
 																<a href="<?= base_url('shipper/salesOrder/edit/' . $g['id'] . '/' . $g['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Edit</a>
 																<a href="<?= base_url('shipper/order/detail/' . $g['id'] . '/' . $g['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Detail</a>
@@ -76,7 +76,7 @@
 																?>
 																	<!-- kalo sales ordernya sudah di pickup -->
 																	<!-- kalo shipmentnya telah tiba di hub benhil -->
-																	<?php if ($getLast['flag'] == 5 || $getLast['flag'] == 6) {
+																	<?php if ($g['flag'] == 5 || $g['flag'] == 6) {
 																	?>
 
 
@@ -121,7 +121,7 @@
 
 							</div>
 							<!-- kalo sales order nya belum di pickup -->
-						<?php } elseif ($getLast['flag'] == 2) {
+						<?php } elseif ($g['flag'] == 2) {
 						?>
 							<a href="#" class="btn font-weight-bolder text-light" data-toggle="modal" data-target="#modal-lg" style="background-color: #9c223b;">
 								Asign Driver PU
@@ -173,7 +173,7 @@
 					?>
 						<!-- kalo sales ordernya sudah di pickup -->
 						<!-- kalo shipmentnya telah tiba di hub benhil -->
-						<?php if ($getLast['flag'] == 5 || $getLast['flag'] == 6) {
+						<?php if ($g['flag'] == 5 || $g['flag'] == 6) {
 						?>
 							<button class="btn text-light modalDeliveryLuar" data-toggle="modal" data-target="#modal-lg-dl-luar" data-shipment_id="<?= $g['shipment_id'] ?>" data-id_so="<?= $g['id_so'] ?>" style="background-color: #9c223b;">
 								Scan Out
@@ -183,7 +183,7 @@
 																		$queryTrackingReal = $this->db->query('SELECT id_user FROM tbl_tracking_real WHERE shipment_id = "' . $g['shipment_id'] . '" AND flag = "5" ORDER BY id_tracking DESC LIMIT 1 ');
 																		$tracking_real = $queryTrackingReal->row_array();
 
-																		$queryOrder
+																		
 
 																		
 
@@ -221,7 +221,7 @@
 
 							</div>
 							<!-- kalo sales order nya belum di pickup -->
-						<?php } elseif ($getLast['flag'] == 2) {
+						<?php } elseif ($g['flag'] == 2) {
 						?>
 							<a href="#" class="btn font-weight-bolder text-light" data-toggle="modal" data-target="#modal-lg" style="background-color: #9c223b;">
 								Asign Driver PU</a>
@@ -276,13 +276,13 @@
 			<?php }
 												// jika incoming
 											} else {
-												if ($getLast['flag'] == 9) { ?>
+												if ($g['flag'] == 9) { ?>
 
 				<tr>
 					<td><?= $g['shipment_id'] ?></td>
 					<td><?= $g['shipper'] ?><br><?= $g['tree_shipper'] ?></td>
 					<td><?= $g['consigne'] ?><br><?= $g['tree_consignee'] ?></td>
-					<td><?= $getLast['status'] ?></td>
+					<td><?= $g['status'] ?></td>
 					<td><a href="<?= base_url('shipper/Scan/scanOutIncoming/' . $g['shipment_id']) ?>" class="btn text-light" style="background-color: #9c223b;">
 							Scan Out
 						</a></td>

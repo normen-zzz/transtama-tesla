@@ -65,18 +65,11 @@ class PengajuanModel extends CI_Model
 
     public function outbond()
     {
-        // $this->db->select('a.shipment_id,a.shipper,a.consigne,a.tree_shipper,a.tree_consignee');
-        // $this->db->from('tbl_shp_order a');
-        // $this->db->where('MONTH(a.tgl_pickup)', 10);
-        // $this->db->where('YEAR(a.tgl_pickup)', 2022);
-        // $this->db->order_by('a.shipment_id', 'DESC');
-        // return $this->db->get();
+       
 
-        $this->db->select('b.id,a.shipment_id,b.shipper,b.consigne,b.tree_shipper,b.tree_consignee,b.id_so,b.is_jabodetabek,b.is_incoming');
+        $this->db->select('b.id,a.shipment_id,b.shipper,b.consigne,b.tree_shipper,b.tree_consignee,b.id_so,b.is_jabodetabek,b.is_incoming,(SELECT flag FROM tbl_tracking_real WHERE shipment_id = a.shipment_id ORDER BY id_tracking DESC LIMIT 1 ) AS flag,(SELECT status FROM tbl_tracking_real WHERE shipment_id = a.shipment_id ORDER BY id_tracking DESC LIMIT 1 ) as status ');
         $this->db->from('tbl_outbond a');
         $this->db->join('tbl_shp_order b','a.shipment_id=b.shipment_id');
-        // $this->db->where('MONTH(b.tgl_pickup)', 10);
-        // $this->db->where('YEAR(b.tgl_pickup)', 2022);
         $this->db->where('b.deleted',0);
         $this->db->order_by('b.shipment_id', 'DESC');
         return $this->db->get();

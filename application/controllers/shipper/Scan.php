@@ -325,7 +325,7 @@ class Scan extends CI_Controller
                 'id_user' => $this->input->post('id_driver'),
                 'created_at' => date('Y-m-d'),
                 'time' => date('H:i:s'),
-                'flag' => 5,
+                'flag' => 6,
                 'status_eksekusi' => 0,
                 'note' => $this->input->post('note')
             );
