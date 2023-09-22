@@ -246,7 +246,7 @@ class Order extends CI_Controller
         $mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => [74, 105]]);
 
         $where = array('id_so' => $id);
-        $this->db->select('*, b.service_name, b.prefix');
+        $this->db->select('a.id_so,a.shipment_id,a.shipper,a.city_shipper,a.state_shipper,a.tree_shipper,a.tree_consignee,a.consigne,a.destination,a.city_consigne,a.state_consigne,a.koli,a.is_weight_print,a.weight,a.signature,a.created_at,a.sender,a.tgl_pickup, b.service_name, b.prefix');
         $this->db->from('tbl_shp_order a');
         $this->db->join('tb_service_type b', 'a.service_type=b.code');
         $this->db->where('a.id_so', $id);

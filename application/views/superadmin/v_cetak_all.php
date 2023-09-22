@@ -1,4 +1,6 @@
-<?php $is_generate = $this->db->get_where('tbl_so', array('id_so' => $orders[0]['id_so']))->row_array(); ?>
+<?php 
+$is_generate = $this->db->query("SELECT type FROM tbl_so WHERE id_so = ".$orders[0]['id_so']." ")->row_array();
+?>
 <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700&display=swap" rel="stylesheet" type="text/css">
 <style>
     @page {
@@ -54,6 +56,11 @@
         position: fixed;
         top: 520px;
     }
+
+    .smallCell
+{
+    height: 50px;
+}
 
     p {
         font-size: 16px;
@@ -114,9 +121,16 @@
             </table>
             <table style="width:100%; border-top:1px solid black;">
                 <tr>
-                    <td <?php if (strlen($order['consigne'].$order['destination'].$order['city_consigne'].$order['state_consigne']) > 75) { ?> style="font-size: 7px; text-align:left" <?php } else { ?> style="font-size: 8px; text-align:left" <?php } ?> ><b>Consignee : <?php if ($order['consigne'] != NULL) {
+				
+                    <td class="smallCell" style="font-size: 8px; text-align:left">
+					
+					
+     <b>Consignee : <?php if ($order['consigne'] != NULL) {
                                                                                     ?></b> <?= ucwords(strtolower($order['consigne'])) . '<br>' . ucwords($order['destination']) . '. ' . '<br>'  . '<b>' . ucwords(strtolower($order['city_consigne'])) . '</b>' . ', ' . '<b>' . ucwords(strtolower($order['state_consigne'])) . '</b>'  ?>
                         <b>Indonesia</b> <?php } ?>
+						
+					
+					
                     </td>
                 </tr>
 
@@ -127,11 +141,11 @@
                     <td style="border-bottom: 1px solid black;border-top: 1px solid black;font-size: 10px;">
                         DO Number :
                         <?php
-                        $get_do = $this->db->select('no_do')->get_where('tbl_no_do', ['shipment_id' => $order['shipment_id']])->result_array();
-                        $jumlah = $this->db->select('no_do')->get_where('tbl_no_do', ['shipment_id' => $order['shipment_id']])->num_rows();
+                        $get_do = $this->db->select('no_do')->get_where('tbl_no_do', ['shipment_id' => $order['shipment_id']]);
+                        $jumlah = $get_do->num_rows();
                         if ($get_do) {
                             $i = 1;
-                            foreach ($get_do as $d) {
+                            foreach ($get_do->result_array() as $d) {
                         ?>
                                 <?= ($i == $jumlah) ? $d['no_do'] : $d['no_do'] . '/'  ?>
                             <?php $i++;
