@@ -250,6 +250,7 @@ class Order extends CI_Controller
         $this->db->from('tbl_shp_order a');
         $this->db->join('tb_service_type b', 'a.service_type=b.code');
         $this->db->where('a.id_so', $id);
+        $this->db->where('a.deleted', 0);
         $data['orders'] = $this->db->get()->result_array();
         $data = $this->load->view('superadmin/v_cetak_all', $data, TRUE);
         $mpdf->WriteHTML($data);
