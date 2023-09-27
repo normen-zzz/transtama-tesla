@@ -262,7 +262,7 @@ class Order extends CI_Controller
 
     function view_data_query()
     {
-        $query  = "SELECT a.*, b.nama_user FROM tbl_shp_order a JOIN tb_user b ON a.id_user=b.id_user";
+        $query  = "SELECT a.id,a.tgl_pickup,a.shipper,a.consigne,a.shipment_id,a.created_at,a.id_so, b.nama_user FROM tbl_shp_order a JOIN tb_user b ON a.id_user=b.id_user";
         $search = array('nama_user', 'shipment_id', 'order_id', 'shipper', 'consigne');
         $where  = null;
         // jika memakai IS NULL pada where sql

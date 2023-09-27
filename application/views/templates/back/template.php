@@ -1838,7 +1838,13 @@
 							return today.toLocaleDateString("en-US", options);
 						}
 
-					} // Tampilkan nama sub kategori
+					}, // Tampilkan nama sub kategori
+					{
+						"data": "id",
+						"render": function(data, type, row, meta) {
+							return '<a href="<?= base_url('superadmin/order/edit/') ?>' + data + '/' + row.id_so + '" class="btn btn-sm text-light" style="background-color: #9c223b;">Edit</a>';
+						}
+					},
 
 				],
 			});
