@@ -234,12 +234,15 @@ class SalesOrder extends CI_Controller
                 // kirim wa
 
 
-                $this->wa->pickup('+6285697780467', "$pesan"); //Nomor Norman
-                $this->wa->pickup('+6281293753199', "$pesan"); //Nomor Bu Lili
-                $this->wa->pickup('+6285894438583', "$pesan"); //Mba Yunita 
-                $this->wa->pickup('+6281385687290', "$pesan"); //Mba Lina
-                $this->wa->pickup('+6281212603705', "$pesan"); //Mba Lina
-                $this->wa->pickup('+62895332937616', "$pesan"); //Devira
+                $this->wa->pickup('+6285697780467', "$pesan"); //Nomor Norman IT
+                $this->wa->pickup('+6281293753199', "$pesan"); //Nomor Bu Lili CS
+                $this->wa->pickup('+6285894438583', "$pesan"); //Mba Yunita  CS
+                $this->wa->pickup('+6281385687290', "$pesan"); //Mba Lina CS
+                $this->wa->pickup('+6281212603705', "$pesan"); //Mas Ali OPS
+                $this->wa->pickup('+62895332937616', "$pesan"); //Devira CS
+                $this->wa->pickup('+6281398433940', "$pesan"); //Sarwan OPS
+                $this->wa->pickup('+6285859510353', "$pesan"); //SAHWA CS
+
 
 
                 $random = random_string('numeric', 8);
