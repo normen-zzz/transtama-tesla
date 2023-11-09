@@ -390,7 +390,7 @@ class Order extends CI_Controller
                 ->setAutoSize(true);
             $sheet->setCellValue('F' . $x, $row['no_stp'])->getColumnDimension('F')
                 ->setAutoSize(true);
-            $sheet->setCellValue('G' . $x, $row['shipper'])->getColumnDimension('G')
+            $sheet->setCellValue('G' . $x, $row['shipper'].'('.$row['mark_shipper'].')')->getColumnDimension('G')
                 ->setAutoSize(true);
             $sheet->setCellValue('H' . $x, $row['consigne'])->getColumnDimension('H')
                 ->setAutoSize(true);

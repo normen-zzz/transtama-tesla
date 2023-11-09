@@ -691,15 +691,15 @@ class SalesOrder extends CI_Controller
 
         if ($weekend == TRUE) {
             if (date('H:i:s') >= date('H:i:s', strtotime('21:00:01')) && date('H:i:s') <= date('H:i:s', strtotime('23:59:59'))) {
-                $deadline_pic_js = date('Y-m-d', strtotime('+4 days', strtotime($date)));
+                $deadline_pic_js = date('Y-m-d', strtotime('+5 days', strtotime($date)));
             } else {
-                $deadline_pic_js = date('Y-m-d', strtotime('+3 days', strtotime($date)));
+                $deadline_pic_js = date('Y-m-d', strtotime('+4 days', strtotime($date)));
             }
         } else {
             if (date('H:i:s') >= date('H:i:s', strtotime('21:00:01')) && date('H:i:s') <= date('H:i:s', strtotime('23:59:59'))) {
-                $deadline_pic_js = date('Y-m-d', strtotime('+3 days', strtotime($date)));
+                $deadline_pic_js = date('Y-m-d', strtotime('+4 days', strtotime($date)));
             } else {
-                $deadline_pic_js = date('Y-m-d', strtotime('+2 days', strtotime($date)));
+                $deadline_pic_js = date('Y-m-d', strtotime('+3 days', strtotime($date)));
             }
         }
 
