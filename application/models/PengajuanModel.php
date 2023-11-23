@@ -41,7 +41,7 @@ class PengajuanModel extends CI_Model
         $query = $this->db->get();
         return $query;
     }
-    
+
     public function getLastTrackingOutbond($shipmnent_id)
     {
         $this->db->select('*');
@@ -65,14 +65,15 @@ class PengajuanModel extends CI_Model
 
     public function outbond()
     {
-       
 
-        $this->db->select('b.id,a.shipment_id,b.shipper,b.consigne,b.tree_shipper,b.tree_consignee,b.id_so,b.is_jabodetabek,b.is_incoming,(SELECT flag FROM tbl_tracking_real WHERE shipment_id = a.shipment_id ORDER BY id_tracking DESC LIMIT 1 ) AS flag,(SELECT status FROM tbl_tracking_real WHERE shipment_id = a.shipment_id ORDER BY id_tracking DESC LIMIT 1 ) as status ');
-        $this->db->from('tbl_outbond a');
-        $this->db->join('tbl_shp_order b','a.shipment_id=b.shipment_id');
-        $this->db->where('b.deleted',0);
-        $this->db->order_by('b.shipment_id', 'DESC');
-        return $this->db->get();
+
+        // $this->db->select('b.id,a.shipment_id,b.shipper,b.consigne,b.tree_shipper,b.tree_consignee,b.id_so,b.is_jabodetabek,b.is_incoming,(SELECT flag FROM tbl_tracking_real WHERE shipment_id = a.shipment_id ORDER BY id_tracking DESC LIMIT 1 ) AS flag,(SELECT status FROM tbl_tracking_real WHERE shipment_id = a.shipment_id ORDER BY id_tracking DESC LIMIT 1 ) as status ');
+        // $this->db->from('tbl_outbond a');
+        // $this->db->join('tbl_shp_order b','a.shipment_id=b.shipment_id');
+        // $this->db->where('b.deleted',0);
+        // $this->db->order_by('b.shipment_id', 'DESC');
+
+        return $this->db->query('SELECT b.id,a.shipment_id,b.shipper,b.consigne,b.tree_shipper,b.tree_consignee,b.id_so,b.is_jabodetabek,b.is_incoming,c.flag,c.status,c.id_user FROM tbl_outbond AS a INNER JOIN tbl_shp_order AS b ON a.shipment_id = b.shipment_id INNER JOIN tbl_tracking_real AS c ON a.shipment_id = c.shipment_id LEFT OUTER JOIN tbl_tracking_real c2 ON (a.shipment_id = c2.shipment_id AND (c.update_at < c2.update_at OR (c.update_at = c2.update_at AND c.id_tracking < c2.id_tracking))) WHERE c2.id_tracking IS NULL AND b.deleted = 0 AND a.out_date IS NOT NULL;');
     }
     public function dispatchHistory()
     {
