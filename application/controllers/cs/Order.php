@@ -49,6 +49,8 @@ class Order extends CI_Controller
         $data['service'] = $this->db->get('tb_service_type')->result_array();
         $data['p'] = $this->order->order($id)->row_array();
         $data['invoice'] = $this->db->get_where('tbl_invoice',array('shipment_id' => $id))->row_array();
+        $data['dimension'] = $this->db->get_where('tbl_dimension',array('shipment_id' => $data['p']['shipment_id']))->result_array();
+        
         $this->backend->display('cs/v_edit_order', $data);
     }
     public function editOrder($id, $id_so)

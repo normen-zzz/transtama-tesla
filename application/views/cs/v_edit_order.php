@@ -427,6 +427,51 @@
 													</form>
 												</div>
 											</div>
+
+											<?php if ($dimension != NULL) { ?>
+												
+											
+											<div class="row" style="margin-top: 100px ;">
+												<div class="col">
+													<h2>Dimension From Outbond</h2>
+													<table class="table">
+														<thead>
+															<tr>
+																<th>Koli</th>
+																<th>Panjang</th>
+																<th>Lebar</th>
+																<th>Tinggi</th>
+																<th>Berat Aktual</th>
+																<th>Berat Volume</th>
+																<th>No DO</th>
+															</tr>
+														</thead>
+														<tbody>
+															<?php foreach ($dimension as $dimension1) { ?>
+															<tr>
+																<td scope="row"><?= $dimension1['koli'] ?></td>
+																<td><?= $dimension1['panjang'] ?></td>
+																<td><?= $dimension1['lebar'] ?></td>
+																<td><?= $dimension1['tinggi'] ?></td>
+																<?php if ($dimension1['berat_aktual'] > $dimension1['berat_volume']) { ?>
+																	<td><strong><?= $dimension1['berat_aktual'] ?></strong></td>
+																	<td><?= $dimension1['berat_volume'] ?></td>
+																<?php } elseif ($dimension1['berat_aktual'] < $dimension1['berat_volume']){ ?>
+																	
+																	<td><?= $dimension1['berat_aktual'] ?></td>
+																	<td><strong><?= $dimension1['berat_volume'] ?></strong></td>
+																	<?php } ?>
+																
+																
+																<td><?= $dimension1['no_do'] ?></td>
+															</tr>
+															
+															<?php } ?>
+														</tbody>
+													</table>
+												</div>
+											</div>
+											<?php } ?>
 											<!--end: Wizard Form-->
 										</div>
 									</div>
