@@ -42,7 +42,7 @@ class Milestone extends CI_Controller
 	function getDataMilestone()
     {
         $query  = "SELECT a.shipment_id, a.tgl_pickup, a.time, a.shipper, a.destination, a.pu_poin, a.is_incoming, a.id_so, a.status_so, a.deleted, a.tgl_diterima FROM tbl_shp_order AS a";
-        $search = array('shipment_id');
+        $search = array('shipment_id','tgl_pickup');
 		$where = array('a.deleted' => 0);
         // jika memakai IS NULL pada where sql
         $isWhere = 'a.tgl_diterima IS NULL AND a.status_so >= 1';

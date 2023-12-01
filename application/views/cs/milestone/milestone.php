@@ -65,9 +65,10 @@
 					"type": "POST"
 				},
 				"deferRender": true,
+				"pageLength": 100,
 				"aLengthMenu": [
-					[10, 50,100],
-					[10, 50,100]
+					[10, 50,100,200],
+					[10, 50,100,200]
 				], // Combobox Limit
 				"columns": [{
 						"data": "shipment_id",
@@ -115,7 +116,7 @@
 					{
 						"data": "shipment_id",
 						"render": function(data, type, row, meta) {
-							return `<a onclick='$("#modalLoading").modal("show");' href="<?= base_url('cs/Milestone/detailMilestone/') ?>` + data + `" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Detail</a>`;
+							return `<a  target="_blank" href="<?= base_url('cs/Milestone/detailMilestone/') ?>` + data + `" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Detail</a>`;
 
 						}
 					},
