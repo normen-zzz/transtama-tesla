@@ -24,6 +24,16 @@ class KpiModel extends CI_Model
         return $this->db->get();
     }
 
+    public function getSoOps($awal, $akhir)
+    {
+        $this->db->select('id_so,submitso_at,tgl_pickup,shipper,destination,time');
+        $this->db->from('tbl_so a');
+        $this->db->where('a.tgl_pickup >=', date('Y-m-d', $awal));
+        $this->db->where('a.tgl_pickup <=', date('Y-m-d', $akhir));
+        $this->db->where('a.status >', 0);
+        return $this->db->get();
+    }
+
     public function getInvoice($awal, $akhir)
     {
         $this->db->select('a.no_invoice,a.created_at,a.update_at');

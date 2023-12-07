@@ -268,7 +268,7 @@
 																// jika tanggal sekarang dan tanggal pickup beda sehari
 																if ($interval->format('%a') == 1) {
 																	// jika jam sekarang diatas jam 12 malam dan dibawah jam 9 pagi
-																	if (date('H:i:s', strtotime('08:00:01')) >= date('H:i:s', strtotime('00:00:01')) && date('H:i:s', strtotime('08:00:01')) <= date('H:i:s', strtotime('09:00:00'))) {
+																	if (date('H:i:s') >= date('H:i:s', strtotime('00:00:01')) && date('H:i:s') <= date('H:i:s', strtotime('09:00:00'))) {
 														?>
 																		<a href="#" class="btn mr-2 text-light" data-toggle="modal" data-target="#modal-import" style="background-color: #9c223b;">
 																			<i class="fas fa-upload text-light"> </i>
@@ -515,7 +515,7 @@
 																	// jika tanggal sekarang dan tanggal pickup beda sehari
 																	if ($interval->format('%a') == 1) {
 																		// jika jam sekarang diatas jam 12 malam dan dibawah jam 9 pagi
-																		if (date('H:i:s', strtotime('08:00:01')) >= date('H:i:s', strtotime('00:00:01')) && date('H:i:s', strtotime('08:00:01')) <= date('H:i:s', strtotime('09:00:00'))) {
+																		if (date('H:i:s') >= date('H:i:s', strtotime('00:00:01')) && date('H:i:s') <= date('H:i:s', strtotime('09:00:00'))) {
 																			echo 'Karna pickup diatas jam 9 Malam, maka submit so bisa dilakukan sampai jam 9 pagi <br>';
 																			echo "<button type='submit' class='btn btn-success' onclick='return confirm('Are you sure ?')'>Submit SO</button>";
 																		} else {
@@ -557,7 +557,26 @@
 																echo '-';
 															}
 														} else {
-															echo  "<h4>SO Late Submit </h4> <br> <a href=" . base_url('#') . " 'onclick='return confirm('Are You Sure ?')' class='btn btn-sm mb-1 text-light' data-toggle='modal' data-target='#modal-request' style='background-color: #9c223b;'>Request Aktivasi</a>";
+															$date1 = new DateTime(date('Y-m-d'));
+																$date2 = new DateTime(date('Y-m-d', strtotime($getTanggalPickup['created_at'])));
+																$interval = date_diff($date2, $date1);
+																// jika waktu pickup diatas jam 9 dan dibawah jam 12 
+																if ($WaktuPickup >= date('H:i:s', strtotime('21:00:00')) && $WaktuPickup <= date('H:i:s', strtotime('23:59:59'))) {
+																	// jika tanggal sekarang dan tanggal pickup beda sehari
+																	if ($interval->format('%a') == 1) {
+																		// jika jam sekarang diatas jam 12 malam dan dibawah jam 9 pagi
+																		if (date('H:i:s') >= date('H:i:s', strtotime('00:00:01')) && date('H:i:s') <= date('H:i:s', strtotime('09:00:00'))) {
+																			echo 'Karna pickup diatas jam 9 Malam, maka submit so bisa dilakukan sampai jam 9 pagi <br>';
+																			echo "<button type='submit' class='btn btn-success' onclick='return confirm('Are you sure ?')'>Submit SO</button>";
+																		} else {
+																			echo  "<h4>SO Late Submit (Diatas jam 9 pagi)</h4>  <br> <a href=" . base_url('#') . " 'onclick='return confirm('Are You Sure ?')' class='btn btn-sm mb-1 text-light' data-toggle='modal' data-target='#modal-request' style='background-color: #9c223b;'>Request Aktivasi</a>";
+																		}
+																	} else {
+																		echo  "<h4>SO Late Submit (Lebih dari sehari) </h4> <br> <a href=" . base_url('#') . " 'onclick='return confirm('Are You Sure ?')' class='btn btn-sm mb-1 text-light' data-toggle='modal' data-target='#modal-request' style='background-color: #9c223b;'>Request Aktivasi</a>";
+																	}
+																} else {
+																	echo  "<h4>SO Late Submit </h4> <br> <a href=" . base_url('#') . " 'onclick='return confirm('Are You Sure ?')' class='btn btn-sm mb-1 text-light' data-toggle='modal' data-target='#modal-request' style='background-color: #9c223b;'>Request Aktivasi</a>";
+																}
 														}
 													}
 

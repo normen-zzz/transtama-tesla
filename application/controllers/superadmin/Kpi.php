@@ -9,6 +9,7 @@ class Kpi extends CI_Controller
         if (!$this->session->userdata('id_user')) {
             redirect('backoffice');
         }
+        $this->db->query("SET sql_mode=(SELECT REPLACE(@@sql_mode, 'ONLY_FULL_GROUP_BY', ''));");
         $this->load->model('UserModel');
         $this->load->model('KpiModel');
         cek_role();
@@ -115,6 +116,7 @@ class Kpi extends CI_Controller
             $data['resionjs'] = $this->KpiModel->getResiOnJs(strtotime(date('Y-m-d')), strtotime(date('Y-m-t')));
             $data['reservasi'] = $this->KpiModel->getResiOnReservasi(strtotime(date('Y-m-d')), strtotime(date('Y-m-t')));
             $data['daerah'] = $this->KpiModel->getResiOnDaerah(strtotime(date('Y-m-d')), strtotime(date('Y-m-t')));
+            $data['visit'] = $this->KpiModel->getVisitCs(strtotime(date('Y-m-d')), strtotime(date('Y-m-t')));
             // $data['update'] = $this->KpiModel->getUpdateSistem(strtotime(date('Y-m-d')), strtotime(date('Y-m-t')));
         } else {
             $data['awal'] = $this->input->post('awal');
@@ -122,6 +124,7 @@ class Kpi extends CI_Controller
             $data['resionjs'] = $this->KpiModel->getResiOnJs(strtotime($this->input->post('awal')), strtotime($this->input->post('akhir')));
             $data['reservasi'] = $this->KpiModel->getResiOnReservasi(strtotime($this->input->post('awal')), strtotime($this->input->post('akhir')));
             $data['daerah'] = $this->KpiModel->getResiOnDaerah(strtotime($this->input->post('awal')), strtotime($this->input->post('akhir')));
+            $data['visit'] = $this->KpiModel->getVisitCs(strtotime($this->input->post('awal')), strtotime($this->input->post('akhir')));
             // $data['update'] = $this->KpiModel->getUpdateSistem(strtotime($this->input->post('awal')), strtotime($this->input->post('akhir')));
         }
         $this->backend->display('superadmin/kpi/cs/v_kpi_cs', $data);

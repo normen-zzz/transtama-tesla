@@ -23,7 +23,7 @@ class SalesTracker extends CI_Controller
         $onGoing = 0;
         $held = 0;
         $data['title'] = 'Sales Tracker Report';
-        $data['users'] = $this->db->get_where('tb_user', ['id_role' => 4,'status' => 1])->result_array();
+        $data['users'] = $this->db->get_where('tb_user', ['status' => 1])->result_array();
         if ($awal == NULL && $akhir == NULL) {
             $data['awal'] = NULL;
             $data['akhir'] = NULL;

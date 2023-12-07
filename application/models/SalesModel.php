@@ -129,13 +129,13 @@ class SalesModel extends CI_Model
     public function getRequestPriceNotApprove($id, $awal, $akhir)
     {
         $this->db->select('*');
-        $this->db->from('tbl_request_price a');
+        $this->db->from('request_price a');
         $this->db->where('a.id_sales', $id);
-        $this->db->where('a.date_request >=', $awal);
-        $this->db->where('a.date_request <=', $akhir);
-        $this->db->where('a.price', NULL);
+        $this->db->where('a.created_at >=', $awal);
+        $this->db->where('a.created_at <=', $akhir);
+        $this->db->where('a.price_approved', NULL);
         $this->db->where('a.is_deleted', 0);
-        $this->db->group_by('a.group');
+        $this->db->group_by('a.grouped');
         $this->db->order_by('a.id_request_price', 'desc');
        
 
@@ -144,14 +144,14 @@ class SalesModel extends CI_Model
     public function getRequestPriceApprove($id, $awal, $akhir)
     {
         $this->db->select('*');
-        $this->db->from('tbl_request_price a');
+        $this->db->from('request_price a');
         $this->db->where('a.id_sales', $id);
-        $this->db->where('a.date_request >=', $awal);
-        $this->db->where('a.date_request <=', $akhir);
-        $this->db->where('a.price !=', NULL);
+        $this->db->where('a.created_at >=', $awal);
+        $this->db->where('a.created_at <=', $akhir);
+        $this->db->where('a.price_approved !=', NULL);
         $this->db->where('a.is_deleted', 0);
         $this->db->order_by('a.id_request_price', 'desc');
-        $this->db->group_by('a.group');
+        $this->db->group_by('a.grouped');
         return $this->db->get();
     }
 
