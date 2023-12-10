@@ -177,13 +177,11 @@ class KpiModel extends CI_Model
 
     public function getDelivery($awal, $akhir)
     {
-        $this->db->select('a.tgl_pickup,a.shipment_id,a.is_jabodetabek,a.updatesistem_at,b.shipment_id,b.created_at as tgl_tracking,b.time as waktu_tracking');
+        $this->db->select('a.id_so,a.tgl_diterima,a.tgl_pickup,a.shipment_id,a.is_jabodetabek,a.updatesistem_at');
         $this->db->from('tbl_shp_order a');
-        $this->db->join('tbl_tracking_real b', 'b.shipment_id = a.shipment_id');
         $this->db->where('a.tgl_pickup >=', date('Y-m-d', $awal));
         $this->db->where('a.tgl_pickup <=', date('Y-m-d', $akhir));
-        $this->db->where('a.is_jabodetabek', '2');
-        $this->db->where('b.flag', '4');
+        $this->db->where('a.is_jabodetabek', '1'); //jika jabodetabek
         $query = $this->db->get();
         return $query;
     }

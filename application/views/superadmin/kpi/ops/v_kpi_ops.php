@@ -80,10 +80,10 @@ function getGrade($nilai)
                             <a class="nav-item nav-link active" id="nav-pickup-tab" data-toggle="tab" href="#nav-pickup" role="tab" aria-controls="nav-pickup" aria-selected="true">Pickup</a>
                             <a class="nav-item nav-link" id="nav-delivery-tab" data-toggle="tab" href="#nav-delivery" role="tab" aria-controls="nav-delivery" aria-selected="false">Delivery</a>
                             <a class="nav-item nav-link" id="nav-outbond-tab" data-toggle="tab" href="#nav-outbond" role="tab" aria-controls="nav-outbond" aria-selected="false">Outbond</a>
-                            <a class="nav-item nav-link" id="nav-gateway-tab" data-toggle="tab" href="#nav-gateway" role="tab" aria-controls="nav-gateway" aria-selected="false">Gateway</a>
+                            
                             <a class="nav-item nav-link" id="nav-pod-tab" data-toggle="tab" href="#nav-pod" role="tab" aria-controls="nav-pod" aria-selected="false">Pod Jabodetabek</a>
                             <a class="nav-item nav-link" id="nav-input-tab" data-toggle="tab" href="#nav-input" role="tab" aria-controls="nav-input" aria-selected="false">Input Tesla</a>
-                            <a class="nav-item nav-link" id="nav-handover-tab" data-toggle="tab" href="#nav-handover" role="tab" aria-controls="nav-handover" aria-selected="false">Handover</a>
+                           
                             <a class="nav-item nav-link" id="nav-meetup-tab" data-toggle="tab" href="#nav-meetup" role="tab" aria-controls="nav-meetup" aria-selected="false">Meet Up</a>
 
 
@@ -114,7 +114,8 @@ function getGrade($nilai)
                                         $jumlahPickup = 0;
 
                                         foreach ($so->result_array() as $so1) {
-                                            $get_last_status = $this->db->limit(1)->order_by('id_tracking', 'desc')->get_where('tbl_tracking_real', ['id_so' => $so1['id_so'], 'flag' => 3])->row_array();
+                                            // $get_last_status = $this->db->limit(1)->order_by('id_tracking', 'desc')->get_where('tbl_tracking_real', ['id_so' => $so1['id_so'], 'flag' => 3])->row_array();
+                                          $get_last_status = $this->db->query('SELECT created_at,time FROM tbl_tracking_real WHERE id_so = '.$so1['id_so'].' AND flag = 3 ORDER BY id_tracking DESC LIMIT 1 ')->row_array();
 
                                             if ($get_last_status != NULL) {
 
@@ -173,21 +174,23 @@ function getGrade($nilai)
                                     <tbody>
                                         <?php $no = 1;
 
-                                        foreach ($so->result_array() as $so1) {
-                                            $this->db->where('id_so', $so1['id_so']);
-                                            $this->db->where('flag', 3);
-                                            $this->db->order_by('id_so', "DESC");
-                                            $this->db->limit(1);
-                                            $trackingResi = $this->db->get('tbl_tracking_real')->row_array();
+                                        foreach ($delivery->result_array() as $so1) {
+                                            // $this->db->where('id_so', $so1['id_so']);
+                                            // $this->db->where('flag', 3);
+                                            // $this->db->order_by('id_so', "DESC");
+                                            // $this->db->limit(1);
+                                            // $trackingResi = $this->db->get('tbl_tracking_real')->row_array();
 
-                                            if ($so1['submitso_at'] != NULL && $trackingResi != NULL) {
+                                            $trackingResi = $this->db->query('SELECT created_at,time FROM tbl_tracking_real WHERE id_so = '.$so1['id_so'].' AND flag = 6 ORDER BY id_tracking DESC LIMIT 1 ')->row_array();
 
-                                                $date1 = date_create(date('Y-m-d', strtotime($so1['submitso_at'])));
+                                            if ($so1['tgl_diterima'] != NULL && $trackingResi != NULL) {
+
+                                                $date1 = date_create(date('Y-m-d', strtotime($so1['tgl_diterima'])));
                                                 $date2 = date_create(date('Y-m-d', strtotime($trackingResi['created_at'])));
                                                 $diff = date_diff($date2, $date1);
                                                 // echo $so1['id_so'] . $diff->format(" %R%a days <br>");
 
-                                                $datetime1 = strtotime($so1['submitso_at']);
+                                                $datetime1 = strtotime($so1['tgl_diterima']);
                                                 $datetime2 = strtotime($trackingResi['created_at']);
                                                 $interval  = abs($datetime2 - $datetime1);
                                                 $minutes   = round($interval / 60);
@@ -211,8 +214,8 @@ function getGrade($nilai)
                                             }
                                             // echo $nilai . '<br>';
                                         }
-                                        if ($so->num_rows() != 0) {
-                                            $nilai = $nilai / $so->num_rows();
+                                        if ($delivery->num_rows() != 0) {
+                                            $nilai = $nilai / $delivery->num_rows();
                                             // echo  $so->num_rows();
                                         }
 
@@ -289,64 +292,7 @@ function getGrade($nilai)
                                 </table>
                             </div>
 
-                            <!-- GATEWAY  -->
-                            <div class="tab-pane fade" id="nav-gateway" role="tabpanel" aria-labelledby="nav-profile-gateway">
-                                <table class="table table-separate table-head-custom table-checkable datatable">
-                                    <thead>
-                                        <tr>
-                                            <th>Jumlah Resi</th>
-                                            <th>Nilai</th>
-                                            <th>Action</th>
-
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php $no = 1;
-                                        $nilai = 0;
-                                        foreach ($gateway->result_array() as $gateway1) {
-                                            $date1 = date_create(date('Y-m-d', strtotime($gateway1['tgl_pickup'])));
-                                            $date2 = date_create(date('Y-m-d', strtotime($gateway1['tgl_pickup'])));
-                                            $diff = date_diff($date1, $date2);
-
-                                            // echo $resi['shipment_id'] . ' - ' . $diff->format("%R%a") . '<br>';
-
-                                            if ($diff->format("%R%a") == 0) {
-                                                // nilai A
-                                                $nilai += 90;
-                                            } elseif ($diff->format("%R%a") == 1) {
-                                                // nilai B
-                                                $nilai += 70;
-                                            } elseif ($diff->format("%R%a") == 2) {
-                                                // nilai C
-                                                $nilai += 50;
-                                            } elseif ($diff->format("%R%a") > 2) {
-                                                // nilai D
-                                                $nilai += 30;
-                                            } else {
-                                                $nilai += 0;
-                                            }
-                                            // echo $resi['shipment_id'] . ' - ' . $diff->format("%R%a") . ' ' . $nilai . ' ' . '<br>';
-                                        }
-                                        if ($gateway->num_rows() != 0) {
-                                            $nilai = $nilai / $gateway->num_rows();
-                                            // echo  $so->num_rows();
-                                        }
-
-
-
-                                        ?>
-                                        <tr>
-                                            <td><?= $gateway->num_rows(); ?></td>
-                                            <td><?= getGrade($nilai); ?></td>
-                                            <td><a target="_blank" class="btn btn-primary" href="<?= base_url('superadmin/Kpi/detailGateway/' . strtotime($awal) . '/' . strtotime($akhir)) ?>">Detail</a></td>
-
-                                        </tr>
-                                        <?php $no++;
-                                        ?>
-                                    </tbody>
-                                </table>
-                            </div>
+                           
 
                             <!-- POD  -->
                             <div class="tab-pane fade" id="nav-pod" role="tabpanel" aria-labelledby="nav-profile-pod">
@@ -450,7 +396,7 @@ function getGrade($nilai)
                                                 } else {
                                                     $nilai += 0;
                                                 }
-                                                echo $input1['shipment_id'] . ' - ' . $diff->format("%R%H") . ' ' . $nilai . ' ' . '<br>';
+                                                
                                             }
                                         }
                                         if ($resifix) {
@@ -474,63 +420,7 @@ function getGrade($nilai)
                                 </table>
                             </div>
 
-                            <!-- HANDOVER  -->
-                            <div class="tab-pane fade" id="nav-handover" role="tabpanel" aria-labelledby="nav-profile-handover">
-                                <table class="table table-separate table-head-custom table-checkable datatable">
-                                    <thead>
-                                        <tr>
-                                            <th>Jumlah Resi</th>
-                                            <th>Nilai</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <?php $no = 1;
-                                        $nilai = 0;
-                                        foreach ($handover->result_array() as $handover1) {
-                                            $date1 = date_create(date('Y-m-d H:i:s', strtotime($handover1['updatesistem_at'])));
-                                            $date2 = date_create(date('Y-m-d H:i:s', strtotime($handover1['tgl_tracking'] . ' ' . $handover1['waktu_tracking'])));
-                                            $diff = date_diff($date1, $date2);
-
-                                            // echo $resi['shipment_id'] . ' - ' . $diff->format("%R%a") . '<br>';
-
-                                            if ($diff->format("%R%H") < 1) {
-                                                // nilai A
-                                                $nilai += 90;
-                                            } elseif ($diff->format("%R%H") < 3) {
-                                                // nilai B
-                                                $nilai += 70;
-                                            } elseif ($diff->format("%R%H") < 5) {
-                                                // nilai C
-                                                $nilai += 50;
-                                            } elseif ($diff->format("%R%H") >= 5) {
-                                                // nilai D
-                                                $nilai += 30;
-                                            } else {
-                                                $nilai += 0;
-                                            }
-                                            // echo $resi['shipment_id'] . ' - ' . $diff->format("%R%a") . ' ' . $nilai . ' ' . '<br>';
-                                        }
-                                        if ($handover->num_rows() != 0) {
-                                            $nilai = $nilai / $handover->num_rows();
-                                            // echo  $so->num_rows();
-                                        }
-
-
-
-                                        ?>
-                                        <tr>
-
-
-                                            <td><?= $handover->num_rows(); ?></td>
-                                            <td><?= getGrade($nilai); ?></td>
-                                            <td><a target="_blank" class="btn btn-primary" href="<?= base_url('superadmin/Kpi/detailHandover/' . strtotime($awal) . '/' . strtotime($akhir)) ?>">Detail</a></td>
-
-                                        </tr>
-
-                                    </tbody>
-                                </table>
-                            </div>
+                            
 
                             <!-- MEETUP  -->
                             <div class="tab-pane fade" id="nav-meetup" role="tabpanel" aria-labelledby="nav-profile-meetup">

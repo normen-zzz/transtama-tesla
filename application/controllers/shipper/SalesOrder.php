@@ -40,7 +40,7 @@ class SalesOrder extends CI_Controller
           JOIN tbl_shp_order a  ON a.shipment_id=b.shipment_id
             -- JOIN tbl_so d ON b.id_so=d.id_so
           LEFT JOIN tb_service_type c ON a.service_type=c.code 
-             WHERE b.id_user= ?  AND b.status_eksekusi =0 AND a.deleted=0 GROUP BY a.shipment_id";
+             WHERE b.id_user= ?  AND b.status_eksekusi =0 AND a.deleted=0 AND a.tgl_diterima IS NULL GROUP BY a.shipment_id";
             $result = $this->db->query($query, array($this->session->userdata('id_user')))->result_array();
             $data['shipments'] = $result;
             // var_dump($result);

@@ -496,7 +496,7 @@ class Order extends CI_Controller
                     // var_dump($tgl);
                     // die;
 
-                    $sql = $this->db->query("SELECT max(no_resi) as shipment_id FROM tbl_no_resi  ORDER BY id_no_resi DESC LIMIT 1")->row_array();
+                    $sql = $this->db->query("SELECT no_resi as shipment_id FROM tbl_no_resi  ORDER BY id_no_resi DESC LIMIT 1")->row_array();
                     // var_dump($sql);
                     // die;
                     if ($sql == NULL) {
@@ -544,13 +544,14 @@ class Order extends CI_Controller
 
                     $data = array(
                         'shipper' => strtoupper($rowdata[0]),
-                        'origin' => $this->input->post('origin'),
-                        'city_shipper' => $rowdata[2],
                         'state_shipper' => $rowdata[1],
-                        'consigne' => strtoupper($rowdata[4]),
+                        'city_shipper' => $rowdata[2],
                         'destination' => $rowdata[3],
-                        'city_consigne' => $rowdata[6],
+                        'consigne' => strtoupper($rowdata[4]),
                         'state_consigne' => $rowdata[5],
+                        'origin' => $this->input->post('origin'),
+                        'city_consigne' => $rowdata[6],  
+                        'service_type' =>  $rowdata[7],      
                         'koli' => $rowdata[8],
                         'sender' => $rowdata[9],
                         'note_cs' => $rowdata[10],
@@ -560,9 +561,7 @@ class Order extends CI_Controller
                         'tree_shipper' => $this->getTreeLetterCode($city_shipper),
                         'tree_consignee' => $this->getTreeLetterCode($city_consigne),
                         'shipment_id' => $shipment_id,
-                        // 'order_id' => $order_id,
-                        'service_type' =>  $rowdata[7],
-                        'is_jabodetabek' =>  $rowdata[10],
+                        'is_jabodetabek' =>  $rowdata[11],
                         'date_new' => date('Y-m-d'),
                         'id_so' => $this->input->post('id_so'),
                         'tgl_pickup' => $get_pickup['tgl_pickup'],
