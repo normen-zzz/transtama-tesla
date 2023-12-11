@@ -232,7 +232,7 @@ class Kpi extends CI_Controller
             $data['awal'] = date('Y-m-d');
             $data['akhir'] = date('Y-m-t');
 
-            $data['so'] = $this->KpiModel->getSoOps(strtotime(date('Y-m-d')), strtotime(date('Y-m-t')));
+            $data['pickup'] = $this->KpiModel->getSoOps(strtotime(date('Y-m-d')), strtotime(date('Y-m-t'))); //dpne
             $data['delivery'] = $this->KpiModel->getDelivery(strtotime(date('Y-m-d')), strtotime(date('Y-m-t')));
             $data['outbond'] = $this->KpiModel->getOutbond(strtotime(date('Y-m-d')), strtotime(date('Y-m-t')));
             $data['gateway'] = $this->KpiModel->getGateway(strtotime(date('Y-m-d')), strtotime(date('Y-m-t')));
@@ -244,7 +244,7 @@ class Kpi extends CI_Controller
             $data['awal'] = $this->input->post('awal');
             $data['akhir'] = $this->input->post('akhir');
 
-            $data['so'] = $this->KpiModel->getSoOps(strtotime($this->input->post('awal')), strtotime($this->input->post('akhir')));
+            $data['pickup'] = $this->KpiModel->getSoOps(strtotime($this->input->post('awal')), strtotime($this->input->post('akhir')));//done
             $data['delivery'] = $this->KpiModel->getDelivery(strtotime($this->input->post('awal')), strtotime($this->input->post('akhir')));
             $data['outbond'] = $this->KpiModel->getOutbond(strtotime($this->input->post('awal')), strtotime($this->input->post('akhir')));
             $data['gateway'] = $this->KpiModel->getGateway(strtotime($this->input->post('awal')), strtotime($this->input->post('akhir')));
@@ -275,18 +275,55 @@ class Kpi extends CI_Controller
         }
     }
 
-    public function detailOutbond($bulan = NULL, $tahun = NULL)
+    public function detailDelivery($awal = NULL, $akhir = NULL)
     {
         if ($this->input->post('date') == NULL) {
-            $data['title'] = 'KPI OPS (Outbond)';
-            $data['date'] =  $tahun . '-' . $bulan;
-            $data['pickup'] = $this->KpiModel->getOutbond($bulan, $tahun);
-            $this->backend->display('superadmin/kpi/ops/v_detail_pickup', $data);
-        } else {
+            $data['awal'] = date('Y-m-d',$awal);
+            $data['akhir'] = date('Y-m-d',$akhir);
             $data['title'] = 'KPI OPS (Pickup)';
+            $data['delivery'] = $this->KpiModel->getDelivery($awal, $akhir);
+            $this->backend->display('superadmin/kpi/ops/v_detail_delivery', $data);
+        } else {
+            $data['awal'] = $this->input->post('awal');
+            $data['akhir'] = $this->input->post('akhir');
+            $data['title'] = 'KPI OPS (Pickup)';
+            $data['delivery'] = $this->KpiModel->getDelivery(strtotime($this->input->post('awal')), strtotime($this->input->post('akhir')));
+            $this->backend->display('superadmin/kpi/ops/v_detail_delivery', $data);
+        }
+    }
+
+    public function detailOutbond($awal = NULL, $akhir = NULL)
+    {
+        if ($this->input->post('date') == NULL) {
+            $data['awal'] = date('Y-m-d',$awal);
+            $data['akhir'] = date('Y-m-d',$akhir);
+            $data['title'] = 'KPI OPS (Outbond)';
+            $data['outbond'] = $this->KpiModel->getOutbond($awal, $akhir);
+            $this->backend->display('superadmin/kpi/ops/v_detail_outbond', $data);
+        } else {
+            $data['awal'] = $this->input->post('awal');
+            $data['akhir'] = $this->input->post('akhir');
+            $data['title'] = 'KPI OPS (outbond)';
             $data['date'] = $this->input->post('date');
-            $data['pickup'] = $this->KpiModel->getPickup(date('m', strtotime($this->input->post('date'))), date('Y', strtotime($this->input->post('date'))));
-            $this->backend->display('superadmin/kpi/ops/v_detail_pickup', $data);
+            $data['outbond'] = $this->KpiModel->getOutbond(strtotime($this->input->post('awal')), strtotime($this->input->post('akhir')));
+            $this->backend->display('superadmin/kpi/ops/v_detail_outbond', $data);
+        }
+    }
+    public function detailPod($awal = NULL, $akhir = NULL)
+    {
+        if ($this->input->post('date') == NULL) {
+            $data['awal'] = date('Y-m-d',$awal);
+            $data['akhir'] = date('Y-m-d',$akhir);
+            $data['title'] = 'KPI OPS (POD)';
+            $data['pod'] = $this->KpiModel->getPodJabodetabek($awal, $akhir);
+            $this->backend->display('superadmin/kpi/ops/v_detail_podJabodetabek', $data);
+        } else {
+            $data['awal'] = $this->input->post('awal');
+            $data['akhir'] = $this->input->post('akhir');
+            $data['title'] = 'KPI OPS (POD)';
+            $data['date'] = $this->input->post('date');
+            $data['pod'] = $this->KpiModel->getPodJabodetabek(strtotime($this->input->post('awal')), strtotime($this->input->post('akhir')));
+            $this->backend->display('superadmin/kpi/ops/v_detail_podJabodetabek', $data);
         }
     }
 

@@ -33,7 +33,7 @@ function getGrade($nilai)
                 <div class="card">
                     <div class="card-header">
 
-                        <h2 class="card-title">KPI PICKUP OPS
+                        <h2 class="card-title">KPI Delivery OPS
                             <h1></h1>
                             <div class="row">
                                 <form action="<?= base_url('superadmin/Kpi/detailPickup') ?>" method="POST">
@@ -74,11 +74,10 @@ function getGrade($nilai)
                             <p><?= $this->session->flashdata('message'); ?></p>
                             <thead>
                                 <tr>
-                                    <th>Id Pickup</th>
-                                    <th>Driver</th>
-                                    <th style="width: 15%;">JADWAL PICKUP</th>
-                                    <th style="width: 15%;">TER PICKUP</th>
-                                    <th>Lead Time (Jam)</th>
+                                    <th>Resi</th>
+                                    <th style="width: 15%;">Tanggal Diterima</th>
+                                    <th style="width: 15%;">Pod Sampai</th>
+
                                     <th>Customer</th>
                                     <th>Grade</th>
                                 </tr>
@@ -86,52 +85,36 @@ function getGrade($nilai)
                             <tbody>
                                 <?php
 
-                                foreach ($pickup->result_array() as $p) {
-                                    $nilai = 0;
-                                    $get_last_status = $this->db->limit(1)->order_by('id_tracking', 'desc')->get_where('tbl_tracking_real', ['id_so' => $p['id_so'], 'flag' => 3])->row_array();
+                                foreach ($pod->result_array() as $pod1) {
+                                    $date1 = date_create(date('Y-m-d', strtotime($pod1['tgl_diterima'])));
+                                    $date2 = date_create(date('Y-m-d', strtotime($pod1['tgl_sampe'])));
+                                    $diff = date_diff($date1, $date2);
 
+                                    // echo $resi['shipment_id'] . ' - ' . $diff->format("%R%a") . '<br>';
 
-                                    if ($get_last_status != NULL) {
-                                        $user = $this->db->get_where('tb_user', array('id_user' => $get_last_status['id_user']))->row_array();
-                                        $date1 = date_create(date('Y-m-d H:i:s', strtotime($p['tgl_pickup'] . ' ' . $p['time'])));
-                                        $date2 = date_create(date('Y-m-d H:i:s', strtotime($get_last_status['created_at'] . ' ' . $get_last_status['time'])));
-                                        $diff = date_diff($date1, $date2);
-
-                                        if ($diff->format("%R%H") > 0 && $diff->format("%R%H") <= 3 || $diff->format("%R%H") <= 0) {
-                                            // nilai A
-                                            $nilai = 90;
-                                        } elseif ($diff->format("%R%H") > 3 && $diff->format("%R%H") <= 5) {
-                                            // nilai B
-                                            $nilai = 70;
-                                        } elseif ($diff->format("%R%H") > 5 && $diff->format("%R%H") <= 9) {
-                                            // nilai C
-                                            $nilai = 50;
-                                        } elseif ($diff->format("%R%H") > 9) {
-                                            $nilai = 30;
-                                        }
-                                       
+                                    if ($diff->format("%R%a") == 0) {
+                                        // nilai A
+                                        $nilai = 90;
+                                    } elseif ($diff->format("%R%a") == 1) {
+                                        // nilai B
+                                        $nilai = 70;
+                                    } elseif ($diff->format("%R%a") == 2) {
+                                        // nilai C
+                                        $nilai = 50;
+                                    } elseif ($diff->format("%R%a") > 2) {
+                                        // nilai D
+                                        $nilai = 30;
+                                    } else {
+                                        $nilai = 0;
                                     }
-                                    // echo $p['id_so'] . ' - ' . $diff->format("%R%H") . '-' . $nilai . '<br>';
-
-
                                 ?>
                                     <tr>
-                                        <td><?= $p['id_so'] ?></td>
-                                        <td><?= $user['nama_user'] ?></td>
-                                        <td><?= date('d F Y H:i:s', strtotime($p['tgl_pickup'] . ' ' . $p['time'])) ?></td>
-                                        <td><?php if ($get_last_status != NULL) {
-                                                echo  date('d F Y H:i:s', strtotime($get_last_status['created_at'] . ' ' . $get_last_status['time']));
-                                            } else {
-                                                echo 'Belum Di Pickup';
-                                            } ?></td>
-                                        <td><?= $diff->format("%R%H") ?></td>
-                                        <td><?= $p['shipper'] ?></td>
+                                        <td><?= $pod1['shipment_id'] ?></td>
+                                        <td><?= date('d F Y', strtotime($pod1['tgl_diterima'])); ?></td>
+                                        <td><?= date('d F Y', strtotime($pod1['tgl_sampe'])) ?></td>
+                                        <td><?= $pod1['shipper'] ?></td>
                                         <td>
-                                            <p><?php if ($get_last_status != NULL) {
-                                                    echo getGrade($nilai);
-                                                } else {
-                                                    echo 'Belum di pickup';
-                                                } ?></p>
+                                            <p><?php echo getGrade($nilai); ?></p>
                                         </td>
 
 
@@ -144,7 +127,7 @@ function getGrade($nilai)
 
                         </table>
 
-                        
+
 
                     </div>
                     <!-- /.card-body -->

@@ -113,15 +113,11 @@ function getGrade($nilai)
                                         $nilai = 0;
                                         $jumlahPickup = 0;
 
-                                        foreach ($so->result_array() as $so1) {
+                                        foreach ($pickup->result_array() as $so1) {
                                             // $get_last_status = $this->db->limit(1)->order_by('id_tracking', 'desc')->get_where('tbl_tracking_real', ['id_so' => $so1['id_so'], 'flag' => 3])->row_array();
                                           $get_last_status = $this->db->query('SELECT created_at,time FROM tbl_tracking_real WHERE id_so = '.$so1['id_so'].' AND flag = 3 ORDER BY id_tracking DESC LIMIT 1 ')->row_array();
 
                                             if ($get_last_status != NULL) {
-
-
-
-
                                                 $date1 = date_create(date('Y-m-d H:i:s', strtotime($so1['tgl_pickup'] . ' ' . $so1['time'])));
                                                 $date2 = date_create(date('Y-m-d H:i:s', strtotime($get_last_status['created_at'] . ' ' . $get_last_status['time'])));
                                                 $diff = date_diff($date1, $date2);
@@ -141,7 +137,7 @@ function getGrade($nilai)
                                                 $jumlahPickup += 1;
                                             }
                                         }
-                                        if ($so->num_rows() != 0) {
+                                        if ($pickup->num_rows() != 0) {
                                             $nilai = ($nilai / $jumlahPickup);
                                         }
 
@@ -211,6 +207,7 @@ function getGrade($nilai)
                                                 } elseif ($diff->format("%R%a") > 1) {
                                                     $nilai += 30;
                                                 }
+                                                $no+=1;
                                             }
                                             // echo $nilai . '<br>';
                                         }
@@ -224,7 +221,7 @@ function getGrade($nilai)
                                             <td><?= $no; ?></td>
 
                                             <td><?= getGrade($nilai); ?></td>
-                                            <td><a target="_blank" class="btn btn-primary" href="<?= base_url('superadmin/Kpi/detailSo/' . strtotime($awal) . '/' . strtotime($akhir)) ?>">Detail</a></td>
+                                            <td><a target="_blank" class="btn btn-primary" href="<?= base_url('superadmin/Kpi/detailDelivery/' . strtotime($awal) . '/' . strtotime($akhir)) ?>">Detail</a></td>
 
                                         </tr>
                                         <?php $no++;
@@ -308,7 +305,7 @@ function getGrade($nilai)
                                         <?php $no = 1;
                                         $nilai = 0;
                                         foreach ($pod->result_array() as $pod1) {
-                                            $date1 = date_create(date('Y-m-d', strtotime($pod1['tgl_pickup'])));
+                                            $date1 = date_create(date('Y-m-d', strtotime($pod1['tgl_diterima'])));
                                             $date2 = date_create(date('Y-m-d', strtotime($pod1['tgl_sampe'])));
                                             $diff = date_diff($date1, $date2);
 

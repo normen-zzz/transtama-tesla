@@ -130,7 +130,7 @@ class KpiModel extends CI_Model
 
     public function getOutbond($awal, $akhir)
     {
-        $this->db->select('a.*,b.tgl_pickup');
+        $this->db->select('a.*,b.tgl_pickup,b.shipper');
         $this->db->from('tbl_outbond a');
         $this->db->join('tbl_shp_order b', 'b.shipment_id = a.shipment_id');
         $this->db->where('b.tgl_pickup >=', date('Y-m-d', $awal));
@@ -152,7 +152,7 @@ class KpiModel extends CI_Model
 
     public function getPodJabodetabek($awal, $akhir)
     {
-        $this->db->select('a.tgl_pickup,a.is_jabodetabek,a.shipment_id,b.tgl_sampe');
+        $this->db->select('a.shipper,a.tgl_diterima,a.tgl_pickup,a.is_jabodetabek,a.shipment_id,b.tgl_sampe');
         $this->db->from('tbl_shp_order a');
         $this->db->join('tbl_tracking_pod b', 'b.shipment_id = a.shipment_id');
         $this->db->where('a.tgl_pickup >=', date('Y-m-d', $awal));
@@ -177,7 +177,7 @@ class KpiModel extends CI_Model
 
     public function getDelivery($awal, $akhir)
     {
-        $this->db->select('a.id_so,a.tgl_diterima,a.tgl_pickup,a.shipment_id,a.is_jabodetabek,a.updatesistem_at');
+        $this->db->select('a.shipper,a.id_so,a.tgl_diterima,a.tgl_pickup,a.shipment_id,a.is_jabodetabek,a.updatesistem_at');
         $this->db->from('tbl_shp_order a');
         $this->db->where('a.tgl_pickup >=', date('Y-m-d', $awal));
         $this->db->where('a.tgl_pickup <=', date('Y-m-d', $akhir));

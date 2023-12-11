@@ -78,9 +78,9 @@ function getGrade($nilai)
                     <nav>
                         <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
                             <a class="nav-item nav-link active" id="nav-jobsheet-tab" data-toggle="tab" href="#nav-jobsheet" role="tab" aria-controls="nav-jobsheet" aria-selected="true">Jobsheet</a>
-                            <a class="nav-item nav-link" id="nav-reservasi-tab" data-toggle="tab" href="#nav-reservasi" role="tab" aria-controls="nav-reservasi" aria-selected="false">Reservasi</a>
+                            <!-- <a class="nav-item nav-link" id="nav-reservasi-tab" data-toggle="tab" href="#nav-reservasi" role="tab" aria-controls="nav-reservasi" aria-selected="false">Reservasi</a> -->
                             <a class="nav-item nav-link" id="nav-deliverydaerah-tab" data-toggle="tab" href="#nav-deliverydaerah" role="tab" aria-controls="nav-delivery" aria-selected="false">Delivery Daerah</a>
-                            <a class="nav-item nav-link" id="nav-update-tab" data-toggle="tab" href="#nav-update" role="tab" aria-controls="nav-update" aria-selected="false">Update Sistem</a>
+                           
                             <a class="nav-item nav-link" id="nav-visit-tab" data-toggle="tab" href="#nav-visit" role="tab" aria-controls="nav-visit" aria-selected="false">Visit</a>
 
                         </div>

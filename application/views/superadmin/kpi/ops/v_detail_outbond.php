@@ -33,7 +33,7 @@ function getGrade($nilai)
                 <div class="card">
                     <div class="card-header">
 
-                        <h2 class="card-title">KPI PICKUP OPS
+                        <h2 class="card-title">KPI Outbond OPS
                             <h1></h1>
                             <div class="row">
                                 <form action="<?= base_url('superadmin/Kpi/detailPickup') ?>" method="POST">
@@ -74,10 +74,9 @@ function getGrade($nilai)
                             <p><?= $this->session->flashdata('message'); ?></p>
                             <thead>
                                 <tr>
-                                    <th>Id Pickup</th>
-                                    <th>Driver</th>
-                                    <th style="width: 15%;">JADWAL PICKUP</th>
-                                    <th style="width: 15%;">TER PICKUP</th>
+                                    <th>Resi</th>
+                                    <th style="width: 15%;">Barang Datang</th>
+                                    <th style="width: 15%;">Barang Keluar</th>
                                     <th>Lead Time (Jam)</th>
                                     <th>Customer</th>
                                     <th>Grade</th>
@@ -86,52 +85,38 @@ function getGrade($nilai)
                             <tbody>
                                 <?php
 
-                                foreach ($pickup->result_array() as $p) {
+                                foreach ($outbond->result_array() as $p) {
                                     $nilai = 0;
-                                    $get_last_status = $this->db->limit(1)->order_by('id_tracking', 'desc')->get_where('tbl_tracking_real', ['id_so' => $p['id_so'], 'flag' => 3])->row_array();
-
-
-                                    if ($get_last_status != NULL) {
-                                        $user = $this->db->get_where('tb_user', array('id_user' => $get_last_status['id_user']))->row_array();
-                                        $date1 = date_create(date('Y-m-d H:i:s', strtotime($p['tgl_pickup'] . ' ' . $p['time'])));
-                                        $date2 = date_create(date('Y-m-d H:i:s', strtotime($get_last_status['created_at'] . ' ' . $get_last_status['time'])));
+                                        $date1 = date_create(date('Y-m-d H:i:s', strtotime($p['in_date'])));
+                                        $date2 = date_create(date('Y-m-d H:i:s', strtotime($p['out_date'])));
                                         $diff = date_diff($date1, $date2);
 
-                                        if ($diff->format("%R%H") > 0 && $diff->format("%R%H") <= 3 || $diff->format("%R%H") <= 0) {
+                                        if ($diff->format("%R%H") >= 1 && $diff->format("%R%H") < 6) {
                                             // nilai A
                                             $nilai = 90;
-                                        } elseif ($diff->format("%R%H") > 3 && $diff->format("%R%H") <= 5) {
+                                        } elseif ($diff->format("%R%H") >= 6 && $diff->format("%R%H") < 8) {
                                             // nilai B
                                             $nilai = 70;
-                                        } elseif ($diff->format("%R%H") > 5 && $diff->format("%R%H") <= 9) {
+                                        } elseif ($diff->format("%R%H") >= 8 && $diff->format("%R%H") < 10) {
                                             // nilai C
                                             $nilai = 50;
-                                        } elseif ($diff->format("%R%H") > 9) {
+                                        } elseif ($diff->format("%R%H") >= 10) {
                                             $nilai = 30;
                                         }
                                        
-                                    }
+                                    
                                     // echo $p['id_so'] . ' - ' . $diff->format("%R%H") . '-' . $nilai . '<br>';
 
 
                                 ?>
                                     <tr>
-                                        <td><?= $p['id_so'] ?></td>
-                                        <td><?= $user['nama_user'] ?></td>
-                                        <td><?= date('d F Y H:i:s', strtotime($p['tgl_pickup'] . ' ' . $p['time'])) ?></td>
-                                        <td><?php if ($get_last_status != NULL) {
-                                                echo  date('d F Y H:i:s', strtotime($get_last_status['created_at'] . ' ' . $get_last_status['time']));
-                                            } else {
-                                                echo 'Belum Di Pickup';
-                                            } ?></td>
+                                        <td><?= $p['shipment_id'] ?></td>
+                                        <td><?= $p['in_date'] ?></td>
+                                        <td><?= $p['out_date'] ?></td>
                                         <td><?= $diff->format("%R%H") ?></td>
                                         <td><?= $p['shipper'] ?></td>
                                         <td>
-                                            <p><?php if ($get_last_status != NULL) {
-                                                    echo getGrade($nilai);
-                                                } else {
-                                                    echo 'Belum di pickup';
-                                                } ?></p>
+                                            <p><?php echo getGrade($nilai); ?></p>
                                         </td>
 
 
@@ -144,7 +129,7 @@ function getGrade($nilai)
 
                         </table>
 
-                        
+                        <div id="nilai" value="<?= $nilaiAll ?>"><?= $nilaiAll ?></div>
 
                     </div>
                     <!-- /.card-body -->
