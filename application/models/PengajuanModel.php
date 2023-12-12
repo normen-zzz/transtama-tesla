@@ -279,7 +279,7 @@ class PengajuanModel extends CI_Model
     public function getLaporanTransaksiFilterByDate($start, $end)
     {
         // $where  = array('c.id_sales' => $this->session->userdata('id_user'));
-        $this->db->select('a.*, b.nama_user, c.pu_poin,d.service_name, d.prefix');
+        $this->db->select('a.tgl_pickup,a.is_jabodetabek,a.shipment_id,a.shipper,a.consigne,a.tree_consignee,a.no_stp,a.city_consigne,d.service_name,a.pu_commodity,a.koli,a.berat_js,a.berat_msr,a.note_cs,a.no_so,, b.nama_user, c.pu_poin,d.service_name, d.prefix');
         $this->db->from('tbl_shp_order a');
         $this->db->join('tb_user b', 'a.id_user=b.id_user');
         $this->db->join('tbl_so c', 'c.id_so=a.id_so');

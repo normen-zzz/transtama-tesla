@@ -1391,7 +1391,7 @@ class SalesOrder extends CI_Controller
         $this->backend->display('sales/v_report_filter', $data);
     }
 
-    public function Exportexcel($awal = null, $akhir = null)
+    public function exportexcel($awal = null, $akhir = null)
     {
 
         if ($awal != null && $akhir != null) {
