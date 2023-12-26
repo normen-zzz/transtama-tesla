@@ -1436,20 +1436,10 @@ class SalesOrder extends CI_Controller
             $is_jabodetabek = $row['is_jabodetabek'];
             $tgl_daerah = '';
             // kalo iya
-            if ($is_jabodetabek == 1) {
-                $daerah = $this->db->order_by('id_tracking', 'DESC')->get_where('tbl_tracking_real', ['shipment_id' => $row['shipment_id'], 'flag' => 8])->row_array();
-            } else {
-                $daerah = $this->db->order_by('id_tracking', 'DESC')->get_where('tbl_tracking_real', ['shipment_id' => $row['shipment_id'], 'flag' => 4])->row_array();
-            }
-
-            if ($daerah == NULL) {
-                $tgl_daerah = '-';
-            } else {
-                $tgl_daerah = bulan_indo2($daerah['created_at']);
-            }
+           
 
             //kalo dia masih di daerah yg sama itu ada 7 milestonenya
-            $get_tracking = $this->db->order_by('id_tracking', 'DESC')->get_where('tbl_tracking_real', ['shipment_id' => $row['shipment_id']])->row_array();
+            $get_tracking = $this->order->getLastTracking($row['shipment_id'])->row_array();
             if ($get_tracking == NULL) {
                 $tracking = '-';
             } else {
@@ -1458,15 +1448,15 @@ class SalesOrder extends CI_Controller
                 $tgl_tiba = $get_tracking['created_at'];
                 $jam = $get_tracking['time'];
             }
-            $get_do = $this->db->select('no_do,no_so, berat, koli')->get_where('tbl_no_do', ['shipment_id' => $row['shipment_id']])->result_array();
-            $jumlah = $this->db->select('no_do')->get_where('tbl_no_do', ['shipment_id' => $row['shipment_id']])->num_rows();
+            $get_do = $this->db->select('no_do,no_so, berat, koli')->get_where('tbl_no_do', ['shipment_id' => $row['shipment_id']]);
+           
 
             $no_do = '';
             $no_so = '';
-            if ($get_do) {
+            if ($get_do->num_rows() != 0) {
                 $i = 1;
-                foreach ($get_do as $d) {
-                    $no_do = ($i == $jumlah) ? $d['no_do'] : $d['no_do'] . '/';
+                foreach ($get_do->result_array() as $d) {
+                    $no_do = ($i == $get_do->num_rows()) ? $d['no_do'] : $d['no_do'] . '/';
                     $i++;
                 }
             } else {
@@ -1474,11 +1464,11 @@ class SalesOrder extends CI_Controller
             }
 
             // no so
-            if ($get_do) {
+            if ($get_do->num_rows() != 0) {
                 $i = 1;
-                foreach ($get_do as $d) {
+                foreach ($get_do->result_array() as $d) {
 
-                    $no_so =  ($i == $jumlah) ? $d['no_so'] : $d['no_so'] . '/';
+                    $no_so =  ($i == $get_do->num_rows()) ? $d['no_so'] : $d['no_so'] . '/';
                     $i++;
                 }
             } else {

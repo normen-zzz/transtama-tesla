@@ -271,13 +271,13 @@
 																		<input type="text" class="form-control" hidden name="id_do[]" value="<?= $do['id_berat'] ?>">
 																	</div>
 																</div>
-																<div class="col-md-3">
+																<div class="col-md-2">
 																	<div class="form-group">
 																		<label for="exampleInputEmail1">No. SO/PO <?= $no; ?></label>
 																		<input type="text" class="form-control" name="no_so[]" value="<?= $do['no_so'] ?>">
 																	</div>
 																</div>
-																<div class="col-md-3">
+																<div class="col-md-2">
 																	<div class="form-group">
 																		<label for="exampleInputEmail1">Collie <?= $no; ?></label>
 																		
@@ -293,21 +293,41 @@
 																		} ?>
 																	</div>
 																</div>
-																<div class="col-md-3">
+																<div class="col-md-2">
 																	<div class="form-group">
 																		<label for="exampleInputEmail1">Weight <?= $no; ?></label>
 																		<?php if ($invoice == NULL) { ?>
 																			<input type="text" class="form-control" name="weight[]" value="<?= $do['berat'] ?>">
+																			
 																			<?php } else {
 																			if ($invoice['status'] == 1 || $invoice['status'] == 2) { ?>
 																				<input type="text" class="form-control" name="weight[]" readonly value="<?= $do['berat'] ?>">
 																			<?php } else { ?>
 																				<input type="text" class="form-control" name="weight[]" value="<?= $do['berat'] ?>">
+																				
 																		<?php }
 																		} ?>
 
 																	</div>
 																</div>
+																<div class="col-md-2">
+																	<div class="form-group">
+																		<label for="exampleInputEmail1">Action</label>
+																		<?php if ($invoice == NULL) { ?>
+																			<a class=" form-control btn btn-danger" href="<?= base_url('cs/Order/deleteDo/'.$do['id_berat']) ?>">Delete</a>
+																			<?php } else {
+																			if ($invoice['status'] == 1 || $invoice['status'] == 2) { ?>
+																				<input type="text" class="form-control" name="weight[]" readonly value="<?= $do['berat'] ?>">
+																			<?php } else { ?>
+																				<a class=" form-control btn btn-danger" href="<?= base_url('cs/Order/deleteDo/'.$do['id_berat']) ?>">Delete</a>
+																		<?php }
+																		} ?>
+
+																	</div>
+																</div>
+
+
+																
 																<br>
 															<?php $no++;
 															}

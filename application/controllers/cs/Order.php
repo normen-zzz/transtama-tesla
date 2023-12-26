@@ -48,9 +48,10 @@ class Order extends CI_Controller
         $data['province'] = $this->db->get('tb_province')->result_array();
         $data['service'] = $this->db->get('tb_service_type')->result_array();
         $data['p'] = $this->order->order($id)->row_array();
-        $data['invoice'] = $this->db->get_where('tbl_invoice',array('shipment_id' => $id))->row_array();
-        $data['dimension'] = $this->db->get_where('tbl_dimension',array('shipment_id' => $data['p']['shipment_id']))->result_array();
-        
+        // $data['invoice'] = $this->db->get_where('tbl_invoice', array('shipment_id' => $id))->row_array();
+        $data['invoice'] = $this->db->query('SELECT status FROM tbl_invoice WHERE shipment_id = ' . $id . '')->row_array();
+        $data['dimension'] = $this->db->get_where('tbl_dimension', array('shipment_id' => $data['p']['shipment_id']))->result_array();
+
         $this->backend->display('cs/v_edit_order', $data);
     }
     public function editOrder($id, $id_so)
@@ -116,7 +117,7 @@ class Order extends CI_Controller
             'sender' => $this->input->post('sender'),
             'service_type' => $this->input->post('service_type'),
             'tree_shipper' => $this->input->post('tree_shipper'),
-            'tree_consignee' => $this->input->post('tree_consignee'), 
+            'tree_consignee' => $this->input->post('tree_consignee'),
             'koli' => $total_koli,
             'note_cs' => $no_do,
             // 'no_so' => $this->input->post('no_so'),
@@ -140,7 +141,7 @@ class Order extends CI_Controller
             'sender' => $this->input->post('sender'),
             'service_type' => $this->input->post('service_type'),
             'tree_shipper' => $this->input->post('tree_shipper'),
-            'tree_consignee' => $this->input->post('tree_consignee'), 
+            'tree_consignee' => $this->input->post('tree_consignee'),
             'koli' => $total_koli,
             'note_cs' => $no_do,
             // 'no_so' => $this->input->post('no_so'),
@@ -152,13 +153,13 @@ class Order extends CI_Controller
             'edited_at' => date('Y-m-d H:i:s'),
             'edited_by' => $this->session->userdata('id_user')
         );
-        
+
         if ($shipment['updatesistem_at'] == NULL) {
             $data['updatesistem_at'] = date('Y-m-d H:i:s');
         }
 
         $update =  $this->db->update('tbl_shp_order', $data, ['id' => $this->input->post('id')]);
-        $this->db->insert('tbl_shp_order_edit',$dataEdit);
+        $this->db->insert('tbl_shp_order_edit', $dataEdit);
         if ($update) {
             $this->session->set_flashdata('message', '<div class="alert
                 alert-success" role="alert">Success</div>');
@@ -167,6 +168,22 @@ class Order extends CI_Controller
             $this->session->set_flashdata('message', '<div class="alert
                 alert-danger" role="alert">Failed</div>');
             redirect('cs/order/edit/' . $this->input->post('id') . '/' . $this->input->post('id_so'));
+        }
+    }
+
+    public function deleteDo($id_do)
+    {
+        $do = $this->db->get_where('tbl_no_do', ['id_berat' => $id_do])->row_array();
+        $shipment = $this->db->query('SELECT berat_js,koli FROM tbl_shp_order WHERE shipment_id = ' . $do['shipment_id'] . ' ')->row_array();
+        $updateshipment = $this->db->update('tbl_shp_order', array('berat_js' => (int)$shipment['berat_js'] - (int)$do['berat'], 'koli' => (int)$shipment['koli'] - (int)$do['koli'])); //ini penyebabbnyaaa
+
+        if ($updateshipment) {
+            $delete = $this->db->delete('tbl_no_do', array('id_berat' => $id_do));
+            if ($delete) {
+                $this->session->set_flashdata('message', '<div class="alert
+                alert-success" role="alert">Success</div>');
+                redirect($_SERVER['HTTP_REFERER']);
+            }
         }
     }
 
@@ -392,7 +409,7 @@ class Order extends CI_Controller
                 ->setAutoSize(true);
             $sheet->setCellValue('F' . $x, $row['no_stp'])->getColumnDimension('F')
                 ->setAutoSize(true);
-            $sheet->setCellValue('G' . $x, $row['shipper'].'('.$row['mark_shipper'].')')->getColumnDimension('G')
+            $sheet->setCellValue('G' . $x, $row['shipper'] . '(' . $row['mark_shipper'] . ')')->getColumnDimension('G')
                 ->setAutoSize(true);
             $sheet->setCellValue('H' . $x, $row['consigne'])->getColumnDimension('H')
                 ->setAutoSize(true);

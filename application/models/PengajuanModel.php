@@ -6,19 +6,16 @@ class PengajuanModel extends CI_Model
 
     public function order($id = NULL)
     {
+        $this->db->select('a.id,a.shipment_id,a.order_id,a.shipper,a.id_so,a.destination,a.is_weight_print,a.consigne,a.koli,a.sender,a.berat_js,a.tree_shipper,a.tree_consignee,a.flight_at,a.state_shipper,a.city_shipper,a.service_type,a.pu_commodity,a.no_stp,a.signature,a.state_consigne,a.city_consigne,a.no_smu,a.image,a.note_shipment, b.nama_user');
+        $this->db->from('tbl_shp_order a');
+        $this->db->join('tb_user b', 'a.id_user=b.id_user');
         if ($id == NULL) {
-            $this->db->select('a.*, b.nama_user');
-            $this->db->from('tbl_shp_order a');
-            $this->db->join('tb_user b', 'a.id_user=b.id_user');
             $this->db->order_by('a.id', 'Desc');
-            return $this->db->get();
         } else {
-            $this->db->select('a.*, b.nama_user');
-            $this->db->from('tbl_shp_order a');
-            $this->db->join('tb_user b', 'a.id_user=b.id_user');
             $this->db->where('a.id', $id);
-            return $this->db->get();
+            
         }
+        return $this->db->get();
     }
     public function getLastTracking($shipmnent_id)
     {
@@ -73,7 +70,7 @@ class PengajuanModel extends CI_Model
         // $this->db->where('b.deleted',0);
         // $this->db->order_by('b.shipment_id', 'DESC');
 
-        return $this->db->query('SELECT b.id,a.shipment_id,b.shipper,b.consigne,b.tree_shipper,b.tree_consignee,b.id_so,b.is_jabodetabek,b.is_incoming,c.flag,c.status,c.id_user FROM tbl_outbond AS a INNER JOIN tbl_shp_order AS b ON a.shipment_id = b.shipment_id INNER JOIN tbl_tracking_real AS c ON a.shipment_id = c.shipment_id LEFT OUTER JOIN tbl_tracking_real c2 ON (a.shipment_id = c2.shipment_id AND (c.update_at < c2.update_at OR (c.update_at = c2.update_at AND c.id_tracking < c2.id_tracking))) WHERE c2.id_tracking IS NULL AND b.deleted = 0 AND a.out_date IS NOT NULL;');
+        return $this->db->query('SELECT b.id,a.shipment_id,b.shipper,b.consigne,b.tree_shipper,b.tree_consignee,b.id_so,b.is_jabodetabek,b.is_incoming,c.flag,c.status,c.id_user FROM tbl_outbond AS a INNER JOIN tbl_shp_order AS b ON a.shipment_id = b.shipment_id INNER JOIN tbl_tracking_real AS c ON a.shipment_id = c.shipment_id LEFT OUTER JOIN tbl_tracking_real c2 ON (a.shipment_id = c2.shipment_id AND (c.update_at < c2.update_at OR (c.update_at = c2.update_at AND c.id_tracking < c2.id_tracking))) WHERE c2.id_tracking IS NULL AND b.deleted = 0;');
     }
     public function dispatchHistory()
     {
@@ -293,7 +290,7 @@ class PengajuanModel extends CI_Model
     }
     public function getLaporanSales()
     {
-        $this->db->select('a.*, b.nama_user, c.pu_poin,d.service_name, d.prefix');
+        $this->db->select('a.shipment_id,a.tgl_pickup,a.shipper,a.consigne,a.tree_consignee,a.city_consignee,a.pu_commodity,a.koli,a.berat_js,a.berat_msr,b.nama_user,c.pu_poin,d.service_name,d.prefix');
         $this->db->from('tbl_shp_order a');
         $this->db->join('tb_user b', 'a.id_user=b.id_user');
         $this->db->join('tbl_so c', 'c.id_so=a.id_so');
