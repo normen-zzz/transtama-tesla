@@ -54,6 +54,11 @@
         position: fixed;
         top: 520px;
     }
+	
+	.smallCell
+{
+    height: 50px;
+}
 
     p {
         font-size: 16px;
@@ -114,9 +119,16 @@
             </table>
             <table style="width:100%; border-top:1px solid black;">
                 <tr>
-                    <td <?php if (strlen($order['consigne'].$order['destination'].$order['city_consigne'].$order['state_consigne']) > 75) { ?> style="font-size: 6px; text-align:left" <?php } else { ?> style="font-size: 8px; text-align:left" <?php } ?> ><b>Consignee : <?php if ($order['consigne'] != NULL) {
+				
+                    <td class="smallCell" style="font-size: 8px; text-align:left">
+					
+					
+     <b>Consignee : <?php if ($order['consigne'] != NULL) {
                                                                                     ?></b> <?= ucwords(strtolower($order['consigne'])) . '<br>' . ucwords($order['destination']) . '. ' . '<br>'  . '<b>' . ucwords(strtolower($order['city_consigne'])) . '</b>' . ', ' . '<b>' . ucwords(strtolower($order['state_consigne'])) . '</b>'  ?>
                         <b>Indonesia</b> <?php } ?>
+						
+					
+					
                     </td>
                 </tr>
 
@@ -152,7 +164,7 @@
                         <b>Pieces :</b> <?= $order['koli'] ?>
                     </td>
                     <td style="border-top: 1px ; border-left: 1px ;font-size: 10px;">
-                        <b>Weight :</b> <?= $order['weight'] ?>
+                        <b>Weight :</b> <?= $order['berat_js'] ?>
                     </td>
                 </tr>
                 <tr>

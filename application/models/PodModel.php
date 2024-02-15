@@ -23,8 +23,8 @@ class PodModel extends CI_Model
             return $this->db->get();
         }
     }
-
-    public function getModalPod($shipment_id)
+	
+	 public function getModalPod($shipment_id)
     {
             $this->db->select('so_id,tgl_pickup,shipment_id,shipper,consigne,status_pod,tgl_diterima,no_smu,destination');
             $this->db->from('tbl_shp_order');

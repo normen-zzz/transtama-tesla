@@ -172,7 +172,7 @@
                                 <input type="text" class="form-control" required name="summary">
                             </div>
                             
-                                <input type="text" class="form-control" id="koordinat" required name="koordinat" hidden>
+                                <input type="text" class="form-control" id="koordinat" name="koordinat" hidden>
                             
                             <div class="form-group">
                                 <label for="exampleInputPassword1">Picture</label>

@@ -92,7 +92,7 @@
 										<!-- <th style="width: 20%;">Image</th> -->
 										<!-- <th>Signature</th> -->
 										<th>Created At</th>
-										<!-- <th>Action</th> -->
+										<th>Action</th>
 									</tr>
 								</thead>
 								<tbody>

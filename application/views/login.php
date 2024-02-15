@@ -6,6 +6,7 @@
 <head>
 
 	<meta charset="utf-8" />
+	<meta name="google-site-verification" content="n65eZx_Lmo6Qx0NYgwvqO_n21_VmI4GWGnl6CIWAAH8" />
 	<title>Login Page</title>
 	<meta name="description" content="Login Shipper Transtama" />
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />

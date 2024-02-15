@@ -14,7 +14,7 @@ class Scan extends CI_Controller
         $this->load->model('Api');
     }
 
-    public function index()
+   public function index()
     {
         $data['title'] = 'Scan';
         // $data['gateway'] = $this->db->order_by('id_gateway', 'desc')->get('tbl_gateway')->result_array();
@@ -195,7 +195,7 @@ class Scan extends CI_Controller
                     'created_at' => date('Y-m-d'),
                     'time' => date('H:i:s'),
                     'flag' => 9,
-                    'status_eksekusi' => 1
+					'status_eksekusi' => 1
                 );
                 $this->db->insert('tbl_tracking_real', $data);
                 $dataOutbond = [
@@ -284,6 +284,12 @@ class Scan extends CI_Controller
             $insert = $this->db->insert('tbl_tracking_real', $data);
 
             if ($insert) {
+                $dataOutbond = [
+
+                    'out_date' => date('Y-m-d H:i:s'),
+                ];
+                $this->db->update('tbl_outbond', $dataOutbond, array('shipment_id' => $this->input->post('shipment_id')));
+
                 $this->session->set_flashdata('message', 'Success');
                 redirect('shipper/scan');
             } else {
@@ -342,6 +348,11 @@ class Scan extends CI_Controller
                     );
                     $this->db->insert('tbl_gateway', $data);
                 }
+                $dataOutbond = [
+
+                    'out_date' => date('Y-m-d H:i:s'),
+                ];
+                $this->db->update('tbl_outbond', $dataOutbond, array('shipment_id' => $this->input->post('shipment_id')));
 
                 $this->session->set_flashdata('message', 'Success');
                 redirect('shipper/scan');

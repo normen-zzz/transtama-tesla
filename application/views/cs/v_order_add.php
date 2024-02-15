@@ -72,6 +72,11 @@
 																	<?php  } ?>
 																</select>
 															</div>
+
+															<div class="form-group">
+																<label for="exampleInputEmail1">Mark Shipper</label>
+																<input type="text" class="form-control" id="mark_shipper" name="mark_shipper" value="<?php echo set_value('mark_shipper'); ?>">
+															</div>
 														</div>
 														<input type="text" class="form-control" hidden name="state_shipper2" value="<?php echo set_value('state_shipper2'); ?>" id="state_shipper">
 														<input type="text" class="form-control" hidden name="city_shipper2" value="<?php echo set_value('city_shipper2'); ?>" id="city_shipper">

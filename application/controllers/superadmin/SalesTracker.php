@@ -25,6 +25,7 @@ class SalesTracker extends CI_Controller
         $data['title'] = 'Sales Tracker Report';
         $data['users'] = $this->db->get_where('tb_user', ['status' => 1])->result_array();
         if ($awal == NULL && $akhir == NULL) {
+
             $data['awal'] = NULL;
             $data['akhir'] = NULL;
             if ($sales == NULL) {
@@ -41,6 +42,8 @@ class SalesTracker extends CI_Controller
                     $onGoing += 1;
                 }
             }
+            $data['ongoing'] = $onGoing;
+            $data['held'] = $held;
         } else {
             $data['awal'] = $awal;
             $data['akhir'] = $akhir;
@@ -58,9 +61,9 @@ class SalesTracker extends CI_Controller
                     $onGoing += 1;
                 }
             }
+            $data['ongoing'] = $onGoing;
+            $data['held'] = $held;
         }
-        $data['ongoing'] = $onGoing;
-        $data['held'] = $held;
         // var_dump($data['salestracker']->result_array());
         $this->backend->display('superadmin/v_salestracker_report', $data);
     }

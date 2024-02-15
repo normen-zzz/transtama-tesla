@@ -224,12 +224,12 @@ class Ap extends CI_Controller
 						$pesansm = "Hallo, ada pengajuan Ap Oleh *$nama_user* No. *$no_ap* Dengan Tujuan *$purpose* Tanggal *$date*. Silahkan approve melalui link berikut : $linksm . Terima Kasih";
 						// no pak sam
 						$this->wa->pickup('+6281808008082', "$pesansm");
-						// $this->wa->pickup('+6285157906966', "$pesan");
+						
 						//Norman
 						$this->wa->pickup('+6285697780467', "$pesansm");
 					} else {
 						$this->wa->pickup('+6281293753199', "$pesan");
-						$this->wa->pickup('+6285157906966', "$pesan");
+						
 						//Norman
 						$this->wa->pickup('+6285697780467', "$pesan");
 					}
@@ -364,7 +364,7 @@ class Ap extends CI_Controller
 			$pesan = "Hallo, ada pengajuan Ap No. *$no_ap* Dengan Tujuan *$purpose* Tanggal *$date*. Silahkan approve melalui link berikut : $link . Terima Kasih";
 			// no pak sam
 			$this->wa->pickup('+6281808008082', "$pesan");
-			// $this->wa->pickup('+6285157906966', "$pesan");
+			
 			//Norman
 			$this->wa->pickup('+6285697780467', "$pesan");
 			$this->session->set_flashdata('message', 'Success Approve');

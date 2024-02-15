@@ -13,8 +13,8 @@ class Order extends CI_Controller
         $this->load->library('form_validation');
         $this->load->model('PengajuanModel', 'pengajuan');
         $this->load->model('M_Datatables');
-        $this->load->model('Api');
-        $this->db->query("SET sql_mode=(SELECT REPLACE(@@sql_mode, 'ONLY_FULL_GROUP_BY', ''));");
+		$this->load->model('Api');
+		$this->db->query("SET sql_mode=(SELECT REPLACE(@@sql_mode, 'ONLY_FULL_GROUP_BY', ''));");
         cek_role();
     }
 
@@ -24,7 +24,7 @@ class Order extends CI_Controller
         $data['order'] = $this->pengajuan->order()->result_array();
         $this->backend->display('superadmin/v_pengajuan', $data);
     }
-    public function generatePdf($id_customer, $date)
+	 public function generatePdf($id_customer, $date)
     {
         // $where = array('id_customer' => $id_customer, 'created' => $date);
         $this->db->select('*, b.nama_pt,b.provinsi, b.kota');
@@ -32,7 +32,7 @@ class Order extends CI_Controller
         $this->db->join('tb_customer b', 'a.id_customer=b.id_customer');
         $this->db->where('a.id_customer', $id_customer);
         $this->db->where('a.created', $date);
-        $this->db->where('a.status', 0);
+		$this->db->where('a.status', 0);
         $data['orders'] = $this->db->get()->result_array();
         $this->load->view('superadmin/v_cetak_resi', $data);
         $html = $this->output->get_output();
@@ -46,7 +46,7 @@ class Order extends CI_Controller
         // file_put_contents('uploads/barcode' . '/' . "$shipment_id.pdf", $output);
         $this->dompdf->stream("Cetak" . $sekarang . ".pdf", array('Attachment' => 0));
     }
-    public function generatePdfGenerateResi($group)
+	public function generatePdfGenerateResi($group)
     {
         // $this->db->select('*, b.nama_pt,b.provinsi, b.kota');
         // $this->db->from('tbl_booking_number_resi a');
@@ -84,15 +84,15 @@ class Order extends CI_Controller
         $mpdf->WriteHTML($data);
         $mpdf->Output();
     }
-    public function generate()
+	 public function generate()
     {
-
+        
         $data['title'] = 'Generate Resi';
         $data['customers'] = $this->db->get('tb_customer')->result_array();
         $data['generate'] = $this->pengajuan->getGenerate()->result_array();
         $this->backend->display('superadmin/v_generate', $data);
     }
-    public function generateResi()
+	public function generateResi()
     {
         $shipper = $this->input->post('customer');
         $id_customer = $this->input->post('id_customer');
@@ -183,7 +183,7 @@ class Order extends CI_Controller
         $mpdf->WriteHTML($data);
         $mpdf->Output();
     }
-    public function barcode($id)
+	 public function barcode($id)
     {
         // $koli = sprintf("%02s",  $koli);
         // for ($i = 1; $i <= $koli; $i++) {
@@ -207,14 +207,14 @@ class Order extends CI_Controller
         $params['savename'] = FCPATH . "uploads/qrcode/" . $id . '.png';
         $this->ciqrcode->generate($params);
     }
-
+	
     public function detail($id)
     {
         $data['title'] = 'Detail Order';
         $data['p'] = $this->pengajuan->order($id)->row_array();
         $this->backend->display('superadmin/v_detail_pengajuan', $data);
     }
-    public function detailGenerate($group)
+	   public function detailGenerate($group)
     {
         $data['title'] = 'Detail Generate Resi';
         $data['generate'] = $this->db->get_where('tbl_booking_number_resi', ['group' => $group])->result_array();
@@ -229,7 +229,7 @@ class Order extends CI_Controller
         header("Content-Disposition: attachment;Filename=export-generate-resi-$customer[customer].xls");
         $this->load->view('superadmin/v_export_generate', $data);
     }
-    public function exportGenerateGenerateResi($id_customer, $group)
+	public function exportGenerateGenerateResi($id_customer, $group)
     {
         $data['title'] = 'Detail Generate Resi';
         $customer = $this->db->get_where('tbl_booking_number_resi', ['id_customer' => $id_customer])->row_array();
@@ -239,7 +239,7 @@ class Order extends CI_Controller
         $this->load->view('superadmin/v_export_generate', $data);
     }
 
-    public function delete()
+     public function delete()
     {
         $id_order = $this->input->post('id_order');
         $id_so = $this->input->post('id_so');
@@ -247,7 +247,7 @@ class Order extends CI_Controller
         $data = array(
             'deleted' => 1,
             'reason_delete' => $this->input->post('reason_delete'),
-            'status_so' => 0
+			'status_so' => 0
         );
         $delete = $this->db->update('tbl_shp_order', $data, $where);
         if ($delete) {
@@ -272,7 +272,6 @@ class Order extends CI_Controller
         echo $this->M_Datatables->get_tables_query($query, $search, $where, $isWhere);
     }
 
-
     public function report()
     {
         $data['title'] = 'Report Order';
@@ -280,11 +279,11 @@ class Order extends CI_Controller
         $data['end'] = 'null';
         // var_dump($data);
         // die;
-        $data['users'] = $this->db->get_where('tb_user', ['id_role' => 4])->result_array();
-
+		 $data['users'] = $this->db->get_where('tb_user', ['id_role' => 4])->result_array();
+      
         $this->backend->display('superadmin/v_report', $data);
     }
-
+   
     public function print($start = null, $end = null, $id_user = 0)
     {
         if ($start != null && $end != null && $id_user != 0) {
@@ -303,8 +302,8 @@ class Order extends CI_Controller
         // $sekarang = date("d:F:Y:h:m:s");
         $this->dompdf->stream("Print_Order" . $start . '-' . $end . ".pdf", array('Attachment' => 0));
     }
-
-    public function tracking($shipment_id = Null)
+   
+	public function tracking($shipment_id = Null)
     {
 
         if ($shipment_id == NULL) {
@@ -342,13 +341,13 @@ class Order extends CI_Controller
         $status = $this->input->post('status');
         $flag = '';
         if ($status == 'Shipment Telah Tiba Di Hub') {
-            $flag = 9;
+            $flag = 8;
         } else if ($status == 'Shipment Keluar Di Hub Tujuan') {
-            $flag = 10;
+            $flag = 9;
         } else if ($status == 'Shipment Dalam Proses Delivery') {
-            $flag = 11;
+            $flag = 10;
         } else {
-            $flag = 12;
+            $flag = 11;
         }
 
         $id_so = $this->input->post('id_so');
@@ -405,29 +404,27 @@ class Order extends CI_Controller
         $status = $this->input->post('status');
         $flag = '';
         if ($status == 'Shipment Telah Tiba Di Hub') {
-            $flag = 9;
+            $flag = 8;
         } else if ($status == 'Shipment Keluar Di Hub Tujuan') {
-            $flag = 10;
+            $flag = 9;
         } else if ($status == 'Shipment Dalam Proses Delivery') {
-            $flag = 11;
+            $flag = 10;
         } elseif ($status == 'Shipment Telah Diterima Oleh') {
-            $flag = 12;
+            $flag = 11;
         } elseif ($status == 'Request Pickup From Shipper') {
             $flag = 1;
         } elseif ($status == 'Driver Menuju Lokasi Pickup') {
             $flag = 2;
-        } elseif ($status == 'Driver Telah Sampai Di Lokasi Pickup') {
-            $flag = 3;
         } elseif ($status == 'Shipment Telah Dipickup Dari Shipper') {
-            $flag = 4;
+            $flag = 3;
         } elseif ($status == 'Shipment Telah Tiba Di Hub Jakarta Pusat') {
-            $flag = 5;
+            $flag = 4;
         } elseif ($status == 'Shipment Keluar Dari Hub Jakarta Pusat') {
-            $flag = 6;
+            $flag = 5;
         } elseif ($status == 'Shipment Telah Tiba Di Hub CGK' || $status == 'Shipment Telah Tiba Di Hub Jakarta Utara') {
-            $flag = 7;
+            $flag = 6;
         } elseif ($status == 'Shipment Keluar Dari Hub CGK' || $status == 'Shipment Keluar Dari Hub Jakarta Utara') {
-            $flag = 8;
+            $flag = 7;
         }
 
         $id_so = $this->input->post('id_so');
@@ -481,7 +478,7 @@ class Order extends CI_Controller
         $this->session->set_flashdata('message', 'Update Sukses');
         redirect('superadmin/order/tracking/' . $shipment_id);
     }
-    public function printAll($id)
+	 public function printAll($id)
     {
         $where = array('id_so' => $id);
         $this->db->select('*, b.service_name, b.prefix');
@@ -501,7 +498,7 @@ class Order extends CI_Controller
         // file_put_contents('uploads/barcode' . '/' . "$shipment_id.pdf", $output);
         $this->dompdf->stream("Cetak" . $sekarang . ".pdf", array('Attachment' => 0));
     }
-    public function deleteShipmentTracking($id_tracking, $shipment_id)
+	 public function deleteShipmentTracking($id_tracking, $shipment_id)
     {
         $delete = $this->db->delete('tbl_tracking_real', ['id_tracking' => $id_tracking]);
         if ($delete) {
@@ -512,9 +509,9 @@ class Order extends CI_Controller
             redirect('superadmin/order/tracking/' . $shipment_id);
         }
     }
-
-
-    public function print2($id)
+	 
+	
+	 public function print2($id)
     {
         $mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => [74, 105]]);
 
@@ -541,7 +538,7 @@ class Order extends CI_Controller
         $data['tahun'] = $tahun;
         $data['id_sales'] = $id_user;
         $data['title'] = "Laporan Order Tahun $tahun Bulan $bulan";
-        $data['users'] = $this->db->get_where('tb_user', ['id_role' => 4])->result_array();
+		 $data['users'] = $this->db->get_where('tb_user', ['id_role' => 4])->result_array();
         $data['order'] = $this->pengajuan->getLaporanTransaksiFilterAdmin($bulan, $tahun, $id_user)->result_array();
         $this->backend->display('superadmin/v_report_filter', $data);
     }

@@ -139,6 +139,7 @@
 														<div class="col-md-3">
 															<div class="form-group">
 																<label for="exampleInputEmail1">Moda<span class="text-danger">*</span></label>
+																
 																<select name="moda" class="form-control">
 																	<?php foreach ($moda as $m) {
 																	?>

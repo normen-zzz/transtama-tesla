@@ -56,18 +56,18 @@
 									<tbody>
 										<?php foreach ($outbond as $g) {
 											//cek outgoing or incoming
-											// $g = $this->order->getLastTracking2($g['shipment_id'])->row_array();
+											$getLast = $this->order->getLastTracking2($g['shipment_id'])->row_array();
 											if ($g['is_incoming'] != 1) {
-												if ($g['flag'] >= 4 && $g['flag'] <= 5) {
+												if ($getLast['flag'] >= 4 && $getLast['flag'] <= 5) {
 										?>
 													<tr>
 														<td><?= $g['shipment_id'] ?></td>
 														<td><?= $g['shipper'] ?><br><?= $g['tree_shipper'] ?></td>
 														<td><?= $g['consigne'] ?><br><?= $g['tree_consignee'] ?></td>
-														<td><?= $g['status'] ?> <?= $g['flag'] ?> </td>
-														<?php if ($g['flag'] == 4) { ?>
+														<td><?= $getLast['status'] ?> <?= $getLast['flag'] ?> </td>
+														<?php if ($getLast['flag'] == 4) { ?>
 															<td>Scan IN</td>
-														<?php } elseif ($g['flag'] == 5) { ?>
+														<?php } elseif ($getLast['flag'] == 5) { ?>
 															<td><a href="<?= base_url('shipper/salesOrder/weight/' . $g['shipment_id']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Weight</a>
 																<a href="<?= base_url('shipper/salesOrder/edit/' . $g['id'] . '/' . $g['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Edit</a>
 																<a href="<?= base_url('shipper/order/detail/' . $g['id'] . '/' . $g['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Detail</a>
@@ -76,16 +76,20 @@
 																?>
 																	<!-- kalo sales ordernya sudah di pickup -->
 																	<!-- kalo shipmentnya telah tiba di hub benhil -->
-																	<?php if ($g['flag'] == 5 || $g['flag'] == 6) {
+																	<?php if ($getLast['flag'] == 5 || $getLast['flag'] == 6) {
 																	?>
 
 
 																		<button class="btn btn-sm text-light modalDelivery" data-toggle="modal" data-shipment_id="<?= $g['shipment_id'] ?>" data-id_so="<?= $g['id_so'] ?>" data-target="#modal-lg-dl" style="background-color: #9c223b;">
 																			Assign Driver DL
 																		</button>
+																		<?php
+																		$queryTrackingReal = $this->db->query('SELECT id_user FROM tbl_tracking_real WHERE shipment_id = "' . $g['shipment_id'] . '" AND flag = "5" ORDER BY id_tracking DESC LIMIT 1 ');
+																		$tracking_real = $queryTrackingReal->row_array();
 																		
+																		?>
 																		<div class="d-flex align-items-center">
-																			<?php if ($g['flag'] != 5) {
+																			<?php if ($tracking_real == null) {
 																			?>
 
 															<td>
@@ -105,7 +109,7 @@
 																</div>
 																<!--end::Symbol-->
 																<!--begin::Text-->
-																<?php $driver = $this->db->query("SELECT nama_user FROM tb_user WHERE id_user = ".$c['id_user']." ")->row_array();?>
+																<?php $driver = $this->db->query("SELECT nama_user FROM tb_user WHERE id_user = ".$tracking_real['id_user']." ")->row_array();?>
 																<div class="d-flex flex-column flex-grow-1 font-weight-bold">
 																	<a href="#" class="text-dark text-hover-primary mb-1 font-size-lg"><?= $driver['nama_user'] ?></a>
 																	<span class="text-muted">Driver</span>
@@ -117,29 +121,75 @@
 
 							</div>
 							<!-- kalo sales order nya belum di pickup -->
-						<?php } ?>
+						<?php } elseif ($getLast['flag'] == 2) {
+						?>
+							<a href="#" class="btn font-weight-bolder text-light" data-toggle="modal" data-target="#modal-lg" style="background-color: #9c223b;">
+								Asign Driver PU
+							</a>
+							<?php
+																		$queryTracking = $this->db->query('SELECT id_user FROM tbl_tracking_real WHERE id_so = ' . $p['id_so'] . ' ORDER BY id_tracking ASC ');
+																		$tracking = $queryTracking->row_array();
+
+							?>
+							<div class="d-flex align-items-center">
+								<?php if ($tracking['id_user'] == null) {
+								?>
+									<td>
+										<h4 class="title">No driver selected</h4>
+									</td>
+
+								<?php	} else {
+								?>
+									<td>
+										<!--begin::Symbol-->
+										<div class="symbol symbol-40 symbol-light-success">
+											<span class="symbol-label">
+												<img src="<?= base_url('assets/back/metronic/') ?>media/avatars/009-boy-4.svg" class="h-75 align-self-end" alt="">
+											</span>
+										</div>
+										<!--end::Symbol-->
+										<!--begin::Text-->
+										<?php 
+										$driver = $this->db->query("SELECT nama_user FROM tb_user WHERE id_user = ".$tracking['id_user']." ")->row_array();
+										?>
+										<div class="d-flex flex-column flex-grow-1 font-weight-bold">
+											<a href="#" class="text-dark text-hover-primary mb-1 font-size-lg"><?= $driver['nama_user'] ?></a>
+											<span class="text-muted">Driver</span>
+										</div>
+										<!--end::Text-->
+									</td>
+								<?php	} ?>
+
+							</div>
+
+
+						<?php } else {
+						?>
+							<h4 class="title">Your Task Has Finished</h4>
+						<?php	} ?>
 
 						<!-- KALO BUKAN JABODETABEK -->
 					<?php	} else {
 					?>
 						<!-- kalo sales ordernya sudah di pickup -->
 						<!-- kalo shipmentnya telah tiba di hub benhil -->
-						<?php if ($g['flag'] == 5 || $g['flag'] == 6) {
+						<?php if ($getLast['flag'] == 5 || $getLast['flag'] == 6) {
 						?>
 							<button class="btn text-light modalDeliveryLuar" data-toggle="modal" data-target="#modal-lg-dl-luar" data-shipment_id="<?= $g['shipment_id'] ?>" data-id_so="<?= $g['id_so'] ?>" style="background-color: #9c223b;">
 								Scan Out
 							</button>
 
 							<?php
-																		
+																		$queryTrackingReal = $this->db->query('SELECT id_user FROM tbl_tracking_real WHERE shipment_id = "' . $g['shipment_id'] . '" AND flag = "5" ORDER BY id_tracking DESC LIMIT 1 ');
+																		$tracking_real = $queryTrackingReal->row_array();
 
-																		
+																		$queryOrder
 
 																		
 
 							?>
 							<div class="d-flex align-items-center">
-								<?php if ($g['flag'] != 5) {
+								<?php if ($tracking_real == null) {
 								?>
 									<td>
 										<h4 class="title">No driver</h4>
@@ -158,7 +208,7 @@
 										<!--end::Symbol-->
 										<!--begin::Text-->
 										<?php 
-										$driver = $this->db->query("SELECT nama_user FROM tb_user WHERE id_user = ".$g['id_user']." ")->row_array();
+										$driver = $this->db->query("SELECT nama_user FROM tb_user WHERE id_user = ".$tracking_real['id_user']." ")->row_array();
 										?>
 										
 										<div class="d-flex flex-column flex-grow-1 font-weight-bold">
@@ -171,7 +221,50 @@
 
 							</div>
 							<!-- kalo sales order nya belum di pickup -->
-						<?php } ?>
+						<?php } elseif ($getLast['flag'] == 2) {
+						?>
+							<a href="#" class="btn font-weight-bolder text-light" data-toggle="modal" data-target="#modal-lg" style="background-color: #9c223b;">
+								Asign Driver PU</a>
+
+							<?php
+																		$queryTracking = $this->db->query('SELECT id_user FROM tbl_tracking_real WHERE id_so = ' . $p['id_so'] . ' ORDER BY id_tracking ASC ');
+																		$tracking = $queryTracking->row_array();
+
+							?>
+							<div class="d-flex align-items-center">
+								<?php if ($tracking['id_user'] == null) {
+								?>
+									<td>
+										<h4 class="title">No driver</h4>
+									</td>
+
+								<?php	} else {
+								?>
+									<td>
+										<!--begin::Symbol-->
+										<div class="symbol symbol-40 symbol-light-success">
+											<span class="symbol-label">
+												<img src="<?= base_url('assets/back/metronic/') ?>media/avatars/009-boy-4.svg" class="h-75 align-self-end" alt="">
+											</span>
+										</div>
+										<!--end::Symbol-->
+										<!--begin::Text-->
+										<?php $driver = $this->db->query("SELECT nama_user FROM tb_user WHERE id_user = ".$tracking['id_user']." ")->row_array(); ?>
+										<div class="d-flex flex-column flex-grow-1 font-weight-bold">
+											<a href="#" class="text-dark text-hover-primary mb-1 font-size-lg"><?= $driver['nama_user'] ?></a>
+											<span class="text-muted">Driver</span>
+										</div>
+										<!--end::Text-->
+									</td>
+								<?php	} ?>
+
+							</div>
+
+
+						<?php } else {
+						?>
+							<h4 class="title">Your Task Has Finished</h4>
+						<?php	} ?>
 
 
 					<?php	} ?>
@@ -183,13 +276,13 @@
 			<?php }
 												// jika incoming
 											} else {
-												if ($g['flag'] == 9) { ?>
+												if ($getLast['flag'] == 9) { ?>
 
 				<tr>
 					<td><?= $g['shipment_id'] ?></td>
 					<td><?= $g['shipper'] ?><br><?= $g['tree_shipper'] ?></td>
 					<td><?= $g['consigne'] ?><br><?= $g['tree_consignee'] ?></td>
-					<td><?= $g['status'] ?></td>
+					<td><?= $getLast['status'] ?></td>
 					<td><a href="<?= base_url('shipper/Scan/scanOutIncoming/' . $g['shipment_id']) ?>" class="btn text-light" style="background-color: #9c223b;">
 							Scan Out
 						</a></td>

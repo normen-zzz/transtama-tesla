@@ -20,11 +20,6 @@ class Approval extends CI_Controller
         //$this->wa->pickup('+62895358288395', "Tester Message Whatsapp Api");
     }
 
-    public function testreplace()
-    {
-        echo str_replace("&", "dan", 'saya & anu');
-    }
-
     public function detailCs($no_ap)
     {
         $data['title'] = 'Detail Account Payable';
@@ -79,7 +74,7 @@ class Approval extends CI_Controller
                 $pesan = "Hallo, ada pengajuan Ap No. *$no_ap* Dengan Tujuan *$purpose* Tanggal *$date*. Silahkan approve melalui link berikut : $link . Terima Kasih";
                 // no pak sam
                 $this->wa->pickup('+6281808008082', "$pesan");
-                $this->wa->pickup('+6285157906966', "$pesan");
+               
                 //Norman
                 $this->wa->pickup('+6285697780467', "$pesan");
 
@@ -121,7 +116,7 @@ class Approval extends CI_Controller
                 // no pak sam
 
                 $this->wa->pickup('+6281808008082', "$pesan");
-                $this->wa->pickup('+6285157906966', "$pesan");
+               
                 //Norman
                 $this->wa->pickup('+6285697780467', "$pesan");
 
@@ -154,7 +149,7 @@ class Approval extends CI_Controller
             $date = $get_ap['date'];
             $pesan = "Hallo Finance, ada pengajuan Ap No. *$no_ap* Dengan Tujuan *$purpose* Tanggal *$date*. Tolong Segera Cek Ya, Terima Kasih";
             // no finance
-            // $this->wa->pickup('+6285157906966', "$pesan");
+            
             $this->wa->pickup('+6289629096425', "$pesan");
             $this->wa->pickup('+6287771116286', "$pesan");
 

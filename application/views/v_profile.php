@@ -68,9 +68,9 @@
 									</div>
 								</div>
 								<div class="form-group row">
-									<label class="col-xl-3 col-lg-3 col-form-label">No Telp</label>
+									<label class="col-xl-3 col-lg-3 col-form-label">No Telp/WA</label>
 									<div class="col-lg-9 col-xl-6">
-										<input class="form-control form-control-lg form-control-solid" placeholder="Ex : 085697780467" name="no_hp" type="number" value="<?= $no_hp ?>">
+										<input class="form-control form-control-lg form-control-solid" placeholder="Ex : 085697xxxxxx" name="no_hp" type="number" value="<?= $no_hp ?>">
 									</div>
 								</div>
 								<div class="form-group row">

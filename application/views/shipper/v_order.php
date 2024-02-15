@@ -69,7 +69,7 @@
 									<?php foreach ($order as $o) {
 									?>
 										<tr>
-											<td><a href="<?= base_url('shipper/order/print/' . $o['shipment_id']) ?>"><?= $o['shipment_id'] ?></a> <br> <?= $o['service_name'] ?><br> <?= $o['note_cs'] ?> </td>
+											<td><a href="<?= base_url('shipper/order/print/' . $o['shipment_id']) ?>"><?= $o['shipment_id'] ?></a> <br> <?= $o['service_name'] ?><br> <?= $o['pu_moda'] ?> </td>
 											<td><?= $o['shipper'] ?> <br> <?= $o['tree_shipper'] ?>-<?= $o['tree_consignee'] ?></td>
 											<td><?= $o['consigne'] ?></td>
 											<td><?= $o['created_at'] ?></td>

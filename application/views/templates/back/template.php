@@ -5,6 +5,7 @@
 <head>
 	<?php date_default_timezone_set('Asia/Jakarta');
 	setlocale(LC_TIME, "id_ID.UTF8"); ?>
+	<meta name="google-site-verification" content="n65eZx_Lmo6Qx0NYgwvqO_n21_VmI4GWGnl6CIWAAH8" />
 	<meta charset="utf-8" />
 	<title>Tesla Smartwork</title>
 	<meta name="description" content="Updates and statistics" />
@@ -23,13 +24,9 @@
 	<!-- <link href="<?= base_url('assets/back/') ?>plugins/jquery-ui/jquery-ui.css" rel="stylesheet" type="text/css" /> -->
 	<link href="<?= base_url('assets/back/metronic/') ?>css/style.bundle.css" rel="stylesheet" type="text/css" />
 	<link href="<?= base_url('assets/back/metronic/') ?>css/pages/wizard/wizard-3.css" rel="stylesheet" type="text/css" />
-	<link rel="stylesheet" href="https://cdn.datatables.net/datetime/1.5.1/css/dataTables.dateTime.min.css">
-	<script src="https://cdn.datatables.net/datetime/1.5.1/js/dataTables.dateTime.min.js"></script>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.2/moment.min.js"></script>
-
 	<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/css/datepicker.css" rel="stylesheet" type="text/css" />
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.form/4.3.0/jquery.form.min.js" integrity="sha384-qlmct0AOBiA2VPZkMY3+2WqkHtIQ9lSdAsAn5RUJD/3vA5MKDgSGcdmIv4ycVxyn" crossorigin="anonymous"></script>
-	<script src="https://code.jquery.com/jquery-3.7.0.js" integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM=" crossorigin="anonymous"></script>
+		<script src="https://code.jquery.com/jquery-3.7.0.js" integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM=" crossorigin="anonymous"></script>
 
 
 	<!-- scan -->
@@ -96,15 +93,15 @@
 <!--end::Head-->
 
 <body id="kt_body" class="header-fixed header-mobile-fixed header-bottom-enabled page-loading" style="background-color: #eee;">
-	<audio id="myAudio" src="<?= base_url('assets/1.mp3') ?>" autoplay>
-		Browser Anda tidak mendukung elemen audio.
-	</audio>
+
 
 	<?php $this->load->view('templates/back/navbar'); ?>
+		<audio id="myAudio" src="<?= base_url('assets/2.mp3') ?>" autoplay>
+		Browser Anda tidak mendukung elemen audio.
+	</audio>
+	
 	<?= $_content; ?>
 	<?php $this->load->view('templates/back/footer'); ?>
-
-	
 
 	<!-- Modal -->
 	<div class="modal fade" id="modalLoading" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
@@ -115,12 +112,6 @@
 		</div>
 	</div>
 
-	<script>
-		function playAudio() {
-			var audio = document.getElementById('myAudio');
-			audio.play();
-		}
-	</script>
 
 
 	<!-- REQUIRED SCRIPTS -->
@@ -270,24 +261,8 @@
 
 			if (atLeastOneIsChecked > 1) {
 				$('#submitMerge').css('visibility', 'visible');
-
 			} else {
 				$('#submitMerge').css('visibility', 'hidden');
-
-			}
-		}
-	</script>
-
-	<script>
-		function checkTotalCheckedBoxesDispatcher() {
-			var atLeastOneIsChecked = $('input[name="shipment_id[]"]:checked').length;
-
-			if (atLeastOneIsChecked >= 1) {
-				$('#submitMerge').css('visibility', 'visible');
-				$('#hide').css('visibility', 'visible');
-			} else {
-				$('#submitMerge').css('visibility', 'hidden');
-				$('#hide').css('visibility', 'hidden');
 			}
 		}
 	</script>
@@ -457,32 +432,32 @@
 
 
 	<script type="text/javascript">
-		$(document).ready(function() {
-			$('#consigne').on('input', function() {
-				var kode = $(this).val();
-				console.log(kode);
+		//$(document).ready(function() {
+		// 	$('#consigne').on('input', function() {
+		// 		var kode = $(this).val();
+		// 		console.log(kode);
 
-				$.ajax({
-					type: "POST",
-					url: "<?php echo base_url('shipper/order/get_consigne') ?>",
-					dataType: "JSON",
-					data: {
-						kode: kode
-					},
-					cache: false,
-					success: function(data) {
-						$.each(data, function(consigne, destination) {
-							$('[name="consigne"]').val(data.consigne);
-							$('[name="destination"]').val(data.destination);
-						});
-					}
+		// 		$.ajax({
+		// 			type: "POST",
+		// 			url: "<?php echo base_url('shipper/order/get_consigne') ?>",
+		// 			dataType: "JSON",
+		// 			data: {
+		// 				kode: kode
+		// 			},
+		// 			cache: false,
+		// 			success: function(data) {
+		// 				$.each(data, function(consigne, destination) {
+		// 					$('[name="consigne"]').val(data.consigne);
+		// 					$('[name="destination"]').val(data.destination);
+		// 				});
+		// 			}
 
-				});
-				return false;
+		// 		});
+		// 		return false;
 
-			});
+		// 	});
 
-		});
+		// });
 	</script>
 
 
@@ -633,20 +608,6 @@
 		});
 
 		$(document).ready(function() {
-			var myTable = $('.datatabledispatcher').DataTable({
-				"searching": false,
-				"ordering": false,
-				aLengthMenu: [
-					[25, 50, 100, 200, -1],
-					[25, 50, 100, 200, "All"]
-				],
-				iDisplayLength: -1,
-				"dom": '<"top"f>rt<"bottom"ilp><"clear">'
-			});
-
-		});
-
-		$(document).ready(function() {
 			$('#myTableSalesTracker').DataTable({
 
 				dom: 'Bfrtip',
@@ -717,7 +678,7 @@
 		}
 	</script>
 
-	<script>
+		<script>
 		var tabel = null;
 		$(document).ready(function() {
 			tabel = $('#mytablereport').DataTable({
@@ -1371,101 +1332,6 @@
 	</script>
 
 	<script>
-		var tabel = null;
-		$(document).ready(function() {
-			tabel = $('#mytablehistorydispatcher').DataTable({
-				"processing": true,
-				"serverSide": true,
-				"ordering": true, // Set true agar bisa di sorting
-				"dom": "<'row'<'col-lg-10 col-md-10 col-xs-12'f>>" +
-					"<'row'<'col-sm-12'tr>>" +
-					"<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>" +
-					"<'row'<'col-lg-10 col-md-10 col-xs-12'l>>",
-				"order": [
-					[2, 'desc']
-				], // Default sortingnya berdasarkan kolom / field ke 0 (paling pertama)
-				"ajax": {
-					"url": "<?= base_url('dispatcher/scan/querydispatchhistory'); ?>", // URL file untuk proses select datanya
-					"type": "POST"
-				},
-				"deferRender": true,
-				"aLengthMenu": [
-					[10, 25, 50, 100, "All"],
-					[10, 25, 50, 100, "All"]
-				], // Combobox Limit
-				"iDisplayLength": 10,
-				"columns": [{
-						"data": 'shipment_id',
-						"sortable": false,
-						render: function(data, type, row, meta) {
-							return '<input type="checkbox" class="form-control" name="shipment_id[]" value="' + data + '">';
-						}
-					},
-					{
-						"data": 'shipment_id',
-						// "sortable": false,
-						// render: function(data, type, row, meta) {
-						// 	return meta.row + meta.settings._iDisplayStart + 1;
-						// }
-					},
-					{
-						"data": 'created_at',
-						// "sortable": false,
-						// render: function(data, type, row, meta) {
-						// 	return meta.row + meta.settings._iDisplayStart + 1;
-						// }
-					},
-					{
-						"data": 'shipper',
-						// "sortable": false,
-						// render: function(data, type, row, meta) {
-						// 	return meta.row + meta.settings._iDisplayStart + 1;
-						// }
-					},
-					{
-						"data": 'consigne',
-						// "sortable": false,
-						// render: function(data, type, row, meta) {
-						// 	return meta.row + meta.settings._iDisplayStart + 1;
-						// }
-					},
-
-					{
-						"data": 'sts',
-						// "sortable": false,
-						// render: function(data, type, row, meta) {
-						// 	return meta.row + meta.settings._iDisplayStart + 1;
-						// }
-					},
-					{
-						"data": 'status_eksekusi',
-						// "sortable": false,
-						render: function(data, type, row, meta) {
-							if (data == 1) {
-								return '<td><span class="btn btn-sm btn-success">Success</span></td>';
-							} else {
-								return '<td><span class="btn btn-sm btn-danger">Pending</span></td>';
-							}
-
-						}
-					},
-					{
-						"data": 'shipment_id',
-						// "sortable": false,
-						render: function(data, type, row, meta) {
-							return '<a href="<?= base_url('dispatcher/Scan/detailHistory/') ?>' + data + '" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Detail</a>';
-
-						}
-					},
-
-					// Tampilkan kategori
-
-				],
-			});
-		});
-	</script>
-
-	<script>
 		$(".radioBtnClass").change(function() {
 			// bind a function to the change event
 			if ($(this).is(":checked")) { // check if the radio is checked
@@ -1520,7 +1386,7 @@
 	</script>
 
 
-
+	
 
 
 
@@ -2188,64 +2054,18 @@
 
 		});
 	</script>
-
-
-	<!-- wilayah di request Price  -->
-
+	
 	<script>
-		$(document).ready(function() {
-			$("#provinsi").change(function() {
-				var url = "<?php echo site_url('sales/RequestPrice/getKabupaten'); ?>/" + $(this).find(':selected').data('id_prov');
-				$('#kabupaten').load(url);
-				var kecamatan = "<?php echo site_url('sales/RequestPrice/getKecamatan'); ?>/";
-				$('#kecamatan').load(kecamatan);
-				// setTimeout(function() {
-				// 	// $('#modalLoading').modal('hide')
-				// }, 500);
-
-
-
-				return false;
-			})
-
-			$("#kabupaten").change(function() {
-				// $("#modalLoading").modal("show");
-				var url = "<?php echo site_url('sales/RequestPrice/getKecamatan'); ?>/" + $(this).find(':selected').data('id_prov') + "/" + $(this).find(':selected').data('id_kab');
-				$('#kecamatan').load(url);
-				// setTimeout(function() {
-				// 	$('#modalLoading').modal('hide')
-				// }, 500);
-				return false;
-			})
-
-			$("#provinsi1").change(function() {
-				// $("#modalLoading").modal("show");
-				var url = "<?php echo site_url('sales/RequestPrice/getKabupaten'); ?>/" + $(this).find(':selected').data('id_prov');
-				$('#kabupaten1').load(url);
-				var kecamatan = "<?php echo site_url('sales/RequestPrice/getKecamatan'); ?>/";
-				$('#kecamatan1').load(kecamatan);
-				// setTimeout(function() {
-				// 	$('#modalLoading').modal('hide')
-				// }, 500);
-
-				return false;
-			})
-
-			$("#kabupaten1").change(function() {
-				
-				var url = "<?php echo site_url('sales/RequestPrice/getKecamatan'); ?>/" + $(this).find(':selected').data('id_prov') + "/" + $(this).find(':selected').data('id_kab');
-				$('#kecamatan1').load(url);
-
-				return false;
-			})
-
-
+		$('button[type="submit"]').on('click', function() {
+			var button = $(this);
+			setTimeout(function() {
+				button.prop('disabled', true);
+				setTimeout(function() {
+					button.prop('disabled', false);
+				}, 3000); // Jeda 2 detik untuk mengaktifkan kembali tombol
+			}, 200); // Jeda 1 detik untuk menonaktifkan tombol
 		});
 	</script>
-
-
-
-
 
 
 

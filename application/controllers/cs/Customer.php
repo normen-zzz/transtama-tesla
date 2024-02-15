@@ -10,7 +10,6 @@ class Customer extends CI_Controller
 			redirect('backoffice');
 		}
 		$this->load->model('UserModel');
-		$this->load->model('CustomerModel');
 		$this->load->helper('kodekelas');
 		// cek_role();
 	}
@@ -22,7 +21,6 @@ class Customer extends CI_Controller
 		$data['city'] = $this->db->get('tb_city')->result_array();
 		$data['province'] = $this->db->get('tb_province')->result_array();
 		$data['customer'] = $this->db->get('tb_customer')->result_array();
-		// $data['customer'] = $this->CustomerModel->getCustomer()->result_array();
 		$this->backend->display('cs/v_customer', $data);
 	}
 
