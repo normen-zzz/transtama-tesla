@@ -731,7 +731,7 @@ class SalesOrder extends CI_Controller
         $totalKoli = 0;
         $berat_js = 0;
         for ($i = 0; $i < sizeof($panjang); $i++) {
-            
+
             $volume = ceil(($panjang[$i] * $lebar[$i] * $tinggi[$i]) / $pembagi);
 
             $data = array(
@@ -752,28 +752,29 @@ class SalesOrder extends CI_Controller
             if ($no_do[$i] != NULL) {
                 $do = $this->db->get_where('tbl_no_do', array('no_do' => $no_do[$i], 'shipment_id' => $shipment_id))->row_array();
                 $data['no_do'] = $no_do[$i];
-               
-                // menambah koli disetiap do 
+                if ($do['berat'] == NULL || $do['berat'] == 0) {
+                    // menambah koli disetiap do 
 
-                if ($do['koli'] != NULL) {
-                    //jika koli di setiap do null
-                    $this->db->update('tbl_no_do', array('koli' => ($do['koli'] + $koli[$i])), array('shipment_id' => $shipment_id, 'no_do' => $no_do[$i]));
-                } else {
-                    $this->db->update('tbl_no_do', array('koli' => $koli[$i]), array('shipment_id' => $shipment_id, 'no_do' => $no_do[$i]));
-                }
-
-                if ($do['berat'] != NULL) {  //jika berat di setiap do null
-
-                    if ($volume > $berat[$i]) {
-                        $this->db->update('tbl_no_do', array('berat' => ($do['berat'] + ($volume * $koli[$i]))), array('shipment_id' => $shipment_id, 'no_do' => $no_do[$i]));
+                    if ($do['koli'] != NULL) {
+                        //jika koli di setiap do null
+                        $this->db->update('tbl_no_do', array('koli' => ($do['koli'] + $koli[$i])), array('shipment_id' => $shipment_id, 'id_berat' => $no_do[$i]));
                     } else {
-                        $this->db->update('tbl_no_do', array('berat' => ($do['berat'] + ($berat[$i] * $koli[$i]))), array('shipment_id' => $shipment_id, 'no_do' => $no_do[$i]));
+                        $this->db->update('tbl_no_do', array('koli' => $koli[$i]), array('shipment_id' => $shipment_id, 'id_berat' => $no_do[$i]));
                     }
-                } else {
-                    if ($volume > $berat[$i]) {
-                        $this->db->update('tbl_no_do', array('berat' => ($volume * $koli[$i])), array('shipment_id' => $shipment_id, 'no_do' => $no_do[$i]));
+
+                    if ($do['berat'] != NULL) {  //jika berat di setiap do null
+
+                        if ($volume > $berat[$i]) {
+                            $this->db->update('tbl_no_do', array('berat' => ($do['berat'] + ($volume * $koli[$i]))), array('shipment_id' => $shipment_id, 'id_berat' => $no_do[$i]));
+                        } else {
+                            $this->db->update('tbl_no_do', array('berat' => ($do['berat'] + ($berat[$i] * $koli[$i]))), array('shipment_id' => $shipment_id, 'id_berat' => $no_do[$i]));
+                        }
                     } else {
-                        $this->db->update('tbl_no_do', array('berat' => ($berat[$i] * $koli[$i])), array('shipment_id' => $shipment_id, 'no_do' => $no_do[$i]));
+                        if ($volume > $berat[$i]) {
+                            $this->db->update('tbl_no_do', array('berat' => ($volume * $koli[$i])), array('shipment_id' => $shipment_id, 'id_berat' => $no_do[$i]));
+                        } else {
+                            $this->db->update('tbl_no_do', array('berat' => ($berat[$i] * $koli[$i])), array('shipment_id' => $shipment_id, 'id_berat' => $no_do[$i]));
+                        }
                     }
                 }
             }
@@ -795,7 +796,12 @@ class SalesOrder extends CI_Controller
             $koliSebelum = $shipmentSebelum['koli'];
         }
 
-        $update = $this->db->update('tbl_shp_order', array('berat_js' => $shipmentSebelum['berat_js'] + $berat_js , 'koli' => $koliSebelum + $totalKoli), array('shipment_id' => $shipment_id));
+        if ($shipmentSebelum['berat_js'] == NULL || $shipmentSebelum['berat_js'] == 0) {
+            $update = $this->db->update('tbl_shp_order', array('berat_js' => $shipmentSebelum['berat_js'] + $berat_js, 'koli' => $koliSebelum + $totalKoli), array('shipment_id' => $shipment_id));
+        } else {
+            $update = TRUE;
+        }
+
 
         if ($update) {
             $this->session->set_flashdata('message', '<div class="alert
@@ -1078,7 +1084,7 @@ class SalesOrder extends CI_Controller
         if ($dimensionSebelum['berat_aktual'] > $dimensionSebelum['berat_volume']) {
             // cek apakah berat sesudah itu lebih besar aktual atau volume 
 
-            $this->db->update('tbl_shp_order', array('berat_js' => ($shipmentSebelum['berat_js'] - ($dimensionSebelum['berat_aktual'] * $dimensionSebelum['koli']) ), 'koli' => $shipmentSebelum['koli'] - $dimensionSebelum['koli']), array('shipment_id' => $dimensionSebelum['shipment_id']));
+            $this->db->update('tbl_shp_order', array('berat_js' => ($shipmentSebelum['berat_js'] - ($dimensionSebelum['berat_aktual'] * $dimensionSebelum['koli'])), 'koli' => $shipmentSebelum['koli'] - $dimensionSebelum['koli']), array('shipment_id' => $dimensionSebelum['shipment_id']));
 
             // cek apakah dia punya no do
             if ($dimensionSebelum['no_do'] != NULL) {

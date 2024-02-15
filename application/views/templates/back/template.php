@@ -457,32 +457,32 @@
 
 
 	<script type="text/javascript">
-		$(document).ready(function() {
-			$('#consigne').on('input', function() {
-				var kode = $(this).val();
-				console.log(kode);
+		// $(document).ready(function() {
+		// 	$('#consigne').on('input', function() {
+		// 		var kode = $(this).val();
+		// 		console.log(kode);
 
-				$.ajax({
-					type: "POST",
-					url: "<?php echo base_url('shipper/order/get_consigne') ?>",
-					dataType: "JSON",
-					data: {
-						kode: kode
-					},
-					cache: false,
-					success: function(data) {
-						$.each(data, function(consigne, destination) {
-							$('[name="consigne"]').val(data.consigne);
-							$('[name="destination"]').val(data.destination);
-						});
-					}
+		// 		$.ajax({
+		// 			type: "POST",
+		// 			url: "<?php echo base_url('shipper/order/get_consigne') ?>",
+		// 			dataType: "JSON",
+		// 			data: {
+		// 				kode: kode
+		// 			},
+		// 			cache: false,
+		// 			success: function(data) {
+		// 				$.each(data, function(consigne, destination) {
+		// 					$('[name="consigne"]').val(data.consigne);
+		// 					$('[name="destination"]').val(data.destination);
+		// 				});
+		// 			}
 
-				});
-				return false;
+		// 		});
+		// 		return false;
 
-			});
+		// 	});
 
-		});
+		// });
 	</script>
 
 

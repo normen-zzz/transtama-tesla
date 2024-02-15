@@ -45,10 +45,10 @@ class SalesTracker extends CI_Controller
             $data['awal'] = $awal;
             $data['akhir'] = $akhir;
             if ($sales == NULL) {
-                $data['salestracker'] = $this->sales->getReportSalesTracker($awal, $akhir, 0);
+                $data['salestracker'] = $this->sales->getReportSalesTracker($awal, $akhir.' 23:59:00', 0);
                 $data['sales'] = 0;
             } else {
-                $data['salestracker'] = $this->sales->getReportSalesTracker($awal, $akhir, $sales);
+                $data['salestracker'] = $this->sales->getReportSalesTracker($awal, $akhir.' 23:59:00', $sales);
                 $data['sales'] = $sales;
             }
             foreach ($data['salestracker']->result_array() as $r) {

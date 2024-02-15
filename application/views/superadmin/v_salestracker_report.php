@@ -14,13 +14,13 @@
 									<div class="row ml-2">
 										<div class="form-group mr-2">
 											<label>Start</label><br>
-											<input type="datetime-local" <?php if ($awal != NULL) { ?> value="<?= $awal ?>" <?php } ?> name="awal" id="awal" class="form-control">
+											<input type="date" <?php if ($awal != NULL) { ?> value="<?= $awal ?>" <?php } ?> name="awal" id="awal" class="form-control">
 
 
 										</div>
 										<div class="form-group mr-3">
 											<label>End</label> <br>
-											<input type="datetime-local" <?php if ($akhir != NULL) { ?> value="<?= $akhir ?>" <?php } ?> name="akhir" id="akhir" class="form-control">
+											<input type="date" <?php if ($akhir != NULL) { ?> value="<?= $akhir ?>" <?php } ?> name="akhir" id="akhir" class="form-control">
 										</div>
 										<div class="form-group">
 											<label>Sales</label> <br>
@@ -58,25 +58,7 @@
 
 					<!-- /.card-header -->
 					<div class="card-body" style="overflow: auto;">
-					<table class="table table-bordered">
-						<tr>
-							<td>Nama</td>
-							<td>Total Visit</td>
-						</tr>
-						<?php foreach ($users as $users1) {
-							if ($awal != NULL) {
-								$dataSales = $this->sales->getReportSalesTracker($awal,$akhir,$users1['id_user']);
-							} else{
-								$dataSales = $this->sales->getAllReportSalesTracker($users1['id_user']);
-							}
-							
-							?>
-						<tr>
-							<td><?= $users1['nama_user'] ?></td>
-							<td><?= $dataSales->num_rows() ?></td>
-						</tr>
-						<?php } ?>
-					</table>
+					
 						<div class="row text-center">
 							<div class="col-xl-4 col-md-6">
 								<h4>TOTAL REPORT</h4>
@@ -119,7 +101,11 @@
 								</tr>
 							</thead>
 							<tbody>
-								<?php foreach ($salestracker->result_array() as $s) { ?>
+								<?php
+								if ($awal != NULL) {
+									
+								
+								foreach ($salestracker->result_array() as $s) { ?>
 									<tr>
 										<td <?php if ($s['end_date'] == NULL) { ?> class="text-danger" <?php } ?>><?= $s['nama_user'] ?></td>
 										<td <?php if ($s['end_date'] == NULL) { ?> class="text-danger" <?php } ?>><?= $s['subject'] ?></td>
@@ -140,7 +126,7 @@
 									<?php } ?>
 									</tr>
 								<?php
-								} ?>
+								}} ?>
 							</tbody>
 							<tfoot>
 								<tr>
