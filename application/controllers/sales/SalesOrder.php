@@ -1,5 +1,7 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
+date_default_timezone_set('Asia/Jakarta');
+setlocale(LC_TIME, "id_ID.UTF8");
 
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Reader\Csv;
@@ -230,10 +232,11 @@ class SalesOrder extends CI_Controller
                 }
 
                 $pesanPickUp = "dan pick up di *$pu_poin*";
-                $pesan = "Hallo Cs, ada pickup dari *$shipper* $pesanDestination $pesanPickUp *$service* tanggal *$tgl_pickup* jam *$time* dengan moda $pu_moda dengan jenis barang $commodity. Catatan : $note. *Sales : $sales*";
+                $pesan = "Hallo Cs dan Ops, ada pickup dari *$shipper* $pesanDestination $pesanPickUp *$service* tanggal *$tgl_pickup* jam *$time* dengan moda $pu_moda dengan jenis barang $commodity. Catatan : $note. *Sales : $sales*";
                 // kirim wa
 
 
+                
                 $this->wa->pickup('+6285697780467', "$pesan"); //Nomor Norman IT
                 $this->wa->pickup('+6281293753199', "$pesan"); //Nomor Bu Lili CS
                 $this->wa->pickup('+6285894438583', "$pesan"); //Mba Yunita  CS
@@ -241,7 +244,6 @@ class SalesOrder extends CI_Controller
                 $this->wa->pickup('+6281212603705', "$pesan"); //Mas Ali OPS
                 $this->wa->pickup('+62895332937616', "$pesan"); //Devira CS
                 $this->wa->pickup('+6281398433940', "$pesan"); //Sarwan OPS
-                $this->wa->pickup('+6285859510353', "$pesan"); //SAHWA CS
 
 
 
@@ -852,9 +854,8 @@ class SalesOrder extends CI_Controller
         // no bu sri
         $this->wa->pickup('+6285697780467', "$pesan");
         $this->wa->pickup('+62818679758', "$pesan");
-        //No Raga
+		 //No Raga
         $this->wa->pickup('+6287776150830', "$pesan");
-
 
         $this->session->set_flashdata('message', '<div class="alert
         alert-success" role="alert">Success Approve</div>');
@@ -1391,7 +1392,7 @@ class SalesOrder extends CI_Controller
         $this->backend->display('sales/v_report_filter', $data);
     }
 
-    public function exportexcel($awal = null, $akhir = null)
+     public function exportexcel($awal = null, $akhir = null)
     {
 
         if ($awal != null && $akhir != null) {
@@ -1439,7 +1440,7 @@ class SalesOrder extends CI_Controller
            
 
             //kalo dia masih di daerah yg sama itu ada 7 milestonenya
-            $get_tracking = $this->order->getLastTracking($row['shipment_id'])->row_array();
+             $get_tracking = $this->order->getLastTracking($row['shipment_id'])->row_array();
             if ($get_tracking == NULL) {
                 $tracking = '-';
             } else {

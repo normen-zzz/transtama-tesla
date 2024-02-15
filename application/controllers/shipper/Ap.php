@@ -196,7 +196,7 @@ class Ap extends CI_Controller
 			$pesan = "Hallo, ada pengajuan Ap No. *$no_ap* Dengan Tujuan *$purpose* Tanggal *$date*. Silahkan approve melalui link berikut : $link . Terima Kasih";
 			// no pak sam
 			$this->wa->pickup('+6281808008082', "$pesan");
-			// $this->wa->pickup('+6285157906966', "$pesan");
+			
 			//Norman
 			$this->wa->pickup('+6285697780467', "$pesan");
 		} else {
@@ -204,7 +204,7 @@ class Ap extends CI_Controller
 			$link = "https://tesla-smartwork.transtama.com/approval/detailOps/$no_ap";
 			$pesan = "Hallo, ada pengajuan Ap No. *$no_ap* Oleh *$nama_user*  Dengan Tujuan *$purpose* Tanggal *$date*. Silahkan Approve Melalu Link Berikut : $link . Terima Kasih";
 			// no manager ops
-			$this->wa->pickup('+6281398433940', "$pesan");
+			$this->wa->pickup('+6281212603705', "$pesan");
 			//Norman
 			$this->wa->pickup('+6285697780467', "$pesan");
 		}
@@ -330,8 +330,7 @@ class Ap extends CI_Controller
 			// no pak sam
 
 			$this->wa->pickup('+6281808008082', "$pesan");
-			$this->wa->pickup('+6285157906966', "$pesan");
-			// $this->wa->pickup('+6285157906966', "$pesan");
+			
 			//Norman
 			$this->wa->pickup('+6285697780467', "$pesan");
 

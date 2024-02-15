@@ -4,9 +4,9 @@ defined('BASEPATH') or exit('No direct script access allowed');
 class PengajuanModel extends CI_Model
 {
 
-    public function order($id = NULL)
+     public function order($id = NULL)
     {
-        $this->db->select('a.id,a.shipment_id,a.order_id,a.shipper,a.id_so,a.destination,a.is_weight_print,a.consigne,a.koli,a.sender,a.berat_js,a.tree_shipper,a.tree_consignee,a.flight_at,a.state_shipper,a.city_shipper,a.service_type,a.pu_commodity,a.no_stp,a.signature,a.state_consigne,a.city_consigne,a.no_smu,a.image,a.note_shipment, b.nama_user');
+        $this->db->select('a.pu_moda,a.id,a.shipment_id,a.order_id,a.shipper,a.id_so,a.destination,a.is_weight_print,a.consigne,a.koli,a.sender,a.berat_js,a.tree_shipper,a.tree_consignee,a.flight_at,a.state_shipper,a.city_shipper,a.service_type,a.pu_commodity,a.no_stp,a.signature,a.state_consigne,a.city_consigne,a.no_smu,a.image,a.note_shipment, b.nama_user');
         $this->db->from('tbl_shp_order a');
         $this->db->join('tb_user b', 'a.id_user=b.id_user');
         if ($id == NULL) {
@@ -27,8 +27,7 @@ class PengajuanModel extends CI_Model
         $query = $this->db->get();
         return $query;
     }
-
-    public function getLastTracking2($shipmnent_id)
+	public function getLastTracking2($shipmnent_id)
     {
         $this->db->select('flag,status');
         $this->db->from('tbl_tracking_real a');
@@ -38,7 +37,6 @@ class PengajuanModel extends CI_Model
         $query = $this->db->get();
         return $query;
     }
-
     public function getLastTrackingOutbond($shipmnent_id)
     {
         $this->db->select('*');
@@ -60,31 +58,30 @@ class PengajuanModel extends CI_Model
         return $this->db->get();
     }
 
-    public function outbond()
+   public function outbond()
     {
-
-
-        // $this->db->select('b.id,a.shipment_id,b.shipper,b.consigne,b.tree_shipper,b.tree_consignee,b.id_so,b.is_jabodetabek,b.is_incoming,(SELECT flag FROM tbl_tracking_real WHERE shipment_id = a.shipment_id ORDER BY id_tracking DESC LIMIT 1 ) AS flag,(SELECT status FROM tbl_tracking_real WHERE shipment_id = a.shipment_id ORDER BY id_tracking DESC LIMIT 1 ) as status ');
-        // $this->db->from('tbl_outbond a');
-        // $this->db->join('tbl_shp_order b','a.shipment_id=b.shipment_id');
-        // $this->db->where('b.deleted',0);
-        // $this->db->order_by('b.shipment_id', 'DESC');
-
-        return $this->db->query('SELECT b.id,a.shipment_id,b.shipper,b.consigne,b.tree_shipper,b.tree_consignee,b.id_so,b.is_jabodetabek,b.is_incoming,c.flag,c.status,c.id_user FROM tbl_outbond AS a INNER JOIN tbl_shp_order AS b ON a.shipment_id = b.shipment_id INNER JOIN tbl_tracking_real AS c ON a.shipment_id = c.shipment_id LEFT OUTER JOIN tbl_tracking_real c2 ON (a.shipment_id = c2.shipment_id AND (c.update_at < c2.update_at OR (c.update_at = c2.update_at AND c.id_tracking < c2.id_tracking))) WHERE c2.id_tracking IS NULL AND b.deleted = 0;');
+        $this->db->select('b.id,a.shipment_id,b.shipper,b.consigne,b.tree_shipper,b.tree_consignee,b.id_so,b.is_jabodetabek,b.is_incoming');
+        $this->db->from('tbl_outbond a');
+        $this->db->join('tbl_shp_order b','a.shipment_id=b.shipment_id');
+        $this->db->where("DATE_FORMAT(b.tgl_pickup,'%Y')", 2024);
+        $this->db->where('b.deleted',0);
+        $this->db->where('b.tgl_diterima',NULL);
+        $this->db->where('a.out_date',NULL);
+        $this->db->order_by('b.shipment_id', 'DESC');
+        return $this->db->get();
     }
     public function dispatchHistory()
     {
-        $this->db->select('a.shipper,a.consigne,a.tree_shipper,a.tree_consignee,b.status as sts,b.is_incoming,b.id_gateway, b.created_at, b.shipment_id, b.status_eksekusi,b.no_flight,b.no_smu,b.etd,b.eta');
+        $this->db->select('a.shipper,a.consigne,a.tree_shipper,a.tree_consignee,b.status as sts,b.is_incoming,b.id_gateway, b.created_at, b.shipment_id, b.status_eksekusi');
         $this->db->from('tbl_shp_order a');
         $this->db->join('tbl_gateway b', 'a.shipment_id=b.shipment_id');
         $this->db->where('b.status_eksekusi', 1);
-        $this->db->where('b.status', 'out');
-        $this->db->order_by('a.tgl_pickup', 'DESC');
+        $this->db->order_by('a.tgl_pickup', 'ASC');
         return $this->db->get();
     }
     public function orderBySo($id)
     {
-        $this->db->select('a.shipment_id,a.koli,a.shipper,a.tree_shipper,a.consigne,a.created_at,a.note_cs,a.tree_consignee,a.id,a.id_so,a.destination,a.city_consigne,a.state_consigne,a.is_jabodetabek, b.service_name');
+        $this->db->select('a.pu_moda,a.shipment_id,a.mark_shipper,a.koli,a.shipper,a.tree_shipper,a.consigne,a.created_at,a.note_cs,a.tree_consignee,a.id,a.id_so,a.destination,a.city_consigne,a.state_consigne,a.is_jabodetabek, b.service_name');
         $this->db->from('tbl_shp_order a');
         $this->db->join('tb_service_type b', 'a.service_type=b.code');
         $this->db->where('a.id_so', $id);
@@ -92,10 +89,9 @@ class PengajuanModel extends CI_Model
         $this->db->where('a.deleted', 0);
         return $this->db->get();
     }
-
-    public function orderBySoSales($id)
+	public function orderBySoSales($id)
     {
-        $this->db->select('a.shipment_id,a.shipper,a.tree_shipper,a.consigne,a.created_at,a.note_cs,a.tree_consignee,a.id,a.id_so,a.destination,a.city_consigne,a.state_consigne,a.is_jabodetabek,a.freight_kg,a.special_freight,a.packing,a.insurance,a.surcharge,a.disc,a.cn,a.specialcn,a.others,a.pic_invoice,a.so_note,a.status_so, b.service_name');
+        $this->db->select('a.shipment_id,a.pu_moda,a.shipper,a.tree_shipper,a.consigne,a.created_at,a.note_cs,a.tree_consignee,a.id,a.id_so,a.destination,a.city_consigne,a.state_consigne,a.is_jabodetabek,a.freight_kg,a.special_freight,a.packing,a.insurance,a.surcharge,a.disc,a.cn,a.specialcn,a.others,a.pic_invoice,a.so_note,a.status_so, b.service_name');
         $this->db->from('tbl_shp_order a');
         $this->db->join('tb_service_type b', 'a.service_type=b.code');
         $this->db->where('a.id_so', $id);
@@ -273,7 +269,7 @@ class PengajuanModel extends CI_Model
         return $query;
     }
 
-    public function getLaporanTransaksiFilterByDate($start, $end)
+     public function getLaporanTransaksiFilterByDate($start, $end)
     {
         // $where  = array('c.id_sales' => $this->session->userdata('id_user'));
         $this->db->select('a.tgl_pickup,a.is_jabodetabek,a.shipment_id,a.shipper,a.consigne,a.tree_consignee,a.no_stp,a.city_consigne,d.service_name,a.pu_commodity,a.koli,a.berat_js,a.berat_msr,a.note_cs,a.no_so,, b.nama_user, c.pu_poin,d.service_name, d.prefix');
@@ -288,7 +284,7 @@ class PengajuanModel extends CI_Model
         $this->db->order_by('a.tgl_pickup', 'ASC');
         return $this->db->get();
     }
-    public function getLaporanSales()
+  public function getLaporanSales()
     {
         $this->db->select('a.shipment_id,a.tgl_pickup,a.shipper,a.consigne,a.tree_consignee,a.city_consignee,a.pu_commodity,a.koli,a.berat_js,a.berat_msr,b.nama_user,c.pu_poin,d.service_name,d.prefix');
         $this->db->from('tbl_shp_order a');

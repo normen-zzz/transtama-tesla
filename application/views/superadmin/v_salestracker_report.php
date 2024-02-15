@@ -14,13 +14,13 @@
 									<div class="row ml-2">
 										<div class="form-group mr-2">
 											<label>Start</label><br>
-											<input type="date" <?php if ($awal != NULL) { ?> value="<?= $awal ?>" <?php } ?> name="awal" id="awal" class="form-control">
+											<input type="datetime-local" <?php if ($awal != NULL) { ?> value="<?= $awal ?>" <?php } ?> name="awal" id="awal" class="form-control">
 
 
 										</div>
 										<div class="form-group mr-3">
 											<label>End</label> <br>
-											<input type="date" <?php if ($akhir != NULL) { ?> value="<?= $akhir ?>" <?php } ?> name="akhir" id="akhir" class="form-control">
+											<input type="datetime-local" <?php if ($akhir != NULL) { ?> value="<?= $akhir ?>" <?php } ?> name="akhir" id="akhir" class="form-control">
 										</div>
 										<div class="form-group">
 											<label>Sales</label> <br>
@@ -32,7 +32,7 @@
 												?>
 													<option <?php if ($sales == $u['id_user']) {
 																echo 'selected';
-															} ?> value="<?= $u['id_user'] ?>"><?= $u['nama_user'] ?></option>
+															} ?> value="<?= $u['id_user'] ?>"><?= $u['username'] ?></option>
 												<?php } ?>
 											</select>
 										</div>
@@ -58,7 +58,6 @@
 
 					<!-- /.card-header -->
 					<div class="card-body" style="overflow: auto;">
-					
 						<div class="row text-center">
 							<div class="col-xl-4 col-md-6">
 								<h4>TOTAL REPORT</h4>
@@ -76,8 +75,7 @@
 
 							</div><!-- end col -->
 						</div>
-
-						<table class="table table-bordered" id="myTableSalesTracker">
+						<table  class="table table-bordered" id="myTableSalesTracker">
 							<!-- <a href="<?= base_url('shipper/order/add') ?>" class="btn btn-success mr-2 mb-4">
 									<i class="fas fa-plus-circle"> </i>Add
 								</a> -->
@@ -101,11 +99,7 @@
 								</tr>
 							</thead>
 							<tbody>
-								<?php
-								if ($awal != NULL) {
-									
-								
-								foreach ($salestracker->result_array() as $s) { ?>
+								<?php foreach ($salestracker->result_array() as $s) { ?>
 									<tr>
 										<td <?php if ($s['end_date'] == NULL) { ?> class="text-danger" <?php } ?>><?= $s['nama_user'] ?></td>
 										<td <?php if ($s['end_date'] == NULL) { ?> class="text-danger" <?php } ?>><?= $s['subject'] ?></td>
@@ -126,7 +120,7 @@
 									<?php } ?>
 									</tr>
 								<?php
-								}} ?>
+								} ?>
 							</tbody>
 							<tfoot>
 								<tr>
@@ -148,11 +142,3 @@
 	<!--/. container-fluid -->
 </section>
 <!-- /.content -->
-<script>
-	$(document).ready(function() {
-		var myTable = $('.datatable').DataTable({
-			"ordering": false,
-			"dom": '<"top"f>rt<"bottom"ilp><"clear">'
-		});
-	});
-</script>

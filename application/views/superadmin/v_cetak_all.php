@@ -105,7 +105,7 @@ $is_generate = $this->db->query("SELECT type FROM tbl_so WHERE id_so = ".$orders
             <!-- <hr> -->
             <table style="width:100%;  margin-top:2px; border-top:1px solid black">
                 <tr>
-                    <td style=" font-size: 10px; width:72%"><b>Shipper :</b> <?= ucwords(strtolower($order['shipper'])) . '<br>' . '<b>' . ucwords(strtolower($order['city_shipper'])) . ', ' . ucwords(strtolower($order['state_shipper'])) . '</b>' ?>
+                    <td style=" font-size: 10px; width:72%"><b>Shipper :</b> <?= ucwords(strtolower($order['shipper']))?> <?= ($order['mark_shipper'] != NULL) ? ' (' . $order['mark_shipper'] . ') ' : "" ?> <?='<br>' . '<b>' . ucwords(strtolower($order['city_shipper'])) . ', ' . ucwords(strtolower($order['state_shipper'])) . '</b>' ?>
                         <b>Indonesia</b>
                     </td>
                     <td style="border-left:1px solid black"><b>

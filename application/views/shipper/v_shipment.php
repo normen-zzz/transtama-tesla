@@ -8,7 +8,7 @@
 				
 				 foreach ($shipments as $shipment) {
 				?>
-					<div class="col-12">
+					<div class="col-12 <?= $shipment['shipment_id'] ?>">
 						<!-- ini jabodetabek -->
 						<?php if ($shipment['is_jabodetabek'] == 1) {
 							// var_dump($shipment['service_name']);

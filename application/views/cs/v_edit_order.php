@@ -49,6 +49,11 @@
 															</div>
 														</div>
 
+														<div class="form-group">
+																<label for="exampleInputEmail1">Mark Shipper</label>
+																<input type="text" class="form-control" id="mark_shipper" name="mark_shipper" value="<?= $p['mark_shipper'] ?>">
+															</div>
+
 														<div class="col-md-4">
 															<div class="form-group">
 																<label for="exampleInputPassword1">Destination</label>
@@ -317,7 +322,7 @@
 																			<a class=" form-control btn btn-danger" href="<?= base_url('cs/Order/deleteDo/'.$do['id_berat']) ?>">Delete</a>
 																			<?php } else {
 																			if ($invoice['status'] == 1 || $invoice['status'] == 2) { ?>
-																				<input type="text" class="form-control" name="weight[]" readonly value="<?= $do['berat'] ?>">
+																				-
 																			<?php } else { ?>
 																				<a class=" form-control btn btn-danger" href="<?= base_url('cs/Order/deleteDo/'.$do['id_berat']) ?>">Delete</a>
 																		<?php }
@@ -325,9 +330,6 @@
 
 																	</div>
 																</div>
-
-
-																
 																<br>
 															<?php $no++;
 															}
@@ -447,7 +449,7 @@
 													</form>
 												</div>
 											</div>
-
+											
 											<?php if ($dimension != NULL) { ?>
 												
 											

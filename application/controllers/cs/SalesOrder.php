@@ -513,9 +513,10 @@ class SalesOrder extends CI_Controller
         }
     }
 
-    public function processAdd()
+     public function processAdd()
     {
         $this->form_validation->set_rules('consigne', 'consigne', 'required');
+        $this->form_validation->set_rules('mark_shipper', 'mark_shipper', 'required');
         $this->form_validation->set_rules('state_consigne', 'State_consigne', 'required');
         $this->form_validation->set_rules('destination', 'Destination', 'required');
         $this->form_validation->set_rules('service_type', 'Service_type', 'required');
@@ -580,6 +581,7 @@ class SalesOrder extends CI_Controller
             $get_pickup = $this->db->limit(1)->order_by('id', 'DESC')->get_where('tbl_shp_order', ['id_so' => $this->input->post('id_so')])->row_array();
             $data = array(
                 'shipper' => strtoupper($this->input->post('shipper2')),
+                'mark_shipper' => strtoupper($this->input->post('mark_shipper')),
                 'origin' => $this->input->post('origin'),
                 'city_shipper' => $this->input->post('city_shipper2'),
                 'state_shipper' => $this->input->post('state_shipper2'),

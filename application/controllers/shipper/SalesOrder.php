@@ -1,12 +1,6 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Reader\Csv;
-use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
-use PhpOffice\PhpSpreadsheet\IOFactory;
-use PhpOffice\PhpSpreadsheet\Writer\Xlsx as WriterXlsx;
-
 class SalesOrder extends CI_Controller
 {
     public function __construct()
@@ -325,9 +319,10 @@ class SalesOrder extends CI_Controller
                 'status_eksekusi' => 1,
             );
             $this->db->update('tbl_tracking_real', $data, ['id_tracking' => $id_tracking]);
-            $this->session->set_flashdata('message', 'Terima Kasih');
-            redirect('shipper/salesOrder');
+			$this->session->set_flashdata('message', 'Terima Kasih');
+			redirect('shipper/salesOrder');
         }
+        
     }
     public function receiveDelivery($id, $shipment_id, $id_tracking)
     {
@@ -648,7 +643,7 @@ class SalesOrder extends CI_Controller
     public function detail($id)
     {
         $data['title'] = 'Detail Sales Order';
-
+      
         $data['p'] = $this->db->get_where('tbl_so', ['id_so' => $id])->row_array();
         $data['users'] = $this->db->get_where('tb_user', ['id_role' => 2])->result_array();
         $data['shipment2'] =  $this->order->orderBySo($id)->result_array();
@@ -657,15 +652,15 @@ class SalesOrder extends CI_Controller
     public function getModalDetailOrder()
     {
         $shipment_id = $this->input->get('shipment_id'); // Mengambil ID dari parameter GET
-
-
+        
+		
         // Ambil data dari database berdasarkan ID
         $query = "SELECT id_so,shipment_id FROM tbl_shp_order WHERE shipment_id = $shipment_id";
         // $shp = $this->db->get_where('tbl_shp_order', array('shipment_id' => $shipment_id))->row();
         $shp = $this->db->query($query)->row();
         $tracking_real = $this->db->limit(1)->order_by('id_tracking', 'DESC')->get_where('tbl_tracking_real', ['shipment_id' => $shipment_id, 'flag' => 9])->row();
         $get_last_status = $this->db->limit(1)->order_by("id_tracking", "desc")->get_where("tbl_tracking_real", ["shipment_id" => $shipment_id])->row();
-
+        
         if ($tracking_real != NULL) {
             $data1 = array(
                 'id_so' => $shp->id_so,
@@ -673,15 +668,15 @@ class SalesOrder extends CI_Controller
                 'id_tracking' => $tracking_real->id_tracking,
                 'bukti' => $get_last_status->bukti
             );
-        } else {
+        } else{
             $data1 = array(
                 'id_so' => $shp->id_so,
                 'shipment_id' => $shp->shipment_id,
                 'bukti' => $get_last_status->bukti
-
+               
             );
         }
-
+        
 
         // Kirim data sebagai respons JSON
         echo json_encode($data1);
@@ -696,18 +691,20 @@ class SalesOrder extends CI_Controller
         $this->backend->display('shipper/v_weight', $data);
     }
 
+
+
     public function getModalEditDimension()
     {
         $id_dimension = $this->input->get('id_dimension'); // Mengambil ID dari parameter GET
-
-
-        $data  = $this->db->get_where('tbl_dimension', array('id_dimension' => $id_dimension))->row();
-
+        
+		
+        $data  = $this->db->get_where('tbl_dimension',array('id_dimension' => $id_dimension))->row();
+        
 
         // Kirim data sebagai respons JSON
         echo json_encode($data);
     }
-    public function addWeight($id)
+  public function addWeight($id)
     {
         $shipment_id = $this->input->post('shipment_id');
         $koli = $this->input->post('koli');
@@ -809,8 +806,8 @@ class SalesOrder extends CI_Controller
             redirect('shipper/SalesOrder/weight/' . $id);
         }
     }
-
-
+    
+    
 
     public function mergeWeight($id)
     {
@@ -983,7 +980,7 @@ class SalesOrder extends CI_Controller
 
 
 
-    public function editDimension()
+   public function editDimension()
     {
         $id_dimension = $this->input->post('id_dimension');
         $dimensionSebelum = $this->db->get_where('tbl_dimension', array('id_dimension' => $id_dimension))->row_array();
@@ -1006,7 +1003,13 @@ class SalesOrder extends CI_Controller
         } else {
             $pembagi = 4000;
         }
-        $berat_volume = ceil(($panjang * $lebar * $tinggi) / $pembagi);
+        $beratVolume = ($panjang * $lebar * $tinggi) / $pembagi;
+            $beratVolumeSetelahKoma = $beratVolume - floor($beratVolume);
+            if ($beratVolumeSetelahKoma >= 0.3) {
+                $berat_volume = ceil($beratVolume); // Pembulatan ke atas
+            } else {
+                $berat_volume = floor($beratVolume); // Pembulatan ke bawah
+            }
 
 
 
@@ -1069,11 +1072,11 @@ class SalesOrder extends CI_Controller
         if ($update) {
             $this->session->set_flashdata('message', '<div class="alert
                 alert-success" role="alert">Success</div>');
-            redirect($_SERVER['HTTP_REFERER']);
+            redirect('shipper/SalesOrder/weight/' . $dimensionSebelum['shipment_id']);
         }
     }
 
-    public function deleteDimension($id_dimension)
+   public function deleteDimension($id_dimension)
     {
 
         $dimensionSebelum = $this->db->get_where('tbl_dimension', array('id_dimension' => $id_dimension))->row_array();
@@ -1104,7 +1107,7 @@ class SalesOrder extends CI_Controller
         if ($hapus) {
             $this->session->set_flashdata('message', '<div class="alert
                 alert-success" role="alert">Success Delete</div>');
-            redirect($_SERVER['HTTP_REFERER']);
+            redirect('shipper/SalesOrder/weight/' . $dimensionSebelum['shipment_id']);
         }
     }
     public function edit($id, $id_so)
@@ -1238,8 +1241,8 @@ class SalesOrder extends CI_Controller
             }
         }
     }
-
-    public function importWeight($shipment_id)
+	
+	 public function importWeight($shipment_id)
     {
         $do = $this->db->get_where('tbl_no_do', array('shipment_id' => $shipment_id))->result_array();
         $file_mimes = array(
@@ -1277,18 +1280,16 @@ class SalesOrder extends CI_Controller
                 if ($queue == 0) {
                     $queue += 1;
                 } else {
-                    $koli = $rowdata[0];
-                    $panjang = $rowdata[1];
-                    $lebar = $rowdata[2];
-                    $tinggi = $rowdata[3];
-                    $berat = $rowdata[4];
+                    $panjang = $rowdata[0];
+                    $lebar = $rowdata[1];
+                    $tinggi = $rowdata[2];
+                    $berat = $rowdata[3];
 
                     $volume = ceil(($panjang * $lebar * $tinggi) / $pembagi);
 
                     $data = array(
                         'urutan' => ($urutan + 1),
                         'shipment_id' => $shipment_id,
-                        'koli' => $koli,
                         'panjang' => $panjang,
                         'lebar' => $lebar,
                         'tinggi' => $tinggi,
@@ -1298,7 +1299,7 @@ class SalesOrder extends CI_Controller
                         'created_by' => $this->session->userdata('id_user'),
 
                     );
-
+                    
                     if ($volume > $berat) {
                         $berat_js += $volume;
                     } else {
@@ -1308,38 +1309,38 @@ class SalesOrder extends CI_Controller
 
 
                     if ($do != NULL) {
-                        $no_do = $this->db->get_where('tbl_no_do', array('no_do' => $rowdata[5], 'shipment_id' => $shipment_id))->row_array();
-                        $data['no_do'] = $rowdata[5];
-                        $this->db->where('no_do', $rowdata[5]);
+                        $no_do = $this->db->get_where('tbl_no_do', array('no_do' => $rowdata[4], 'shipment_id' => $shipment_id))->row_array();
+                        $data['no_do'] = $rowdata[4];
+                        $this->db->where('no_do', $rowdata[4]);
                         $this->db->where('shipment_id', $shipment_id);
                         // menambah koli disetiap do 
-
+        
                         if ($no_do['koli'] != NULL) {
                             //jika koli di setiap do null
                             $this->db->set('koli', '`koli`+ 1', FALSE);
                         } else {
                             $this->db->set('koli', '1', FALSE);
                         }
-
+        
                         if ($no_do['berat'] != NULL) {  //jika berat di setiap do null
-
-                            if ($volume > $rowdata[4]) {
+        
+                            if ($volume > $rowdata[3]) {
                                 $this->db->set('berat', '`berat`+' . $volume, FALSE);
                             } else {
                                 $this->db->set('berat', '`berat`+' . $rowdata[3], FALSE);
                             }
                         } else {
-                            if ($volume > $rowdata[4]) {
+                            if ($volume > $rowdata[3]) {
                                 $this->db->set('berat', $volume, FALSE);
                             } else {
-                                $this->db->set('berat', $rowdata[4], FALSE);
+                                $this->db->set('berat', $rowdata[3], FALSE);
                             }
                         }
                         $this->db->update('tbl_no_do');
                     }
                     $this->db->insert('tbl_dimension', $data);
-                    $total_koli += $koli;
-                }
+                    $total_koli++;
+                }   
             }
             if ($dimensionSebelum == null) {
                 $koliSebelum = 0;
@@ -1366,18 +1367,17 @@ class SalesOrder extends CI_Controller
         $do = $this->db->get_where('tbl_no_do', array('shipment_id' => $shipment_id))->result_array();
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
-        $sheet->setCellValue('A1', 'Koli');
-        $sheet->setCellValue('B1', 'Panjang');
-        $sheet->setCellValue('C1', 'Lebar');
-        $sheet->setCellValue('D1', 'Tinggi');
-        $sheet->setCellValue('E1', 'Berat Aktual');
+        $sheet->setCellValue('A1', 'Panjang');
+        $sheet->setCellValue('B1', 'Lebar');
+        $sheet->setCellValue('C1', 'Tinggi');
+        $sheet->setCellValue('D1', 'Berat Aktual');
 
         if ($do != NULL) {
-            $sheet->setCellValue('F1', 'NO DO');
-            $sheet->setCellValue('I1', 'LIST NO DO');
+            $sheet->setCellValue('E1', 'NO DO');
+            $sheet->setCellValue('H1', 'LIST NO DO');
             $no = 2;
             foreach ($do as $do1) {
-                $sheet->setCellValue('I' . $no, $do1['no_do']);
+                $sheet->setCellValue('H' . $no, $do1['no_do']);
                 $no++;
             }
         }
@@ -1386,7 +1386,7 @@ class SalesOrder extends CI_Controller
         $writer = new WriterXlsx($spreadsheet);
 
         // Simpan file ke tempat sementara
-        $filename = 'Weight ' . $shipment_id . '.xlsx';
+        $filename = 'Weight '.$shipment_id.'.xlsx';
         $tempFile = tempnam(sys_get_temp_dir(), $filename);
 
 

@@ -215,7 +215,7 @@ if (!function_exists('longdate_indo')) {
             return $hari_indonesia[$hari];
         }
     }
-    if (!function_exists('deadline')) {
+	 if (!function_exists('deadline')) {
         function deadline($tanggal_deadline)
         {
             $date = date('Y-m-d');

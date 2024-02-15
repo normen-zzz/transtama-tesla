@@ -141,7 +141,7 @@
 											<td><a href="<?= base_url('cs/salesOrder/print/' . $shp['shipment_id']) ?>"> <?= $shp['shipment_id'] ?></a>
 												<br> <?= $shp['service_name'] ?>
 											</td>
-											<td><?= $shp['shipper'] ?> <br> No. DO: <?= $shp['note_cs'] ?></td>
+											<td><?= $shp['shipper'] . ' (' . $shp['mark_shipper'] . ') ' ?> <br> No. DO: <?= $shp['note_cs'] ?></td>
 											<td><?= $shp['destination'] ?>, <?= $shp['city_consigne'] ?> <?= $shp['state_consigne'] ?></td>
 											<td><?= $shp['consigne'] ?></td>
 											<td style="color: green;"><?= $get_last_status['status'] ?> <br> <?= longdate_indo($get_last_status['created_at']), ' ' . $get_last_status['time'] ?>

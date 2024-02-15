@@ -50,12 +50,12 @@ class Pod extends CI_Controller
             $data['akhir'] = $akhir;
             $data['title'] = 'POD';
             $data['shipment'] = $this->pod->getListPod($awal, $akhir);
-          
+            
             $this->backend->display('cs/v_list_pod', $data);
         }
     }
-
-    public function getModalPod()
+	
+	public function getModalPod()
     {
         $shipment_id = $this->input->get('shipment_id'); // Mengambil ID dari parameter GET
         
@@ -64,11 +64,11 @@ class Pod extends CI_Controller
         echo json_encode($pod);
     }
 
-    public function scan($resi = NULL)
+    public function scan($resi)
     {
         $data['title'] = 'POD';
         $data['resi'] = $resi;
-        if ($resi != NULL){
+         if ($resi != NULL){
             $queryshipment = "SELECT shipment_id,shipper,tgl_diterima,no_smu,status_pod,consigne,destination,tgl_pickup FROM tbl_shp_order WHERE shipment_id = $resi";
             // $data['shipment'] = $this->db->get_where('tbl_shp_order', array('shipment_id' => $resi))->row_array();
             $data['shipment'] = $this->db->query($queryshipment)->row_array();
