@@ -67,7 +67,7 @@ class Order extends CI_Controller
      function view_data_query()
     {
         $query  = "SELECT a.tgl_pickup,a.shipper,a.consigne,a.shipment_id,a.created_at,a.id_so,a.id, b.nama_user FROM tbl_shp_order a JOIN tb_user b ON a.id_user=b.id_user";
-        $search = array('nama_user', 'shipment_id', 'order_id', 'shipper', 'consigne');
+        $search = array('shipment_id', 'shipper');
         $where  = array('a.deleted' => 0);
         // $where  = array('a.id_user' => $this->session->userdata('id_user'));
 
@@ -185,7 +185,10 @@ class Order extends CI_Controller
                 alert-danger" role="alert">Failed</div>');
             redirect('cs/order/edit/' . $this->input->post('id') . '/' . $this->input->post('id_so'));
         }
+        
     }
+
+    // buat orang selanjutnya yang lanjutin ni codingan, sumpah sy nyerah kalo benerin bugnya sendirian semua wkwkwkkw #norman
 
     public function tambahDo()
     {

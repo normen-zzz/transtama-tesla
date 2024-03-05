@@ -92,7 +92,7 @@
 												<td>
 													<select class="form-control" style="width: 200px;" name="no_do[]" id="no_do">
 														<?php foreach ($do as $do) { ?>
-															<option value="<?= $do['id_berat'] ?>"><?= $do['no_do'] ?></option>
+															<option value="<?= $do['no_do'] ?>"><?= $do['no_do'] ?></option>
 														<?php } ?>
 													</select>
 												</td>
@@ -272,7 +272,7 @@
 										<td>
 											<select class="form-control" style="width: 200px;" name="no_do[]" id="no_do">
 												<?php foreach ($do as $do) { ?>
-													<option value="<?= $do['id_berat'] ?>"><?= $do['no_do'] ?></option>
+													<option value="<?= $do['no_do'] ?>"><?= $do['no_do'] ?></option>
 												<?php } ?>
 											</select>
 										</td>
@@ -383,7 +383,7 @@
 		function getDoSelectOptions() {
 			var select = $("<select>").attr("name", "no_do[]").addClass("form-control selectField");
 			<?php foreach ($do1 as $do2) : ?>
-				var option = $("<option>").attr("value", "<?php echo $do2['id_berat']; ?>").text("<?php echo $do2['no_do']; ?>");
+				var option = $("<option>").attr("value", "<?php echo $do2['no_do']; ?>").text("<?php echo $do2['no_do']; ?>");
 
 				select.append(option);
 
@@ -415,7 +415,7 @@
 		function getDoSelectOptions() {
 			var select = $("<select>").attr("name", "no_do[]").addClass("form-control selectField");
 			<?php foreach ($do1 as $do2) : ?>
-				var option = $("<option>").attr("value", "<?php echo $do2['id_berat']; ?>").text("<?php echo $do2['no_do']; ?>");
+				var option = $("<option>").attr("value", "<?php echo $do2['no_do']; ?>").text("<?php echo $do2['no_do']; ?>");
 
 				select.append(option);
 
