@@ -121,4 +121,59 @@ class SalesModel extends CI_Model
         $this->db->where('a.start_date <=', $akhir);
         return $this->db->get();
     }
+    public function getRequestPriceNotApprove($id, $awal, $akhir)
+    {
+        $this->db->select('*');
+        $this->db->from('request_price a');
+        $this->db->where('a.id_sales', $id);
+        $this->db->where('a.created_at >=', $awal);
+        $this->db->where('a.created_at <=', $akhir);
+        $this->db->where('a.price_approved', NULL);
+        $this->db->where('a.is_deleted', 0);
+        $this->db->group_by('a.grouped');
+        $this->db->order_by('a.id_request_price', 'desc');
+       
+
+        return $this->db->get();
+    }
+    public function getRequestPriceApprove($id, $awal, $akhir)
+    {
+        $this->db->select('*');
+        $this->db->from('request_price a');
+        $this->db->where('a.id_sales', $id);
+        $this->db->where('a.created_at >=', $awal);
+        $this->db->where('a.created_at <=', $akhir);
+        $this->db->where('a.price_approved !=', NULL);
+        $this->db->where('a.is_deleted', 0);
+        $this->db->order_by('a.id_request_price', 'desc');
+        $this->db->group_by('a.grouped');
+        return $this->db->get();
+    }
+
+    public function getDetailRequestPriceBulk($code)
+    {
+        $this->db->select('*');
+        $this->db->from('tbl_request_price a');
+        $this->db->where('a.code_request_price', $code);
+        $this->db->order_by('a.id_request_price', 'desc');
+        return $this->db->get();
+    }
+
+    public function getCodeRequestPrice()
+    {
+        $this->db->select_max('code_request_price');
+        $query = $this->db->get('tbl_request_price');
+        $result = $query->row_array();
+
+        if ($result['code_request_price'] === null) {
+            return 'REQP-1'; // Jika tabel kosong, mulai dari B1
+        }
+
+        $last_kode = $result['code_request_price'];
+        $last_number = (int) substr($last_kode, 5);
+        $next_number = $last_number + 1;
+        $next_kode = 'REQP-' . $next_number;
+
+        return $next_kode;
+    }
 }

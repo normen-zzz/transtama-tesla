@@ -110,11 +110,11 @@
                                                 <td><?= ($requestPrice1['koli'] != NULL) ? $requestPrice1['koli'] : '-' ?></td>
                                                 <td><?= ($requestPrice1['komoditi'] != NULL) ? $requestPrice1['komoditi'] : '-' ?></td>
                                                 <td><?= $requestPrice1['panjang'] . ' x ' . $requestPrice1['lebar'] . ' x ' . $requestPrice1['tinggi'] ?></td>
-                                                <td><?=  ($requestPrice1['notes_sales'] != NULL) ? $requestPrice1['notes_sales'] : '-'  ?></td>
+                                                <td><?= ($requestPrice1['notes_sales'] != NULL) ? $requestPrice1['notes_sales'] : '-'  ?></td>
 
                                                 <td>
                                                     <?php if ($requestPrice1['is_bulk'] == 1) { ?>
-                                                        <a href="<?= base_url('sales/RequestPrice/detailRequestPriceBulk/'.$requestPrice1['code_request_price']) ?>" class="btn font-weight-bolder text-light" style="background-color: #9c223b;">
+                                                        <a href="<?= base_url('sales/RequestPrice/detailRequestPriceBulk/' . $requestPrice1['code_request_price']) ?>" class="btn font-weight-bolder text-light" style="background-color: #9c223b;">
                                                             Detail</a>
                                                     <?php  } else { ?>
                                                         <button class="btn font-weight-bolder text-light modalEditRequest" data-toggle="modal" data-id_request="<?= $requestPrice1['id_request_price'] ?>" data-target="#modal-edit-request" style="background-color: #9c223b;">
@@ -203,19 +203,21 @@
                         </div>
                         <div class="row">
                             From
+
                         </div>
                         <div class="row">
 
                             <div class="col">
                                 <div class="form-group">
                                     <label for="exampleInputEmail1">Provinsi <span style="color: red;">*</span></label>
-                                    <select name="provinsi_from" required id="provinsi" class="form-control" style="width:200px">
+                                    <select name="provinsi_from" required id="provinsi" class="form-control provinsi" style="width:200px">
                                         <option value="">PIlih Provinsi</option>
-                                        <?php foreach ($provinsi as $provinsi1) {
+                                        <?php foreach ($provinsi as $id_provinsi => $name_provinsi) {
+
                                         ?>
 
-                                            <option data-id_prov="<?= $provinsi1->id ?>" value="<?= $provinsi1->name ?>"><?= $provinsi1->name ?></option>
-                                        <?php } ?>
+                                            <option data-id_prov="<?= $id_provinsi ?>" value="<?= $name_provinsi ?>"><?= $name_provinsi ?></option>
+                                        <?php }  ?>
                                     </select>
 
                                 </div>
@@ -223,7 +225,7 @@
                             <div class="col">
                                 <div class="form-group">
                                     <label for="exampleInputEmail1">Kabupaten <span style="color: red;">*</span></label>
-                                    <select name="kabupaten_from" required id="kabupaten" class="form-control" style="width:200px">
+                                    <select name="kabupaten_from" required id="kabupaten" class="form-control kabupaten" style="width:200px">
                                         <option value="">Pilih Kabupaten</option>
                                     </select>
 
@@ -233,7 +235,7 @@
                             <div class="col">
                                 <div class="form-group">
                                     <label for="exampleInputEmail1">Kecamatan <span style="color: red;">*</span></label>
-                                    <select required name="kecamatan_from" id="kecamatan" class="form-control" style="width:200px">
+                                    <select required name="kecamatan_from" id="kecamatan" class="form-control kecamatan" style="width:200px">
                                         <option value="">Pilih Kecamatan</option>
                                     </select>
 
@@ -259,10 +261,10 @@
                                     <label for="exampleInputEmail1">Provinsi <span style="color: red;">*</span></label>
                                     <select required name="provinsi_to" id="provinsi1" class="form-control" style="width:200px">
                                         <option value="">PIlih Provinsi</option>
-                                        <?php foreach ($provinsi as $provinsi1) {
+                                        <?php foreach ($provinsi as $id_provinsi => $name_provinsi) {
                                         ?>
 
-                                            <option data-id_prov="<?= $provinsi1->id ?>" value="<?= $provinsi1->name ?>"><?= $provinsi1->name ?></option>
+                                            <option data-id_prov="<?= $id_provinsi ?>" value="<?= $name_provinsi ?>"><?= $name_provinsi ?></option>
                                         <?php } ?>
                                     </select>
 
@@ -271,7 +273,7 @@
                             <div class="col">
                                 <div class="form-group">
                                     <label for="exampleInputEmail1">Kabupaten <span style="color: red;">*</span></label>
-                                    <select required name="kabupaten_to" id="kabupaten1" class="form-control" style="width:200px">
+                                    <select required name="kabupaten_to" id="kabupaten1" class="form-control kabupaten1" style="width:200px">
                                         <option value="">Pilih Kabupaten</option>
                                     </select>
 
@@ -281,7 +283,7 @@
                             <div class="col">
                                 <div class="form-group">
                                     <label for="exampleInputEmail1">Kecamatan <span style="color: red;">*</span></label>
-                                    <select required name="kecamatan_to" id="kecamatan1" class="form-control" style="width:200px">
+                                    <select required name="kecamatan_to" id="kecamatan1" class="form-control kecamatan1" style="width:200px">
                                         <option value="">Pilih Kecamatan</option>
                                     </select>
 
@@ -468,7 +470,7 @@
                         <?php foreach ($provinsi as $provinsi1) {
                         ?>
 
-                    '<option data-id_prov="<?= $provinsi1->id ?>" value="<?= $provinsi1->name ?>"><?= $provinsi1->name ?></option>' +
+                    '<option data-id_prov="<?= $provinsi1 ?>" value="<?= $provinsi1 ?>"><?= $provinsi1 ?></option>' +
                 <?php } ?>
                     '</select>' +
 
@@ -519,7 +521,7 @@
                     <?php foreach ($provinsi as $provinsi1) {
                     ?>
 
-                '<option data-id_prov="<?= $provinsi1->id ?>" value="<?= $provinsi1->name ?>"><?= $provinsi1->name ?></option>' +
+                '<option data-id_prov="<?= $provinsi1 ?>" value="<?= $provinsi1 ?>"><?= $provinsi1 ?></option>' +
                 <?php } ?>
                     '</select>' +
 
@@ -594,6 +596,8 @@
                 $('#contentEditRequest').html(content);
                 $('.selectField').select2();
 
+
+
                 $(".provinsiModal").change(function() {
                     // $("#modalLoading").modal("show");
                     var url = "<?php echo site_url('sales/RequestPrice/getKabupaten'); ?>/" + $(this).find(':selected').data('id_prov');
@@ -654,8 +658,66 @@
 
 <script>
     $(document).ready(function() {
+        $("#provinsi").change(function() {
+            // $("#modalLoading").modal("show");
+            var url = "<?php echo site_url('sales/RequestPrice/getKabupaten'); ?>/" + $(this).find(':selected').data('id_prov');
+            $('#kabupaten').load(url);
+            var kecamatan = "<?php echo site_url('sales/RequestPrice/getKecamatan'); ?>/";
+            $('#kecamatan').load(kecamatan);
+            // setTimeout(function() {
+            // 	// $('#modalLoading').modal('hide')
+            // }, 500);
+            return false;
+        })
+        $("#kabupaten").change(function() {
+            // $("#modalLoading").modal("show");
+            var url = "<?php echo site_url('sales/RequestPrice/getKecamatan'); ?>/" + $(this).find(':selected').data('id_prov') + "/" + $(this).find(':selected').data('id_kab');
+            $('#kecamatan').load(url);
+            // setTimeout(function() {
+            // 	$('#modalLoading').modal('hide')
+            // }, 500);
+            return false;
+        })
 
+        $("#kecamatan").change(function() {
+            // $("#modalLoading").modal("show");
+            var url = "<?php echo site_url('sales/RequestPrice/getDesa'); ?>/" + $(this).find(':selected').data('id_prov') + "/" + $(this).find(':selected').data('id_kab')+ "/" + $(this).find(':selected').data('id_kec');
+            $('#desa').load(url);
+            // setTimeout(function() {
+            // 	$('#modalLoading').modal('hide')
+            // }, 500);
+            return false;
+        })
 
+        $("#provinsi1").change(function() {
+            // $("#modalLoading").modal("show");
+            var url = "<?php echo site_url('sales/RequestPrice/getKabupaten'); ?>/" + $(this).find(':selected').data('id_prov');
+            $('#kabupaten1').load(url);
+            var kecamatan = "<?php echo site_url('sales/RequestPrice/getKecamatan'); ?>/";
+            $('#kecamatan1').load(kecamatan);
+            // setTimeout(function() {
+            // 	// $('#modalLoading').modal('hide')
+            // }, 500);
+            return false;
+        })
+        $("#kabupaten1").change(function() {
+            // $("#modalLoading").modal("show");
+            var url = "<?php echo site_url('sales/RequestPrice/getKecamatan'); ?>/" + $(this).find(':selected').data('id_prov') + "/" + $(this).find(':selected').data('id_kab');
+            $('#kecamatan1').load(url);
+            // setTimeout(function() {
+            // 	$('#modalLoading').modal('hide')
+            // }, 500);
+            return false;
+        })
 
+        $("#kecamatan1").change(function() {
+            // $("#modalLoading").modal("show");
+            var url = "<?php echo site_url('sales/RequestPrice/getDesa'); ?>/" + $(this).find(':selected').data('id_prov') + "/" + $(this).find(':selected').data('id_kab')+ "/" + $(this).find(':selected').data('id_kec');
+            $('#desa1').load(url);
+            // setTimeout(function() {
+            // 	$('#modalLoading').modal('hide')
+            // }, 500);
+            return false;
+        })
     });
 </script>

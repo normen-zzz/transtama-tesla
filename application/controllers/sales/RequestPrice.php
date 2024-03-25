@@ -33,6 +33,12 @@ class RequestPrice extends CI_Controller
         $monthNow = date('m');
         $yearNow = date('Y');
         $provinsi = $this->wilayah->getDataProvinsi();
+
+
+
+
+
+
         if ($awal == NULL) {
             $awal = date('Y-m-d H:i:s', strtotime($yearNow . '-' . $monthNow . '-' . '1'));
             $akhir = date('Y-m-t H:i:s');
@@ -43,7 +49,7 @@ class RequestPrice extends CI_Controller
             $data['requestPrice'] = $this->sales->getRequestPriceNotApprove($this->session->userdata('id_user'), $awal, $akhir);
             $data['requestPriceApprove'] = $this->sales->getRequestPriceApprove($this->session->userdata('id_user'), $awal, $akhir);
             $data['province'] = $this->db->get('tb_province')->result_array();
-            $data['provinsi'] = $provinsi->data;
+            $data['provinsi'] = $provinsi;
             $data['city'] = $this->db->get('tb_city')->result_array();
         } else {
             $data['awal'] = $awal;
@@ -52,7 +58,7 @@ class RequestPrice extends CI_Controller
             $data['requestPrice'] = $this->sales->getRequestPriceNotApprove($this->session->userdata('id_user'), $awal, $akhir);
             $data['requestPriceApprove'] = $this->sales->getRequestPriceApprove($this->session->userdata('id_user'), $awal, $akhir);
             $data['province'] = $this->db->get('tb_province')->result_array();
-            $data['provinsi'] = $provinsi->data;
+            $data['provinsi'] = $provinsi;
             $data['city'] = $this->db->get('tb_city')->result_array();
         }
 
@@ -147,7 +153,7 @@ class RequestPrice extends CI_Controller
         ];
 
 
-        $update = $this->db->update('tbl_request_price', $request,array('id_request_price' => $this->input->post('id_request')));
+        $update = $this->db->update('tbl_request_price', $request, array('id_request_price' => $this->input->post('id_request')));
         if ($update) {
             // $pesan = "Hallo Finance, ada pengajuan harga baru dari " . $this->session->userdata('nama_user') . " Tolong Segera Cek Ya, Terima Kasih";
             // $this->wa->pickup('+6285697780467', "$pesan");
@@ -185,12 +191,12 @@ class RequestPrice extends CI_Controller
         ];
 
 
-        $update = $this->db->update('tbl_request_price', $request,array('id_request_price' => $this->input->post('id_request')));
+        $update = $this->db->update('tbl_request_price', $request, array('id_request_price' => $this->input->post('id_request')));
         if ($update) {
             // $pesan = "Hallo Finance, ada pengajuan harga baru dari " . $this->session->userdata('nama_user') . " Tolong Segera Cek Ya, Terima Kasih";
             // $this->wa->pickup('+6285697780467', "$pesan");
             $this->session->set_flashdata('message', 'Anda Berhasil Menambah Request');
-            redirect('sales/RequestPrice/detailRequestPriceBulk/'.$this->input->post('code'));
+            redirect('sales/RequestPrice/detailRequestPriceBulk/' . $this->input->post('code'));
         } else {
             $this->session->set_flashdata('message', 'Anda Gagal Menambah Request');
             redirect('sales/RequestPrice/detailRequestPriceBulk/' . $this->input->post('code'));
@@ -213,8 +219,8 @@ class RequestPrice extends CI_Controller
         if ($id_prov != NULL) {
             $kabupaten = $this->wilayah->getDataKabupaten($id_prov);
             $data = "<option value=''>- Select Kabupaten -</option>";
-            foreach ($kabupaten->data as $value) {
-                $data .= "<option data-id_prov='" . $id_prov . "'  data-id_kab='" . $value->id . "' value='" . $value->name . "'>" . $value->name . "</option>";
+            foreach ($kabupaten as $id_kabupaten => $nama_kabupaten) {
+                $data .= "<option data-id_prov='" . $id_prov . "'  data-id_kab='" . $id_kabupaten . "' value='" . $nama_kabupaten . "'>" . $nama_kabupaten . "</option>";
             }
         } else {
             $data = "<option value=''>- Select Kabupaten -</option>";
@@ -228,8 +234,23 @@ class RequestPrice extends CI_Controller
         if ($id_prov != NULL && $id_kab != NULL) {
             $kecamatan = $this->wilayah->getDataKecamatan($id_prov, $id_kab);
             $data = "<option value=''>- Select Kecamatan -</option>";
-            foreach ($kecamatan->data as $value) {
-                $data .= "<option data-id_kec='" . $value->id . "' value='" . $value->name . "'>" . $value->name . "</option>";
+            foreach ($kecamatan as $id_kecamatan => $nama_kecamatan) {
+                $data .= "<option data-id_prov='" . $id_prov . "'  data-id_kab='" . $id_kab . "' data-id_kec='" . $id_kecamatan . "' value='" . $nama_kecamatan . "'>" . $nama_kecamatan . "</option>";
+            }
+        } else {
+            $data = "<option value=''>- Select Kecamatan -</option>";
+        }
+        echo $data;
+    }
+
+    public function getDesa($id_prov = NULL, $id_kab = NULL,$id_kec = NULL)
+    {
+
+        if ($id_prov != NULL && $id_kab != NULL && $id_kec != NULL) {
+            $desa = $this->wilayah->getDataDesa()($id_prov, $id_kab,$id_kec);
+            $data = "<option value=''>- Select Desa -</option>";
+            foreach ($desa as $id_desa => $nama_desa) {
+                $data .= "<option data-id_prov='" . $id_prov . "'  data-id_kab='" . $id_kab . "' data-id_kec='" . $id_kec . "' value='" . $nama_desa . "'>" . $nama_desa . "</option>";
             }
         } else {
             $data = "<option value=''>- Select Kecamatan -</option>";

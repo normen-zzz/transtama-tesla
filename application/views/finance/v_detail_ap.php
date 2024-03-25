@@ -19,6 +19,15 @@
 								<i class="fas fa-chevron-circle-left text-light"> </i>
 								Back
 							</a>
+							<a onclick="return confirm('Are you sure Void this ap ?');" href="<?= base_url('finance/Ap/voidAp/'.$info['no_pengeluaran']) ?>" class="btn mr-2 text-light" style="background-color: #9c223b;">
+								<i class="fas fa-minus-circle text-light"></i>
+								Void
+							</a>
+
+							<a onclick="return confirm('Are you sure return this ap ?');" href="<?= base_url('finance/Ap/takeBackAp/'.$info['no_pengeluaran']) ?>" class="btn mr-2 text-light" style="background-color: #9c223b;">
+								
+							Return
+							</a>
 						</div>
 					</div>
 					<!-- /.card-header -->
@@ -159,8 +168,10 @@
 														</td>
 
 														<td><span <?php $approve = $this->db->get_where('tbl_approve_pengeluaran', array('no_pengeluaran' => $c['no_pengeluaran']));
-																	if ($approve->num_rows() == 0) { ?> class='edit' <?php } ?>>Rp. <?= $c['amount_proposed'] ?></span>
-															<input type='number' name="jumlah" class='form-control txtedit' data-id="<?= $c['id_pengeluaran'] ?>" data-url='<?= base_url() ?>/finance/ap/editApSatuanAjax' data-field='amount_proposed' id='amount_proposedtxt_<?= $c['amount_proposed'] ?>' value='<?= $c['amount_proposed'] ?>'>
+																	if ($approve->num_rows() == 0) { ?> class='edit' <?php } else {
+																														if ($this->session->userdata('id_atasan') == NULL && $info['status'] < 3) { ?> class='edit' <?php }
+																																																			} ?>>Rp. <?= $c['amount_proposed'] ?></span>
+															<input type='number' name="jumlah" class='form-control txtedit' data-id="<?= $c['id_pengeluaran'] ?>" data-field='amount_proposed' data-url='<?= base_url() ?>/finance/ap/editApSatuanAjax' id='amount_proposedtxt_<?= $c['amount_proposed'] ?>' value='<?= $c['amount_proposed'] ?>'>
 														</td>
 
 														<td>

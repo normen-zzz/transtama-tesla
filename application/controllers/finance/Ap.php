@@ -368,6 +368,45 @@ class Ap extends CI_Controller
 			redirect('finance/customer');
 		}
 	}
+	public function voidAp($no_ap) {
+		$void = $this->db->update('tbl_pengeluaran',array('status' => 6),array('no_pengeluaran' => $no_ap));
+		if ($void) {
+			$this->session->set_flashdata('message', 'Void AP');
+			redirect('finance/ap');
+		} else {
+			$this->session->set_flashdata('message', 'Failed');
+			redirect('finance/ap');
+		}
+	}
+
+	public function takeBackAp($no_ap) {
+		if ($this->session->userdata('id_atasan') == NULL) {
+			$update = array(
+				'approve_by_sm' => NULL,
+				'created_sm' => NULL,
+				'approve_by_gm' => NULL,
+				'created_gm' => NULL,
+				'received_by' => NULL,
+				'created_received' => NULL,
+				'approve_mgr_finance' => NULL,
+				'created_mgr_finance' => NULL
+			);
+			$takeback = $this->db->update('tbl_approve_pengeluaran',$update,array('no_pengeluaran' => $no_ap));
+			$updatestatus = $this->db->update('tbl_pengeluaran',array('status' => 2),array('no_pengeluaran' => $no_ap));
+		}else{
+			$takeback = $this->db->delete('tbl_approve_pengeluaran',array('no_pengeluaran' => $no_ap));
+			$updatestatus = $this->db->update('tbl_pengeluaran',array('status' => 0),array('no_pengeluaran' => $no_ap));
+		}
+		
+		if ($takeback && $updatestatus) {
+			
+			$this->session->set_flashdata('message', 'Success');
+			redirect('finance/ap/detail/'.$no_ap);
+		} else {
+			$this->session->set_flashdata('message', 'Failed');
+			redirect('finance/ap/detail/'.$no_ap);
+		}
+	}
 	public function edit()
 	{
 		// $description = $this->input->post('description');
