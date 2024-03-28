@@ -247,13 +247,13 @@ class RequestPrice extends CI_Controller
     {
 
         if ($id_prov != NULL && $id_kab != NULL && $id_kec != NULL) {
-            $desa = $this->wilayah->getDataDesa()($id_prov, $id_kab,$id_kec);
+            $desa = $this->wilayah->getDataDesa($id_prov, $id_kab,$id_kec);
             $data = "<option value=''>- Select Desa -</option>";
             foreach ($desa as $id_desa => $nama_desa) {
                 $data .= "<option data-id_prov='" . $id_prov . "'  data-id_kab='" . $id_kab . "' data-id_kec='" . $id_kec . "' value='" . $nama_desa . "'>" . $nama_desa . "</option>";
             }
         } else {
-            $data = "<option value=''>- Select Kecamatan -</option>";
+            $data = "<option value=''>- Select Desa -</option>";
         }
         echo $data;
     }

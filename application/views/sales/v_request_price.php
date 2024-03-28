@@ -241,6 +241,15 @@
 
                                 </div>
                             </div>
+                            <div class="col">
+                                <div class="form-group">
+                                    <label for="exampleInputEmail1">Desa <span style="color: red;">*</span></label>
+                                    <select required name="desa_from" id="desa" class="form-control desa" style="width:200px">
+                                        <option value="">Pilih Desa</option>
+                                    </select>
+
+                                </div>
+                            </div>
 
 
 
@@ -285,6 +294,16 @@
                                     <label for="exampleInputEmail1">Kecamatan <span style="color: red;">*</span></label>
                                     <select required name="kecamatan_to" id="kecamatan1" class="form-control kecamatan1" style="width:200px">
                                         <option value="">Pilih Kecamatan</option>
+                                    </select>
+
+                                </div>
+                            </div>
+
+                            <div class="col">
+                                <div class="form-group">
+                                    <label for="exampleInputEmail1">Desa <span style="color: red;">*</span></label>
+                                    <select required name="desa_to" id="desa1" class="form-control desa1" style="width:200px">
+                                        <option value="">Pilih Desa</option>
                                     </select>
 
                                 </div>
@@ -664,6 +683,8 @@
             $('#kabupaten').load(url);
             var kecamatan = "<?php echo site_url('sales/RequestPrice/getKecamatan'); ?>/";
             $('#kecamatan').load(kecamatan);
+            var desa = "<?php echo site_url('sales/RequestPrice/getDesa'); ?>/";
+            $('#desa').load(desa);
             // setTimeout(function() {
             // 	// $('#modalLoading').modal('hide')
             // }, 500);
@@ -673,6 +694,8 @@
             // $("#modalLoading").modal("show");
             var url = "<?php echo site_url('sales/RequestPrice/getKecamatan'); ?>/" + $(this).find(':selected').data('id_prov') + "/" + $(this).find(':selected').data('id_kab');
             $('#kecamatan').load(url);
+            var desa = "<?php echo site_url('sales/RequestPrice/getDesa'); ?>/";
+            $('#desa').load(desa);
             // setTimeout(function() {
             // 	$('#modalLoading').modal('hide')
             // }, 500);
@@ -683,6 +706,7 @@
             // $("#modalLoading").modal("show");
             var url = "<?php echo site_url('sales/RequestPrice/getDesa'); ?>/" + $(this).find(':selected').data('id_prov') + "/" + $(this).find(':selected').data('id_kab')+ "/" + $(this).find(':selected').data('id_kec');
             $('#desa').load(url);
+            
             // setTimeout(function() {
             // 	$('#modalLoading').modal('hide')
             // }, 500);
@@ -695,6 +719,8 @@
             $('#kabupaten1').load(url);
             var kecamatan = "<?php echo site_url('sales/RequestPrice/getKecamatan'); ?>/";
             $('#kecamatan1').load(kecamatan);
+            var desa = "<?php echo site_url('sales/RequestPrice/getDesa'); ?>/";
+            $('#desa1').load(desa);
             // setTimeout(function() {
             // 	// $('#modalLoading').modal('hide')
             // }, 500);
@@ -704,6 +730,8 @@
             // $("#modalLoading").modal("show");
             var url = "<?php echo site_url('sales/RequestPrice/getKecamatan'); ?>/" + $(this).find(':selected').data('id_prov') + "/" + $(this).find(':selected').data('id_kab');
             $('#kecamatan1').load(url);
+            var desa = "<?php echo site_url('sales/RequestPrice/getDesa'); ?>/";
+            $('#desa1').load(desa);
             // setTimeout(function() {
             // 	$('#modalLoading').modal('hide')
             // }, 500);

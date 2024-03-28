@@ -644,7 +644,7 @@ class SalesOrder extends CI_Controller
         $data['title'] = 'Detail Sales Order';
 
         $data['p'] = $this->db->get_where('tbl_so', ['id_so' => $id])->row_array();
-        $data['users'] = $this->db->get_where('tb_user', ['id_role' => 2])->result_array();
+        $data['users'] = $this->db->get_where('tb_user', ['id_role' => 2,'status' => 1,'id_atasan !=' => NULL])->result_array();
         $data['shipment2'] =  $this->order->orderBySo($id)->result_array();
         $this->backend->display('shipper/v_detail_order_luar', $data);
     }
