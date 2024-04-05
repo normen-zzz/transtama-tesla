@@ -107,13 +107,13 @@
 								</span></i>Tracking</span>
 						</a>
 					</li>
-					<li class="menu-item menu-item" aria-haspopup="true">
+					<!-- <li class="menu-item menu-item" aria-haspopup="true">
 						<a href="<?= base_url('superadmin/order/generate') ?>" class="menu-link">
 							<span class="menu-text"><span class="svg-icon svg-icon-danger svg-icon mr-2">
 									<i class="fa fa-cog text-danger mr-2">
 								</span></i>Generate Resi</span>
 						</a>
-					</li>
+					</li> -->
 
 
 
@@ -515,13 +515,13 @@
 			</a>
 		</li>
 
-		<li class="menu-item menu-item" aria-haspopup="true">
+		<!-- <li class="menu-item menu-item" aria-haspopup="true">
 			<a href="<?= base_url('sales/SalesOrder/generateResi') ?>" class="menu-link">
 				<span class="menu-text"><span class="svg-icon svg-icon-danger svg-icon mr-2">
 						<i class="fa fa-book text-danger mr-2">
 					</span></i>Generate Resi</span>
 			</a>
-		</li>
+		</li> -->
 		<li class="menu-item menu-item" aria-haspopup="true">
 			<a href="<?= base_url('sales/salesOrder/report') ?>" class="menu-link">
 				<span class="menu-text"><span class="svg-icon svg-icon-danger svg-icon mr-2">
