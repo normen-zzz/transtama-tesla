@@ -397,8 +397,9 @@
 																																															?> disabled <?php } ?>>
 														</td>
 														<td>
-															<input type="text" name="so_note[]" value="<?= $shp['so_note'] ?>" class="form-control" style="width: 200px;" <?php if ($shp['status_so'] >= 1) {
-																																											?> disabled <?php } ?>>
+															
+															<textarea class="form-control" style="width: 200px;" <?php if ($shp['status_so'] >= 1) {
+																		?> disabled <?php } ?> name="so_note[]" id="so_note" cols="30" rows="3"><?= $shp['so_note'] ?></textarea>
 														</td>
 														<td>
 															<?php
@@ -558,25 +559,25 @@
 															}
 														} else {
 															$date1 = new DateTime(date('Y-m-d'));
-																$date2 = new DateTime(date('Y-m-d', strtotime($getTanggalPickup['created_at'])));
-																$interval = date_diff($date2, $date1);
-																// jika waktu pickup diatas jam 9 dan dibawah jam 12 
-																if ($WaktuPickup >= date('H:i:s', strtotime('21:00:00')) && $WaktuPickup <= date('H:i:s', strtotime('23:59:59'))) {
-																	// jika tanggal sekarang dan tanggal pickup beda sehari
-																	if ($interval->format('%a') == 1) {
-																		// jika jam sekarang diatas jam 12 malam dan dibawah jam 9 pagi
-																		if (date('H:i:s') >= date('H:i:s', strtotime('00:00:01')) && date('H:i:s') <= date('H:i:s', strtotime('09:00:00'))) {
-																			echo 'Karna pickup diatas jam 9 Malam, maka submit so bisa dilakukan sampai jam 9 pagi <br>';
-																			echo "<button type='submit' class='btn btn-success' onclick='return confirm('Are you sure ?')'>Submit SO</button>";
-																		} else {
-																			echo  "<h4>SO Late Submit (Diatas jam 9 pagi)</h4>  <br> <a href=" . base_url('#') . " 'onclick='return confirm('Are You Sure ?')' class='btn btn-sm mb-1 text-light' data-toggle='modal' data-target='#modal-request' style='background-color: #9c223b;'>Request Aktivasi</a>";
-																		}
+															$date2 = new DateTime(date('Y-m-d', strtotime($getTanggalPickup['created_at'])));
+															$interval = date_diff($date2, $date1);
+															// jika waktu pickup diatas jam 9 dan dibawah jam 12 
+															if ($WaktuPickup >= date('H:i:s', strtotime('21:00:00')) && $WaktuPickup <= date('H:i:s', strtotime('23:59:59'))) {
+																// jika tanggal sekarang dan tanggal pickup beda sehari
+																if ($interval->format('%a') == 1) {
+																	// jika jam sekarang diatas jam 12 malam dan dibawah jam 9 pagi
+																	if (date('H:i:s') >= date('H:i:s', strtotime('00:00:01')) && date('H:i:s') <= date('H:i:s', strtotime('09:00:00'))) {
+																		echo 'Karna pickup diatas jam 9 Malam, maka submit so bisa dilakukan sampai jam 9 pagi <br>';
+																		echo "<button type='submit' class='btn btn-success' onclick='return confirm('Are you sure ?')'>Submit SO</button>";
 																	} else {
-																		echo  "<h4>SO Late Submit (Lebih dari sehari) </h4> <br> <a href=" . base_url('#') . " 'onclick='return confirm('Are You Sure ?')' class='btn btn-sm mb-1 text-light' data-toggle='modal' data-target='#modal-request' style='background-color: #9c223b;'>Request Aktivasi</a>";
+																		echo  "<h4>SO Late Submit (Diatas jam 9 pagi)</h4>  <br> <a href=" . base_url('#') . " 'onclick='return confirm('Are You Sure ?')' class='btn btn-sm mb-1 text-light' data-toggle='modal' data-target='#modal-request' style='background-color: #9c223b;'>Request Aktivasi</a>";
 																	}
 																} else {
-																	echo  "<h4>SO Late Submit </h4> <br> <a href=" . base_url('#') . " 'onclick='return confirm('Are You Sure ?')' class='btn btn-sm mb-1 text-light' data-toggle='modal' data-target='#modal-request' style='background-color: #9c223b;'>Request Aktivasi</a>";
+																	echo  "<h4>SO Late Submit (Lebih dari sehari) </h4> <br> <a href=" . base_url('#') . " 'onclick='return confirm('Are You Sure ?')' class='btn btn-sm mb-1 text-light' data-toggle='modal' data-target='#modal-request' style='background-color: #9c223b;'>Request Aktivasi</a>";
 																}
+															} else {
+																echo  "<h4>SO Late Submit </h4> <br> <a href=" . base_url('#') . " 'onclick='return confirm('Are You Sure ?')' class='btn btn-sm mb-1 text-light' data-toggle='modal' data-target='#modal-request' style='background-color: #9c223b;'>Request Aktivasi</a>";
+															}
 														}
 													}
 
@@ -688,7 +689,7 @@
 								<div class="col-md-6">
 									<div class="form-group">
 										<label for="exampleInputEmail1">Special Freight</label>
-										<input type="text" class="form-control" id="exampleInputEmail1"  value="<?= $shp['special_freight'] ?>" required name="special_freight_baru">
+										<input type="text" class="form-control" id="exampleInputEmail1" value="<?= $shp['special_freight'] ?>" required name="special_freight_baru">
 										<!-- <input type="text" class="form-control" id="exampleInputEmail1" hidden required value="<?= $msr['id_msr'] ?>" name="id_msr"> -->
 									</div>
 
@@ -696,7 +697,7 @@
 								<div class="col-md-6">
 									<div class="form-group">
 										<label for="exampleInputEmail1">Packing</label>
-										<input type="text" class="form-control" id="exampleInputEmail1"  value="<?= $shp['packing'] ?>" required name="packing_baru">
+										<input type="text" class="form-control" id="exampleInputEmail1" value="<?= $shp['packing'] ?>" required name="packing_baru">
 										<!-- <input type="text" class="form-control" id="exampleInputEmail1" hidden required value="<?= $msr['id_msr'] ?>" name="id_msr"> -->
 									</div>
 
@@ -704,35 +705,35 @@
 								<div class="col-md-6">
 									<div class="form-group">
 										<label for="exampleInputEmail1">Others</label>
-										<input type="text" class="form-control" id="exampleInputEmail1"  value="<?= $shp['others'] ?>" required name="others_baru">
+										<input type="text" class="form-control" id="exampleInputEmail1" value="<?= $shp['others'] ?>" required name="others_baru">
 									</div>
 
 								</div>
 								<div class="col-md-6">
 									<div class="form-group">
 										<label for="exampleInputEmail1">Surcharge</label>
-										<input type="text" class="form-control" id="exampleInputEmail1"  value="<?= $shp['surcharge'] ?>" required name="surcharge_baru">
+										<input type="text" class="form-control" id="exampleInputEmail1" value="<?= $shp['surcharge'] ?>" required name="surcharge_baru">
 									</div>
 
 								</div>
 								<div class="col-md-6">
 									<div class="form-group">
 										<label for="exampleInputEmail1">Insurance</label>
-										<input type="text" class="form-control" id="exampleInputEmail1"  value="<?= $shp['insurance'] ?>" required name="insurance_baru">
+										<input type="text" class="form-control" id="exampleInputEmail1" value="<?= $shp['insurance'] ?>" required name="insurance_baru">
 									</div>
 
 								</div>
 								<div class="col-md-6">
 									<div class="form-group">
 										<label for="exampleInputEmail1">Disc</label>
-										<input type="number" class="form-control" id="exampleInputEmail1"  value="<?= $shp['disc'] *100 ?>" required name="disc_baru">
+										<input type="number" class="form-control" id="exampleInputEmail1" value="<?= $shp['disc'] * 100 ?>" required name="disc_baru">
 									</div>
 
 								</div>
 								<div class="col-md-6">
 									<div class="form-group">
 										<label for="exampleInputEmail1">Cn</label>
-										<input type="number" class="form-control" id="exampleInputEmail1"  value="<?= $shp['cn']*100 ?>" required name="cn_baru">
+										<input type="number" class="form-control" id="exampleInputEmail1" value="<?= $shp['cn'] * 100 ?>" required name="cn_baru">
 									</div>
 
 								</div>

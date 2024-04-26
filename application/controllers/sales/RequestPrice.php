@@ -65,13 +65,19 @@ class RequestPrice extends CI_Controller
         $this->backend->display('sales/v_request_price', $data);
     }
 
+    public function addRequestPrice() {
+        $this->load->library('form_validation');
+        $data['title'] = 'Add Request Price';
+        $data['provinsi'] = $this->db->get('tb_province');
+        $data['kota'] = $this->db->get('tb_city');
+        $data['moda'] = $this->db->get('tbl_moda');
+        $this->backend->display('sales/v_addRequestPrice', $data);
+    }
+
     public function getModalEditRequest()
     {
         $id_request = $this->input->get('id_request'); // Mengambil ID dari parameter GET
         $request = $this->db->get_where('tbl_request_price', array('id_request_price' => $id_request))->row();
-
-
-
 
         // Kirim data sebagai respons JSON
         echo json_encode($request);
@@ -327,5 +333,13 @@ class RequestPrice extends CI_Controller
         $data['provinsi'] = $provinsi->data;
         $data['city'] = $this->db->get('tb_city')->result_array();
         $this->backend->display('sales/v_request_price_bulk', $data);
+    }
+
+    public function getProvinsi()
+    {
+      
+        $data  = $this->db->get('tb_province')->result();
+        // Kirim data sebagai respons JSON
+        echo json_encode($data);
     }
 }

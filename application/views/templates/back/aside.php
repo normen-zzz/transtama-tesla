@@ -156,13 +156,13 @@
 								</span></i>Sales</span>
 						</a>
 					</li>
-					<li class="menu-item menu-item" aria-haspopup="true">
+					<!-- <li class="menu-item menu-item" aria-haspopup="true">
 						<a href="<?= base_url('superadmin/order/generate') ?>" class="menu-link">
 							<span class="menu-text"><span class="svg-icon svg-icon-danger svg-icon mr-2">
 									<i class="fa fa-cog text-danger mr-2">
 								</span></i>Generate Resi</span>
 						</a>
-					</li>
+					</li> -->
 
 
 
@@ -234,13 +234,13 @@
 						</span></i>Scan In/Out</span>
 				</a>
 			</li>
-			<li class="menu-item menu-item" aria-haspopup="true">
+			<!-- <li class="menu-item menu-item" aria-haspopup="true">
 				<a href="<?= base_url('shipper/Order/generateResi') ?>" class="menu-link">
 					<span class="menu-text"><span class="svg-icon svg-icon-danger svg-icon mr-2">
 							<i class="fa fa-book text-danger mr-2">
 						</span></i>Generate Resi</span>
 				</a>
-			</li>
+			</li> -->
 
 			
 

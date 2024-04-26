@@ -61,6 +61,12 @@
                                 <i class="fa fa-plus text-light"></i>
                                 <!--end::Svg Icon-->
                             </span>Add</a>
+
+                            <a href="<?= base_url('sales/RequestPrice/addRequestPrice') ?>" class="btn font-weight-bolder text-light"  style="background-color: #9c223b;">
+                            <span class="svg-icon svg-icon-md">
+                                <i class="fa fa-plus text-light"></i>
+                                <!--end::Svg Icon-->
+                            </span>Add</a>
                         <!--end::Button-->
                     </div>
                 </div>
