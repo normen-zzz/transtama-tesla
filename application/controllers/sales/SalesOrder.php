@@ -234,19 +234,12 @@ class SalesOrder extends CI_Controller
                 $pesanPickUp = "dan pick up di *$pu_poin*";
                 $pesan = "Hallo Cs dan Ops, ada pickup dari *$shipper* $pesanDestination $pesanPickUp *$service* tanggal *$tgl_pickup* jam *$time* dengan moda $pu_moda dengan jenis barang $commodity. Catatan : $note. *Sales : $sales*";
                 // kirim wa
-
-
-                
                 $this->wa->pickup('+6285697780467', "$pesan"); //Nomor Norman IT
                 $this->wa->pickup('+6281293753199', "$pesan"); //Nomor Bu Lili CS
                 $this->wa->pickup('+6285894438583', "$pesan"); //Mba Yunita  CS
 				$this->wa->pickup('+6281387909059', "$pesan"); //TYA  CS
                 $this->wa->pickup('+6281212603705', "$pesan"); //Mas Ali OPS
-        
                 $this->wa->pickup('+6281398433940', "$pesan"); //Sarwan OPS
-
-
-
                 $random = random_string('numeric', 8);
 
                 $get_last_id_so = $this->db->limit(1)->order_by('id_so', 'DESC')->get('tbl_so')->row_array(); // mencari data terakhir yang baru diinput di tbl so
