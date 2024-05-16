@@ -159,6 +159,15 @@ class SalesModel extends CI_Model
         return $this->db->get();
     }
 
+    public function getDetailRequestPrice($id)
+    {
+        $this->db->select('*');
+        $this->db->from('detailrequest_price');
+        $this->db->where('created_by', $id);
+        $this->db->order_by('status', 'desc');
+        $this->db->order_by('id_request', 'asc');
+        return $this->db->get();
+    }
     public function getCodeRequestPrice()
     {
         $this->db->select_max('code_request_price');

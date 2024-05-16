@@ -27,41 +27,8 @@ class RequestPrice extends CI_Controller
     }
     public function index()
     {
-        $awal = $this->input->post('awal');
-        $akhir = $this->input->post('akhir');
-        $dayNow = date('d');
-        $monthNow = date('m');
-        $yearNow = date('Y');
-        $provinsi = $this->wilayah->getDataProvinsi();
-
-
-
-
-
-
-        if ($awal == NULL) {
-            $awal = date('Y-m-d H:i:s', strtotime($yearNow . '-' . $monthNow . '-' . '1'));
-            $akhir = date('Y-m-t H:i:s');
-
-            $data['awal'] = $awal;
-            $data['akhir'] = $akhir;
-            $data['title'] = 'Request Pricee';
-            $data['requestPrice'] = $this->sales->getRequestPriceNotApprove($this->session->userdata('id_user'), $awal, $akhir);
-            $data['requestPriceApprove'] = $this->sales->getRequestPriceApprove($this->session->userdata('id_user'), $awal, $akhir);
-            $data['province'] = $this->db->get('tb_province')->result_array();
-            $data['provinsi'] = $provinsi;
-            $data['city'] = $this->db->get('tb_city')->result_array();
-        } else {
-            $data['awal'] = $awal;
-            $data['akhir'] = $akhir;
-            $data['title'] = 'Request Price';
-            $data['requestPrice'] = $this->sales->getRequestPriceNotApprove($this->session->userdata('id_user'), $awal, $akhir);
-            $data['requestPriceApprove'] = $this->sales->getRequestPriceApprove($this->session->userdata('id_user'), $awal, $akhir);
-            $data['province'] = $this->db->get('tb_province')->result_array();
-            $data['provinsi'] = $provinsi;
-            $data['city'] = $this->db->get('tb_city')->result_array();
-        }
-
+        $data['title'] = 'Request Price';
+            $data['detailRequestPrice'] = $this->sales->getDetailRequestPrice($this->session->userdata('id_user'));
         $this->backend->display('sales/v_request_price', $data);
     }
 
@@ -71,6 +38,7 @@ class RequestPrice extends CI_Controller
         $data['provinsi'] = $this->db->get('tb_province');
         $data['kota'] = $this->db->get('tb_city');
         $data['moda'] = $this->db->get('tbl_moda');
+        $data['customer'] = $this->db->get('tb_customer');
         $this->backend->display('sales/v_addRequestPrice', $data);
     }
 
@@ -90,48 +58,63 @@ class RequestPrice extends CI_Controller
 
     public function addNewRequest()
     {
+        $provinsi_from = $this->input->post('provinsi_from');
+        $kota_from = $this->input->post('kota_from');
+        $kecamatan_from = $this->input->post('kecamatan_from');
+        $alamat_from = $this->input->post('alamat_from');
+        $provinsi_to = $this->input->post('provinsi_to');
+        $kota_to = $this->input->post('kota_to');
+        $kecamatan_to = $this->input->post('kecamatan_to');
+        $alamat_to = $this->input->post('alamat_to');
+        $moda = $this->input->post('moda'); // id modanya
+        $jenis = $this->input->post('jenis');
+        $berat = $this->input->post('berat');
+        $koli = $this->input->post('koli');
+        $panjang = $this->input->post('panjang');
+        $lebar = $this->input->post('lebar');
+        $tinggi = $this->input->post('tinggi');
+        $notes = $this->input->post('notes');
 
-        $QuerylastRequest = "SELECT a.group FROM tbl_request_price a ORDER BY a.group DESC LIMIT 1";
-        $lastRequest = $this->db->query($QuerylastRequest)->row();
-        $code = $this->sales->getCodeRequestPrice();
-        // var_dump($lastRequest->group);
         $request = [
-            'id_sales' => $this->session->userdata('id_user'),
-            'code_request_price' => $code,
-            'date_request' => date('Y-m-d H:i:s'),
-            'province_from' => $this->input->post('provinsi_from'),
-            'city_from' => $this->input->post('kabupaten_from'),
-            'subdistrict_from' => $this->input->post('kecamatan_from'),
-            'alamat_from' => $this->input->post('alamat_from'),
-            'province_to' => $this->input->post('provinsi_to'),
-            'city_to' => $this->input->post('kabupaten_to'),
-            'subdistrict_to' => $this->input->post('kecamatan_to'),
-            'alamat_to' => $this->input->post('alamat_to'),
-            'moda' => $this->input->post('moda'),
-            'jenis_barang' => $this->input->post('jenis'),
-            'berat' => $this->input->post('berat'),
-            'panjang' => $this->input->post('panjang'),
-            'lebar' => $this->input->post('lebar'),
-            'tinggi' => $this->input->post('tinggi'),
-            'koli' => $this->input->post('koli'),
-            'komoditi' => $this->input->post('komoditi'),
-            'notes_sales' => $this->input->post('notes'),
-            'is_bulk' => 0,
-            'group' => $lastRequest->group + 1
+            'created_by' => $this->session->userdata('id_user'),
+            'date_created' => date('Y-m-d H:i:s'),
+            'status' => 0
         ];
 
+        $this->db->insert('request_price',$request);
+        $id_request = $this->db->insert_id();
 
-        $update = $this->db->insert('tbl_request_price', $request);
-        if ($update) {
-            $pesan = "Hallo CS, ada pengajuan harga baru dari " . $this->session->userdata('nama_user') . " Tolong Segera Cek Ya, Terima Kasih";
-            $this->wa->pickup('+6285697780467', "$pesan");
-            $this->session->set_flashdata('message', 'Anda Berhasil Menambah Request');
-            redirect('sales/RequestPrice');
-        } else {
-            $this->session->set_flashdata('message', 'Anda Gagal Menambah Request');
-            redirect('sales/RequestPrice');
+        for ($i=0; $i < sizeof($provinsi_from); $i++) { 
+            $detailRequest = [
+                'id_request' => $id_request,
+                'customer' => $this->input->post('customer'),
+                'provinsi_from' => $provinsi_from[$i],
+                'kota_from' => $kota_from[$i],
+                'kecamatan_from' => $kecamatan_from[$i],
+                'alamat_from' => $alamat_from[$i],
+                'provinsi_to' => $provinsi_to[$i],
+                'kota_to' => $kota_to[$i],
+                'kecamatan_to' => $kecamatan_to[$i],
+                'alamat_to' => $alamat_to[$i],
+                'moda' => $moda[$i],
+                'jenis' => $jenis[$i],
+                'berat' => $berat[$i],
+                'koli' => $koli[$i],
+                'panjang' => $panjang[$i],
+                'lebar' => $lebar[$i],
+                'tinggi' => $tinggi[$i],
+                'notes_sales' => $notes[$i],
+                'created_at' => date('Y-m-d H:i:s'),
+                'created_by' => $this->session->userdata('id_user'),
+                'status' => 0
+            ];
+            $this->db->insert('detailrequest_price',$detailRequest);
         }
+        $this->session->set_flashdata('message', 'Anda Berhasil Menambah Request');
+        redirect('sales/RequestPrice');
     }
+
+
 
     public function editRequest()
     {

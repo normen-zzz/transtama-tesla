@@ -31,17 +31,26 @@
                             <div class="row justify-content-center py-10 px-8 py-lg-12 px-lg-10">
                                 <div class="col col-sm-12">
                                     <!--begin: Wizard Form-->
-                                    <form id="kt_form" novalidate="novalidate" action="<?= base_url('sales/salesOrder/processAdd') ?>" method="POST" enctype="multipart/form-data">
+                                    <form id="kt_form" novalidate="novalidate" action="<?= base_url('sales/requestPrice/addNewRequest') ?>" method="POST" enctype="multipart/form-data">
 
                                         <div style="margin-top: -65px;">
 
                                             <div id="formRequest">
-                                                <h4 class="mb-10 font-weight-bold text-dark"><b>
-                                                        <div id="nomorKolom">INFORMATION 1</div>
-                                                    </b> </small>
-                                                    <br> <br>
-                                                    <label class="font-weight-bold" for="">FROM</label>
-                                                    <div class="row">
+                                                <label for="exampleInputEmail1"><b>Customer</b><span style="color: red;">*</span></label>
+                                                <select name="customer" class="form-control">
+                                                    <?php foreach ($customer->result_array() as $customer1) {
+                                                    ?>
+                                                        <option value="<?= $customer1['id_customer'] ?>" <?php if ($customer1['nama_pt'] == set_value('customer[]')) {
+                                                                                                                echo 'selected';
+                                                                                                            } ?>><?= $customer1['nama_pt'] ?></option>
+                                                    <?php  } ?>
+                                                </select>
+                                                <h4 class="mb-10 font-weight-bold text-dark mt-4"><b>
+                                                        <div id="nomorKolom">INFORMATION 1</div></b>
+                                                   
+
+                                                    <div class="row border mt-4">
+                                                        <div class="col-md-12"> <label class="font-weight-bold mt-2" for="">FROM</label></div>
 
                                                         <div class="col-md-4">
                                                             <div class="form-group">
@@ -85,8 +94,9 @@
                                                         </div>
 
                                                     </div>
-                                                    <label class="font-weight-bold" for="">TO</label>
-                                                    <div class="row">
+
+                                                    <div class="row border mt-4">
+                                                        <div class="col-md-12"> <label class="font-weight-bold mt-2" for="">TO</label></div>
                                                         <div class="col-md-4">
                                                             <div class="form-group">
                                                                 <label for="exampleInputEmail1">Provinsi<span style="color: red;">*</span></label>
@@ -127,13 +137,17 @@
                                                             </div>
                                                         </div>
 
+
+                                                    </div>
+
+                                                    <div class="row">
                                                         <div class="col-md-6">
                                                             <div class="form-group">
                                                                 <label for="exampleInputEmail1">Moda</label>
                                                                 <select name="moda[]" class="form-control">
                                                                     <?php foreach ($moda->result_array() as $moda1) {
                                                                     ?>
-                                                                        <option value="<?= $moda1['nama_moda'] ?>" <?php if ($moda1['nama_moda'] == set_value('moda[]')) {
+                                                                        <option value="<?= $moda1['id_moda'] ?>" <?php if ($moda1['nama_moda'] == set_value('moda[]')) {
                                                                                                                         echo 'selected';
                                                                                                                     } ?>><?= $moda1['nama_moda'] ?></option>
                                                                     <?php  } ?>
@@ -189,7 +203,6 @@
                                                         </div>
                                                     </div>
 
-
                                             </div>
                                             <div id="nextKolom"></div>
                                             <button type="button" class="btn btn-primary tambahKolom" id="tambahKolom">+</button>
@@ -231,7 +244,7 @@
             var provinceData = <?php echo json_encode($provinsi->result_array()); ?>;
             var kotaData = <?php echo json_encode($kota->result_array()); ?>;
             var modaData = <?php echo json_encode($moda->result_array()); ?>;
-
+            var customerData = <?php echo json_encode($customer->result_array()); ?>;
             // ... rest of your code ...
             var provinceFrom = $('<select>').addClass('form-control selectField').attr("name", "provinsi_from[]");
             var kotaFrom = $('<select>').addClass('form-control selectField').attr("name", "kota_from[]");
@@ -240,6 +253,7 @@
             var kotaTo = $('<select>').addClass('form-control selectField').attr("name", "kota_to[]");
 
             var moda = $('<select>').addClass('form-control selectField').attr("name", "moda[]");
+            var customer = $('<select>').addClass('form-control selectField').attr("name", "customer[]");
 
 
 
@@ -255,14 +269,16 @@
             });
 
             modaData.forEach(function(modaItem) {
-                moda.append($("<option>").attr("value", modaItem.nama_moda).text(modaItem.nama_moda));
+                moda.append($("<option>").attr("value", modaItem.id_moda).text(modaItem.nama_moda));
+            });
+            customerData.forEach(function(customerItem) {
+                customer.append($("<option>").attr("value", customerItem.id_customer).text(customerItem.nama_pt));
             });
             row = '<div id="formRequest">' +
                 '<h4 class="mb-10 font-weight-bold text-dark"><b><div id="nomorKolom">INFORMATION ' + i + ' <button type="button" class="btn btn-danger kurangKolom" id="kurangKolom">X</button></> </b> </small>' +
                 '<br> <br>' +
-                '<label class="font-weight-bold" for="">FROM</label>' +
-                '<div class="row">' +
-
+                '<div class="row border mt-4">' +
+                ' <div class="col-md-12"><label class="font-weight-bold" for="">FROM</label> </div>' +
                 '<div class="col-md-4">' +
                 '<div class="form-group">' +
 
@@ -293,8 +309,9 @@
                 '</div>' +
 
                 '</div>' +
-                '<label class="font-weight-bold" for="">TO</label>' +
-                '<div class="row">' +
+
+                '<div class="row border mt-4">' +
+                '<div class="col-md-12"> <label class="font-weight-bold" for="">TO</label> </div>' +
                 '<div class="col-md-4">' +
                 '<div class="form-group">' +
                 '<label for="exampleInputEmail1">Provinsi<span style="color: red;">*</span></label>' +
@@ -323,6 +340,11 @@
                 '</div>' +
                 '</div>' +
 
+
+                '</div>' +
+
+
+                '<div class="row">' +
                 '<div class="col-md-6">' +
                 '<div class="form-group">' +
                 '<label for="exampleInputEmail1">Moda</label>' +
@@ -377,20 +399,18 @@
                 '</div>' +
                 '</div>' +
                 '</div>' +
-
-
                 '</div>';
 
 
             $(row).insertBefore("#nextKolom");
             $('.selectField').select2();
-           
+
             i++;
 
         });
         $(document).on('click', '.kurangKolom', function(e) {
             e.preventDefault();
-           
+
             $(this).parents('#formRequest').remove();
         });
     });
