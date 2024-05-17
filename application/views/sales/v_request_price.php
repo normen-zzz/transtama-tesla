@@ -63,12 +63,13 @@
 
                 <div class="card-body" style="overflow: auto;">
                     <!--begin: Datatable-->
-                    <table class="table table-separate table-head-custom table-checkable" id="myTable">
+                    <table class="table table-separate table-head-custom" id="tableRequestPrice">
                         <thead>
                             <tr>
                                 <th>NO</th>
                                 <th>ID Request</th>
                                 <th>Created At</th>
+                                <th>Customer</th>
                                 <th>From</th>
                                 <th>To</th>
                                 <th>Moda</th>
@@ -76,6 +77,7 @@
                                 <th>Berat</th>
                                 <th>Koli</th>
                                 <th>Dimension</th>
+                                <th>Price Submitted</th>
                                 <th>Notes Sales</th>
                                 <th>Notes CS</th>
                                 <th>Status</th>
@@ -89,13 +91,15 @@
                                     <td><?= $no  ?></td>
                                     <td>REQP - <?= $detailRequestPrice1['id_detailrequest'] ?></td>
                                     <td><?= date('d-m-Y H:i:s',strtotime($detailRequestPrice1['created_at']))  ?></td>
+                                    <td><?= getNameCustomer($detailRequestPrice1['customer']) ?></td>
                                     <td><?= $detailRequestPrice1['alamat_from'].', '.$detailRequestPrice1['kecamatan_from'].', '.$detailRequestPrice1['kota_from'].', '.$detailRequestPrice1['provinsi_from'] ?></td>
                                     <td><?= $detailRequestPrice1['alamat_to'].', '.$detailRequestPrice1['kecamatan_to'].', '.$detailRequestPrice1['kota_to'].', '.$detailRequestPrice1['provinsi_to'] ?></td>
                                     <td><?= moda($detailRequestPrice1['moda'])  ?></td>
                                     <td><?= $detailRequestPrice1['jenis'] ?></td>
                                     <td><?= $detailRequestPrice1['berat'] ?></td>
                                     <td><?= $detailRequestPrice1['koli'] ?></td>
-                                    <td>Air :<?= ((int)$detailRequestPrice1['panjang']*(int)$detailRequestPrice1['lebar']*(int)$detailRequestPrice1['tinggi'])/6000 ?><br>Land :<?= ((int)$detailRequestPrice1['panjang']*(int)$detailRequestPrice1['lebar']*(int)$detailRequestPrice1['tinggi'])/4000 ?></td>
+                                    <td><?= (int)$detailRequestPrice1['panjang'].' X '.(int)$detailRequestPrice1['lebar'].' X '.(int)$detailRequestPrice1['tinggi'] ?><br> Air :<?= ((int)$detailRequestPrice1['panjang']*(int)$detailRequestPrice1['lebar']*(int)$detailRequestPrice1['tinggi'])/6000 ?> KG<br>Land :<?= ((int)$detailRequestPrice1['panjang']*(int)$detailRequestPrice1['lebar']*(int)$detailRequestPrice1['tinggi'])/4000 ?> KG</td>
+                                    <td>20000</td>
                                     <td><?= $detailRequestPrice1['notes_sales'] ?></td>
                                     <td><?= $detailRequestPrice1['notes_cs'] ?></td>
                                     <td><?= statusRequestPrice($detailRequestPrice1['status'])  ?></td>

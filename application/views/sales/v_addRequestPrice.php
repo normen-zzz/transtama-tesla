@@ -176,21 +176,21 @@
 
                                                         <div class="col-md-2">
                                                             <div class="form-group">
-                                                                <label for="exampleInputEmail1">Panjang</label>
+                                                                <label for="exampleInputEmail1">Panjang (CM)</label>
                                                                 <input type="text" class="form-control" required name="panjang[]" value="<?php echo set_value('panjang[]'); ?>">
                                                             </div>
                                                         </div>
 
                                                         <div class="col-md-2">
                                                             <div class="form-group">
-                                                                <label for="exampleInputEmail1">Lebar</label>
+                                                                <label for="exampleInputEmail1">Lebar (CM)</label>
                                                                 <input type="text" class="form-control" required name="lebar[]" value="<?php echo set_value('lebar[]'); ?>">
                                                             </div>
                                                         </div>
 
                                                         <div class="col-md-2">
                                                             <div class="form-group">
-                                                                <label for="exampleInputEmail1">Tinggi</label>
+                                                                <label for="exampleInputEmail1">Tinggi (CM)</label>
                                                                 <input type="text" class="form-control" required name="tinggi[]" value="<?php echo set_value('tinggi[]'); ?>">
                                                             </div>
                                                         </div>
@@ -373,28 +373,28 @@
 
                 '<div class="col-md-2">' +
                 '<div class="form-group">' +
-                '<label for="exampleInputEmail1">Panjang</label>' +
+                '<label for="exampleInputEmail1">Panjang (CM)</label>' +
                 '<input type="text" class="form-control" required name="panjang[]" value="<?php echo set_value('panjang[]'); ?>">' +
                 '</div>' +
                 '</div>' +
 
                 '<div class="col-md-2">' +
                 '<div class="form-group">' +
-                '<label for="exampleInputEmail1">Lebar</label>' +
+                '<label for="exampleInputEmail1">Lebar (CM)</label>' +
                 '<input type="text" class="form-control" required name="lebar[]" value="<?php echo set_value('lebar[]'); ?>">' +
                 '</div>' +
                 '</div>' +
 
                 '<div class="col-md-2">' +
                 '<div class="form-group">' +
-                '<label for="exampleInputEmail1">Tinggi</label>' +
+                '<label for="exampleInputEmail1">Tinggi (CM)</label>' +
                 '<input type="text" class="form-control" required name="tinggi[]" value="<?php echo set_value('tinggi[]'); ?>">' +
                 '</div>' +
                 '</div>' +
 
                 '<div class="col-md-12">' +
                 '<div class="form-group">' +
-                '<label for="exampleInputEmail1">Notes</label>' +
+                '<label for="exampleInputEmail1">Notes Sales</label>' +
                 '<textarea class="form-control" name="notes[]" id="notes" cols="30" rows="2"><?php echo set_value('notes[]'); ?></textarea>' +
                 '</div>' +
                 '</div>' +
