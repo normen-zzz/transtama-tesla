@@ -74,7 +74,7 @@
                                 <th>To</th>
                                 <th>Moda</th>
                                 <th>Jenis</th>
-                                <th>Berat</th>
+                                <th>Berat (KG)</th>
                                 <th>Koli</th>
                                 <th>Dimension</th>
                                 <th>Price Submitted</th>
@@ -99,11 +99,11 @@
                                     <td><?= $detailRequestPrice1['berat'] ?></td>
                                     <td><?= $detailRequestPrice1['koli'] ?></td>
                                     <td><?= (int)$detailRequestPrice1['panjang'].' X '.(int)$detailRequestPrice1['lebar'].' X '.(int)$detailRequestPrice1['tinggi'] ?><br> Air :<?= ((int)$detailRequestPrice1['panjang']*(int)$detailRequestPrice1['lebar']*(int)$detailRequestPrice1['tinggi'])/6000 ?> KG<br>Land :<?= ((int)$detailRequestPrice1['panjang']*(int)$detailRequestPrice1['lebar']*(int)$detailRequestPrice1['tinggi'])/4000 ?> KG</td>
-                                    <td>20000</td>
+                                    <td><?= rupiah($detailRequestPrice1['price']) ?> </td>
                                     <td><?= $detailRequestPrice1['notes_sales'] ?></td>
                                     <td><?= $detailRequestPrice1['notes_cs'] ?></td>
                                     <td><?= statusRequestPrice($detailRequestPrice1['status'])  ?></td>
-                                    <td><a href="" onclick="return confirm('Are You Sure ?')" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Detail</a></td>
+                                    <td><a href="" onclick="return confirm('Are You Sure ?')" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Detail</a><a href="" onclick="return confirm('Are You Sure ?')" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Confirm</a><a href="" onclick="return confirm('Are You Sure ?')" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Decline</a></td>
                                 </tr>
                             <?php $no++;
                             } ?>
