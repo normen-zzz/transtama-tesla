@@ -50,7 +50,7 @@
 
                     <div class="card-toolbar float-right">
 
-                       
+
 
                         <a href="<?= base_url('sales/RequestPrice/addRequestPrice') ?>" class="btn font-weight-bolder text-light" style="background-color: #9c223b;">
                             <span class="svg-icon svg-icon-md">
@@ -63,7 +63,7 @@
 
                 <div class="card-body" style="overflow: auto;">
                     <!--begin: Datatable-->
-                    <table class="table table-separate table-head-custom" id="tableRequestPrice">
+                    <table class="table table-separate table-head-custom" id="myTable">
                         <thead>
                             <tr>
                                 <th>NO</th>
@@ -90,20 +90,36 @@
                                 <tr>
                                     <td><?= $no  ?></td>
                                     <td>REQP - <?= $detailRequestPrice1['id_detailrequest'] ?></td>
-                                    <td><?= date('d-m-Y H:i:s',strtotime($detailRequestPrice1['created_at']))  ?></td>
+                                    <td><?= date('d-m-Y H:i:s', strtotime($detailRequestPrice1['created_at']))  ?></td>
                                     <td><?= getNameCustomer($detailRequestPrice1['customer']) ?></td>
-                                    <td><?= $detailRequestPrice1['alamat_from'].', '.$detailRequestPrice1['kecamatan_from'].', '.$detailRequestPrice1['kota_from'].', '.$detailRequestPrice1['provinsi_from'] ?></td>
-                                    <td><?= $detailRequestPrice1['alamat_to'].', '.$detailRequestPrice1['kecamatan_to'].', '.$detailRequestPrice1['kota_to'].', '.$detailRequestPrice1['provinsi_to'] ?></td>
+                                    <td><?= $detailRequestPrice1['alamat_from'] . ', ' . $detailRequestPrice1['kecamatan_from'] . ', ' . $detailRequestPrice1['kota_from'] . ', ' . $detailRequestPrice1['provinsi_from'] ?></td>
+                                    <td><?= $detailRequestPrice1['alamat_to'] . ', ' . $detailRequestPrice1['kecamatan_to'] . ', ' . $detailRequestPrice1['kota_to'] . ', ' . $detailRequestPrice1['provinsi_to'] ?></td>
                                     <td><?= moda($detailRequestPrice1['moda'])  ?></td>
                                     <td><?= $detailRequestPrice1['jenis'] ?></td>
                                     <td><?= $detailRequestPrice1['berat'] ?></td>
                                     <td><?= $detailRequestPrice1['koli'] ?></td>
-                                    <td><?= (int)$detailRequestPrice1['panjang'].' X '.(int)$detailRequestPrice1['lebar'].' X '.(int)$detailRequestPrice1['tinggi'] ?><br> Air :<?= ((int)$detailRequestPrice1['panjang']*(int)$detailRequestPrice1['lebar']*(int)$detailRequestPrice1['tinggi'])/6000 ?> KG<br>Land :<?= ((int)$detailRequestPrice1['panjang']*(int)$detailRequestPrice1['lebar']*(int)$detailRequestPrice1['tinggi'])/4000 ?> KG</td>
+                                    <td><?= (int)$detailRequestPrice1['panjang'] . ' X ' . (int)$detailRequestPrice1['lebar'] . ' X ' . (int)$detailRequestPrice1['tinggi'] ?><br> Air :<?= ((int)$detailRequestPrice1['panjang'] * (int)$detailRequestPrice1['lebar'] * (int)$detailRequestPrice1['tinggi']) / 6000 ?> KG<br>Land :<?= ((int)$detailRequestPrice1['panjang'] * (int)$detailRequestPrice1['lebar'] * (int)$detailRequestPrice1['tinggi']) / 4000 ?> KG</td>
                                     <td><?= rupiah($detailRequestPrice1['price']) ?> </td>
                                     <td><?= $detailRequestPrice1['notes_sales'] ?></td>
                                     <td><?= $detailRequestPrice1['notes_cs'] ?></td>
                                     <td><?= statusRequestPrice($detailRequestPrice1['status'])  ?></td>
-                                    <td><a href="" onclick="return confirm('Are You Sure ?')" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Detail</a><a href="" onclick="return confirm('Are You Sure ?')" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Confirm</a><a href="" onclick="return confirm('Are You Sure ?')" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Decline</a></td>
+                                    <td>
+                                        <a href=""  class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Detail</a>
+                                        <?php if ($detailRequestPrice1['status'] == 0) { ?>
+                                            <a href="<?= base_url('Sales/RequestPrice/editRequestPrice/'.$detailRequestPrice1['id_detailrequest']) ?>"  class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Edit</a>
+                                            <a href="<?= base_url('Sales/RequestPrice/deleteRequestPrice/'.$detailRequestPrice1['id_detailrequest']) ?>" onclick="return confirm('Are You Sure ?')" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Delete</a>
+                                        <?php  } ?>
+                                        <?php if ($detailRequestPrice1['status'] == 1) { ?>
+                                            <a href="" onclick="return confirm('Are You Sure ?')" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Approve</a>
+                                            <a href="" onclick="return confirm('Are You Sure ?')" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Decline</a>
+                                        <?php  } ?>
+                                        <?php if ($detailRequestPrice1['status'] == 2) { ?>
+                                            <a href="" onclick="return confirm('Are You Sure ?')" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Create SO</a>
+                                        <?php  } ?>
+
+
+                                       
+                                    </td>
                                 </tr>
                             <?php $no++;
                             } ?>

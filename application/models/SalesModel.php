@@ -159,12 +159,16 @@ class SalesModel extends CI_Model
         return $this->db->get();
     }
 
-    public function getDetailRequestPrice($id)
+    public function getDetailRequestPrice($user,$id=NULL)
     {
         $this->db->select('*');
         $this->db->from('detailrequest_price');
-        $this->db->where('created_by', $id);
-        $this->db->order_by('status', 'desc');
+        $this->db->where('created_by', $user);
+        $this->db->where('is_deleted', 0);
+        if ($id) {
+            $this->db->where('id_detailrequest', $id);
+        }
+        $this->db->order_by('status', 'asc');
         $this->db->order_by('id_request', 'asc');
         return $this->db->get();
     }
