@@ -32,6 +32,18 @@ class RequestPrice extends CI_Controller
         $this->backend->display('sales/v_request_price', $data);
     }
 
+    public function detailRequestPrice($id)
+    {
+        $data['title'] = 'Request Price';
+        $data['provinsi'] = $this->db->get('tb_province');
+        $data['kota'] = $this->db->get('tb_city');
+        $data['moda'] = $this->db->get('tbl_moda');
+        $data['customer'] = $this->db->get('tb_customer');
+        $data['detailRequestPrice'] = $this->sales->getDetailRequestPrice(NULL, $id)->row_array();
+        $this->backend->display('sales/v_detailRequestPrice', $data);
+    }
+
+
     public function addRequestPrice()
     {
         $this->load->library('form_validation');
@@ -92,17 +104,24 @@ class RequestPrice extends CI_Controller
             'notes_sales' => $notes,
            
         ];
-        $this->db->insert('detailrequest_price', $detailRequest);
-        $insert_id = $this->db->insert_id();
-        $log = [
-            'id_detailrequestprice' => $insert_id,
-            'log' => 'Request Telah Diedit',
-            'user' => $this->session->userdata('id_user')
-        ];
-        $this->db->insert('requestprice_log', $log);
+        $update = $this->db->update('detailrequest_price', $detailRequest,array('id_detailrequest' => $id));
+        
+        if ($update) {
+            $log = [
+                'id_detailrequestprice' => $id,
+                'log' => 'Request Telah Diedit',
+                'user' => $this->session->userdata('id_user'),
+                'date'=> date('Y-m-d H:i:s')
+            ];
+            $updateLog = $this->db->insert('requestprice_log', $log);
+            if ($updateLog) {
+                $this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">Success Edit</div>');
+                redirect('sales/RequestPrice');
+            }
+        }
+        
 
-        $this->session->set_flashdata('message', 'Anda Berhasil Menambah Request');
-        redirect('sales/RequestPrice');
+        
     }
 
 
@@ -178,11 +197,12 @@ class RequestPrice extends CI_Controller
             $log = [
                 'id_detailrequestprice' => $insert_id,
                 'log' => 'Request Dibuat',
-                'user' => $this->session->userdata('id_user')
+                'user' => $this->session->userdata('id_user'),
+                'date' => date('Y-m-d H:i:s')
             ];
             $this->db->insert('requestprice_log', $log);
         }
-        $this->session->set_flashdata('message', 'Anda Berhasil Menambah Request');
+        $this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">Success Add</div>');
         redirect('sales/RequestPrice');
     }
 
@@ -192,10 +212,12 @@ class RequestPrice extends CI_Controller
             $log = [
                 'id_detailrequestprice' => $id,
                 'log' => 'Request Price Dihapus',
-                'user' => $this->session->userdata('id_user')
+                'user' => $this->session->userdata('id_user'),
+                'date' => date('Y-m-d H:i:s')
             ];
             if ($this->db->insert('requestprice_log', $log)) {
-                $this->session->set_flashdata('message', 'Berhasil Menghapus');
+                $this->session->set_flashdata('message', '<div class="alert
+                alert-success" role="alert">Success Delete</div>');
                 redirect('sales/RequestPrice');
             }
         }
@@ -271,6 +293,41 @@ class RequestPrice extends CI_Controller
         $data['city'] = $this->db->get('tb_city')->result_array();
         $this->backend->display('sales/v_request_price_bulk', $data);
     }
+
+    public function confirmSales($id) {
+       $confirm =  $this->db->update('detailrequest_price',array('status' => 2),array('id_detailrequest' => $id));
+       if ($confirm) {
+        $log = [
+            'id_detailrequestprice' => $id,
+            'log' => 'Request Price Di confirm sales',
+            'user' => $this->session->userdata('id_user'),
+            'date' => date('Y-m-d H:i:s')
+        ];
+        if ($log) {
+            $this->session->set_flashdata('message', '<div class="alert
+                    alert-success" role="alert">Success Confirm</div>');
+            redirect('sales/RequestPrice');
+        }
+       
+       }
+    }
+
+    public function declineSales($id) {
+        $confirm =  $this->db->update('detailrequest_price',array('status' => 3),array('id_detailrequest' => $id));
+        if ($confirm) {
+            $log = [
+                'id_detailrequestprice' => $id,
+                'log' => 'Request Price Di Decline Sales',
+                'user' => $this->session->userdata('id_user'),
+                'date' => date('Y-m-d H:i:s')
+            ];
+            if ($log) {
+                $this->session->set_flashdata('message', '<div class="alert
+                        alert-success" role="alert">Success Decline</div>');
+                redirect('sales/RequestPrice');
+            }
+        }
+     }
 
     public function getProvinsi()
     {

@@ -103,23 +103,16 @@
                                     <td><?= $detailRequestPrice1['notes_sales'] ?></td>
                                     <td><?= $detailRequestPrice1['notes_cs'] ?></td>
                                     <td><?= statusRequestPrice($detailRequestPrice1['status'])  ?></td>
-                                    <td>
-                                        <a href=""  class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Detail</a>
-                                        <?php if ($detailRequestPrice1['status'] == 0) { ?>
-                                            <a href="<?= base_url('Sales/RequestPrice/editRequestPrice/'.$detailRequestPrice1['id_detailrequest']) ?>"  class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Edit</a>
-                                            <a href="<?= base_url('Sales/RequestPrice/deleteRequestPrice/'.$detailRequestPrice1['id_detailrequest']) ?>" onclick="return confirm('Are You Sure ?')" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Delete</a>
-                                        <?php  } ?>
-                                        <?php if ($detailRequestPrice1['status'] == 1) { ?>
-                                            <a href="" onclick="return confirm('Are You Sure ?')" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Approve</a>
-                                            <a href="" onclick="return confirm('Are You Sure ?')" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Decline</a>
-                                        <?php  } ?>
-                                        <?php if ($detailRequestPrice1['status'] == 2) { ?>
-                                            <a href="" onclick="return confirm('Are You Sure ?')" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Create SO</a>
-                                        <?php  } ?>
-
-
-                                       
-                                    </td>
+                                    <td><a href="<?= base_url('sales/RequestPrice/detailRequestPrice/'.$detailRequestPrice1['id_detailrequest']) ?>"  class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Detail</a>
+                                    <?php if ($detailRequestPrice1['status'] == 0) { ?>
+                                        <a href="<?= base_url('Sales/RequestPrice/deleteRequestPrice/'.$detailRequestPrice1['id_detailrequest']) ?>" onclick="return confirm('Are You Sure ?')" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Delete</a>
+                                    <?php } elseif ($detailRequestPrice1['status'] == 1) {?>
+                                        <a href="<?= base_url('sales/RequestPrice/confirmSales/'.$detailRequestPrice1['id_detailrequest']) ?>" onclick="return confirm('Are You Sure ?')" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Confirm</a>
+                                        <a href="<?= base_url('sales/RequestPrice/declineSales/'.$detailRequestPrice1['id_detailrequest']) ?>" onclick="return confirm('Are You Sure ?')" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Decline</a>
+                                    <?php } elseif ($detailRequestPrice1['status'] == 2) { ?>
+                                        <a href="<?= base_url('sales/RequestPrice/addNewSo/'.$detailRequestPrice1['id_detailrequest']) ?>" onclick="return confirm('Are You Sure ?')" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Create So</a>
+                                   <?php  } ?>
+                                       </td>
                                 </tr>
                             <?php $no++;
                             } ?>
