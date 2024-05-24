@@ -169,8 +169,9 @@ class SalesModel extends CI_Model
         if ($id) {
             $this->db->where('id_detailrequest', $id);
         }
-        $this->db->order_by('status', 'desc');
+        $this->db->order_by('status', 'asc');
         $this->db->order_by('id_request', 'asc');
+        
         return $this->db->get();
     }
     public function getCodeRequestPrice()
