@@ -395,13 +395,15 @@
 			</a>
 		</li>
 
-		<!-- <li class="menu-item menu-item" aria-haspopup="true">
+		<li class="menu-item menu-item" aria-haspopup="true">
 			<a href="<?= base_url('cs/RequestPrice') ?>" class="menu-link">
 				<span class="menu-text"><span class="svg-icon svg-icon-danger svg-icon mr-2">
-						<i class="fa fa-dollar-sign text-danger mr-2">
+
+						<i class="far fa-map text-danger mr-2" aria-hidden="true">
+
 					</span></i>Request Price</span>
 			</a>
-		</li> -->
+		</li>
 
 
 		<li class="menu-item menu-item-submenu menu-item-rel" data-menu-toggle="click" aria-haspopup="true">

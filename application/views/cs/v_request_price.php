@@ -19,29 +19,7 @@
                         <h3 class="card-label"><?= $title ?>
                             <span class="d-block text-muted pt-2 font-size-sm"></span>
                         </h3>
-                        <div class="row">
-                            <form action="<?= base_url('sales/RequestPrice') ?>" method="POST">
-                                <!-- <div class="row ml-2">
-                                    <div class="form-group mr-2">
-                                        <label>Start</label><br>
-                                        <input type="datetime-local" <?php if ($awal != NULL) { ?> value="<?= $awal ?>" <?php } ?> name="awal" id="awal" class="form-control">
 
-
-                                    </div>
-                                    <div class="form-group mr-3">
-                                        <label>End</label> <br>
-                                        <input type="datetime-local" <?php if ($akhir != NULL) { ?> value="<?= $akhir ?>" <?php } ?> name="akhir" id="akhir" class="form-control">
-                                    </div>
-
-
-
-                                    <div class="form-group"> <br>
-                                        <button type="submit" class="btn btn-success ml-3">Tampilkan</button>
-                                    </div>
-                                </div> -->
-
-                            </form>
-                        </div>
 
                     </div>
 
@@ -52,7 +30,7 @@
 
 
 
-                        
+
                         <!--end::Button-->
                     </div>
                 </div>
@@ -99,16 +77,11 @@
                                     <td><?= $detailRequestPrice1['notes_sales'] ?></td>
                                     <td><?= $detailRequestPrice1['notes_cs'] ?></td>
                                     <td><?= statusRequestPrice($detailRequestPrice1['status'])  ?></td>
-                                    <td><a href="<?= base_url('sales/RequestPrice/detailRequestPrice/'.$detailRequestPrice1['id_detailrequest']) ?>"  class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Detail</a>
-                                    <?php if ($detailRequestPrice1['status'] == 0) { ?>
-                                        <a href="<?= base_url('Sales/RequestPrice/deleteRequestPrice/'.$detailRequestPrice1['id_detailrequest']) ?>" onclick="return confirm('Are You Sure ?')" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Delete</a>
-                                    <?php } elseif ($detailRequestPrice1['status'] == 1) {?>
-                                        <a href="<?= base_url('sales/RequestPrice/confirmSales/'.$detailRequestPrice1['id_detailrequest']) ?>" onclick="return confirm('Are You Sure ?')" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Confirm</a>
-                                        <a href="<?= base_url('sales/RequestPrice/declineSales/'.$detailRequestPrice1['id_detailrequest']) ?>" onclick="return confirm('Are You Sure ?')" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Decline</a>
-                                    <?php } elseif ($detailRequestPrice1['status'] == 2) { ?>
-                                        <a href="<?= base_url('sales/RequestPrice/addNewSo/'.$detailRequestPrice1['id_detailrequest']) ?>" onclick="return confirm('Are You Sure ?')" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Create So</a>
-                                   <?php  } ?>
-                                       </td>
+                                    <td><a href="<?= base_url('cs/RequestPrice/detailRequestPrice/' . $detailRequestPrice1['id_detailrequest']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Detail</a>
+                                        <?php if ($detailRequestPrice1['status'] == 0) { ?>
+                                            <button type="button" href="#" class="btn btn-sm text-light mb-1 modalAddPrice" data-toggle="modal" data-target="#modalAddPrice" data-id_detailrequest="<?= $detailRequestPrice1['id_detailrequest'] ?>" style="background-color: #9c223b;">Add Price</button>
+                                        <?php } ?>
+                                    </td>
                                 </tr>
                             <?php $no++;
                             } ?>
@@ -124,4 +97,58 @@
     </div>
     <!--end::Entry-->
 </div>
+<div class="modal fade" id="modalAddPrice">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Add Price</b> </h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="<?= base_url('cs/RequestPrice/addPriceProcess') ?>" method="POST" enctype="multipart/form-data">
+                    <div class="card-body">
+                        <div class="row" id="content-price">
+
+                        </div>
+                    </div>
+                    <!-- /.card-body -->
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+            </form>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
 </div>
+
+<script>
+    $(document).ready(function() {
+        $('.modalAddPrice').click(function() {
+            console.log('kepencet harga')
+            var id_detailrequest = $(this).data('id_detailrequest'); // Mendapatkan ID dari atribut data-id tombol yang diklik
+            // $('#content-tracking').html('');
+            // Memuat data menggunakan AJAX dengan mengirimkan ID sebagai parameter
+            var content = '<div class="col">' +
+
+                '<span>ID REQUEST : <b>REQP - ' + id_detailrequest + '</b></span>' +
+
+            '<input type="text" name="id_detailrequest" value="' + id_detailrequest + '" hidden>' +
+
+                '<div class="form-group mt-2">' +
+                '<label for="price">Price</label>' +
+                '<input type="number" name="price" class="form-control" id="price"  placeholder="Enter Price">' +
+                '</div>' +
+                '</div>';
+            $('#content-price').html(content);
+
+
+
+
+        });
+    })
+</script>
