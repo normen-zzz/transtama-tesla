@@ -76,10 +76,11 @@
                                     <td><?= rupiah($detailRequestPrice1['price']) ?> </td>
                                     <td><?= $detailRequestPrice1['notes_sales'] ?></td>
                                     <td><?= $detailRequestPrice1['notes_cs'] ?></td>
-                                    <td><?= statusRequestPrice($detailRequestPrice1['status'])  ?></td>
+                                    <td><?= statusRequestPrice($detailRequestPrice1['status']).'<br>'.$detailRequestPrice1['notes_decline_cs'].$detailRequestPrice1['notes_decline_sales']  ?></td>
                                     <td><a href="<?= base_url('cs/RequestPrice/detailRequestPrice/' . $detailRequestPrice1['id_detailrequest']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Detail</a>
                                         <?php if ($detailRequestPrice1['status'] == 0) { ?>
                                             <button type="button" href="#" class="btn btn-sm text-light mb-1 modalAddPrice" data-toggle="modal" data-target="#modalAddPrice" data-id_detailrequest="<?= $detailRequestPrice1['id_detailrequest'] ?>" style="background-color: #9c223b;">Add Price</button>
+                                            <button type="button" href="#" class="btn btn-sm text-light mb-1 modalDeclineCs" data-toggle="modal" data-target="#modalDeclineCs" data-id_detailrequest="<?= $detailRequestPrice1['id_detailrequest'] ?>" style="background-color: #9c223b;">Decline</button>
                                         <?php } ?>
                                     </td>
                                 </tr>
@@ -126,6 +127,35 @@
     <!-- /.modal-dialog -->
 </div>
 
+<div class="modal fade" id="modalDeclineCs">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Decline Request Price </b> </h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form action="<?= base_url('cs/RequestPrice/declineCs') ?>" method="POST" enctype="multipart/form-data">
+                    <div class="card-body">
+                        <div class="row" id="content-declinecs">
+
+                        </div>
+                    </div>
+                    <!-- /.card-body -->
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+            </form>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
 <script>
     $(document).ready(function() {
         $('.modalAddPrice').click(function() {
@@ -137,14 +167,47 @@
 
                 '<span>ID REQUEST : <b>REQP - ' + id_detailrequest + '</b></span>' +
 
-            '<input type="text" name="id_detailrequest" value="' + id_detailrequest + '" hidden>' +
+                '<input type="text" name="id_detailrequest" value="' + id_detailrequest + '" hidden>' +
 
                 '<div class="form-group mt-2">' +
                 '<label for="price">Price</label>' +
                 '<input type="number" name="price" class="form-control" id="price"  placeholder="Enter Price">' +
                 '</div>' +
+                '<div class="form-group mt-2">' +
+                '<label for="notes_cs">Notes</label>' +
+                ' <textarea name="notes_cs" id="notes_cs" class="form-control"></textarea>' +
+                '</div>' +
                 '</div>';
             $('#content-price').html(content);
+
+
+
+
+        });
+    })
+</script>
+
+
+<script>
+    $(document).ready(function() {
+        $('.modalDeclineCs').click(function() {
+            
+            var id_detailrequest = $(this).data('id_detailrequest'); // Mendapatkan ID dari atribut data-id tombol yang diklik
+            // $('#content-tracking').html('');
+            // Memuat data menggunakan AJAX dengan mengirimkan ID sebagai parameter
+            var content = '<div class="col">' +
+
+                '<span>ID REQUEST : <b>REQP - ' + id_detailrequest + '</b></span>' +
+
+                '<input type="text" name="id_detailrequest" value="' + id_detailrequest + '" hidden>' +
+
+                
+                '<div class="form-group mt-2">' +
+                '<label for="notes_decline_cs">Notes Decline</label>' +
+                ' <textarea name="notes_decline_cs" id="notes_decline_cs" class="form-control"></textarea>' +
+                '</div>' +
+                '</div>';
+            $('#content-declinecs').html(content);
 
 
 

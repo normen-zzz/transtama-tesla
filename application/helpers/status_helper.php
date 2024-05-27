@@ -41,5 +41,7 @@ function statusRequestPrice($status)
         return '<span class="label label-void label-inline font-weight-lighter" style="height:30px">Decline By Sales</span>';
     } elseif ($status == 4) {
         return '<span class="label label-warning label-inline font-weight-lighter">SO Created</span>';
-    } 
+    } elseif ($status == 5) {
+        return '<span class="label label-void label-inline font-weight-lighter" style="height:30px">Decline By Cs</span>';
+    }
 }

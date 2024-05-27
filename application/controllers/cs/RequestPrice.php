@@ -32,7 +32,7 @@ class RequestPrice extends CI_Controller
         $this->backend->display('cs/v_request_price', $data);
     }
 
-   
+
 
     public function detailRequestPrice($id)
     {
@@ -45,17 +45,19 @@ class RequestPrice extends CI_Controller
         $this->backend->display('cs/v_detailRequestPrice', $data);
     }
 
-    public function addPriceProcess() {
+    public function addPriceProcess()
+    {
         $id_detailrequest = $this->input->post('id_detailrequest');
         $price = $this->input->post('price');
+        $notes_cs = $this->input->post('notes_cs');
 
-        $update = $this->db->update('detailrequest_price',['price' => $price,'status' => 1],['id_detailrequest' => $id_detailrequest]);
+        $update = $this->db->update('detailrequest_price', ['price' => $price, 'notes_cs' => $notes_cs, 'status' => 1], ['id_detailrequest' => $id_detailrequest]);
         if ($update) {
             $log = [
                 'id_detailrequestprice' => $id_detailrequest,
                 'log' => 'Harga Telah Diinput',
                 'user' => $this->session->userdata('id_user'),
-                'date'=> date('Y-m-d H:i:s')
+                'date' => date('Y-m-d H:i:s')
             ];
             $updateLog = $this->db->insert('requestprice_log', $log);
             if ($updateLog) {
@@ -63,8 +65,6 @@ class RequestPrice extends CI_Controller
                 redirect('cs/RequestPrice');
             }
         }
-
-        
     }
 
     public function getModalEditRequest()
@@ -81,4 +81,24 @@ class RequestPrice extends CI_Controller
         var_dump(date('Y-m-t H:i:s'));
     }
 
+    public function declineCs() {
+        $id_detailrequest = $this->input->post('id_detailrequest');
+        $notes_decline_cs = $this->input->post('notes_decline_cs');
+       
+
+        $update = $this->db->update('detailrequest_price', ['notes_decline_cs' => $notes_decline_cs, 'status' => 5], ['id_detailrequest' => $id_detailrequest]);
+        if ($update) {
+            $log = [
+                'id_detailrequestprice' => $id_detailrequest,
+                'log' => 'Request Telah di decline Oleh Cs',
+                'user' => $this->session->userdata('id_user'),
+                'date' => date('Y-m-d H:i:s')
+            ];
+            $updateLog = $this->db->insert('requestprice_log', $log);
+            if ($updateLog) {
+                $this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">Success Decline</div>');
+                redirect('cs/RequestPrice');
+            }
+        }
+    }
 }

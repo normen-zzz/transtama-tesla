@@ -1,13 +1,5 @@
 <?php
-
-
 defined('BASEPATH') or exit('No direct script access allowed');
-
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Reader\Csv;
-use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
-use PhpOffice\PhpSpreadsheet\IOFactory;
-
 class RequestPrice extends CI_Controller
 {
     public function __construct()
@@ -102,16 +94,16 @@ class RequestPrice extends CI_Controller
             'lebar' => $lebar,
             'tinggi' => $tinggi,
             'notes_sales' => $notes,
-           
+
         ];
-        $update = $this->db->update('detailrequest_price', $detailRequest,array('id_detailrequest' => $id));
-        
+        $update = $this->db->update('detailrequest_price', $detailRequest, array('id_detailrequest' => $id));
+
         if ($update) {
             $log = [
                 'id_detailrequestprice' => $id,
                 'log' => 'Request Telah Diedit',
                 'user' => $this->session->userdata('id_user'),
-                'date'=> date('Y-m-d H:i:s')
+                'date' => date('Y-m-d H:i:s')
             ];
             $updateLog = $this->db->insert('requestprice_log', $log);
             if ($updateLog) {
@@ -119,9 +111,6 @@ class RequestPrice extends CI_Controller
                 redirect('sales/RequestPrice');
             }
         }
-        
-
-        
     }
 
 
@@ -294,40 +283,45 @@ class RequestPrice extends CI_Controller
         $this->backend->display('sales/v_request_price_bulk', $data);
     }
 
-    public function confirmSales($id) {
-       $confirm =  $this->db->update('detailrequest_price',array('status' => 2),array('id_detailrequest' => $id));
-       if ($confirm) {
-        $log = [
-            'id_detailrequestprice' => $id,
-            'log' => 'Request Price Di confirm sales',
-            'user' => $this->session->userdata('id_user'),
-            'date' => date('Y-m-d H:i:s')
-        ];
-        if ($log) {
-            $this->session->set_flashdata('message', '<div class="alert
-                    alert-success" role="alert">Success Confirm</div>');
-            redirect('sales/RequestPrice');
-        }
-       
-       }
-    }
-
-    public function declineSales($id) {
-        $confirm =  $this->db->update('detailrequest_price',array('status' => 3),array('id_detailrequest' => $id));
+    public function confirmSales($id)
+    {
+        $confirm =  $this->db->update('detailrequest_price', array('status' => 2), array('id_detailrequest' => $id));
         if ($confirm) {
             $log = [
                 'id_detailrequestprice' => $id,
-                'log' => 'Request Price Di Decline Sales',
+                'log' => 'Request Price Di confirm sales',
                 'user' => $this->session->userdata('id_user'),
                 'date' => date('Y-m-d H:i:s')
             ];
             if ($log) {
                 $this->session->set_flashdata('message', '<div class="alert
-                        alert-success" role="alert">Success Decline</div>');
+                    alert-success" role="alert">Success Confirm</div>');
                 redirect('sales/RequestPrice');
             }
         }
-     }
+    }
+
+    public function declineSales()
+    {
+        $id_detailrequest = $this->input->post('id_detailrequest');
+        $notes_decline_sales = $this->input->post('notes_decline_sales');
+
+
+        $update = $this->db->update('detailrequest_price', ['notes_decline_sales' => $notes_decline_sales, 'status' => 3], ['id_detailrequest' => $id_detailrequest]);
+        if ($update) {
+            $log = [
+                'id_detailrequestprice' => $id_detailrequest,
+                'log' => 'Request Telah di decline Oleh Sales',
+                'user' => $this->session->userdata('id_user'),
+                'date' => date('Y-m-d H:i:s')
+            ];
+            $updateLog = $this->db->insert('requestprice_log', $log);
+            if ($updateLog) {
+                $this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">Success Decline</div>');
+                redirect('sales/RequestPrice');
+            }
+        }
+    }
 
     public function getProvinsi()
     {
