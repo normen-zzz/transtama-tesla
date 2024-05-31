@@ -228,6 +228,49 @@
 
 							<?php	} ?>
 
+							<?php if ($detailrequest) { ?>
+								<div class="row">
+									<h3>History Request Price</h3>
+									<table class="table table-bordered">
+										<thead>
+											<tr>
+
+												<th>ID Request</th>
+												<th>Request At</th>
+												<th>Customer</th>
+												<th>From</th>
+												<th>To</th>
+												<th>Moda</th>
+												<th>Jenis</th>
+												<th>Berat (KG)</th>
+												<th>Koli</th>
+												<th>Dimension</th>
+												<th>Price Approved</th>
+												<th>Notes Sales</th>
+												<th>Notes CS</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr>
+												<td>REQP - <?= $detailrequest['id_detailrequest'] ?></td>
+												<td><?= date('d-m-Y H:i:s', strtotime($detailrequest['created_at']))  ?></td>
+												<td><?= getNameCustomer($detailrequest['customer']) ?></td>
+												<td><?= $detailrequest['alamat_from'] . ', ' . $detailrequest['kecamatan_from'] . ', ' . $detailrequest['kota_from'] . ', ' . $detailrequest['provinsi_from'] ?></td>
+												<td><?= $detailrequest['alamat_to'] . ', ' . $detailrequest['kecamatan_to'] . ', ' . $detailrequest['kota_to'] . ', ' . $detailrequest['provinsi_to'] ?></td>
+												<td><?= moda($detailrequest['moda'])  ?></td>
+												<td><?= $detailrequest['jenis'] ?></td>
+												<td><?= $detailrequest['berat'] ?></td>
+												<td><?= $detailrequest['koli'] ?></td>
+												<td><?= (int)$detailrequest['panjang'] . ' X ' . (int)$detailrequest['lebar'] . ' X ' . (int)$detailrequest['tinggi'] ?><br> Air :<?= ((int)$detailrequest['panjang'] * (int)$detailrequest['lebar'] * (int)$detailrequest['tinggi']) / 6000 ?> KG<br>Land :<?= ((int)$detailrequest['panjang'] * (int)$detailrequest['lebar'] * (int)$detailrequest['tinggi']) / 4000 ?> KG</td>
+												<td><?= rupiah($detailrequest['price']) ?> </td>
+												<td><?= $detailrequest['notes_sales'] ?></td>
+												<td><?= $detailrequest['notes_cs'] ?></td>
+											</tr>
+
+										</tbody>
+									</table>
+								</div>
+							<?php } ?>
 							<div class="row">
 								<div class="col-md-12">
 									<form action="<?= base_url('sales/salesOrder/prosesSo') ?>" method="POST">
@@ -397,9 +440,9 @@
 																																															?> disabled <?php } ?>>
 														</td>
 														<td>
-															
+
 															<textarea class="form-control" style="width: 200px;" <?php if ($shp['status_so'] >= 1) {
-																		?> disabled <?php } ?> name="so_note[]" id="so_note" cols="30" rows="3"><?= $shp['so_note'] ?></textarea>
+																													?> disabled <?php } ?> name="so_note[]" id="so_note" cols="30" rows="3"><?= $shp['so_note'] ?></textarea>
 														</td>
 														<td>
 															<?php

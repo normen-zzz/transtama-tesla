@@ -170,7 +170,7 @@ class SalesModel extends CI_Model
             $this->db->where('id_detailrequest', $id);
         }
         $this->db->order_by('status', 'asc');
-        $this->db->order_by('id_request', 'asc');
+        $this->db->order_by('id_detailrequest', 'asc');
         
         return $this->db->get();
     }

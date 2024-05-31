@@ -51,6 +51,10 @@
                     <div class="card-toolbar float-right">
 
 
+                    <a href="#" class="btn mr-2 text-light" data-toggle="modal" data-target="#modal-import" style="background-color: #9c223b;">
+															<i class="fas fa-upload text-light"> </i>
+														Bulk Add
+														</a>
 
                         <a href="<?= base_url('sales/RequestPrice/addRequestPrice') ?>" class="btn font-weight-bolder text-light" style="background-color: #9c223b;">
                             <span class="svg-icon svg-icon-md">
@@ -110,7 +114,7 @@
                                         <a href="<?= base_url('sales/RequestPrice/confirmSales/'.$detailRequestPrice1['id_detailrequest']) ?>" onclick="return confirm('Are You Sure ?')" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Confirm</a>
                                         <button type="button" href="#" class="btn btn-sm text-light mb-1 modalDeclineSales" data-toggle="modal" data-target="#modalDeclineSales" data-id_detailrequest="<?= $detailRequestPrice1['id_detailrequest'] ?>" style="background-color: #9c223b;">Decline</button>
                                     <?php } elseif ($detailRequestPrice1['status'] == 2) { ?>
-                                        <a href="<?= base_url('sales/RequestPrice/addNewSo/'.$detailRequestPrice1['id_detailrequest']) ?>" onclick="return confirm('Are You Sure ?')" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Create So</a>
+                                        <a href="<?= base_url('sales/RequestPrice/addSo/'.$detailRequestPrice1['id_detailrequest']) ?>" onclick="return confirm('Are You Sure ?')" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Create So</a>
                                    <?php  } ?>
                                        </td>
                                 </tr>
@@ -158,6 +162,34 @@
     </div>
     <!-- /.modal-dialog -->
 </div>
+
+<div class="modal fade" id="modal-import">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title">Import Sales Order</h4>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<form action="<?= base_url('sales/RequestPrice/import') ?>" method="POST" enctype="multipart/form-data">
+					<div class="modal-body">
+						<div class="form-group">
+							<label class="col-form-label text-lg-right font-weight-bold">Upload File</label>
+							<input type="file" id="input-file-now" name="upload_file" class="dropify" required />
+							
+						</div>
+					</div>
+					<div class="modal-footer justify-content-between">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+						<button type="submit" class="btn btn-primary">Submit</button>
+					</div>
+				</form>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal-dialog -->
+	</div>
 
 <script>
     $(document).ready(function() {

@@ -29,7 +29,7 @@ class RequestPrice extends CI_Controller
     {
         $data['title'] = 'Request Price';
         $data['detailRequestPrice'] = $this->sales->getDetailRequestPrice();
-        $this->backend->display('cs/v_request_price', $data);
+        $this->backend->display('cs/requestprice/v_request_price', $data);
     }
 
 
@@ -42,7 +42,7 @@ class RequestPrice extends CI_Controller
         $data['moda'] = $this->db->get('tbl_moda');
         $data['customer'] = $this->db->get('tb_customer');
         $data['detailRequestPrice'] = $this->sales->getDetailRequestPrice(NULL, $id)->row_array();
-        $this->backend->display('cs/v_detailRequestPrice', $data);
+        $this->backend->display('cs/requestprice/v_detailRequestPrice', $data);
     }
 
     public function addPriceProcess()

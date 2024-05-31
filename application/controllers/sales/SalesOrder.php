@@ -935,6 +935,10 @@ class SalesOrder extends CI_Controller
     public function detail($id)
     {
         $data['title'] = 'Detail Sales Order';
+        $detailrequest = $this->db->get_where('detailrequest_price',['id_so' => $id]);
+        if ($detailrequest) {
+            $data['detailrequest'] = $detailrequest->row_array();
+        }
         $data['p'] = $this->db->get_where('tbl_so', ['id_so' => $id])->row_array();
         $data['request_aktivasi'] = $this->db->get_where('tbl_aktivasi_so', ['id_so' => $id])->row_array();
         $data['service'] = $this->db->get('tb_service_type')->result_array();
