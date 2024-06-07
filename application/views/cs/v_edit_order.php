@@ -482,7 +482,10 @@
 																	
 																	<td><?= $dimension1['berat_aktual'] ?></td>
 																	<td><strong><?= $dimension1['berat_volume'] ?></strong></td>
-																	<?php } ?>
+																	<?php } else{ ?>
+																		<td><?= $dimension1['berat_aktual'] ?></td>
+																	<td><strong><?= $dimension1['berat_volume'] ?></strong></td>
+																		<?php } ?>
 																
 																
 																<td><?= $dimension1['no_do'] ?></td>
