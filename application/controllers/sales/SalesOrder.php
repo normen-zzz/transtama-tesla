@@ -122,6 +122,7 @@ class SalesOrder extends CI_Controller
             'surcharge_baru' => $this->input->post('surcharge_baru'),
             'disc_baru' => $this->input->post('disc_baru') / 100,
             'cn_baru' => $this->input->post('cn_baru') / 100,
+            'special_cn_baru' => $this->input->post('special_cn_baru'),
             'others_baru' => $this->input->post('others_baru'),
             'alasan' => $this->input->post('alasan'),
             'shipment_id' => $this->input->post('id'),
@@ -1369,6 +1370,7 @@ class SalesOrder extends CI_Controller
         $data['js'] = $this->order->getRevisiJs()->result_array();
         $this->backend->display('sales/v_js_revisi', $data);
     }
+
     public function viewRevisiSo()
     {
         $data['title'] = 'List Revisi Sales Order';

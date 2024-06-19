@@ -70,7 +70,7 @@
                     <table class="table table-separate table-head-custom" id="myTable">
                         <thead>
                             <tr>
-                                <th>NO</th>
+                                <!-- <th>NO</th> -->
                                 <th>ID Request</th>
                                 <th>Created At</th>
                                 <th>Customer</th>
@@ -82,8 +82,7 @@
                                 <th>Koli</th>
                                 <th>Dimension</th>
                                 <th>Price Submitted</th>
-                                <th>Notes Sales</th>
-                                <th>Notes CS</th>
+                                <th>Notes</th>
                                 <th>Status</th>
                                 <th>Action</th>
                             </tr>
@@ -92,7 +91,7 @@
                             <?php $no = 1;
                             foreach ($detailRequestPrice->result_array() as $detailRequestPrice1) { ?>
                                 <tr>
-                                    <td><?= $no  ?></td>
+                                    <!-- <td><?= $no  ?></td> -->
                                     <td>REQP - <?= $detailRequestPrice1['id_detailrequest'] ?></td>
                                     <td><?= date('d-m-Y H:i:s', strtotime($detailRequestPrice1['created_at']))  ?></td>
                                     <td><?= getNameCustomer($detailRequestPrice1['customer']) ?></td>
@@ -104,8 +103,8 @@
                                     <td><?= $detailRequestPrice1['koli'] ?></td>
                                     <td><?= (int)$detailRequestPrice1['panjang'] . ' X ' . (int)$detailRequestPrice1['lebar'] . ' X ' . (int)$detailRequestPrice1['tinggi'] ?><br> Air :<?= ((int)$detailRequestPrice1['panjang'] * (int)$detailRequestPrice1['lebar'] * (int)$detailRequestPrice1['tinggi']) / 6000 ?> KG<br>Land :<?= ((int)$detailRequestPrice1['panjang'] * (int)$detailRequestPrice1['lebar'] * (int)$detailRequestPrice1['tinggi']) / 4000 ?> KG</td>
                                     <td><?= rupiah($detailRequestPrice1['price']) ?> </td>
-                                    <td><?= $detailRequestPrice1['notes_sales'] ?></td>
-                                    <td><?= $detailRequestPrice1['notes_cs'] ?></td>
+                                    <td>Sales : <?= $detailRequestPrice1['notes_sales'] ?> <br> Cs :<?= $detailRequestPrice1['notes_cs'] ?>  </td>
+                                   
                                     <td><?= statusRequestPrice($detailRequestPrice1['status']).'<br>'.$detailRequestPrice1['notes_decline_cs'].$detailRequestPrice1['notes_decline_sales']  ?></td>
                                     <td><a href="<?= base_url('sales/RequestPrice/detailRequestPrice/'.$detailRequestPrice1['id_detailrequest']) ?>"  class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Detail</a>
                                     <?php if ($detailRequestPrice1['status'] == 0) { ?>
