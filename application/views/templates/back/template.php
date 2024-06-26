@@ -480,7 +480,7 @@
 					success: function(data) {
 						$('#origin_destination').val(data.alamat);
 						// $('#sender').val(data.pic);
-						$('#id_customer').val(data.id_customer);
+						// $('#id_customer').val(data.id_customer);
 						$('#state_shipper').val(data.provinsi);
 						$('#city_shipper').val(data.kota);
 						$('#shipper').val(data.nama_pt);

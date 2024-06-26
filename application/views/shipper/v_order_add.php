@@ -67,10 +67,7 @@
 																</select>
 															</div>
 														</div>
-														<input type="text" class="form-control" hidden name="state_shipper2" value="<?php echo set_value('state_shipper2'); ?>" id="state_shipper">
-														<input type="text" class="form-control" hidden name="city_shipper2" value="<?php echo set_value('city_shipper2'); ?>" id="city_shipper">
-														<input type="text" class="form-control" hidden name="shipper2" value="<?php echo set_value('shipper2'); ?>" id="shipper">
-														<input type="text" class="form-control" hidden name="origin_destination" value="<?php echo set_value('origin_destination'); ?>" id="origin_destination">
+														
 														<input type="text" class="form-control" hidden name="id_so" value="<?= $id_so ?>" id="id_so">
 														<input type="text" class="form-control" hidden name="id_tracking" value="<?= $id_tracking ?>" id="id_tracking">
 
