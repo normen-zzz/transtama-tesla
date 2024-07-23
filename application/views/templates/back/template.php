@@ -96,9 +96,7 @@
 
 
 	<?php $this->load->view('templates/back/navbar'); ?>
-		<audio id="myAudio" src="<?= base_url('assets/2.mp3') ?>" autoplay>
-		Browser Anda tidak mendukung elemen audio.
-	</audio>
+		
 	
 	<?= $_content; ?>
 	<?php $this->load->view('templates/back/footer'); ?>

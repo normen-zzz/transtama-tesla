@@ -169,6 +169,7 @@ class SalesModel extends CI_Model
         if ($id) {
             $this->db->where('id_detailrequest', $id);
         }
+        $this->db->where('is_deleted', 0);
         $this->db->order_by('status', 'asc');
         $this->db->order_by('id_detailrequest', 'asc');
         

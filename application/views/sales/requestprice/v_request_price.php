@@ -51,10 +51,10 @@
                     <div class="card-toolbar float-right">
 
 
-                    <a href="#" class="btn mr-2 text-light" data-toggle="modal" data-target="#modal-import" style="background-color: #9c223b;">
+                    <!-- <a href="#" class="btn mr-2 text-light" data-toggle="modal" data-target="#modal-import" style="background-color: #9c223b;">
 															<i class="fas fa-upload text-light"> </i>
 														Bulk Add
-														</a>
+														</a> -->
 
                         <a href="<?= base_url('sales/RequestPrice/addRequestPrice') ?>" class="btn font-weight-bolder text-light" style="background-color: #9c223b;">
                             <span class="svg-icon svg-icon-md">
