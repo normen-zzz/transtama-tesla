@@ -17,107 +17,65 @@ class Scan extends CI_Controller
     public function index()
     {
         $data['title'] = 'Scan';
-        $data['gateway'] = $this->order->dispatch()->result_array();
+        $data['bagging'] = $this->db->query('SELECT * FROM BAGGING AS a LEFT JOIN tbl_shp_order AS b ON a.id_bagging = b.bagging  WHERE a.is_deleted = 0 AND a.status_bagging = 3 AND b.service_type = "f4e0915b-7487-4fae-a04c-c3363d959742"');
         $this->backend->display('dispatcher/v_shipment', $data);
         // $this->load->view('dispatcher/v_shipment', $data);
     }
-	 public function history()
+    public function history()
     {
         $data['title'] = 'History Task';
         $data['gateway'] = $this->order->dispatchHistory()->result_array();
         $this->backend->display('dispatcher/v_history_shipment', $data);
     }
-    function cek_id()
+    public function scanInBagging()
     {
-        // $result_code = $this->input->post('id_karyawan');
-        $result_code = $this->input->post('shipment_id');
-        // untuk gateway
-        // CEK APAKAH ADA TUGAS YG BELUM DI SCAN
-        $cek_task_gateway = $this->db->limit(1)->order_by('id_gateway', 'desc')->get_where('tbl_gateway', ['shipment_id' => $result_code, 'status_eksekusi' => 0])->row_array();
+        $id_bagging = $this->input->post('hasilscan');
+        $bagging = $this->db->query('SELECT status_bagging FROM bagging WHERE id_bagging = ' . $id_bagging . ' ')->row_array();
 
-        if ($cek_task_gateway) {
-            // $cek_tracking = $this->db->limit(1)->order_by('id_tracking', 'desc')->get_where('tbl_tracking_real', ['shipment_id' => $result_code])->row_array();
-            if ($cek_task_gateway['status'] == 'in') {
-                $status = '';
-                // cek servicenya
-                if ($cek_task_gateway['service'] == 'Sea Service' || $cek_task_gateway['service'] == 'Regular Service') {
-                    $status = "Shipment Telah Tiba Di Hub Jakarta Utara";
-                } else {
-                    $status = "Shipment Telah Tiba Di Hub CGK";
-                }
-                $data = array(
-                    'status' => $status,
-                    'id_so' => $cek_task_gateway['id_so'],
-                    'shipment_id' => $result_code,
-                    'note' => null,
-                    'id_user' => $this->session->userdata('id_user'),
-                    'created_at' => date('Y-m-d'),
-                    'time' => date('H:i:s'),
-                    'flag' => 6,
-                    'status_eksekusi' => 1
-                );
-                $insert = $this->db->insert('tbl_tracking_real', $data);
-                if ($insert) {
-                    $data = array(
-                        'shipment_id' => $result_code,
-                        'id_user' => $this->session->userdata('id_user'),
-                        'status' => 'out',
-                        'is_incoming' => $this->input->post('is_incoming'),
-                        // 'note' => $cek_tracking['note'],
-                        'id_so' => $cek_task_gateway['id_so'],
-                        'service' => $cek_task_gateway['service'],
-                        'status_eksekusi' => 0
-                    );
-                    $this->db->insert('tbl_gateway', $data);
-                    $data = array(
-                        'status_eksekusi' => 1
-                    );
-                    $this->db->update('tbl_gateway', $data, ['id_gateway' => $cek_task_gateway['id_gateway']]);
-                    $this->session->set_flashdata('message', 'Success');
-                    redirect('dispatcher/scan');
-                } else {
-                    $this->session->set_flashdata('message', 'Failed');
-                    redirect('dispatcher/scan');
-                }
-            } else {
-                $status = '';
-                // cek servicenya
-                if ($cek_task_gateway['service'] == 'Sea Service' || $cek_task_gateway['service'] == 'Regular Service') {
-                    $status = "Shipment Telah Keluar Dari Hub Jakarta Utara";
-                } else {
-                    $status = "Shipment Telah Keluar Dari Hub CGK";
-                }
-                $data = array(
-                    'status' => $status,
-                    'id_so' => $cek_task_gateway['id_so'],
-                    'shipment_id' => $result_code,
-                    'id_user' => $this->session->userdata('id_user'),
-                    'created_at' => date('Y-m-d'),
-                    'time' => date('H:i:s'),
-                    'flag' => 7,
-                    'status_eksekusi' => 1
-                );
-                $insert = $this->db->insert('tbl_tracking_real', $data);
-                if ($insert) {
-                    $data = array(
-                        'status_eksekusi' => 1
-                    );
-                    $this->db->update('tbl_gateway', $data, ['id_gateway' => $cek_task_gateway['id_gateway']]);
-                    // 1= delivery
-                    // 2= ke hub
-                    $data = array(
-                        'is_delivery' => $this->input->post('is_delivery')
-                    );
-                    $this->db->update('tbl_shp_order', $data, ['shipment_id' => $result_code]);
-                    $this->session->set_flashdata('message', 'Success');
-                    redirect('dispatcher/scan');
-                } else {
-                    $this->session->set_flashdata('message', 'Failed');
+        if ($bagging) {
+            if ($bagging['status_bagging'] == 2) {
+                $updateBagging = $this->db->update('bagging', ['status_bagging' => 3, 'dispatcher_in' => date('Y-m-d H:i:s')], ['id_bagging' => $id_bagging]);
+                if ($updateBagging) {
+                    $resi = $this->db->query('SELECT shipment_id,id_so FROM tbl_shp_order WHERE bagging = ' . $id_bagging . ' ')->result_array();
+
+                    foreach ($resi as $resi1) {
+                        $dataTracking = [
+                            'status' => ucwords(strtolower("paket telah tiba di hub CGK")),
+                            'id_so' => $resi1['id_so'],
+                            'shipment_id' => $resi1['shipment_id'],
+                            'created_at' => date('Y-m-d'),
+                            'time' => date('H:i:s'),
+                            'flag' => 7,
+                            'status_eksekusi' => 1,
+                            'id_user' => $this->session->userdata('id_user'),
+                        ];
+                        $this->db->insert('tbl_tracking_real', $dataTracking);
+                    }
                     redirect('dispatcher/scan');
                 }
             }
-        } else {
-            $this->session->set_flashdata('message', 'No shipment with this QC');
+        }
+    }
+
+    public function doScanOut($id_bagging)
+    {
+        $data = [
+            'bagging' => $this->db->get_where('bagging',['id_bagging' => $id_bagging])->row_array()
+        ];
+        $this->backend->display('dispatcher/doScanOut', $data);
+    }
+
+    public function processScanOut($id_bagging)
+    {
+        $dataScanOut = [
+            'no_flight' => $this->input->post('no_flight'),
+            'flight_at' => date('Y-m-d H:i:s', strtotime($this->input->post('flight_at'))),
+            'status_bagging' => 4,
+            'dispatcher_out' =>  date('Y-m-d H:i:s')
+        ];
+
+        $updateBagging = $this->db->update('bagging', $dataScanOut, ['id_bagging' => $id_bagging]);
+        if ($updateBagging) {
             redirect('dispatcher/scan');
         }
     }

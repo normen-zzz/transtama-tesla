@@ -154,6 +154,7 @@ class SalesOrder extends CI_Controller
             }
         }
     }
+
     public function processAdd()
     {
         $this->form_validation->set_rules('tgl_pickup', 'tgl_pickup', 'required');
@@ -238,44 +239,9 @@ class SalesOrder extends CI_Controller
                 $this->wa->pickup('+6285697780467', "$pesan"); //Nomor Norman IT
                 $this->wa->pickup('+6281293753199', "$pesan"); //Nomor Bu Lili CS
                 $this->wa->pickup('+6285894438583', "$pesan"); //Mba Yunita  CS
-				$this->wa->pickup('+6281387909059', "$pesan"); //TYA  CS
                 $this->wa->pickup('+6281212603705', "$pesan"); //Mas Ali OPS
                 $this->wa->pickup('+6281398433940', "$pesan"); //Sarwan OPS
-                $random = random_string('numeric', 8);
-
-                $get_last_id_so = $this->db->limit(1)->order_by('id_so', 'DESC')->get('tbl_so')->row_array(); // mencari data terakhir yang baru diinput di tbl so
-                $data = array(
-                    'status' => 'Request Pickup From Shipper',
-                    'id_so' => $get_last_id_so['id_so'],
-                    'created_at' => date('Y-m-d'),
-                    'time' => date('H:i:s'),
-                    'flag' => 1,
-                    'status_eksekusi' => 0,
-                    'shipment_id' => $random
-                );
-                $this->db->insert('tbl_tracking_real', $data);
-                $data = array(
-                    'id_so' => $get_last_id_so['id_so'],
-                    'date_new' => date('Y-m-d'),
-                    'tgl_pickup' => $this->input->post('tgl_pickup'),
-                    'shipper' => strtoupper($this->input->post('shipper')),
-                    'pu_moda' => $this->input->post('pu_moda'),
-                    'pu_poin' => strtoupper($this->input->post('pu_poin')),
-                    'destination' => $this->input->post('destination'),
-                    'time' => $this->input->post('time'),
-                    'koli' => $this->input->post('koli'),
-                    'pu_commodity' => $this->input->post('commodity'),
-                    'pu_service' => $this->input->post('service'),
-                    'pu_note' => $this->input->post('note'),
-                    'city_shipper' => $this->input->post('shipper_address'),
-                    'consigne' => $this->input->post('consigne'),
-                    'city_consigne' => $this->input->post('consigne_address'),
-                    'payment' => $this->input->post('payment'),
-                    'packing_type' => $this->input->post('packing'),
-                    'is_incoming' => $this->input->post('is_incoming'),
-                    'shipment_id' => $random
-                );
-                $this->db->insert('tbl_shp_order', $data);
+                
                 $this->session->set_flashdata('message', '<div class="alert
                     alert-success" role="alert">Success</div>');
                 redirect('sales/salesOrder');
@@ -286,6 +252,137 @@ class SalesOrder extends CI_Controller
             }
         }
     }
+    // public function processAdd()
+    // {
+    //     $this->form_validation->set_rules('tgl_pickup', 'tgl_pickup', 'required');
+    //     $this->form_validation->set_rules('shipper', 'shipper', 'required');
+    //     $this->form_validation->set_rules('pu_moda', 'pu_moda', 'required');
+    //     $this->form_validation->set_rules('pu_poin', 'pu_poin', 'required');
+    //     $this->form_validation->set_rules('destination', 'destination', 'trim');
+    //     $this->form_validation->set_rules('time', 'time', 'required');
+    //     $this->form_validation->set_rules('is_incoming', 'is_incoming', 'required');
+    //     $this->form_validation->set_rules('koli', 'koli', 'trim');
+    //     $this->form_validation->set_rules('packing', 'packing', 'trim');
+    //     $this->form_validation->set_rules('kg', 'kg', 'trim');
+    //     $this->form_validation->set_rules('commodity', 'commodity', 'required');
+    //     $this->form_validation->set_rules('service', 'service', 'required');
+    //     $this->form_validation->set_rules('note', 'note', 'trim');
+    //     if ($this->form_validation->run() == FALSE) {
+    //         $this->session->set_flashdata('message', 'Failed');
+    //         $this->add();
+    //     } else {
+    //         $id_atasan = $this->db->get_where('tb_user', ['id_user' => $this->session->userdata('id_user')])->row_array();
+    //         $data = array(
+    //             'tgl_pickup' => $this->input->post('tgl_pickup'),
+    //             'shipper' => strtoupper($this->input->post('shipper')),
+    //             'pu_moda' => $this->input->post('pu_moda'),
+    //             'pu_poin' => strtoupper($this->input->post('pu_poin')),
+    //             'destination' => $this->input->post('destination'),
+    //             'time' => $this->input->post('time'),
+    //             'koli' => $this->input->post('koli'),
+    //             'kg' => $this->input->post('kg'),
+    //             'type' => $this->input->post('type'),
+    //             'commodity' => $this->input->post('commodity'),
+    //             'service' => $this->input->post('service'),
+    //             'note' => $this->input->post('note'),
+    //             'shipper_address' => $this->input->post('shipper_address'),
+    //             'consigne' => $this->input->post('consigne'),
+    //             'consigne_address' => $this->input->post('consigne_address'),
+    //             'payment' => $this->input->post('payment'),
+    //             'packing' => $this->input->post('packing'),
+    //             'is_incoming' => $this->input->post('is_incoming'),
+    //             'id_sales' => $this->session->userdata('id_user'),
+    //             'id_atasan_sales' => $id_atasan['id_atasan']
+    //         );
+    //         $id_atasan = $this->session->userdata('id_atasan');
+    //         // kalo dia atasan
+    //         if ($id_atasan == 0 || $id_atasan == NULL) {
+    //             $data_approve = array(
+    //                 'status_approve' => 1,
+    //             );
+    //             $data = array_merge($data, $data_approve);
+    //         } else {
+    //             $data_approve = array(
+    //                 'status_approve' => 0,
+    //             );
+    //             $data = array_merge($data, $data_approve);
+    //         }
+    //         // var_dump($data);
+    //         // die;
+
+    //         $insert =  $this->db->insert('tbl_so', $data);
+    //         // var_dump($insert);
+    //         // die;
+    //         if ($insert) {
+    //             $shipper = strtoupper($this->input->post('shipper'));
+    //             $tgl_pickup = $this->input->post('tgl_pickup');
+    //             $pu_moda = $this->input->post('pu_moda');
+    //             $time = $this->input->post('time');
+    //             $commodity = $this->input->post('commodity');
+    //             $note = $this->input->post('note');
+    //             $sales = $this->session->userdata('nama_user');
+    //             $destination = $this->input->post('destination');
+    //             $pu_poin = strtoupper($this->input->post('pu_poin'));
+    //             $service = $this->input->post('service');
+    //             if ($destination != '' || $destination != NULL) {
+    //                 $pesanDestination = "dengan tujuan *$destination*";
+    //             } else {
+    //                 $pesanDestination = "";
+    //             }
+
+    //             $pesanPickUp = "dan pick up di *$pu_poin*";
+    //             $pesan = "Hallo Cs dan Ops, ada pickup dari *$shipper* $pesanDestination $pesanPickUp *$service* tanggal *$tgl_pickup* jam *$time* dengan moda $pu_moda dengan jenis barang $commodity. Catatan : $note. *Sales : $sales*";
+    //             // kirim wa
+    //             $this->wa->pickup('+6285697780467', "$pesan"); //Nomor Norman IT
+    //             $this->wa->pickup('+6281293753199', "$pesan"); //Nomor Bu Lili CS
+    //             $this->wa->pickup('+6285894438583', "$pesan"); //Mba Yunita  CS
+    //             $this->wa->pickup('+6281212603705', "$pesan"); //Mas Ali OPS
+    //             $this->wa->pickup('+6281398433940', "$pesan"); //Sarwan OPS
+    //             $random = random_string('numeric', 8);
+
+    //             $get_last_id_so = $this->db->limit(1)->order_by('id_so', 'DESC')->get('tbl_so')->row_array(); // mencari data terakhir yang baru diinput di tbl so
+    //             $data = array(
+    //                 'status' => 'Request Pickup From Shipper',
+    //                 'id_so' => $get_last_id_so['id_so'],
+    //                 'created_at' => date('Y-m-d'),
+    //                 'time' => date('H:i:s'),
+    //                 'flag' => 1,
+    //                 'status_eksekusi' => 0,
+    //                 'shipment_id' => $random
+    //             );
+    //             $this->db->insert('tbl_tracking_real', $data);
+    //             $data = array(
+    //                 'id_so' => $get_last_id_so['id_so'],
+    //                 'date_new' => date('Y-m-d'),
+    //                 'tgl_pickup' => $this->input->post('tgl_pickup'),
+    //                 'shipper' => strtoupper($this->input->post('shipper')),
+    //                 'pu_moda' => $this->input->post('pu_moda'),
+    //                 'pu_poin' => strtoupper($this->input->post('pu_poin')),
+    //                 'destination' => $this->input->post('destination'),
+    //                 'time' => $this->input->post('time'),
+    //                 'koli' => $this->input->post('koli'),
+    //                 'pu_commodity' => $this->input->post('commodity'),
+    //                 'pu_service' => $this->input->post('service'),
+    //                 'pu_note' => $this->input->post('note'),
+    //                 'city_shipper' => $this->input->post('shipper_address'),
+    //                 'consigne' => $this->input->post('consigne'),
+    //                 'city_consigne' => $this->input->post('consigne_address'),
+    //                 'payment' => $this->input->post('payment'),
+    //                 'packing_type' => $this->input->post('packing'),
+    //                 'is_incoming' => $this->input->post('is_incoming'),
+    //                 'shipment_id' => $random
+    //             );
+    //             $this->db->insert('tbl_shp_order', $data);
+    //             $this->session->set_flashdata('message', '<div class="alert
+    //                 alert-success" role="alert">Success</div>');
+    //             redirect('sales/salesOrder');
+    //         } else {
+    //             $this->session->set_flashdata('message', '<div class="alert
+    //                 alert-danger" role="alert">Failed</div>');
+    //             redirect('sales/salesOrder/add');
+    //         }
+    //     }
+    // }
     public function processAddSpecial()
     {
         $this->form_validation->set_rules('tgl_pickup', 'tgl_pickup', 'required');

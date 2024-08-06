@@ -35,7 +35,7 @@
 								<span class="text-muted font-weight-bold font-size-sm mt-1">Order ID :<b> <?= $p['order_id'] ?></b></span> -->
 						</div>
 						<div class="card-toolbar">
-							<a onclick='$("#modalLoading").modal("show");' href="<?= base_url('shipper/Scan') ?>" class="btn mr-2 text-light" style="background-color: #9c223b;">
+							<a onclick='$("#modalLoading").modal("show");' href="<?= base_url('shipper/Outbond') ?>" class="btn mr-2 text-light" style="background-color: #9c223b;">
 								<i class="fas fa-chevron-circle-left text-light"> </i>
 								Back
 							</a>
@@ -53,7 +53,7 @@
 							
 							<form action="<?= base_url('shipper/SalesOrder/addWeight/' . $this->uri->segment(4)) ?>" method="post">
 							<button onclick='$("#modalLoading").modal("show");' type="submit" class="btn btn-primary mb-2">Submit Dimension</button>
-							<button class="btn font-weight-bolder text-light" data-toggle="modal" data-target="#addDimensionBulk" style="background-color: #9c223b;">Bulk Input</button>
+							<!-- <button class="btn font-weight-bolder text-light" data-toggle="modal" data-target="#addDimensionBulk" style="background-color: #9c223b;">Bulk Input</button> -->
 
 								<input type="text" name="shipment_id" value="<?= $shipment['shipment_id'] ?>" hidden id="shipment_id">
 
@@ -78,7 +78,7 @@
 										<tr>
 											<td>1</td>
 											<td>
-												<input style="width: 50px;" required class="form-control" type="number" name="koli[]" id="koli">
+												<input style="width: 90px;" required class="form-control" type="number" name="koli[]" id="koli">
 											</td>
 											<td>
 												<input required class="form-control" type="number" name="panjang[]" id="panjang">

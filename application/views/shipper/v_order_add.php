@@ -69,7 +69,7 @@
 														</div>
 														
 														<input type="text" class="form-control" hidden name="id_so" value="<?= $id_so ?>" id="id_so">
-														<input type="text" class="form-control" hidden name="id_tracking" value="<?= $id_tracking ?>" id="id_tracking">
+														
 
 
 

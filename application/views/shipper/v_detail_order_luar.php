@@ -139,7 +139,7 @@
 
 												?>
 												<div class="d-flex align-items-center mb-10">
-													<?php if ($tracking['id_user'] == null) {
+													<?php if ($p['pickup_by'] == null) {
 													?>
 														<h4 class="title">No driver selected</h4>
 													<?php	} else {
@@ -152,9 +152,9 @@
 														</div>
 														<!--end::Symbol-->
 														<!--begin::Text-->
-														<?php $driver = $this->db->get_where('tb_user', ['id_user' => $tracking['id_user']])->row_array(); ?>
+													
 														<div class="d-flex flex-column flex-grow-1 font-weight-bold">
-															<a href="#" class="text-dark text-hover-primary mb-1 font-size-lg"><?= $driver['nama_user'] ?></a>
+															<a href="#" class="text-dark text-hover-primary mb-1 font-size-lg"><?= getNamaUser($p['pickup_by'])  ?></a>
 															<span class="text-muted">Driver</span>
 														</div>
 														<!--end::Text-->

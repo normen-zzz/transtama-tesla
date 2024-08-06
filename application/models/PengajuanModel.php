@@ -81,9 +81,10 @@ class PengajuanModel extends CI_Model
     }
     public function orderBySo($id)
     {
-        $this->db->select('a.pu_moda,a.shipment_id,a.mark_shipper,a.koli,a.shipper,a.tree_shipper,a.consigne,a.created_at,a.note_cs,a.tree_consignee,a.id,a.id_so,a.destination,a.city_consigne,a.state_consigne,a.is_jabodetabek, b.service_name');
+        $this->db->select('a.pu_moda,a.shipment_id,a.mark_shipper,a.koli,a.shipper,a.tree_shipper,a.consigne,a.created_at,a.note_cs,a.tree_consignee,a.id,a.id_so,a.destination,a.city_consigne,a.state_consigne,a.is_jabodetabek,c.pickup_by, b.service_name');
         $this->db->from('tbl_shp_order a');
         $this->db->join('tb_service_type b', 'a.service_type=b.code');
+        $this->db->join('tbl_so c', 'a.id_so=c.id_so');
         $this->db->where('a.id_so', $id);
         $this->db->where('a.shipment_id !=', NULL);
         $this->db->where('a.deleted', 0);

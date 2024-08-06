@@ -1,6 +1,12 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Reader\Csv;
+use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
+use PhpOffice\PhpSpreadsheet\Writer\WriterXlsx;
+use PhpOffice\PhpSpreadsheet\IOFactory;
+
 class SalesOrder extends CI_Controller
 {
     public function __construct()
@@ -26,23 +32,39 @@ class SalesOrder extends CI_Controller
             $data['title'] = 'Sales Order';
             $this->backend->display('shipper/v_so', $data);
         } else {
-            $query  = "SELECT a.is_jabodetabek,a.shipper,a.tgl_pickup,a.time,a.pu_poin,a.pu_moda,a.koli,a.weight,a.destination,a.pu_commodity,a.pu_service,a.pu_note,a.shipment_id,a.consigne,a.city_consigne,a.state_consigne,b.note
-            ,b.id_tracking,b.id_so,b.note as catatan, b.flag,c.service_name,
-             b.update_at,b.status_eksekusi,b.created_at as tgl_tugas,
-              b.time as jam_tugas
-            FROM tbl_tracking_real b 
-          JOIN tbl_shp_order a  ON a.shipment_id=b.shipment_id
-            -- JOIN tbl_so d ON b.id_so=d.id_so
-          LEFT JOIN tb_service_type c ON a.service_type=c.code 
-             WHERE b.id_user= ?  AND b.status_eksekusi =0 AND a.deleted=0 AND a.tgl_diterima IS NULL GROUP BY a.shipment_id";
-            $result = $this->db->query($query, array($this->session->userdata('id_user')))->result_array();
+            $result = $this->db->query('SELECT * FROM tbl_so WHERE status_pickup <= 3 AND is_incoming = 0 AND alasan_cancel IS NULL AND pickup_by = ' . $this->session->userdata("id_user"))->result_array();
             $data['shipments'] = $result;
-            // var_dump($result);
-            // die;;
+            $data['delivery'] = $this->db->query('SELECT shipment_id,shipper,koli,weight,consigne,destination,city_consigne,pu_commodity,pu_service,pu_note,delivery_status FROM tbl_shp_order WHERE is_jabodetabek = 1 AND deleted = 0 AND delivery_by='.$this->session->userdata('id_user').' AND tgl_diterima IS NULL ');
+            $data['users'] = $this->db->get_where('tb_user', ['id_role' => 2])->result_array();
             $data['title'] = 'My Shipment';
-            $this->backend->display('shipper/v_shipment', $data);
+            $this->backend->display('shipper/v_shipmentv2', $data);
         }
     }
+
+    // public function index()
+    // {
+    //     $akses = $this->session->userdata('akses');
+    //     if ($akses == 1) {
+    //         $data['title'] = 'Sales Order';
+    //         $this->backend->display('shipper/v_so', $data);
+    //     } else {
+    //         $query  = "SELECT a.is_jabodetabek,a.shipper,a.tgl_pickup,a.time,a.pu_poin,a.pu_moda,a.koli,a.weight,a.destination,a.pu_commodity,a.pu_service,a.pu_note,a.shipment_id,a.consigne,a.city_consigne,a.state_consigne,b.note
+    //         ,b.id_tracking,b.id_so,b.note as catatan, b.flag,c.service_name,
+    //          b.update_at,b.status_eksekusi,b.created_at as tgl_tugas,
+    //           b.time as jam_tugas
+    //         FROM tbl_tracking_real b 
+    //       JOIN tbl_shp_order a  ON a.shipment_id=b.shipment_id
+    //         -- JOIN tbl_so d ON b.id_so=d.id_so
+    //       LEFT JOIN tb_service_type c ON a.service_type=c.code 
+    //          WHERE b.id_user= ?  AND b.status_eksekusi =0 AND a.deleted=0 AND a.tgl_diterima IS NULL GROUP BY a.shipment_id";
+    //         $result = $this->db->query($query, array($this->session->userdata('id_user')))->result_array();
+    //         $data['shipments'] = $result;
+    //         // var_dump($result);
+    //         // die;;
+    //         $data['title'] = 'My Shipment';
+    //         $this->backend->display('shipper/v_shipment', $data);
+    //     }
+    // }
 
     public function asign($shipment_id = Null)
     {
@@ -77,8 +99,13 @@ class SalesOrder extends CI_Controller
             'id_user' => $this->input->post('id_driver'),
             'update_at' => date('Y-m-d H:i:s')
         );
+        $dataSo = [
+            'pickup_by' => $this->input->post('id_driver'),
+            'status_pickup' => 1,
+        ];
         $update =  $this->db->update('tbl_tracking_real', $data, $where);
-        if ($update) {
+        $updateSo = $this->db->update('tbl_so', $dataSo, $where);
+        if ($update && $updateSo) {
             $this->session->set_flashdata('message', 'Success');
             redirect('shipper/salesOrder/detail/' . $this->input->post('id_so'));
         } else {
@@ -278,51 +305,45 @@ class SalesOrder extends CI_Controller
     }
 
 
-    public function receive($id, $id_tracking, $shipment_id)
+    public function receive($idSo)
     {
-        $data = array(
-            'status' => 'Driver Menuju Lokasi Pickup',
-            'id_so' => $id,
-            'shipment_id' => $shipment_id,
-            'created_at' => date('Y-m-d'),
-            'time' => date('H:i:s'),
-            'flag' => 2,
-            'status_eksekusi' => 0,
-            'id_user' => $this->session->userdata('id_user'),
-        );
-        $insert = $this->db->insert('tbl_tracking_real', $data);
-        if ($insert) {
-            $data = array(
-                'status_eksekusi' => 1,
-            );
-            $this->db->update('tbl_tracking_real', $data, ['id_tracking' => $id_tracking]);
-        }
+
+        $this->db->update('tbl_so', ['status_pickup' => 2, 'pickup_at' => date('Y-m-d H:i:s')], ['id_so' => $idSo]);
         $this->session->set_flashdata('message', 'Terima Kasih');
         redirect('shipper/salesOrder');
     }
 
-    public function arrivePu($id, $id_tracking, $shipment_id)
+    public function arrivePu($idSo)
     {
-        $data = array(
-            'status' => 'Driver Telah Sampai Di Lokasi Pickup',
-            'id_so' => $id,
-            'shipment_id' => $shipment_id,
-            'created_at' => date('Y-m-d'),
-            'time' => date('H:i:s'),
-            'flag' => 3,
-            'status_eksekusi' => 0,
-            'id_user' => $this->session->userdata('id_user'),
-        );
-        $insert = $this->db->insert('tbl_tracking_real', $data);
-        if ($insert) {
-            $data = array(
-                'status_eksekusi' => 1,
-            );
-            $this->db->update('tbl_tracking_real', $data, ['id_tracking' => $id_tracking]);
+
+        $update = $this->db->update('tbl_so', ['status_pickup' => 3, 'arrived_at' => date('Y-m-d H:i:s')], ['id_so' => $idSo]);
+        if ($update) {
             $this->session->set_flashdata('message', 'Terima Kasih');
             redirect('shipper/salesOrder');
         }
     }
+    // public function arrivePu($id, $id_tracking, $shipment_id)
+    // {
+    //     $data = array(
+    //         'status' => 'Driver Telah Sampai Di Lokasi Pickup',
+    //         'id_so' => $id,
+    //         'shipment_id' => $shipment_id,
+    //         'created_at' => date('Y-m-d'),
+    //         'time' => date('H:i:s'),
+    //         'flag' => 3,
+    //         'status_eksekusi' => 0,
+    //         'id_user' => $this->session->userdata('id_user'),
+    //     );
+    //     $insert = $this->db->insert('tbl_tracking_real', $data);
+    //     if ($insert) {
+    //         $data = array(
+    //             'status_eksekusi' => 1,
+    //         );
+    //         $this->db->update('tbl_tracking_real', $data, ['id_tracking' => $id_tracking]);
+    //         $this->session->set_flashdata('message', 'Terima Kasih');
+    //         redirect('shipper/salesOrder');
+    //     }
+    // }
     public function receiveDelivery($id, $shipment_id, $id_tracking)
     {
 
@@ -374,6 +395,39 @@ class SalesOrder extends CI_Controller
         $this->updateEksekusiTracking($id_tracking);
         $this->session->set_flashdata('message', 'Terima Kasih');
         redirect('shipper/salesOrder');
+    }
+    public function deliveryCharter($shipment_id)
+    {
+        $data['title'] = 'Sales Order';
+        $data['shipment_id'] = $shipment_id;
+        $this->backend->display('shipper/deliveryCharter', $data);
+    }
+    public function processDeliveryCharter($shipment_id)
+    {
+        $id_so = $this->db->query('SELECT id_so FROM tbl_shp_order WHERE shipment_id = ' . $shipment_id . ' ')->row_array();
+        $dataShipment = [
+            'tgl_diterima' => date('Y-m-d', strtotime($this->input->post('tgl_diterima'))),
+        ];
+        $updateShipment = $this->db->update('tbl_shp_order', $dataShipment, ['shipment_id' => $shipment_id]);
+
+        $penerima = $this->input->post('penerima');
+
+        $dataTracking = [
+            'status' => ucwords(strtolower("paket telah diterima oleh $penerima")),
+            'id_so' => $id_so['id_so'],
+            'shipment_id' => $shipment_id,
+            'created_at' => date('Y-m-d', strtotime($this->input->post('tgl_diterima'))),
+            'time' => date('H:i:s', strtotime($this->input->post('tgl_diterima'))),
+            'flag' => 6,
+            'status_eksekusi' => 1,
+            'id_user' => $this->session->userdata('id_user'),
+        ];
+        $insertTracking = $this->db->insert('tbl_tracking_real', $dataTracking);
+        if ($updateShipment && $insertTracking) {
+            redirect('shipper/salesOrder');
+        } else {
+            redirect('shipper/salesOrder');
+        }
     }
     public function receiveDeliveryHub($id)
     {
@@ -644,7 +698,7 @@ class SalesOrder extends CI_Controller
         $data['title'] = 'Detail Sales Order';
 
         $data['p'] = $this->db->get_where('tbl_so', ['id_so' => $id])->row_array();
-        $data['users'] = $this->db->get_where('tb_user', ['id_role' => 2,'status' => 1,'id_atasan !=' => NULL])->result_array();
+        $data['users'] = $this->db->get_where('tb_user', ['id_role' => 2, 'status' => 1, 'id_atasan !=' => NULL])->result_array();
         $data['shipment2'] =  $this->order->orderBySo($id)->result_array();
         $this->backend->display('shipper/v_detail_order_luar', $data);
     }
@@ -1353,39 +1407,94 @@ class SalesOrder extends CI_Controller
         }
     }
 
-    public function createExcelWeight($shipment_id)
-    {
-        $do = $this->db->get_where('tbl_no_do', array('shipment_id' => $shipment_id))->result_array();
-        $spreadsheet = new Spreadsheet();
-        $sheet = $spreadsheet->getActiveSheet();
-        $sheet->setCellValue('A1', 'Panjang');
-        $sheet->setCellValue('B1', 'Lebar');
-        $sheet->setCellValue('C1', 'Tinggi');
-        $sheet->setCellValue('D1', 'Berat Aktual');
-
-        if ($do != NULL) {
-            $sheet->setCellValue('E1', 'NO DO');
-            $sheet->setCellValue('H1', 'LIST NO DO');
-            $no = 2;
-            foreach ($do as $do1) {
-                $sheet->setCellValue('H' . $no, $do1['no_do']);
-                $no++;
+    public function receiveTaskDelivery($shipment_id) {
+        $resi = $this->db->query('SELECT id_so FROM tbl_shp_order WHERE shipment_id = '.$shipment_id.' ')->row_array();
+        $dataReceiveTask = [
+            'delivery_status' => 2,
+            'outbond_status' => 2
+        ];
+        $updateReceiveTask = $this->db->update('tbl_shp_order',$dataReceiveTask,['shipment_id' => $shipment_id]);
+        if ($updateReceiveTask) {
+            $dataTracking = [
+                'status' => ucwords(strtolower("paket telah keluar dari hub jakarta pusat dan dalam proses pengiriman")),
+                'id_so' => $resi['id_so'],
+                'shipment_id' => $shipment_id,
+                'created_at' => date('Y-m-d'),
+                'time' => date('H:i:s'),
+                'flag' => 6,
+                'status_eksekusi' => 1,
+                'id_user' => $this->session->userdata('id_user'),
+            ];
+            $insertTracking = $this->db->insert('tbl_tracking_real', $dataTracking);
+            if ($insertTracking) {
+                redirect('shipper/SalesOrder');
             }
         }
-
-
-        $writer = new WriterXlsx($spreadsheet);
-
-        // Simpan file ke tempat sementara
-        $filename = 'Weight ' . $shipment_id . '.xlsx';
-        $tempFile = tempnam(sys_get_temp_dir(), $filename);
-
-
-        // Mengatur header untuk tipe konten dan nama file
-        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        header('Content-Disposition: attachment; filename="' . $filename . '"');
-        header('Cache-Control: max-age=0');
-
-        $writer->save('php://output');
+       
+        
     }
+
+    public function finishDelivery() {
+        $resi = $this->db->query('SELECT shipment_id,id_so FROM tbl_shp_order WHERE shipment_id = '.$this->input->post("shipment_id").'  ')->row_array();
+        if ($resi) {
+            $dataUpdateDiterima = [
+                'tgl_diterima' => date('Y-m-d'),
+                'delivery_status' => 3
+            ];
+            $updateDiterima = $this->db->update('tbl_shp_order',$dataUpdateDiterima,['shipment_id' => $resi["shipment_id"]]);
+            if ($updateDiterima) {
+                $dataTracking = [
+                    'status' => ucwords(strtolower("paket telah diterima oleh ".$this->input->post('penerima'))),
+                    'id_so' => $resi['id_so'],
+                    'shipment_id' => $resi['shipment_id'],
+                    'created_at' => date('Y-m-d'),
+                    'time' => date('H:i:s'),
+                    'flag' => 7,
+                    'status_eksekusi' => 1,
+                    'id_user' => $this->session->userdata('id_user'),
+                ];
+                $insertTracking = $this->db->insert('tbl_tracking_real', $dataTracking);
+                if ($insertTracking) {
+                    redirect('shipper/SalesOrder');
+                }
+            }
+            
+        }
+    }
+
+    // public function createExcelWeight($shipment_id)
+    // {
+    //     $do = $this->db->get_where('tbl_no_do', array('shipment_id' => $shipment_id))->result_array();
+    //     $spreadsheet = new Spreadsheet();
+    //     $sheet = $spreadsheet->getActiveSheet();
+    //     $sheet->setCellValue('A1', 'Panjang');
+    //     $sheet->setCellValue('B1', 'Lebar');
+    //     $sheet->setCellValue('C1', 'Tinggi');
+    //     $sheet->setCellValue('D1', 'Berat Aktual');
+
+    //     if ($do != NULL) {
+    //         $sheet->setCellValue('E1', 'NO DO');
+    //         $sheet->setCellValue('H1', 'LIST NO DO');
+    //         $no = 2;
+    //         foreach ($do as $do1) {
+    //             $sheet->setCellValue('H' . $no, $do1['no_do']);
+    //             $no++;
+    //         }
+    //     }
+
+
+    //     $writer = new WriterXlsx($spreadsheet);
+
+    //     // Simpan file ke tempat sementara
+    //     $filename = 'Weight ' . $shipment_id . '.xlsx';
+    //     $tempFile = tempnam(sys_get_temp_dir(), $filename);
+
+
+    //     // Mengatur header untuk tipe konten dan nama file
+    //     header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+    //     header('Content-Disposition: attachment; filename="' . $filename . '"');
+    //     header('Cache-Control: max-age=0');
+
+    //     $writer->save('php://output');
+    // }
 }
