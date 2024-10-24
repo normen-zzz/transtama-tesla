@@ -30,7 +30,7 @@ class Scan extends CI_Controller
     public function scanInBagging()
     {
         $id_bagging = $this->input->post('hasilscan');
-        $bagging = $this->db->query('SELECT status_bagging FROM bagging WHERE id_bagging = ' . $id_bagging . ' ')->row_array();
+        $bagging = $this->db->query('SELECT status_bagging,id_bagging FROM bagging WHERE id_bagging = ' . $id_bagging . ' ')->row_array();
 
         if ($bagging) {
             if ($bagging['status_bagging'] == 2) {
@@ -51,16 +51,22 @@ class Scan extends CI_Controller
                         ];
                         $this->db->insert('tbl_tracking_real', $dataTracking);
                     }
+                    $this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">Bagging ' . $bagging['id_bagging'] . ' berhasil scan in</div>');
                     redirect('dispatcher/scan');
                 }
+            } else {
+                $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">Bagging ' . $bagging['id_bagging'] . ' belum discan out outbond</div>');
+                redirect('dispatcher/scan');
             }
         }
     }
 
     public function doScanOut($id_bagging)
     {
+        $bagging = $this->db->get_where('bagging', ['id_bagging' => $id_bagging])->row_array();
         $data = [
-            'bagging' => $this->db->get_where('bagging',['id_bagging' => $id_bagging])->row_array()
+            'bagging' => $bagging,
+            'resi' => $this->db->query('SELECT shipment_id,shipper,city_consigne,state_consigne FROM tbl_shp_order WHERE bagging = '.$id_bagging.' ')
         ];
         $this->backend->display('dispatcher/doScanOut', $data);
     }
@@ -76,6 +82,7 @@ class Scan extends CI_Controller
 
         $updateBagging = $this->db->update('bagging', $dataScanOut, ['id_bagging' => $id_bagging]);
         if ($updateBagging) {
+            $this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">Bagging ' . $id_bagging . ' berhasil scan in</div>');
             redirect('dispatcher/scan');
         }
     }

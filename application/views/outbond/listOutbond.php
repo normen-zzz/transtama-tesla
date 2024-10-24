@@ -49,7 +49,7 @@
                             <div class="col-md-12">
                                 <form action="<?= base_url('shipper/Outbond/doBagging') ?>" method="POST">
                                     <button type="submit" style="float: right;" class="btn btn-primary">Bagging</button>
-                                    <table id="myTable" class="table table-bordered">
+                                    <table id="tableOutbond" class="table table-bordered tableOutbond">
                                         <h3 class="title font-weight-bold">List Scan In/Out</h3>
                                         <!-- <div class="flash-data" data-flashdata="<?= $this->session->flashdata('message'); ?>"></div> -->
                                         <p><?= $this->session->flashdata('message'); ?></p>
@@ -64,45 +64,7 @@
                                                 <th style="width: 5%;">Action</th>
                                             </tr>
                                         </thead>
-                                        <tbody>
-                                            <?php foreach ($outbond->result_array() as $outbond1) { ?>
 
-                                                <tr>
-                                                    <td>
-                                                        <?php if ($outbond1['bagging'] == NULL) { ?>
-                                                            <?php if ($outbond1['is_jabodetabek'] == 2) { ?>
-                                                                <input type="checkbox" name="shipment_id[]" class="form-control" value="<?= $outbond1['shipment_id'] ?>">
-                                                            <?php } ?>
-                                                        <?php } ?>
-                                                    </td>
-                                                    <td><?= $outbond1['shipment_id'] ?></td>
-                                                    <td><?= $outbond1['shipper'] ?></td>
-                                                    <td><?= $outbond1['consigne'] ?></td>
-                                                    <td><?= getServiceName($outbond1['service_type']) ?></td>
-                                                    <td>Paket telah tiba di hub Jakarta Pusat<?= getStatusBagging($outbond1['shipment_id']) ?></td>
-                                                    <td>
-                                                        <a href="<?= base_url('shipper/salesOrder/weight/' . $outbond1['shipment_id']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Weight</a>
-                                                        <?php if ($outbond1['is_jabodetabek'] == 1) { ?>
-                                                            <?php if ($outbond1['delivery_status'] == NULL) { ?>
-                                                                <button type="button" class="btn btn-primary modalDelivery" data-toggle="modal" data-shipment_id="<?= $outbond1['shipment_id'] ?>" data-target="#modal-lg-dl">
-                                                                Assign Delivery
-                                                            </button>
-                                                            <?php } elseif ($outbond1['delivery_status'] ==1) { ?>
-                                                                <div class="d-flex flex-column flex-grow-1 font-weight-bold">
-                                                                <span class="text-muted">Delivery By</span>
-																	<p  class="text-dark text-hover-primary mb-1 font-size-lg"><?= getNamaUser($outbond1['delivery_by'])  ?></p>
-																	
-																</div>
-                                                                <?php } ?>
-                                                            
-                                                        <?php } ?>
-                                                    </td>
-
-                                                </tr>
-
-                                            <?php } ?>
-
-                                        </tbody>
 
 
                                     </table>
@@ -160,34 +122,124 @@
 
 
 
+
 <script>
     $(document).ready(function() {
-        $('.modalDelivery').click(function() {
-            var shipment_id = $(this).data('shipment_id'); // Mendapatkan ID dari atribut data-id tombol yang diklik
-            var id_so = $(this).data('id_so');
-            $('#modal-content').html('<p>Please Wait </p>');
-            // Memuat data menggunakan AJAX dengan mengirimkan ID sebagai parameter
 
-            // Menampilkan data ke dalam modal
-            var content = '<div class="card-body"><div class="row">' +
-                'Asign Delivery ' + shipment_id +
-                '<input type="text" name="shipment_id" class="form-control" hidden value="' + shipment_id + '">' +
-                '<div class="col-md-12">' +
-                '<label for="id_driver">Choose Driver : </label>' +
-                '<select name="id_driver" class="form-select" id="selectField" style="width: 200px;">' +
-                <?php foreach ($users as $u) {
-                ?> '<option value="<?= $u['id_user'] ?>"><?= $u['nama_user'] ?></option>' +
-                <?php    } ?> '</select>' +
-
-                '</div>' +
-
-                '</div>' +
-                '</div>';
-            $('#modal-content').html(content);
-            $('#selectField').select2();
+        $('#tableOutbond').DataTable({
 
 
+            columnDefs: [{
+                "defaultContent": "-",
+                "targets": "_all"
+            }],
+
+            "processing": true,
+            // "responsive": true,
+            "serverSide": true,
+            "ordering": true, // Set true agar bisa di sorting
+            "dom": "<'row'<'col-lg-10 col-md-10 col-xs-12'f>>" +
+                "<'row'<'col-sm-12'tr>>" +
+                "<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>" +
+                "<'row'<'col-lg-10 col-md-10 col-xs-12'l>>",
+            "order": [
+                [1, 'desc']
+            ], // Default sortingnya berdasarkan kolom / field ke 0 (paling pertama)
+            "ajax": {
+                "url": "<?= base_url('shipper/Outbond/listDataOutbond'); ?>", // URL file untuk proses select datanya
+                "type": "POST"
+            },
+            "deferRender": true,
+            "aLengthMenu": [
+                [100, 200],
+                [100, 200]
+            ], // Combobox Limit
+            "columns": [{
+                    "data": "shipment_id",
+                    "render": function(data, type, row, meta) {
+                        if (row.bagging == 0) {
+                            if (row.is_jabodetabek == 2) {
+                                return '<input type="checkbox" name="shipment_id[]" class="form-control" value="' + data + '">';
+                            }
+                        }
+                    }
+                },
+                {
+                    "data": "shipment_id",
+                },
+                {
+                    "data": "shipper",
+                },
+                {
+                    "data": "consigne",
+                },
+                {
+                    "data": "service_name",
+                },
+                {
+                    "data": "shipment_id",
+                    "render": function(data, type, row, meta) {
+
+
+                        if (row.bagging == 0) {
+                            return 'Paket telah tiba di Hub Jakarta Pusat';
+                        } else {
+                            return 'Paket telah tiba di Hub Jakarta Pusat On Bagging (' + row.bagging + ')';
+                        }
+                    }
+                },
+                {
+                    "data": "shipment_id",
+                    "render": function(data, type, row, meta) {
+                        if (row.is_jabodetabek == 1) {
+                            if (row.delivery_status == 0) {
+                                $('.modalDelivery').click(function() {
+                                    var shipment_id = $(this).data('shipment_id'); // Mendapatkan ID dari atribut data-id tombol yang diklik
+
+                                    $('#modal-content').html('<p>Please Wait </p>');
+                                    // Memuat data menggunakan AJAX dengan mengirimkan ID sebagai parameter
+
+                                    // Menampilkan data ke dalam modal
+                                    var content = '<div class="card-body"><div class="row">' +
+                                        'Asign Delivery ' + shipment_id +
+                                        '<input type="text" name="shipment_id" class="form-control" hidden value="' + shipment_id + '">' +
+                                        '<div class="col-md-12">' +
+                                        '<label for="id_driver">Choose Driver : </label>' +
+                                        '<select name="id_driver" class="form-select" id="selectField" style="width: 200px;">' +
+                                        <?php foreach ($users as $u) {
+                                        ?> '<option value="<?= $u['id_user'] ?>"><?= $u['nama_user'] ?></option>' +
+                                        <?php    } ?> '</select>' +
+
+                                        '</div>' +
+
+                                        '</div>' +
+                                        '</div>';
+                                    $('#modal-content').html(content);
+                                    $('#selectField').select2();
+
+
+                                });
+                                return '<a href="<?= base_url("shipper/salesOrder/weight/") ?>' + data + '" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Weight</a>' +
+                                    '<button type="button" class="btn btn-primary modalDelivery" data-toggle="modal" data-shipment_id="' + data + '" data-target="#modal-lg-dl"> Assign Delivery</button>';
+                            } else if (row.delivery_status == 1) {
+                                return '<a href="<?= base_url("shipper/salesOrder/weight/") ?>' + data + '" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Weight</a>' +
+                                    '<div class="d-flex flex-column flex-grow-1 font-weight-bold">' +
+                                    '<span class="text-muted">Delivery By</span>' +
+                                    '<p class="text-dark text-hover-primary mb-1 font-size-lg">' + row.nama_user + '</p>' +
+                                    '</div>';
+                            }
+                        } else {
+                            return '<a href="<?= base_url("shipper/salesOrder/weight/") ?>' + data + '" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Weight</a>'
+                        }
+                    }
+                },
+            ],
         });
+
+
+
+
+
     });
 </script>
 

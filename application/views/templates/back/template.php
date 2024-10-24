@@ -43,6 +43,7 @@
 	<link rel="stylesheet" href="<?= base_url('assets/back/metronic/') ?>plugins/custom/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
 
 	<link type="text/css" href="<?= base_url('assets/back/metronic/') ?>css/jquery.signature.css" rel="stylesheet">
+	
 
 	<link rel="shortcut icon" href="<?= base_url('uploads/') ?>icon512.png" />
 	<style>
@@ -184,7 +185,7 @@
 	<script src="<?= base_url('assets/back/metronic/') ?>plugins/global/plugins.bundle.js"></script>
 
 	<script src="<?php echo base_url() ?>assets/scans/js/qrcodelib.js"></script>
-	<script src="<?php echo base_url() ?>assets/scans/js/webcodecamjquery.js"></script>
+	<!-- <script src="<?php echo base_url() ?>assets/scans/js/webcodecamjquery.js"></script> -->
 	<script src="<?php echo base_url() ?>assets/scans/app/core/scan.js"></script>
 
 	<script src="<?= base_url('assets/back/metronic/') ?>plugins/custom/prismjs/prismjs.bundle.js"></script>
@@ -1970,6 +1971,7 @@
 
 	<script>
 		$(document).ready(function() {
+			
 			var approved = 0;
 
 			// $('#no_ca').change(function() {
@@ -2064,6 +2066,8 @@
 			}, 200); // Jeda 1 detik untuk menonaktifkan tombol
 		});
 	</script>
+
+
 
 
 

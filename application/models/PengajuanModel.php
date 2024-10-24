@@ -238,10 +238,11 @@ class PengajuanModel extends CI_Model
     }
     function getRevisiJs()
     {
-        $this->db->select('a.*, b.created_at as tgl_pengajuan, b.status as status_pengajuan, b.id_request');
+        $this->db->select('a.*, b.created_at as tgl_pengajuan, b.status as status_pengajuan, b.id_request,e.status_revisi');
         $this->db->from('tbl_shp_order a');
         $this->db->join('tbl_request_revisi b', 'a.id=b.shipment_id');
         $this->db->join('tbl_so d', 'a.id_so=d.id_so');
+        $this->db->join('tbl_revisi_so e', 'a.id=e.shipment_id');
         $this->db->where('d.id_sales', $this->session->userdata('id_user'));
         $this->db->order_by('b.id_request', 'DESC');
         $query = $this->db->get();

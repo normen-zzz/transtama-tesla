@@ -49,11 +49,10 @@ class Order extends CI_Controller
         $data['p'] = $this->order->order($id)->row_array();
         $this->backend->display('shipper/v_detail_pengajuan', $data);
     }
-    public function edit($id, $id_so, $id_tracking)
+    public function edit($id, $id_so)
     {
         $data['title'] = 'Edit Order';
         $data['id_so'] = $id_so;
-        $data['id_tracking'] = $id_tracking;
         $data['city'] = $this->db->get('tb_city')->result_array();
         $data['province'] = $this->db->get('tb_province')->result_array();
         $data['service'] = $this->db->get('tb_service_type')->result_array();
@@ -101,6 +100,12 @@ class Order extends CI_Controller
         $data['customer'] = $this->db->get('tb_customer')->result_array();
         $data['moda'] = $this->db->get('tbl_moda')->result_array();
         $data['so'] = $this->db->get_where('tbl_so', ['id_so' => $id_so])->row_array();
+        $dataDo = $this->db->get_where('do_requestpickup',['id_so' => $id_so]);
+        if ($dataDo) {
+            $data['do'] = $dataDo;
+        } else{
+            $data['do'] = NULL;
+        }
         $this->backend->display('shipper/v_order_add', $data);
     }
     // public function add($id_so, $id_tracking)
@@ -911,7 +916,7 @@ class Order extends CI_Controller
             $customer = $this->db->get_where('tb_customer', ['id_customer' => $this->input->post('shipper_id')])->row_array();
             $city_shipper = $customer['kota'];
             $city_consigne = $this->input->post('city_consigne');
-           $so = $this->db->get_where('tbl_so',['id_so' => $this->input->post('id_so')])->row_array();
+            $so = $this->db->get_where('tbl_so', ['id_so' => $this->input->post('id_so')])->row_array();
             $data = array(
                 'shipper' => strtoupper($customer['nama_pt']),
                 'origin' => $this->input->post('origin'),
@@ -938,15 +943,7 @@ class Order extends CI_Controller
                 'so_id' => $kode,
                 'tgl_pickup' => date('Y-m-d'),
                 'pu_moda' => $this->input->post('moda'),
-                'pu_poin' => $so['pu_poin'],
-                'time' => $so['time'],
-                'pu_commodity' => $so['commodity'],
-                'pu_service' => $so['service'],
-                'pu_note' => $so['note'],
-                // 'city_shipper' => $get_pickup['city_shipper'],
-                'payment' => $so['payment'],
-                'packing_type' => $so['packing'],
-                'is_incoming' => $so['is_incoming'],
+                
             );
 
             // var_dump($data);
@@ -985,114 +982,114 @@ class Order extends CI_Controller
                 $bukti_tracking = array('bukti' => $namaBaru);
                 $data = array_merge($data, $ktp);
             }
-                $insert =  $this->db->insert('tbl_shp_order', $data);
-                if ($insert) {
-                    // input no do
-                    $no_do = $this->input->post('note_cs');
-                    for ($i = 0; $i < sizeof($no_do); $i++) {
-                        $data = array(
-                            'shipment_id' => $shipment_id,
-                            'no_do' => $no_do[$i]
-                        );
-                        $this->db->insert('tbl_no_do', $data);
-                    }
-                    // update no so berdasarkan shipment id
-                    $no_so = $this->input->post('no_so');
-                    $no_so = implode(",", $no_so);
+            $insert =  $this->db->insert('tbl_shp_order', $data);
+            if ($insert) {
+                // input no do
+                $no_do = $this->input->post('note_cs');
+                for ($i = 0; $i < sizeof($no_do); $i++) {
                     $data = array(
-                        'no_so' => $no_so
-                    );
-                    $this->db->update('tbl_no_do', $data, ['shipment_id' => $shipment_id]);
-                    $this->barcode($shipment_id);
-                    $this->qrcode($shipment_id);
-                    $dataTracking1 = array(
                         'shipment_id' => $shipment_id,
-                        'status' => ucwords(strtolower('permintaan pickup oleh pengirim')),
-                        'id_so' => $this->input->post('id_so'),
-                        'created_at' => $so['created_at'],
-                        'id_user' => $this->session->userdata('id_user'),
-                        'time' =>  $so['time'],
-                        'flag' => 1,
-                        'status_eksekusi' => 1,
+                        'no_do' => $no_do[$i]
                     );
-                    $this->db->insert('tbl_tracking_real', $dataTracking1);
+                    $this->db->insert('tbl_no_do', $data);
+                }
+                // update no so berdasarkan shipment id
+                $no_so = $this->input->post('no_so');
+                $no_so = implode(",", $no_so);
+                $data = array(
+                    'no_so' => $no_so
+                );
+                $this->db->update('tbl_no_do', $data, ['shipment_id' => $shipment_id]);
+                $this->barcode($shipment_id);
+                $this->qrcode($shipment_id);
+                $dataTracking1 = array(
+                    'shipment_id' => $shipment_id,
+                    'status' => ucwords(strtolower('permintaan pickup oleh pengirim')),
+                    'id_so' => $this->input->post('id_so'),
+                    'created_at' => $so['created_at'],
+                    'id_user' => $this->session->userdata('id_user'),
+                    'time' =>  $so['time'],
+                    'flag' => 1,
+                    'status_eksekusi' => 1,
+                );
+                $this->db->insert('tbl_tracking_real', $dataTracking1);
 
-                    $dataTracking2 = array(
-                        'shipment_id' => $shipment_id,
-                        'status' => ucwords(strtolower('Driver menuju lokasi pickup')),
-                        'id_so' => $this->input->post('id_so'),
-                        'created_at' =>  $so['pickup_at'],
-                        'id_user' => $this->session->userdata('id_user'),
-                        'time' =>  date('H:i:s',strtotime($so['pickup_at'])),
-                        'flag' => 2,
-                        'status_eksekusi' => 1,
-                    );
-                    $this->db->insert('tbl_tracking_real', $dataTracking2);
+                $dataTracking2 = array(
+                    'shipment_id' => $shipment_id,
+                    'status' => ucwords(strtolower('Driver menuju lokasi pickup')),
+                    'id_so' => $this->input->post('id_so'),
+                    'created_at' =>  $so['pickup_at'],
+                    'id_user' => $this->session->userdata('id_user'),
+                    'time' =>  date('H:i:s', strtotime($so['pickup_at'])),
+                    'flag' => 2,
+                    'status_eksekusi' => 1,
+                );
+                $this->db->insert('tbl_tracking_real', $dataTracking2);
 
-                    $dataTracking3 = array(
-                        'shipment_id' => $shipment_id,
-                        'status' => ucwords(strtolower('Driver Telah Sampai Di Lokasi Pickup')),
-                        'id_so' => $this->input->post('id_so'),
-                        'created_at' =>  $so['arrived_at'],
-                        'id_user' => $this->session->userdata('id_user'),
-                        'time' =>  date('H:i:s',strtotime($so['arrived_at'])),
-                        'flag' => 3,
-                        'status_eksekusi' => 1,
-                    );
-                    $this->db->insert('tbl_tracking_real', $dataTracking3);
+                $dataTracking3 = array(
+                    'shipment_id' => $shipment_id,
+                    'status' => ucwords(strtolower('Driver Telah Sampai Di Lokasi Pickup')),
+                    'id_so' => $this->input->post('id_so'),
+                    'created_at' =>  $so['arrived_at'],
+                    'id_user' => $this->session->userdata('id_user'),
+                    'time' =>  date('H:i:s', strtotime($so['arrived_at'])),
+                    'flag' => 3,
+                    'status_eksekusi' => 1,
+                );
+                $this->db->insert('tbl_tracking_real', $dataTracking3);
 
-                    $dataTracking4 = array(
+                $dataTracking4 = array(
+                    'shipment_id' => $shipment_id,
+                    'status' => ucwords(strtolower('Paket telah dipickup oleh driver')),
+                    'id_so' => $this->input->post('id_so'),
+                    'created_at' => date('Y-m-d'),
+                    'id_user' => $this->session->userdata('id_user'),
+                    'time' => date('H:i:s'),
+                    'flag' => 4,
+                    'status_eksekusi' => 1,
+                );
+                $this->db->insert('tbl_tracking_real', $dataTracking4);
+
+                if ($service_type == '0aa2174a-5bab-4196-bc80-56c96457140e' || $service_type == 'd22c7bdf-2057-4233-9732-0c36d3cfde9c') {
+                    $dataTracking5 = array(
                         'shipment_id' => $shipment_id,
-                        'status' => ucwords(strtolower('Paket telah dipickup oleh driver')),
+                        'status' => 'Paket menuju lokasi penerima',
                         'id_so' => $this->input->post('id_so'),
                         'created_at' => date('Y-m-d'),
                         'id_user' => $this->session->userdata('id_user'),
                         'time' => date('H:i:s'),
-                        'flag' => 4,
+                        'flag' => 5,
                         'status_eksekusi' => 1,
                     );
-                    $this->db->insert('tbl_tracking_real', $dataTracking4);
-
-                    if ($service_type == '0aa2174a-5bab-4196-bc80-56c96457140e' || $service_type == 'd22c7bdf-2057-4233-9732-0c36d3cfde9c') {
-                        $dataTracking5 = array(
-                            'shipment_id' => $shipment_id,
-                            'status' => 'Paket menuju lokasi penerima',
-                            'id_so' => $this->input->post('id_so'),
-                            'created_at' => date('Y-m-d'),
-                            'id_user' => $this->session->userdata('id_user'),
-                            'time' => date('H:i:s'),
-                            'flag' => 5,
-                            'status_eksekusi' => 1,
-                        );
-                        $this->db->insert('tbl_tracking_real', $dataTracking5);
-                    }
-
-
-                    $data = array(
-                        'status' => 2,
-                        'deadline_sales_so' => $deadline_sales
-                    );
-                    $this->db->update('tbl_so', $data, ['id_so' => $this->input->post('id_so')]);
-
-                    $this->session->set_flashdata('message', '<div class="alert
-                    alert-success" role="alert">Success</div>');
-                    redirect('shipper/order/view/' . $this->input->post('id_so') . '/' . $this->input->post('id_tracking'));
-                } else {
-                    $this->session->set_flashdata('message', '<div class="alert
-                    alert-danger" role="alert">Failed Insert</div>');
-                    $this->add($this->input->post('id_so'), $this->input->post('id_tracking'));
+                    $this->db->insert('tbl_tracking_real', $dataTracking5);
                 }
-            
+
+
+                $data = array(
+                    'status' => 2,
+                    'deadline_sales_so' => $deadline_sales
+                );
+                $this->db->update('tbl_so', $data, ['id_so' => $this->input->post('id_so')]);
+
+                $this->session->set_flashdata('message', '<div class="alert
+                    alert-success" role="alert">Success</div>');
+                redirect('shipper/order/view/' . $this->input->post('id_so') . '/' . $this->input->post('id_tracking'));
+            } else {
+                $this->session->set_flashdata('message', '<div class="alert
+                    alert-danger" role="alert">Failed Insert</div>');
+                $this->add($this->input->post('id_so'), $this->input->post('id_tracking'));
+            }
         }
     }
 
-    public function doneShipmentDriver($id_so) {
-        
-        $updateSo = $this->db->update('tbl_so',['status_pickup' => 4],['id_so' => $id_so]);
+    public function doneShipmentDriver($id_so)
+    {
+
+        $updateSo = $this->db->update('tbl_so', ['status_pickup' => 4], ['id_so' => $id_so]);
         if ($updateSo) {
-           $this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">Success</div>');
+            $this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">Success</div>');
             redirect('shipper/SalesOrder');
-        } else{
+        } else {
             $this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">Failed Insert</div>');
             redirect('shipper/SalesOrder');
         }
@@ -1385,7 +1382,7 @@ class Order extends CI_Controller
     //     }
     // }
 
-    
+
 
 
 
@@ -1488,11 +1485,11 @@ class Order extends CI_Controller
             }
             $this->session->set_flashdata('message', '<div class="alert
                 alert-success" role="alert">Success</div>');
-            redirect('shipper/order/edit/' . $this->input->post('id') . '/' . $this->input->post('id_so') . '/' . $this->input->post('id_tracking'));
+            redirect('shipper/order/edit/' . $this->input->post('id') . '/' . $this->input->post('id_so'));
         } else {
             $this->session->set_flashdata('message', '<div class="alert
                 alert-danger" role="alert">Failed</div>');
-            redirect('shipper/order/edit/' . $this->input->post('id') . '/' . $this->input->post('id_so') . '/' . $this->input->post('id_tracking'));
+            redirect('shipper/order/edit/' . $this->input->post('id') . '/' . $this->input->post('id_so'));
         }
     }
 

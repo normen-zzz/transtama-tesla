@@ -67,9 +67,9 @@
 																</select>
 															</div>
 														</div>
-														
+
 														<input type="text" class="form-control" hidden name="id_so" value="<?= $id_so ?>" id="id_so">
-														
+
 
 
 
@@ -147,27 +147,61 @@
 																<input type="number" class="form-control" required name="koli" value="<?php echo set_value('koli'); ?>">
 															</div>
 														</div>
-														
-														<div class="col-md-2">
-															<div class="form-group rec-element2">
-																<label for="exampleInputEmail1">No. DO/DN 1 <button type="button" class="btn btn-info tambah-form-essay"><i class="fa fa-plus"></i> </button> </label>
-																<input type="text" class="form-control" name="note_cs[]">
-															</div>
-														</div>
-														<div class="ln_solid"></div>
-														<div id="nextkolom2" name="nextkolom2"></div>
-														<button type="button" id="jumlahkolom2" value="1" style="display:none"></button>
 
-														<div class="col-md-2">
-															<div class="form-group rec-element">
-																<label for="exampleInputEmail1">No. SO/PO 1 <button type="button" class="btn btn-info tambah-so"><i class="fa fa-plus"></i> </button> </label>
-																<input type="text" class="form-control" name="no_so[]">
+														<?php if ($do == NULL) { ?>
+															<div class="col-md-2">
+																<div class="form-group rec-element2">
+																	<label for="exampleInputEmail1">No. DO/DN 1 <button type="button" class="btn btn-info tambah-form-essay"><i class="fa fa-plus"></i> </button> </label>
+																	<input type="text" class="form-control" name="note_cs[]">
+																</div>
 															</div>
-														</div>
-														<div class="ln_solid2"></div>
-														<div id="nextkolom" name="nextkolom"></div>
-														<button type="button" id="jumlahkolom" value="1" style="display:none"></button>
-														
+															<div class="ln_solid"></div>
+															<div id="nextkolom2" name="nextkolom2"></div>
+															<button type="button" id="jumlahkolom2" value="1" style="display:none"></button>
+
+															<div class="col-md-2">
+																<div class="form-group rec-element">
+																	<label for="exampleInputEmail1">No. SO/PO 1 <button type="button" class="btn btn-info tambah-so"><i class="fa fa-plus"></i> </button> </label>
+																	<input type="text" class="form-control" name="no_so[]">
+																</div>
+															</div>
+															<div class="ln_solid2"></div>
+															<div id="nextkolom" name="nextkolom"></div>
+															<button type="button" id="jumlahkolom" value="1" style="display:none"></button>
+
+														<?php } else { ?>
+
+
+															<?php $no = 1;
+															foreach ($do->result_array() as $do1) { ?>
+															
+
+
+																<div class="rec-element2">
+																	<label class="control-label col-md-6 col-sm-6 col-xs-12" for="first-name">No. DO/DN <?= $no ?> <span class="required"></span>
+																	</label>
+																	<div class="col-md-12 col-sm-12 col-xs-12">
+																		<div class="input-group">
+																			<input type="text" name="note_cs[]" id="doReqPickup" value="<?= $do1['do'] ?>" class="form-control">
+																			<span class="input-group-btn">
+																				<button type="button" class="btn btn-warning del-element2"><i class="fa fa-minus-square"></i> Hapus</button>
+																			</span>
+																		</div>
+																	</div>
+																</div>
+
+
+
+															<?php $no++;
+															} ?>
+															<div id="nextkolom2" name="nextkolom2"></div>
+															<button type="button" class="btn btn-info tambahBarisDo"><i class="fa fa-plus">Tambah No DO</i> </button>
+															<button type="button" id="jumlahkolom2" value="1" style="display:none"></button>
+
+
+														<?php } ?>
+
+
 														<div class="col-md-2">
 															<div class="form-group">
 																<label for="exampleInputEmail1">STP</label>
@@ -196,7 +230,8 @@
 																<label for="exampleInputEmail1">Image</label>
 																<!-- <input type="file" class="form-control" name="ktp"> -->
 																<input type="file" class="form-control" name="ktp[]" onchange="preview_image(); handleImageUpload(this.id);" accept="image/*" capture multiple id="upload_file">
-																<input type="file" class="form-control" name="ktp2[]" onchange="preview_image();" accept="image/*" capture multiple id="upload_file2" hidden></div>
+																<input type="file" class="form-control" name="ktp2[]" onchange="preview_image();" accept="image/*" capture multiple id="upload_file2" hidden>
+															</div>
 														</div>
 														<div class="col-md-4 mb-2">
 															<div id="image_preview"></div>
@@ -307,3 +342,38 @@
 		<!-- /.modal-dialog -->
 	</div>
 	<!-- /.modal -->
+
+
+	<script>
+		$(document).ready(function() {
+			var i = <?= $do->num_rows() + 1 ?>;
+			$(".tambahBarisDo").on('click', function() {
+				row = '<div class="rec-element2">' +
+					'<div class="form-group">' +
+					'<label class="control-label col-md-6 col-sm-6 col-xs-12" for="first-name">No. DO/DN ' + i + ' <span class="required"></span>' +
+					'</label>' +
+					'<div class="col-md-12 col-sm-12 col-xs-12"> ' +
+					'<div class="input-group">' +
+					'<input type="text" name="note_cs[]" id="doReqPickup' + i + '" alt="' + i + '" class="form-control">' +
+					'<span class="input-group-btn">' +
+					'<button type="button" class="btn btn-warning del-element2"><i class="fa fa-minus-square"></i> Hapus</button>' +
+					'</span>' +
+					'</div>' +
+					'</div>' +
+					'</div>' +
+					'<div class="ln_solid"></div>' +
+
+					'</div>';
+				$(row).insertBefore("#nextkolom2");
+				$('#jumlahkolom2').val(i + 1);
+				i++;
+			});
+			$(document).on('click', '.del-element2', function(e) {
+				e.preventDefault()
+				i--;
+				//$(this).parents('.rec-element').fadeOut(400);
+				$(this).parents('.rec-element2').remove();
+				$('#jumlahkolom2').val(i - 1);
+			});
+		});
+	</script>

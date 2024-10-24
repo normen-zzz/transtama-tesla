@@ -69,6 +69,10 @@
                                                                 <a href="#" class="btn btn-sm mb-1 text-light" data-toggle="modal" data-target="#modal-lg-decline<?= $j['id'] ?>" style="background-color: #9c223b;">Add New SO</a>
                                                             <?php }
                                                             ?>
+
+                                                            <?php if ($j['status_revisi'] == 4 || $j['status_revisi'] == 5 || $j['status_revisi'] == 6 || $j['status_revisi'] == 7 || $j['status_revisi'] == 8 ) { ?>
+                                                                <a href="#" class="btn btn-sm mb-1 text-light" data-toggle="modal" data-target="#modal-lg-decline<?= $j['id'] ?>" style="background-color: #9c223b;">Add New SO</a>
+                                                            <?php } ?>
                                                         </td>
 
 
@@ -272,7 +276,7 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="exampleInputEmail1">Cn</label>
-                                        <input type="number" class="form-control" id="exampleInputEmail1" value="<?= $shp['cn'] ?>" required name="cn_baru" placeholder="ex: 2, it measn 2 %">
+                                        <input type="number" class="form-control" id="exampleInputEmail1" value="<?= $shp['cn'] * 100 ?>" required name="cn_baru" placeholder="ex: 2, it measn 2 %">
                                     </div>
 
                                 </div>

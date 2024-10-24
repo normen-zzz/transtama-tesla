@@ -6,7 +6,7 @@
 
 				<?php foreach ($delivery->result_array() as $delivery1) { ?>
 
-					<div class="col-12">
+					<div class="col">
 						<div class="card card-custom gutter-b">
 							<div class="card-body">
 								<div class="d-flex align-items-center">
@@ -61,7 +61,7 @@
 				<?php } ?>
 
 				<?php foreach ($shipments as $shipment) { ?>
-					<div class="col-12">
+					<div class="col">
 						<div class="card card-custom gutter-b">
 							<?php if ($shipment['status_pickup'] == 1) {
 							?>
@@ -165,7 +165,9 @@
 									</div>
 									<hr>
 
-									<?php $shipmentOnSoCharter =  $this->db->query('SELECT a.shipment_id,a.tgl_diterima  FROM tbl_shp_order AS a INNER JOIN tb_service_type AS b ON a.service_type = b.code WHERE a.id_so = ' . $shipment['id_so'] . ' AND (b.prefix = "CHA" OR b.prefix = "SDS") AND a.is_jabodetabek = 1')  ?>
+									<?php $shipmentOnSoCharter =  $this->db->query('SELECT a.shipment_id,a.tgl_diterima  FROM tbl_shp_order AS a LEFT JOIN tb_service_type AS b ON a.service_type = b.code WHERE a.id_so = ' . $shipment['id_so'] . ' AND (b.prefix = "CHA" OR b.prefix = "SDS") AND a.is_jabodetabek = 1');
+									$shipmentOnSoCharterLuar =  $this->db->query('SELECT a.shipment_id,a.tgl_diterima  FROM tbl_shp_order AS a LEFT JOIN tb_service_type AS b ON a.service_type = b.code WHERE a.id_so = ' . $shipment['id_so'] . ' AND (b.prefix = "CHA" OR b.prefix = "SDS") AND a.is_jabodetabek = 2')
+									?>
 									<?php if ($shipmentOnSoCharter->num_rows() != 0) {
 										$cekTglDiterima = $shipmentOnSoCharter->result_array();
 										if (in_array(NULL, array_column($cekTglDiterima, 'tgl_diterima'))) { ?>
@@ -214,25 +216,26 @@
 
 											<?php $shipmentOnSoReguler =  $this->db->query('SELECT a.shipment_id  FROM tbl_shp_order AS a INNER JOIN tb_service_type AS b ON a.service_type = b.code WHERE a.id_so = ' . $shipment['id_so'] . ' AND (b.prefix = "REG" OR b.prefix = "AIR")') ?>
 
-											<?php if ($shipmentOnSoReguler->num_rows() != 0 || $shipmentOnSoCharter->num_rows() != 0) { ?>
+											<?php if ($shipmentOnSoReguler->num_rows() != 0 || $shipmentOnSoCharter->num_rows() != 0 || $shipmentOnSoCharterLuar->num_rows() != 0 ) { ?>
 
 												<?php if ($shipmentOnSoCharter->num_rows() != 0) {
 
 													if (in_array(NULL, array_column($cekTglDiterima, 'tgl_diterima'))) { ?>
 														-
 													<?php } else { ?>
-														<a onclick='$("#modalLoading").modal("show");' href="<?= base_url('shipper/order/doneShipmentDriver/' . $shipment['id_so']) ?>" class="btn mr-2 text-light" style="background-color: #9c223b;">
+														<a onclick=' return confirm_delete(); $("#modalLoading").modal("show");' href="<?= base_url('shipper/order/doneShipmentDriver/' . $shipment['id_so']) ?>" class="btn mr-2 text-light" style="background-color: #9c223b;">
 															<i class="fas fa-check text-light"> </i>
 															Done Shipment
 														</a>
 													<?php } ?>
 
 												<?php } else { ?>
-													<a onclick='$("#modalLoading").modal("show");' href="<?= base_url('shipper/order/doneShipmentDriver/' . $shipment['id_so']) ?>" class="btn mr-2 text-light" style="background-color: #9c223b;">
+													<a onclick=' return confirm_delete(); $("#modalLoading").modal("show")' href="<?= base_url('shipper/order/doneShipmentDriver/' . $shipment['id_so']) ?>" class="btn mr-2 text-light" style="background-color: #9c223b;">
 														<i class="fas fa-check text-light"> </i>
 														Done Shipment
 													</a>
 											<?php }
+
 											} ?>
 
 

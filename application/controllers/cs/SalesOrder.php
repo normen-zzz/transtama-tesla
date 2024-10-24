@@ -34,22 +34,34 @@ class SalesOrder extends CI_Controller
     public function tracking($shipment_id = Null)
     {
         if ($shipment_id == NULL) {
-            $shipment_id = $this->input->post('shipment_id');
-            $data['shipment_id'] = $shipment_id;
-            $data['tracking'] = $this->db->get_where('tbl_tracking_real', ['shipment_id' => $shipment_id])->result_array();
-            $data['shipment'] = $this->db->get_where('tbl_shp_order', ['shipment_id' => $shipment_id])->row_array();
-            $data['title'] = 'Sales Order';
-            if ($this->input->post('modal') == 1) {
-                $data['modal'] = '$("#modal-lg-dl-add' . $shipment_id . '").modal("show");';
+            if ($this->input->post('shipment_id') != NULL) {
+                redirect('cs/SalesOrder/tracking/' . $this->input->post('shipment_id'));
+            } else {
+                $shipment_id = NULL;
+                $data['shipment_id'] =  NULL;
+                $data['title'] = 'Sales Order';
+                $this->backend->display('cs/v_tracking', $data);
             }
-            $this->backend->display('cs/v_tracking', $data);
         } else {
             $data['shipment_id'] = $shipment_id;
-            $data['tracking'] = $this->db->get_where('tbl_tracking_real', ['shipment_id' => $shipment_id])->result_array();
-            $data['shipment'] = $this->db->get_where('tbl_shp_order', ['shipment_id' => $shipment_id])->row_array();
+            // $data['tracking'] = $this->db->get_where('tbl_tracking_real', ['shipment_id' => $shipment_id])->result_array();
+            $data['tracking'] = $this->db->query('SELECT id_tracking,status,created_at,time,shipment_id FROM tbl_tracking_real WHERE shipment_id = ' . $shipment_id . ' ')->result_array();
+            // $data['shipment'] = $this->db->get_where('tbl_shp_order', ['shipment_id' => $shipment_id])->row_array();
+            $data['shipment'] = $this->db->query('SELECT shipper,consigne,tree_shipper,tree_consignee,id_user FROM tbl_shp_order WHERE shipment_id = ' . $shipment_id . ' ')->row_array();
             $data['title'] = 'Sales Order';
             $this->backend->display('cs/v_tracking', $data);
         }
+    }
+    public function getModalTracking()
+    {
+        $id_tracking = $this->input->get('id_tracking'); // Mengambil ID dari parameter GET
+
+
+        $data1 = $this->db->get_where('tbl_tracking_real', ['id_tracking' => $id_tracking])->row();
+
+
+        // Kirim data sebagai respons JSON
+        echo json_encode($data1);
     }
     public function deleteShipmentTracking($id_tracking, $shipment_id)
     {
@@ -130,27 +142,27 @@ class SalesOrder extends CI_Controller
         $flag = '';
         if ($status == 'Shipment Telah Tiba Di Hub') {
             $flag = 9;
-        } else if ($status == 'Shipment Keluar Di Hub Tujuan') {
+        } else if ($status == 'Paket Telah Tiba Di Hub Tujuan dan sedang dalam proses pengantaran') {
             $flag = 10;
         } else if ($status == 'Shipment Dalam Proses Delivery') {
             $flag = 11;
-        } elseif ($status == 'Shipment Telah Diterima Oleh') {
+        } elseif ($status == 'Paket Telah Diterima Oleh') {
             $flag = 12;
-        } elseif ($status == 'Request Pickup From Shipper') {
+        } elseif ($status == 'Permintaan pickup dari pengirim') {
             $flag = 1;
         } elseif ($status == 'Driver Menuju Lokasi Pickup') {
             $flag = 2;
         } elseif ($status == 'Driver Telah Sampai Di Lokasi Pickup') {
             $flag = 3;
-        } elseif ($status == 'Shipment Telah Dipickup Dari Shipper') {
+        } elseif ($status == 'Paket Telah Dipickup Oleh Driver') {
             $flag = 4;
-        } elseif ($status == 'Shipment Telah Tiba Di Hub Jakarta Pusat') {
+        } elseif ($status == 'Paket Telah Tiba Di Hub Jakarta Pusat') {
             $flag = 5;
-        } elseif ($status == 'Shipment Keluar Dari Hub Jakarta Pusat') {
+        } elseif ($status == 'Paket Keluar Dari Hub Jakarta Pusat') {
             $flag = 6;
-        } elseif ($status == 'Shipment Telah Tiba Di Hub CGK' || $status == 'Shipment Telah Tiba Di Hub Jakarta Utara') {
+        } elseif ($status == 'Paket Telah Tiba Di Hub CGK' || $status == 'Paket Telah Tiba Di Hub Jakarta Utara') {
             $flag = 7;
-        } elseif ($status == 'Shipment Keluar Dari Hub CGK' || $status == 'Shipment Keluar Dari Hub Jakarta Utara') {
+        } elseif ($status == 'Paket Telah Keluar Dari Hub CGK' || $status == 'Paket Telah Keluar Dari Hub Jakarta Utara') {
             $flag = 8;
         }
 
@@ -203,7 +215,7 @@ class SalesOrder extends CI_Controller
         $data = array_merge($data, $ktp);
 
         $this->db->insert('tbl_tracking_real', $data);
-        if ($status == "Shipment Telah Diterima Oleh") {
+        if ($status == "Paket Telah Diterima Oleh") {
             // update tgl diterima
             $data = array(
                 'tgl_diterima' => $this->input->post('date')
@@ -513,7 +525,7 @@ class SalesOrder extends CI_Controller
         }
     }
 
-     public function processAdd()
+    public function processAdd()
     {
         $this->form_validation->set_rules('consigne', 'consigne', 'required');
         $this->form_validation->set_rules('mark_shipper', 'mark_shipper', 'required');
@@ -572,9 +584,14 @@ class SalesOrder extends CI_Controller
             $img = $this->input->post('ttd');
             $img = str_replace('data:image/png;base64,', '', $img);
 
-            $deadline_sales = date('Y-m-d');
+            $current_date = date('Y-m-d');
+            $deadline_sales = date('Y-m-d', strtotime($current_date . ' +1 day'));
+
+
+
             // input no shipment
             $this->db->insert('tbl_no_resi', ['no_resi' => $shipment_id, 'created_by' => $this->session->userdata('id_user')]);
+            $so = $this->db->get_where('tbl_so', ['id_so' => $this->input->post('id_so')])->row_array();
 
             $city_shipper = $this->input->post('city_shipper2');
             $city_consigne = $this->input->post('city_consigne');
@@ -602,17 +619,18 @@ class SalesOrder extends CI_Controller
                 'service_type' =>  $service_type,
                 'date_new' => date('Y-m-d'),
                 'so_id' => $kode,
-                'tgl_pickup' => $get_pickup['tgl_pickup'],
-                'pu_moda' => $get_pickup['pu_moda'],
-                'pu_poin' => $get_pickup['pu_poin'],
-                'time' => $get_pickup['time'],
-                'pu_commodity' => $get_pickup['pu_commodity'],
-                'pu_service' => $get_pickup['pu_service'],
-                'pu_note' => $get_pickup['pu_note'],
-                'city_shipper' => $get_pickup['city_shipper'],
-                'payment' => $get_pickup['payment'],
-                'packing_type' => $get_pickup['packing_type'],
-                'is_incoming' => $get_pickup['is_incoming'],
+                'tgl_pickup' => $so['tgl_pickup'],
+
+                'pu_moda' => $so['pu_moda'],
+                'pu_poin' => $so['pu_poin'],
+                'time' => $so['time'],
+                'pu_commodity' => $so['commodity'],
+                'pu_service' => $so['service'],
+                'pu_note' => $so['note'],
+                // 'city_shipper' => $get_pickup['city_shipper'],
+                'payment' => $so['payment'],
+                'packing_type' => $so['packing'],
+                'is_incoming' => $so['is_incoming'],
 
             );
 
@@ -653,103 +671,41 @@ class SalesOrder extends CI_Controller
                 $bukti_tracking = array('bukti' => $namaBaru);
                 $data = array_merge($data, $ktp);
             }
-            // cek order berdasarkan id_so
-            $get_last_order = $this->db->limit(1)->order_by('id', 'desc')->get_where('tbl_shp_order', ['id_so' => $this->input->post('id_so')])->row_array();
-            // kalo shipment id nya null, maka update tbl nya
-            if ($get_last_order['so_id'] == NULL) {
-                // echo 'kosong';
-                $update =  $this->db->update('tbl_shp_order', $data, ['id_so' => $this->input->post('id_so')]);
-                if ($update) {
-                    $this->barcode($shipment_id);
-                    $this->qrcode($shipment_id);
-                    $data = array(
-                        'shipment_id' => $shipment_id,
-                        'status' => 'Shipment Telah Dipickup Dari Shipper',
-                        'id_so' => $this->input->post('id_so'),
-                        'created_at' => date('Y-m-d'),
-                        'id_user' => $this->session->userdata('id_user'),
-                        'pic_task' => $this->input->post('sender'),
-                        'time' => date('H:i:s'),
-                        'flag' => 4,
-                        'status_eksekusi' => 0,
-                    );
-                    $data = array_merge($data, $bukti_tracking);
-                    $this->db->insert('tbl_tracking_real', $data);
-                    $data = array(
-                        'status' => 2,
-                        'deadline_sales_so' => $deadline_sales
-                    );
-                    $this->db->update('tbl_so', $data, ['id_so' => $this->input->post('id_so')]);
-                    $data = array(
-                        'status_eksekusi' => 1,
-                    );
-                    $this->db->update('tbl_tracking_real', $data, ['id_tracking' => $this->input->post('id_tracking')]);
-                    $data = array(
-                        'shipment_id' => $shipment_id,
-                    );
-                    $this->db->update('tbl_tracking_real', $data, ['id_so' => $this->input->post('id_so')]);
-                    $this->session->set_flashdata('message', '<div class="alert
-                     alert-success" role="alert">Success</div>');
-                    redirect('cs/salesOrder/detail/' . $this->input->post('id_so'));
-                } else {
-                    $this->session->set_flashdata('message', '<div class="alert
-                     alert-danger" role="alert">Failed Update</div>');
-                    $this->add($this->input->post('id_so'));
-                }
+
+            // kalo shipment id nya ada, maka insert tbl nya 
+            $insert =  $this->db->insert('tbl_shp_order', $data);
+            if ($insert) {
+
+                $this->barcode($shipment_id);
+                $this->qrcode($shipment_id);
+                $dataTracking1 = array(
+                    'shipment_id' => $shipment_id,
+                    'status' => ucwords(strtolower('permintaan pickup oleh pengirim')),
+                    'id_so' => $this->input->post('id_so'),
+                    'created_at' => $so['created_at'],
+                    'id_user' => $this->session->userdata('id_user'),
+                    'time' =>  $so['time'],
+                    'flag' => 1,
+                    'status_eksekusi' => 1,
+                );
+                $this->db->insert('tbl_tracking_real', $dataTracking1);
+
+
+
+
+
+
+                $data = array(
+                    'status' => 2,
+                    'deadline_sales_so' => $deadline_sales
+                );
+                $this->db->update('tbl_so', $data, ['id_so' => $this->input->post('id_so')]);
+                $this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">Success</div>');
+                redirect('cs/salesOrder/detail/' . $this->input->post('id_so'));
             } else {
-                // kalo shipment id nya ada, maka insert tbl nya 
-                $insert =  $this->db->insert('tbl_shp_order', $data);
-                if ($insert) {
-                    $this->barcode($shipment_id);
-                    $this->qrcode($shipment_id);
-                    $get_tracking = $this->db->get_where('tbl_tracking_real', ['id_so' => $this->input->post('id_so')])->result_array();
-                    foreach ($get_tracking as $track) {
-                        $data = array(
-                            'shipment_id' => $shipment_id,
-                            'status' => $track['status'],
-                            'id_so' => $this->input->post('id_so'),
-                            'created_at' => $track['created_at'],
-                            'note' => $track['note'],
-                            'bukti' => $track['bukti'],
-                            'id_user' => $track['id_user'],
-                            'update_at' => $track['update_at'],
-                            'pic_task' => $track['pic_task'],
-                            'time' => $track['time'],
-                            'flag' => $track['flag'],
-                            'status_eksekusi' => $track['status_eksekusi'],
-                        );
-                        $this->db->insert('tbl_tracking_real', $data);
-                    }
-                    $data = array(
-                        'shipment_id' => $shipment_id,
-                        'status' => 'Shipment Telah Dipickup Dari Shipper',
-                        'id_so' => $this->input->post('id_so'),
-                        'created_at' => date('Y-m-d'),
-                        'id_user' => $this->session->userdata('id_user'),
-                        'pic_task' => $this->input->post('sender'),
-                        'time' => date('H:i:s'),
-                        'flag' => 4,
-                        'status_eksekusi' => 0,
-                    );
-                    $data = array_merge($data, $bukti_tracking);
-                    $this->db->insert('tbl_tracking_real', $data);
-                    $data = array(
-                        'status' => 2,
-                        'deadline_sales_so' => $deadline_sales
-                    );
-                    $this->db->update('tbl_so', $data, ['id_so' => $this->input->post('id_so')]);
-                    // $data = array(
-                    //     'status_eksekusi' => 1,
-                    // );
-                    // $this->db->update('tbl_tracking_real', $data, ['id_tracking' => $this->input->post('id_tracking')]);
-                    $this->session->set_flashdata('message', '<div class="alert
-                        alert-success" role="alert">Success</div>');
-                    redirect('cs/salesOrder/detail/' . $this->input->post('id_so'));
-                } else {
-                    $this->session->set_flashdata('message', '<div class="alert
-                     alert-danger" role="alert">Failed Insert</div>');
-                    $this->add($this->input->post('id_so'));
-                }
+                $this->session->set_flashdata('message', '<div class="alert
+                     alert-danger" role="alert">Failed Insert </div>');
+                $this->add($this->input->post('id_so'));
             }
         }
     }
@@ -1179,7 +1135,7 @@ class SalesOrder extends CI_Controller
     public function detail($id)
     {
         $data['title'] = 'Detail Sales Order';
-        
+
         $data['p'] = $this->db->get_where('tbl_so', ['id_so' => $id])->row_array();
         $data['users'] = $this->db->get_where('tb_user', ['id_role' => 2])->result_array();
         $data['shipment2'] =  $this->order->orderBySo($id)->result_array();

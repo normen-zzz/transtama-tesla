@@ -55,6 +55,33 @@
                                             
                                         </tbody>
                                     </table>
+
+                                    <table id="myTabl" class="table table-bordered">
+                                        <h3 class="title font-weight-bold">Resi</h3>
+
+                                        <p><?= $this->session->flashdata('message'); ?></p>
+                                        <thead>
+                                            <tr>
+
+                                                <th style="width: 5%">No Resi</th>
+                                                <th style="width: 15%;">Shipper</th>
+                                                <th>Consigne</th>
+                                                
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php foreach ($resi->result_array() as $resi1) {?>
+                                                <tr>
+                                                    <td><?= $resi1['shipment_id'] ?></td>
+                                                    <td><?= $resi1['shipper'] ?></td>
+                                                    <td><?= $resi1['city_consigne'].','.$resi1['state_consigne'] ?></td>
+                                                    
+
+                                                </tr>
+                                                <?php } ?>
+                                            
+                                        </tbody>
+                                    </table>
                                     <div class="row">
                                         <div class="col">
                                             <div class="form-group">

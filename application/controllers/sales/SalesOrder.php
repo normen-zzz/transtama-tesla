@@ -214,9 +214,22 @@ class SalesOrder extends CI_Controller
             // die;
 
             $insert =  $this->db->insert('tbl_so', $data);
+            $id_so = $this->db->insert_id();
             // var_dump($insert);
             // die;
             if ($insert) {
+                $doReqPickup = $this->input->post('doReqPickup');
+                if (sizeof($doReqPickup) != 0) {
+                    for ($i = 0; $i < sizeof($doReqPickup); $i++) {
+
+                        $dataDo = [
+                            'do' => $doReqPickup[$i],
+                            'id_so' => $id_so,
+                        ];
+                        $this->db->insert('do_requestpickup', $dataDo);
+                    }
+                }
+
                 $shipper = strtoupper($this->input->post('shipper'));
                 $tgl_pickup = $this->input->post('tgl_pickup');
                 $pu_moda = $this->input->post('pu_moda');
@@ -241,7 +254,9 @@ class SalesOrder extends CI_Controller
                 $this->wa->pickup('+6285894438583', "$pesan"); //Mba Yunita  CS
                 $this->wa->pickup('+6281212603705', "$pesan"); //Mas Ali OPS
                 $this->wa->pickup('+6281398433940', "$pesan"); //Sarwan OPS
-                
+
+
+
                 $this->session->set_flashdata('message', '<div class="alert
                     alert-success" role="alert">Success</div>');
                 redirect('sales/salesOrder');
@@ -700,7 +715,7 @@ class SalesOrder extends CI_Controller
         }
     }
 
-     public function processEditOrder()
+    public function processEditOrder()
     {
         $where = array('id_so' => $this->input->post('id_so'));
 
@@ -751,7 +766,7 @@ class SalesOrder extends CI_Controller
         $time2 = $this->input->post('time');
         $commodity2 = $this->input->post('commodity');
         $note2 = $this->input->post('note');
-       
+
         $destination2 = $this->input->post('destination');
         $pu_poin2 = strtoupper($this->input->post('pu_poin'));
         $service2 = $this->input->post('service');
@@ -762,20 +777,38 @@ class SalesOrder extends CI_Controller
         }
 
         $pesanPickUp2 = "dan pick up di *$pu_poin2*";
-        $pesan2 = "AFTER:  pickup dari *$shipper2* $pesanDestination2 $pesanPickUp2 *$service2* tanggal *$tgl_pickup2* jam *$time2* dengan moda $pu_moda2 dengan jenis barang $commodity2. Catatan : $note2. <br> *Sales : $sales1*";
-       
-        // kirim wa
-        $this->wa->pickup('+6285697780467', '*REVISI REQUEST PICKUP* <br><br>'.$pesan1.'<br><br>'.$pesan2); //Nomor Norman IT
-        $this->wa->pickup('+6281293753199', '*REVISI REQUEST PICKUP* <br><br>'.$pesan1.'<br><br>'.$pesan2); //Nomor Bu Lili CS
-        $this->wa->pickup('+6285894438583', '*REVISI REQUEST PICKUP* <br><br>'.$pesan1.'<br><br>'.$pesan2); //Mba Yunita  CS
-       
-        $this->wa->pickup('+6281212603705', '*REVISI REQUEST PICKUP* <br><br>'.$pesan1.'<br><br>'.$pesan2); //Mas Ali OPS
-		$this->wa->pickup('+6281387909059', '*REVISI REQUEST PICKUP* <br><br>'.$pesan1.'<br><br>'.$pesan2); //TYA  CS
-        $this->wa->pickup('+6281398433940', '*REVISI REQUEST PICKUP* <br><br>'.$pesan1.'<br><br>'.$pesan2); //Sarwan OPS
+        $pesan2 = "AFTER:  pickup dari *$shipper2* $pesanDestination2 $pesanPickUp2 *$service2* tanggal *$tgl_pickup2* jam *$time2* dengan moda $pu_moda2 dengan jenis barang $commodity2. Catatan : $note2. \r\n\r\n *Sales : $sales1*";
 
-        
+
+
+
+        // kirim wa
+        $this->wa->pickup('+6285697780467', '*REVISI REQUEST PICKUP* \r\n\r\n' . $pesan1 . '\r\n\r\n' . $pesan2); //Nomor Norman IT
+        $this->wa->pickup('+6281293753199', '*REVISI REQUEST PICKUP* \r\n\r\n' . $pesan1 . '\r\n\r\n' . $pesan2); //Nomor Bu Lili CS
+        $this->wa->pickup('+6285894438583', '*REVISI REQUEST PICKUP* \r\n\r\n' . $pesan1 . '\r\n\r\n' . $pesan2); //Mba Yunita  CS
+        $this->wa->pickup('+6281212603705', '*REVISI REQUEST PICKUP* \r\n\r\n' . $pesan1 . '\r\n\r\n' . $pesan2); //Mas Ali OPS
+        $this->wa->pickup('+6285777396665', '*REVISI REQUEST PICKUP* \r\n\r\n' . $pesan1 . '\r\n\r\n' . $pesan2); //AMEL  CS
+        $this->wa->pickup('+6281398433940', '*REVISI REQUEST PICKUP* \r\n\r\n' . $pesan1 . '\r\n\r\n' . $pesan2); //Sarwan OPS
+
         $update =  $this->db->update('tbl_so', $data, $where);
         if ($update) {
+
+
+
+            $deleteDo = $this->db->delete('do_requestpickup', ['id_so' => $this->input->post('id_so')]);
+            if ($deleteDo) {
+                $doReqPickup = $this->input->post('doReqPickup');
+                if (sizeof($doReqPickup) != 0) {
+                    for ($i = 0; $i < sizeof($doReqPickup); $i++) {
+
+                        $dataDo = [
+                            'do' => $doReqPickup[$i],
+                            'id_so' => $this->input->post('id_so'),
+                        ];
+                        $this->db->insert('do_requestpickup', $dataDo);
+                    }
+                }
+            }
             $data = array(
                 'date_new' => date('Y-m-d'),
                 'tgl_pickup' => $this->input->post('tgl_pickup'),
@@ -999,7 +1032,7 @@ class SalesOrder extends CI_Controller
         // no bu sri
         $this->wa->pickup('+6285697780467', "$pesan");
         $this->wa->pickup('+62818679758', "$pesan");
-		 //No Raga
+        //No Raga
         $this->wa->pickup('+6287776150830', "$pesan");
 
         $this->session->set_flashdata('message', '<div class="alert
@@ -1033,7 +1066,7 @@ class SalesOrder extends CI_Controller
     public function detail($id)
     {
         $data['title'] = 'Detail Sales Order';
-        $detailrequest = $this->db->get_where('detailrequest_price',['id_so' => $id]);
+        $detailrequest = $this->db->get_where('detailrequest_price', ['id_so' => $id]);
         if ($detailrequest) {
             $data['detailrequest'] = $detailrequest->row_array();
         }
@@ -1068,6 +1101,12 @@ class SalesOrder extends CI_Controller
         $data['moda'] = $this->db->get('tbl_moda')->result_array();
         $data['packing'] = $this->db->get('tbl_packing')->result_array();
         $data['p'] = $this->db->get_where('tbl_so', ['id_so' => $id])->row_array();
+        $dataDo = $this->db->get_where('do_requestpickup',['id_so' => $id]);
+        if ($dataDo) {
+            $data['do'] = $dataDo;
+        } else{
+            $data['do'] = NULL;
+        }
         $this->backend->display('sales/v_edit_order', $data);
     }
 
@@ -1542,7 +1581,7 @@ class SalesOrder extends CI_Controller
         $this->backend->display('sales/v_report_filter', $data);
     }
 
-     public function exportexcel($awal = null, $akhir = null)
+    public function exportexcel($awal = null, $akhir = null)
     {
 
         if ($awal != null && $akhir != null) {
@@ -1587,10 +1626,10 @@ class SalesOrder extends CI_Controller
             $is_jabodetabek = $row['is_jabodetabek'];
             $tgl_daerah = '';
             // kalo iya
-           
+
 
             //kalo dia masih di daerah yg sama itu ada 7 milestonenya
-             $get_tracking = $this->order->getLastTracking($row['shipment_id'])->row_array();
+            $get_tracking = $this->order->getLastTracking($row['shipment_id'])->row_array();
             if ($get_tracking == NULL) {
                 $tracking = '-';
             } else {
@@ -1600,7 +1639,7 @@ class SalesOrder extends CI_Controller
                 $jam = $get_tracking['time'];
             }
             $get_do = $this->db->select('no_do,no_so, berat, koli')->get_where('tbl_no_do', ['shipment_id' => $row['shipment_id']]);
-           
+
 
             $no_do = '';
             $no_so = '';

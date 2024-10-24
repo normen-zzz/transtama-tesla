@@ -101,6 +101,7 @@
 </div>
 <!--end::Content-->
 
+
 <script>
     const scannerVideo = document.getElementById('scanner-video');
     const scanResultInput = document.getElementById('scan-result');
@@ -166,3 +167,4 @@
 
     });
 </script>
+
