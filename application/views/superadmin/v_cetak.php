@@ -127,29 +127,34 @@
 
 
         </table>
-        <table>
-            <tr>
-                <td style="border-bottom: 1px;border-top: 1px solid black;font-size: 8px;">
-                    DO Number :
-                    <?php
-                    $get_do = $this->db->select('no_do')->get_where('tbl_no_do', ['shipment_id' => $order['shipment_id']])->result_array();
-                    $jumlah = $this->db->select('no_do')->get_where('tbl_no_do', ['shipment_id' => $order['shipment_id']])->num_rows();
-                    if ($get_do) {
-                        $i = 1;
-                        foreach ($get_do as $d) {
-                    ?>
-                            <?= ($i == $jumlah) ? $d['no_do'] : $d['no_do'] . '/'  ?>
-                        <?php $i++;
-                        }
-                    } else {
-                        ?>
-                        <?= $order['note_cs'] ?>
-                    <?php   }
+        <?php
+        $get_do = $this->db->select('no_do')->get_where('tbl_no_do', ['shipment_id' => $order['shipment_id']]);
+        if ($get_do->num_rows() > 1) { ?>
+            <table>
+                <tr>
+                    <td style="border-bottom: 1px;border-top: 1px solid black;font-size: 8px;">
+                        DO Number :
+                        <?php
 
-                    ?>
-                </td>
-            </tr>
-        </table>
+
+                        if ($get_do) {
+                            $i = 1;
+                            foreach ($get_do as $d) {
+                        ?>
+                                <?= ($i == $get_do->num_rows()) ? $d['no_do'] : $d['no_do'] . '/'  ?>
+                            <?php $i++;
+                            }
+                        } else {
+                            ?>
+                            <?= $order['note_cs'] ?>
+                        <?php   }
+
+                        ?>
+                    </td>
+                </tr>
+            </table>
+        <?php  } ?>
+
 
         <table style="width:100%; border-left:none;border-right:none" border="0">
             <tr>
