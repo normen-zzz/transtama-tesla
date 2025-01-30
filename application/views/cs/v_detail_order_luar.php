@@ -91,6 +91,15 @@
 												<i class="fas fa-plus-circle text-light"> </i>
 												Single Order
 											</a>
+											<!-- button to open modal bulk order  -->
+											<button class="btn mr-2 text-light" style="background-color: #9c223b;" data-toggle="modal" data-target="#modalBulkOrder">
+												<i class="fas fa-plus-circle text-light"> </i>
+												Bulk Order
+											</button>
+
+
+											
+											 
 											<!-- <a href="<?= base_url('cs/salesOrder/bulk/' . $p['id_so']) ?>" class="btn mr-2 text-light" style="background-color: #9c223b;">
 												<i class="fas fa-plus-circle text-light"> </i>
 												Bulk Order
@@ -437,3 +446,70 @@
 		</div>
 
 	<?php } ?>
+
+	<!-- modalBulkOrder -->
+	<div class="modal fade" id="modalBulkOrder" tabindex="-1" role="dialog" aria-labelledby="modalBulkOrderLabel" aria-hidden="true">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="modalBulkOrderLabel">Bulk Order <a href="<?= base_url('cs/salesOrder/downloadTemplateBulkInput') ?>" class="btn btn-primary">Download Template</a></h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<form id="bulkInput">
+					<div class="modal-body">
+						<div class="form-group">
+							<label for="exampleInputPassword1">Upload File Excel</label>
+							<input type="file" class="form-control" name="file" required>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+						<button type="submit" class="btn btn-primary">Submit</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+	<script>
+		$(document).ready(function() {
+			
+
+			$('#bulkInput').submit(function(e) {
+				e.preventDefault();
+				$.ajax({
+					url: '<?= base_url('cs/salesOrder/processAddImport/'.$p['id_so']) ?>',
+					type: 'POST',
+					data: new FormData(this),
+					processData: false,
+					contentType: false,
+					cache: false,
+					success: function(data) {
+						var obj = JSON.parse(data);
+						if (obj.status == 'success') {
+							// toast 
+							Swal.fire({
+								icon: 'success',
+								title: 'Success',
+								text: 'Data berhasil di import'
+							}).then((result) => {
+								location.reload();
+							});
+						} else {
+							
+							Swal.fire({
+								icon: 'error',
+								title: 'Failed',
+								text: 'Data gagal di import karena ' + obj.message
+							}).then((result) => {
+								location.reload();
+							});
+						}
+						
+					}
+				});
+			});
+		});
+	</script>

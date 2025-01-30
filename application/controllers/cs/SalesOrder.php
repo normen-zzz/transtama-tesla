@@ -1,6 +1,11 @@
 <?php
 defined('BASEPATH') or exit('No direct script access allowed');
 
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
+use PhpOffice\PhpSpreadsheet\Reader\Csv;
+use PhpOffice\PhpSpreadsheet\Reader\Xlsx as ReaderXlsx;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 
 class SalesOrder extends CI_Controller
 {
@@ -31,28 +36,30 @@ class SalesOrder extends CI_Controller
         $data['title'] = 'Sales Order';
         $this->backend->display('cs/v_so', $data);
     }
-    public function tracking($shipment_id = Null)
+   public function tracking($shipment_id = Null)
     {
         if ($shipment_id == NULL) {
             if ($this->input->post('shipment_id') != NULL) {
-                redirect('cs/SalesOrder/tracking/' . $this->input->post('shipment_id'));
+                redirect('cs/SalesOrder/tracking/'.$this->input->post('shipment_id'));
             } else {
                 $shipment_id = NULL;
                 $data['shipment_id'] =  NULL;
                 $data['title'] = 'Sales Order';
                 $this->backend->display('cs/v_tracking', $data);
+                
             }
         } else {
             $data['shipment_id'] = $shipment_id;
             // $data['tracking'] = $this->db->get_where('tbl_tracking_real', ['shipment_id' => $shipment_id])->result_array();
-            $data['tracking'] = $this->db->query('SELECT id_tracking,status,created_at,time,shipment_id FROM tbl_tracking_real WHERE shipment_id = ' . $shipment_id . ' ')->result_array();
+            $data['tracking'] = $this->db->query('SELECT id_tracking,status,created_at,time,shipment_id FROM tbl_tracking_real WHERE shipment_id = '.$shipment_id.' ')->result_array();
             // $data['shipment'] = $this->db->get_where('tbl_shp_order', ['shipment_id' => $shipment_id])->row_array();
-            $data['shipment'] = $this->db->query('SELECT shipper,consigne,tree_shipper,tree_consignee,id_user FROM tbl_shp_order WHERE shipment_id = ' . $shipment_id . ' ')->row_array();
+            $data['shipment'] = $this->db->query('SELECT shipper,consigne,tree_shipper,tree_consignee,id_user FROM tbl_shp_order WHERE shipment_id = '.$shipment_id.' ')->row_array();
             $data['title'] = 'Sales Order';
             $this->backend->display('cs/v_tracking', $data);
         }
+        
     }
-    public function getModalTracking()
+	 public function getModalTracking()
     {
         $id_tracking = $this->input->get('id_tracking'); // Mengambil ID dari parameter GET
 
@@ -215,7 +222,7 @@ class SalesOrder extends CI_Controller
         $data = array_merge($data, $ktp);
 
         $this->db->insert('tbl_tracking_real', $data);
-        if ($status == "Paket Telah Diterima Oleh") {
+        if ($status == "Shipment Telah Diterima Oleh") {
             // update tgl diterima
             $data = array(
                 'tgl_diterima' => $this->input->post('date')
@@ -584,14 +591,12 @@ class SalesOrder extends CI_Controller
             $img = $this->input->post('ttd');
             $img = str_replace('data:image/png;base64,', '', $img);
 
-            $current_date = date('Y-m-d');
-            $deadline_sales = date('Y-m-d', strtotime($current_date . ' +1 day'));
-
-
-
+             
+           
             // input no shipment
             $this->db->insert('tbl_no_resi', ['no_resi' => $shipment_id, 'created_by' => $this->session->userdata('id_user')]);
             $so = $this->db->get_where('tbl_so', ['id_so' => $this->input->post('id_so')])->row_array();
+			 $deadline_sales =  $deadline_sales = date('Y-m-d', strtotime('+2 days', strtotime(date('Y-m-d'))));
 
             $city_shipper = $this->input->post('city_shipper2');
             $city_consigne = $this->input->post('city_consigne');
@@ -620,7 +625,7 @@ class SalesOrder extends CI_Controller
                 'date_new' => date('Y-m-d'),
                 'so_id' => $kode,
                 'tgl_pickup' => $so['tgl_pickup'],
-
+                
                 'pu_moda' => $so['pu_moda'],
                 'pu_poin' => $so['pu_poin'],
                 'time' => $so['time'],
@@ -675,7 +680,7 @@ class SalesOrder extends CI_Controller
             // kalo shipment id nya ada, maka insert tbl nya 
             $insert =  $this->db->insert('tbl_shp_order', $data);
             if ($insert) {
-
+                
                 $this->barcode($shipment_id);
                 $this->qrcode($shipment_id);
                 $dataTracking1 = array(
@@ -690,9 +695,9 @@ class SalesOrder extends CI_Controller
                 );
                 $this->db->insert('tbl_tracking_real', $dataTracking1);
 
+                
 
-
-
+               
 
 
                 $data = array(
@@ -1135,7 +1140,7 @@ class SalesOrder extends CI_Controller
     public function detail($id)
     {
         $data['title'] = 'Detail Sales Order';
-
+        
         $data['p'] = $this->db->get_where('tbl_so', ['id_so' => $id])->row_array();
         $data['users'] = $this->db->get_where('tb_user', ['id_role' => 2])->result_array();
         $data['shipment2'] =  $this->order->orderBySo($id)->result_array();
@@ -1194,30 +1199,7 @@ class SalesOrder extends CI_Controller
             return null;
         }
     }
-    public function barcode($id)
-    {
-        // $koli = sprintf("%02s",  $koli);
-        // for ($i = 1; $i <= $koli; $i++) {
-        //     $koli_ke =  sprintf("%02s", $i);
-        //     $generator = new Picqer\Barcode\BarcodeGeneratorJPG();
-        //     file_put_contents("uploads/barcode/$id-$koli_ke-$koli.jpg", $generator->getBarcode($id . '-' . $koli_ke . '-' . $koli, $generator::TYPE_CODE_128));
-        // }
-        $generator = new Picqer\Barcode\BarcodeGeneratorJPG();
-        file_put_contents("uploads/barcode/$id.jpg", $generator->getBarcode($id, $generator::TYPE_CODE_128));
-        // $generator = new Picqer\Barcode\BarcodeGeneratorHTML();
-        // $generatorPNG = new Picqer\Barcode\BarcodeGeneratorPNG(); // Pixel based PNG
-        // echo $generatorPNG->getBarcode($id, $generatorPNG::TYPE_CODE_128);
-        // fix
-    }
-    public function qrcode($id)
-    {
-        $this->load->library('ciqrcode');
-        $params['data'] = $id;
-        $params['level'] = 'H';
-        $params['size'] = 4;
-        $params['savename'] = FCPATH . "uploads/qrcode/" . $id . '.png';
-        $this->ciqrcode->generate($params);
-    }
+    
     public function print($id)
     {
         $mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => [74, 105]]);
@@ -1260,5 +1242,182 @@ class SalesOrder extends CI_Controller
         // $output = $this->dompdf->output();
         // // file_put_contents('uploads/barcode' . '/' . "$shipment_id.pdf", $output);
         // $this->dompdf->stream("Cetak" . $sekarang . ".pdf", array('Attachment' => 0));
+    }
+	
+	// processAddImport from excel action
+    public function processAddImport($id_so)
+    {
+        $this->db->trans_start();
+        try {
+            $file = $_FILES['file']['name'];
+            $ext = pathinfo($file, PATHINFO_EXTENSION);
+            if ($ext == 'csv') {
+                $reader = new Csv();
+            } else {
+                $reader = new ReaderXlsx();
+            }
+            $reader->setReadDataOnly(true);
+            $spreadsheet = $reader->load($_FILES['file']['tmp_name']);
+            $sheetData = $spreadsheet->getActiveSheet()->toArray();
+
+            $so = $this->db->get_where('tbl_so', ['id_so' => $id_so])->row_array();
+            foreach ($sheetData as $key => $value) {
+                if ($key > 0) {
+                    $sql = $this->db->query("SELECT no_resi as shipment_id FROM tbl_no_resi  ORDER BY id_no_resi DESC LIMIT 1")->row_array();
+                    // var_dump($sql);
+                    // die;
+                    if ($sql == NULL) {
+                        $noUrut = 1;
+                        // $kode =  sprintf("%06s", $noUrut);
+                        $shipment_id  = "$noUrut";
+                    } else {
+                        $last_shipment_id = $sql['shipment_id'];
+                        $no = $last_shipment_id + 1;
+                        $shipment_id =  $no;
+                    }
+                    // input no shipment
+                    $this->db->insert('tbl_no_resi', ['no_resi' => $shipment_id, 'created_by' => $this->session->userdata('id_user')]);
+                    $dataShipment = [
+                        'shipment_id' => $shipment_id,
+                        'mark_shipper' => '-',
+                        'shipper' => $value[0],
+                        'origin' => NULL,
+                        'state_shipper' => $value[1],
+                        'city_shipper' => $value[2],
+                        'destination' => $value[3],
+                        'consigne' => $value[4],
+                        'state_consigne' => $value[5],
+                        'city_consigne' => $value[6],
+                        'service_type' => $value[7],
+                        'koli' => $value[8],
+                        'sender' => $value[9],
+                        'is_jabodetabek' => 2,
+                        'note_driver' => '-',
+                        'note_cs' => '-',
+                        'id_so' => $id_so,
+                        'id_user' => $this->session->userdata('id_user'),
+                        'signature' => '',
+                        'tree_shipper' => $this->getTreeLetterCode($value[2]),
+                        'tree_consignee' => $this->getTreeLetterCode($value[6]),
+                        'date_new' => date('Y-m-d'),
+                        'tgl_pickup' => $so['tgl_pickup'],
+                        'pu_moda' => $so['pu_moda'],
+                        'pu_poin' => $so['pu_poin'],
+                        'time' => date('H:i:s'),
+                        'pu_commodity' => $so['commodity'],
+                        'pu_service' => $so['service'],
+                        'pu_note' => $so['note'],
+                        // 'city_shipper' => $so['city_shipper'],
+                        'payment' => 'Credit',
+                        'packing_type' => $so['packing'],
+                        'is_incoming' => 1,
+
+                    ];
+                    // insrt batch 
+                    $insertDataShipment =  $this->db->insert('tbl_shp_order', $dataShipment);
+                    if ($insertDataShipment) {
+                        $barcode = $this->barcode($shipment_id);
+                        if ($barcode) {
+                            $qrcode = $this->qrcode($shipment_id);
+                            if ($qrcode) {
+                                $dataTracking1 = array(
+                                    'shipment_id' => $shipment_id,
+                                    'status' => ucwords(strtolower('permintaan pickup oleh pengirim')),
+                                    'id_so' => $id_so,
+                                    'created_at' => date('Y-m-d'),
+                                    'id_user' => $this->session->userdata('id_user'),
+                                    'time' =>  $so['time'],
+                                    'flag' => 1,
+                                    'status_eksekusi' => 1,
+                                );
+                                $insertDataTracking1 = $this->db->insert('tbl_tracking_real', $dataTracking1);
+                                if ($insertDataTracking1) {
+                                    $dataTracking2 = array(
+                                        'shipment_id' => $shipment_id,
+                                        'status' => ucwords(strtolower('Paket telah dipickup')),
+                                        'id_so' => $id_so,
+                                        'created_at' => date('Y-m-d'),
+                                        'id_user' => $this->session->userdata('id_user'),
+                                        'time' => date('H:i:s'),
+                                        'flag' => 2,
+                                        'status_eksekusi' => 1,
+                                    );
+                                    $insertDataTracking2 =  $this->db->insert('tbl_tracking_real', $dataTracking2);
+                                    if (!$insertDataTracking2) {
+                                        throw new Exception('Failed Insert Tracking');
+                                    }
+                                } else {
+                                    throw new Exception('Failed Insert Tracking');
+                                }
+                            } else{
+                                throw new Exception('Failed Insert QRCode');
+                            }
+                        }else{
+                            throw new Exception('Failed Insert Barcode');
+                        }
+                        
+                      
+
+                        
+                    } else {
+                        throw new Exception('Failed Insert data shipment');
+                    }
+                }
+            }
+             $deadline_sales =  $deadline_sales = date('Y-m-d', strtotime('+2 days', strtotime(date('Y-m-d'))));
+            $dataSo = array(
+                'status' => 2,
+                'deadline_sales_so' => $deadline_sales
+            );
+            $updateSo = $this->db->update('tbl_so', $dataSo, ['id_so' => $id_so]);
+            if ($updateSo) {
+                $response = json_encode(array('status' => 'success', 'message' => 'Success Import Data'));
+            } else {
+                throw new Exception('Failed Update SO');
+            }
+
+            $this->db->trans_complete();
+            if ($this->db->trans_status() === FALSE) {
+                throw new Exception('Transaction failed');
+            }
+        } catch (Exception $e) {
+            $response = json_encode(array('status' => 'error', 'message' => $e->getMessage()));
+        }
+        echo $response;
+    }
+	public function barcode($id)
+    {
+        // $koli = sprintf("%02s",  $koli);
+        // for ($i = 1; $i <= $koli; $i++) {
+        //     $koli_ke =  sprintf("%02s", $i);
+        //     $generator = new Picqer\Barcode\BarcodeGeneratorJPG();
+        //     file_put_contents("uploads/barcode/$id-$koli_ke-$koli.jpg", $generator->getBarcode($id . '-' . $koli_ke . '-' . $koli, $generator::TYPE_CODE_128));
+        // }
+        $generator = new Picqer\Barcode\BarcodeGeneratorJPG();
+        file_put_contents("uploads/barcode/$id.jpg", $generator->getBarcode($id, $generator::TYPE_CODE_128));
+        return true;
+        // $generator = new Picqer\Barcode\BarcodeGeneratorHTML();
+        // $generatorPNG = new Picqer\Barcode\BarcodeGeneratorPNG(); // Pixel based PNG
+        // echo $generatorPNG->getBarcode($id, $generatorPNG::TYPE_CODE_128);
+        // fix
+    }
+    public function qrcode($id)
+    {
+        $this->load->library('ciqrcode');
+        $params['data'] = $id;
+        $params['level'] = 'H';
+        $params['size'] = 4;
+        $params['savename'] = FCPATH . "uploads/qrcode/" . $id . '.png';
+        $this->ciqrcode->generate($params);
+        return true;
+    }
+	
+	// download file excel in /assets
+    public function downloadTemplateBulkInput()
+    {
+        $this->load->helper('download');
+        $data = file_get_contents(base_url('assets/import.xlsx'));
+        $name = 'template_import_so.xlsx';
+        force_download($name, $data);
     }
 }

@@ -1032,8 +1032,7 @@ class SalesOrder extends CI_Controller
         // no bu sri
         $this->wa->pickup('+6285697780467', "$pesan");
         $this->wa->pickup('+62818679758', "$pesan");
-        //No Raga
-        $this->wa->pickup('+6287776150830', "$pesan");
+        
 
         $this->session->set_flashdata('message', '<div class="alert
         alert-success" role="alert">Success Approve</div>');

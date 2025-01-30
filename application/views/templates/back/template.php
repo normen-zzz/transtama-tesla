@@ -1971,7 +1971,6 @@
 
 	<script>
 		$(document).ready(function() {
-			
 			var approved = 0;
 
 			// $('#no_ca').change(function() {
@@ -2066,8 +2065,6 @@
 			}, 200); // Jeda 1 detik untuk menonaktifkan tombol
 		});
 	</script>
-
-
 
 
 

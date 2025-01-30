@@ -179,6 +179,15 @@
 			</a>
 		</li>
 		<li class="menu-item menu-item" aria-haspopup="true">
+			<a href="<?= base_url('Drive') ?>" class="menu-link">
+				<span class="menu-text"><span class="svg-icon svg-icon-danger svg-icon mr-2">
+
+						<i class="fas fa-sd-card text-danger mr-2" aria-hidden="true">
+
+					</span></i>Drive</span>
+			</a>
+		</li>
+		<li class="menu-item menu-item" aria-haspopup="true">
 			<a href="<?= base_url('profile') ?>" class="menu-link">
 				<span class="menu-text">
 					<span class="svg-icon svg-icon-danger svg-icon mr-2">
@@ -465,6 +474,15 @@
 				</ul>
 			</div>
 		</li>
+		<li class="menu-item menu-item" aria-haspopup="true">
+			<a href="<?= base_url('Drive') ?>" class="menu-link">
+				<span class="menu-text"><span class="svg-icon svg-icon-danger svg-icon mr-2">
+
+						<i class="fas fa-sd-card text-danger mr-2" aria-hidden="true">
+
+					</span></i>Drive</span>
+			</a>
+		</li>
 
 		<li class="menu-item menu-item" aria-haspopup="true">
 			<a href="<?= base_url('profile') ?>" class="menu-link">
@@ -563,6 +581,16 @@
 					</span></i>Account Payable</span>
 			</a>
 		</li>
+		
+		<li class="menu-item menu-item" aria-haspopup="true">
+			<a href="<?= base_url('Drive') ?>" class="menu-link">
+				<span class="menu-text"><span class="svg-icon svg-icon-danger svg-icon mr-2">
+
+						<i class="fas fa-sd-card text-danger mr-2" aria-hidden="true">
+
+					</span></i>Drive</span>
+			</a>
+		</li>
 
 
 		<li class="menu-item menu-item" aria-haspopup="true">
@@ -592,6 +620,15 @@
 						<i class="far fa-map text-danger mr-2" aria-hidden="true">
 
 					</span></i>Sales Tracker</span>
+			</a>
+		</li>
+		<li class="menu-item menu-item" aria-haspopup="true">
+			<a href="<?= base_url('Drive') ?>" class="menu-link">
+				<span class="menu-text"><span class="svg-icon svg-icon-danger svg-icon mr-2">
+
+						<i class="fas fa-sd-card text-danger mr-2" aria-hidden="true">
+
+					</span></i>Drive</span>
 			</a>
 		</li>
 		<li class="menu-item menu-item" aria-haspopup="true">

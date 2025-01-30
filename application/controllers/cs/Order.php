@@ -263,18 +263,18 @@ class Order extends CI_Controller
         $mpdf->WriteHTML($data);
         $mpdf->Output();
     }
-    public function printAll($id)
+   public function printAll($id)
     {
         $mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => [74, 105]]);
 
         $where = array('id_so' => $id);
-        $this->db->select('a.id_so,a.mark_shipper,a.shipment_id,a.shipper,a.city_shipper,a.state_shipper,a.tree_shipper,a.tree_consignee,a.consigne,a.destination,a.city_consigne,a.state_consigne,a.koli,a.is_weight_print,a.weight,a.signature,a.created_at,a.sender,a.tgl_pickup, b.service_name, b.prefix');
+        $this->db->select('a.berat_js,a.shipment_id,a.id_so,a.shipper,a.tree_shipper,a.tree_consignee,a.consigne,a.destination,a.city_consigne,a.state_consigne,a.city_shipper,a.koli,a.is_weight_print,a.state_shipper,a.signature,a.created_at,a.sender,a.tgl_pickup, b.service_name, b.prefix');
         $this->db->from('tbl_shp_order a');
         $this->db->join('tb_service_type b', 'a.service_type=b.code');
         $this->db->where('a.id_so', $id);
         $this->db->where('a.deleted', 0);
         $data['orders'] = $this->db->get()->result_array();
-        $data = $this->load->view('superadmin/v_cetak_all', $data, TRUE);
+        $data = $this->load->view('shipper/v_cetak_all', $data, TRUE);
         $mpdf->WriteHTML($data);
         $mpdf->Output();
     }
@@ -435,8 +435,19 @@ class Order extends CI_Controller
                 ->setAutoSize(true);
             $sheet->setCellValue('Q' . $x, $row['no_smu'])->getColumnDimension('Q')
                 ->setAutoSize(true);
-            $sheet->setCellValue('R' . $x, $row['tgl_diterima'])->getColumnDimension('R')
-                ->setAutoSize(true);
+           if ($row['tgl_diterima'] != NULL) {
+                $sheet->setCellValue('R' . $x, $row['tgl_diterima'])->getColumnDimension('R')
+                    ->setAutoSize(true);
+            } else {
+                // jika status mengandung kata paket telah diterima
+                if (strpos($tracking['status'], 'Diterima') !== false) {
+                    $sheet->setCellValue('R' . $x, $tracking['created_at'])->getColumnDimension('R')
+                        ->setAutoSize(true);
+                } else {
+                    $sheet->setCellValue('R' . $x, '')->getColumnDimension('R')
+                        ->setAutoSize(true);
+                }
+            }
             $sheet->setCellValue('S' . $x, $tracking['status'])->getColumnDimension('S')
                 ->setAutoSize(true);
             $sheet->setCellValue('T' . $x, $leadtime)->getColumnDimension('T')
@@ -459,7 +470,7 @@ class Order extends CI_Controller
                 ->setAutoSize(true);
             $sheet->setCellValue('AC' . $x, '')->getColumnDimension('AC')
                 ->setAutoSize(true);
-            $sheet->setCellValue('AD' . $x, $tracking['created_at'])->getColumnDimension('AD')
+            $sheet->setCellValue('AD' . $x, $tracking['update_at'])->getColumnDimension('AD')
                 ->setAutoSize(true);
             $x++;
             $no++;

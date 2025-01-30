@@ -82,7 +82,6 @@ class Scan extends CI_Controller
 
         $updateBagging = $this->db->update('bagging', $dataScanOut, ['id_bagging' => $id_bagging]);
         if ($updateBagging) {
-            $this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">Bagging ' . $id_bagging . ' berhasil scan in</div>');
             redirect('dispatcher/scan');
         }
     }

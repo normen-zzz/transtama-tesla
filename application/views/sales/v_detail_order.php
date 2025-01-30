@@ -365,7 +365,7 @@
 																																												echo  $shp['service_name'];;
 																																											} ?> </td>
 														<td><?= $shp['shipper'] ?></td>
-														<td><?= $shp['consigne'] ?>/ <br> <?= $shp['city_consigne'] ?></td>
+														<td><?= $shp['consigne'] ?>/ <br> <?= ucwords($shp['destination']) . '. ' . '<br>'  . '<b>' . ucwords(strtolower($shp['city_consigne'])) . '</b>' . ', ' . '<b>' . ucwords(strtolower($shp['state_consigne'])) . '</b>'  ?></td>
 														<!-- <td><?= $shp['city_consigne'] ?>, <?= $shp['state_consigne'] ?></td> -->
 
 														<!-- <?php if ($shp['service_name'] == 'Same Day Service') {
@@ -781,6 +781,13 @@
 
 								</div>
 								<div class="col-md-6">
+										<div class="form-group">
+											<label for="exampleInputEmail1">Special Cn</label>
+											<input type="number" class="form-control" id="exampleInputEmail1" required name="special_cn_baru" value="<?= $cek_so_baru['special_cn_baru'] ?>">
+										</div>
+
+									</div>
+								<div class="col-md-6">
 									<div class="form-group">
 										<label for="exampleInputEmail1">Reason</label>
 										<textarea name="alasan" class="form-control" required></textarea>
@@ -788,7 +795,6 @@
 
 								</div>
 							</div>
-
 					</div>
 					<div class="modal-footer justify-content-between">
 						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -878,6 +884,13 @@
 										<div class="form-group">
 											<label for="exampleInputEmail1">Cn</label>
 											<input type="number" class="form-control" id="exampleInputEmail1" required name="cn_baru" value="<?= $cek_so_baru['cn_baru'] ?>">
+										</div>
+
+									</div>
+									<div class="col-md-6">
+										<div class="form-group">
+											<label for="exampleInputEmail1">Special Cn</label>
+											<input type="number" class="form-control" id="exampleInputEmail1" required name="special_cn_baru" value="<?= $cek_so_baru['special_cn_baru'] ?>">
 										</div>
 
 									</div>

@@ -19,6 +19,10 @@
 								<i class="fas fa-chevron-circle-left text-light"> </i>
 								Back
 							</a>
+
+							<?php if ($info['id_user'] == $this->session->userdata('id_user')) { ?>
+								
+							
 							<a onclick="return confirm('Are you sure Void this ap ?');" href="<?= base_url('finance/Ap/voidAp/'.$info['no_pengeluaran']) ?>" class="btn mr-2 text-light" style="background-color: #9c223b;">
 								<i class="fas fa-minus-circle text-light"></i>
 								Void
@@ -28,6 +32,19 @@
 								
 							Return
 							</a>
+						<?php } ?>
+
+						<?php if ($info['status'] == 0 && $this->session->userdata('id_user') == 14) { ?>
+							<a href="<?= base_url('finance/ap/approve/' . $info['no_pengeluaran']) ?>" class="btn mr-2 text-light" style="background-color: #9c223b;">
+								Approve
+							</a>
+
+							<!-- modal decline  -->
+							<button type="button" class="btn mr-2 text-light" style="background-color: #9c223b;" data-toggle="modal" data-target="#modalDecline">
+								Decline
+							</button>
+
+						<?php } ?>
 						</div>
 					</div>
 					<!-- /.card-header -->
@@ -398,3 +415,29 @@
 	</div>
 	<!-- /.modal -->
 <?php } ?>
+
+<!-- modalDecline -->
+<div class="modal fade" id="modalDecline" tabindex="-1" role="dialog" aria-labelledby="modalDecline" aria-hidden="true">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+			<form action="<?= base_url('finance/ap/decline/'.$info['no_pengeluaran']) ?>" method="POST">
+				<div class="modal-header">
+					<h5 class="modal-title" id="modalDecline">Decline AP <?= $info['no_pengeluaran'] ?></h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">x</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<div class="form-group">
+						<label for="note_cs">Reason</label>
+						<textarea class="form-control" name="reason" required></textarea>
+						
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="submit" class="btn btn-danger">Decline</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>

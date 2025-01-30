@@ -70,9 +70,14 @@
                                                             <?php }
                                                             ?>
 
-                                                            <?php if ($j['status_revisi'] == 4 || $j['status_revisi'] == 5 || $j['status_revisi'] == 6 || $j['status_revisi'] == 7 || $j['status_revisi'] == 8 ) { ?>
+                                                            <?php if ($j['status_revisi'] == 4 || $j['status_revisi'] == 5 || $j['status_revisi'] == 6 || $j['status_revisi'] == 8 ) { ?>
                                                                 <a href="#" class="btn btn-sm mb-1 text-light" data-toggle="modal" data-target="#modal-lg-decline<?= $j['id'] ?>" style="background-color: #9c223b;">Add New SO</a>
                                                             <?php } ?>
+															
+															<?php if ($j['status_revisi'] == 7 ) { ?>
+                                                                <a href="#" class="btn btn-sm mb-1 text-light" data-toggle="modal" data-target="#modal-lg-decline<?= $j['id'] ?>" style="background-color: #9c223b;">Add New SO (After Approve)</a>
+                                                            <?php } ?>
+															
                                                         </td>
 
 

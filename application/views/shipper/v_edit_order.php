@@ -12,7 +12,7 @@
 								<span class="text-muted font-weight-bold font-size-sm mt-1">Order ID :<b> <?= $p['order_id'] ?></b></span>
 							</div>
 							<div class="card-toolbar">
-								<a onclick='$("#modalLoading").modal("show");' href="<?= base_url('shipper/order/view/' . $id_so) ?>" class="btn mr-2 text-light" style="background-color: #9c223b;">
+								<a onclick='$("#modalLoading").modal("show");' href="<?= base_url('shipper/order/view/' . $id_so . '/' . $id_tracking) ?>" class="btn mr-2 text-light" style="background-color: #9c223b;">
 									<i class="fas fa-chevron-circle-left text-light"> </i>
 									Back
 								</a>
@@ -84,7 +84,7 @@
 
 														<input type="text" class="form-control" hidden name="id" value="<?= $p['id'] ?>">
 														<input type="text" class="form-control" hidden name="id_so" value="<?= $p['id_so'] ?>">
-														
+														<input type="text" class="form-control" hidden name="id_tracking" value="<?= $id_tracking ?>">
 
 
 														<div class="col-md-4">

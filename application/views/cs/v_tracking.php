@@ -22,7 +22,7 @@
 								<form action="<?= base_url('cs/salesOrder/tracking') ?>" method="POST">
 
 									<label for="shipment_id">Shipment ID</label>
-									<input type="text" value="" class="form-control" name="shipment_id">
+									<input type="text" class="form-control" name="shipment_id">
 									<button type="submit" class="btn btn-success mt-2">View</button>
 									<!-- <div class="navbar-form navbar-center">
 										<select class="form-control" id="selectCamCs" style="width: 80%;"></select>

@@ -161,7 +161,7 @@
                                                                                                 } ?>
                 </td>
                 <td style="border-top: 1px solid black; border-left: 1px solid black;font-size: 10px;">
-                    <b>Weight :</b> <?= ($order['is_weight_print'] == 1) ?  $order['weight'] : ''; ?>
+                    <b>Weight :</b> <?= $order['weight'] ?>
                 </td>
             </tr>
             <tr>

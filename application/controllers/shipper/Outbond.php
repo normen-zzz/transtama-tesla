@@ -5,11 +5,7 @@ class Outbond extends CI_Controller
 {
     public function __construct()
     {
-        
         parent::__construct();
-        if (!$this->session->userdata('id_user')) {
-            redirect('backoffice');
-        }
         $this->load->library('upload');
         $this->load->model('M_Datatables2');
         $this->load->model('M_Datatables');

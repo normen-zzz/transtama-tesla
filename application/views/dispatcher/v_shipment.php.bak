@@ -100,25 +100,25 @@
 </div>
 <!--end::Content-->
 
-<?php foreach ($gateway as $g) {
+<?php foreach ($gateway as $gg) {
 ?>
 	<form action="<?= base_url('dispatcher/scan/cek_id') ?>" method="post">
-		<div class="modal fade" id="deleteModal<?= $g['id_gateway'] ?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal fade" id="deleteModal<?= $gg['id_gateway'] ?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 			<div class="modal-dialog" role="document">
 				<div class="modal-content">
 					<div class="modal-header">
 						<h5 class="modal-title" id="exampleModalLabel">Scan In/Out With <b>
 
-								<?= $g['shipment_id'] ?>
+								<?= $gg['shipment_id'] ?>
 							</b>
 						</h5>
 						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 							<span aria-hidden="true">&times;</span>
 						</button>
 					</div>
-					<?php if ($g['is_incoming'] == 1) {
+					<?php if ($gg['is_incoming'] == 1) {
 	// echo $g['sts'];
-						if ($g['sts'] == 'out') {
+						if ($gg['sts'] == 'out') {
 					?>
 							<div class="col-md-6">
 								<div class="form-group">
@@ -153,8 +153,8 @@
 					<?php	} ?>
 
 					<div class="modal-footer">
-						<input type="hidden" name="shipment_id" value="<?= $g['shipment_id'] ?>" class="shipment_id">
-						<input type="hidden" name="is_incoming" value="<?= $g['is_incoming'] ?>">
+						<input type="hidden" name="shipment_id" value="<?= $gg['shipment_id'] ?>" class="shipment_id">
+						<input type="hidden" name="is_incoming" value="<?= $gg['is_incoming'] ?>">
 						<button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
 						<button type="submit" class="btn btn-primary">Yes</button>
 					</div>

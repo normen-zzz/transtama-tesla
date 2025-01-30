@@ -20,13 +20,13 @@ function getStatusBaggingOutbond($idBagging) {
     $bagging  = $CI->db->query('SELECT status_bagging FROM bagging WHERE id_bagging = '.$idBagging.' ')->row_array();
 
     if ($bagging['status_bagging'] == 1) {
-        return 'Paket telah tiba di Hub jakarta pusat';
+        return 'Bagging berada di Hub jakarta pusat';
     }elseif ($bagging['status_bagging'] == 2) {
-        return 'Paket telah keluar dari Hub jakarta pusat';
+        return 'Bagging telah keluar dari Hub jakarta pusat';
     }elseif ($bagging['status_bagging'] == 3) {
-        return 'Paket telah tiba di Hub CGK';
+        return 'Bagging telah tiba di Hub CGK';
     }elseif ($bagging['status_bagging'] == 4) {
-        return 'Paket telah keluar dari Hub CGK';
+        return 'Bagging telah keluar dari Hub CGK';
     }
 }
 

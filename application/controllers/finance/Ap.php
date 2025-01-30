@@ -355,6 +355,24 @@ class Ap extends CI_Controller
 			redirect('finance/ap');
 		}
 	}
+	
+	public function decline($no_pengeluaran)
+	{
+		$data = [
+			'status' => 6,
+			'reason_void' => $this->input->post('reason'),
+			'void_date' => date('Y-m-d H:i:s')
+		];
+		$update = $this->db->update('tbl_pengeluaran', $data, ['no_pengeluaran' => $no_pengeluaran]);
+		if ($update) {
+			$this->session->set_flashdata('message', 'Success Decline');
+			redirect('finance/ap/detail/'.$no_pengeluaran);
+		} else {
+			$this->session->set_flashdata('message', 'Failed Decline');
+			redirect('finance/ap/detail/'.$no_pengeluaran);
+		}
+
+	}
 
 	public function delete($id)
 	{

@@ -10,7 +10,7 @@
 				<div class="col-12">
 					<div class="card card-custom card-stretch">
 
-						<div class="flash-data"><?= $this->session->flashdata('message'); ?></div>
+						<div class="flash-data" data-flashdata="<?= $this->session->flashdata('message'); ?>"></div>
 
 						<!-- /.box-body -->
 						<div class="row">
