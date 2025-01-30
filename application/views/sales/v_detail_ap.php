@@ -19,6 +19,16 @@
 								<i class="fas fa-chevron-circle-left text-light"> </i>
 								Back
 							</a>
+							<a onclick="return confirm('Are you sure Void this ap ?');" href="<?= base_url('sales/Ap/voidAp/'.$info['no_pengeluaran']) ?>" class="btn mr-2 text-light" style="background-color: #9c223b;">
+								<i class="fas fa-minus-circle text-light"></i>
+								Void
+							</a>
+
+							<a onclick="return confirm('Are you sure return this ap ?');" href="<?= base_url('sales/Ap/takeBackAp/'.$info['no_pengeluaran']) ?>" class="btn mr-2 text-light" style="background-color: #9c223b;">
+								
+							Return
+							</a>
+
 						</div>
 					</div>
 					<!-- /.card-header -->
@@ -137,7 +147,7 @@
 										<p class="text-danger">***Klik ditempat yang ingin diedit***</p>
 
 
-										<div class="col-md-9">
+										<div class="col">
 											<table class="table table-separate table-head-custom table-checkable" id="myTable3">
 												<tr>
 													<td>Category</td>
@@ -159,7 +169,9 @@
 														</td>
 
 														<td><span <?php $approve = $this->db->get_where('tbl_approve_pengeluaran', array('no_pengeluaran' => $c['no_pengeluaran']));
-																	if ($approve->num_rows() == 0) { ?> class='edit' <?php } ?>>Rp. <?= $c['amount_proposed'] ?></span>
+																	if ($approve->num_rows() == 0) { ?> class='edit' <?php } else {
+																														if ($this->session->userdata('id_atasan') == NULL && $info['status'] < 3) { ?> class='edit' <?php }
+																																																			} ?>>Rp. <?= $c['amount_proposed'] ?></span>
 															<input type='number' name="jumlah" class='form-control txtedit' data-id="<?= $c['id_pengeluaran'] ?>" data-field='amount_proposed' data-url='<?= base_url() ?>/sales/ap/editApSatuanAjax' id='amount_proposedtxt_<?= $c['amount_proposed'] ?>' value='<?= $c['amount_proposed'] ?>'>
 														</td>
 
@@ -176,7 +188,7 @@
 
 															<?php	} ?>
 														</td>
-														<td width="20%">
+														<td>
 
 															<div class="col">
 																<p class="text-danger">***Choose file jika ingin mengubah foto dan klik submit***</p>
@@ -248,6 +260,8 @@
 													</span> -->
 
 										<?php } ?>
+
+
 									</div>
 
 									<!--end: Wizard Step 1-->

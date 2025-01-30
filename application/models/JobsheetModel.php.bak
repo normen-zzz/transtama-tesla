@@ -1,0 +1,51 @@
+<?php
+defined('BASEPATH') or exit('No direct script access allowed');
+
+class Invoice extends CI_Controller
+{
+
+    public function __construct()
+    {
+        parent::__construct();
+        $this->load->library('form_validation');
+        $this->load->model('M_Datatables');
+        $this->load->model('JobsheetModel','cs');
+       
+        require_once APPPATH . 'third_party/vendor/autoload.php';
+    }
+
+    public function printProforma($no_invoice)
+    {
+        $data['invoice'] = $this->cs->getInvoice($no_invoice)->result_array();
+        $data['info'] = $this->cs->getInvoice($no_invoice)->row_array();
+        $get_alamat_customer = $this->db->get_where('tb_customer', ['nama_pt' => $data['info']['shipper']])->row_array();
+      
+        $data['total_invoice'] = $this->cs->getInvoice($no_invoice)->num_rows();
+		
+		//var_dump($data); die;
+		
+        // kalo dia ada reimbursment
+        if ($data['info']['is_reimbursment'] == 1) {
+			$data['reimbursment'] = $this->cs->getInvoiceReimbursment($no_invoice)->row_array();
+            $this->load->view('superadmin/v_cetak_invoice_reimbursment', $data);
+            $html = $this->output->get_output();
+            $this->load->library('dompdf_gen');
+            $this->dompdf->set_paper("legal", 'potrait');
+            $this->dompdf->load_html($html);
+            $this->dompdf->render();
+            // $sekarang = date("d:F:Y:h:m:s");
+            $this->dompdf->stream("Invoice$no_invoice.pdf", array('Attachment' => 0));
+        } else {
+            $this->load->view('superadmin/v_cetak_invoice', $data);
+            $html = $this->output->get_output();
+            $this->load->library('dompdf_gen');
+            $this->dompdf->set_paper("legal", 'potrait');
+            $this->dompdf->load_html($html);
+            $this->dompdf->render();
+            // $sekarang = date("d:F:Y:h:m:s");
+            $this->dompdf->stream("Invoice$no_invoice.pdf", array('Attachment' => 0));
+        }
+    }
+
+
+}

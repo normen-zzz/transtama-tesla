@@ -26,7 +26,7 @@ function getGrade($nilai)
                 <div class="card">
                     <div class="card-header">
 
-                        <h2 class="card-title">KPI Invoice <?= $user['nama_user'] ?>
+                        <h2 class="card-title">KPI Invoice
                             <div class="row">
                                 <form action="<?= base_url('superadmin/Kpi/detailInvoice') ?>" method="POST">
                                     <div class="row ml-2">
@@ -39,7 +39,7 @@ function getGrade($nilai)
                                             <label>End</label> <br>
                                             <input type="date" <?php if ($akhir != NULL) { ?> value="<?= $akhir ?>" <?php } ?> name="akhir" id="akhir" class="form-control">
                                         </div>
-                                        <input type="text" name="user" id="user" value="<?= $user['id_user'] ?>" hidden>
+                                        
 
                                         <div class="form-group"> <br>
                                             <button type="submit" class="btn btn-success mt-4 ml-3">Tampilkan</button>
@@ -92,7 +92,7 @@ function getGrade($nilai)
                                         if ($pod != NULL) {
                                             // memberi jarak sehari
                                             $pod_sampe = date_create(date("Y-m-d", strtotime("1 day", strtotime($pod['tgl_sampe']))));
-                                            $date2 = date_create(date('Y-m-d', strtotime($inv1['created_at'])));
+                                            $date2 = date_create(date('Y-m-d', strtotime($inv1['update_at'])));
                                             $diff = date_diff($pod_sampe, $date2);
                                             // jarak invoice dibuat dari pod diterima
                                             // echo $inv1['no_invoice'] . '/' . $pod['shipment_id'] . $diff->format(" %R%a days <br>");
@@ -122,7 +122,7 @@ function getGrade($nilai)
                                 ?>
                                     <tr>
                                         <td><?= $inv1['no_invoice'] ?></td>
-                                        <td><?= $inv1['created_at'] ?></td>
+                                        <td><?= $inv1['update_at'] ?></td>
                                         <td><?php if ($allPod != NULL) {
 
                                                 foreach ($allPod as $pod) {

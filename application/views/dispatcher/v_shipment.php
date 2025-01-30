@@ -11,75 +11,51 @@
 					<div class="card card-custom card-stretch">
 
 						<div class="flash-data" data-flashdata="<?= $this->session->flashdata('message'); ?>"></div>
-						<!-- <div class="row">
-							<div class="col-md-6">
-								<div class="panel-heading ml-2">
-									<div class="navbar-form navbar-left">
-										<h4>SCAN IN & SCAN OUT</h4>
-									</div>
-									<div class="navbar-form navbar-center">
-										<select class="form-control" id="camera-select" style="width: 80%;"></select>
-									</div>
 
-								</div>
-							</div>
-							<div class="col-md-6">
-								<div class="well" style="position: middle;">
-									<form action="<?php echo base_url('scan1/cek_id'); ?>" method="POST">
-										<canvas width="400" height="400" id="webcodecam-canvas"></canvas>
-										<br>
-										<input type="text" name="id_karyawan" autofocus>
-										<input type="submit">
-									</form>
-
-								</div>
-							</div>
-						</div> -->
 						<!-- /.box-body -->
+						<div class="row">
+                            <div class="col-sm-5" >
+                                <h1>Scan QR Codes</h1>
+                                <div class="section">
+                                    <div id="my-qr-reader">
+                                    </div>
+                                </div>
+                            </div>
+                            <script src="https://unpkg.com/html5-qrcode"> </script>
+                            
+
+
+                           
+                        </div>
+						<form action="<?= base_url('dispatcher/Scan/scanInBagging') ?>" id="scanOutbond" method="POST">
+                        <input type="text" name="hasilscan" id="hasilScan">
+                        </form>
 						<div class="row m-4" style="overflow: auto;">
 							<div class="col-md-12">
 								<table id="myTable" class="table table-bordered">
-									<h3 class="title font-weight-bold">List Scan In/Out</h3>
+									<h3 class="title font-weight-bold">List Scan In</h3>
 									<!-- <div class="flash-data" data-flashdata="<?= $this->session->flashdata('message'); ?>"></div> -->
 									<p><?= $this->session->flashdata('message'); ?></p>
 									<thead>
 										<tr>
-											<th style="width: 10%;">Shipment ID</th>
-											<th style="width: 15%;">Shipper</th>
-											<th style="width: 15%;">Consignee</th>
-											<th style="width: 5%;">Note</th>
-											<th style="width: 5%;">Excecution Status</th>
-											<th style="width: 5%;">Status</th>
-										</tr>
+											<th>No Bagging</th>
+											<th>Created At</th>
+											<th>Bagging By</th>
+											<th>Status</th>
+											<th>Action</th>
 									</thead>
 									<tbody>
-										<?php foreach ($gateway as $g) {
-										?>
+										<?php foreach ($bagging->result_array() as $bagging1) { ?>
+
 											<tr>
-												<td><?= $g['shipment_id'] ?>
-													<br>
-													<?php if ($g['is_incoming'] == 0) {
-														echo '<b>Outgoing</b>';
-													} else {
-														echo '<b>Incoming</b>';
-													} ?>
-												</td>
-												<td><?= $g['shipper'] ?><br><?= $g['tree_shipper'] ?></td>
-												<td><?= $g['consigne'] ?><br><?= $g['tree_consignee'] ?></td>
-												<td><?= $g['sts'] ?></td>
-												<td><?= ($g['status_eksekusi'] == 1) ? '<span class="btn btn-sm btn-success">Success</span> <br>' . $g['created_at'] . ' ' : '<span class="btn btn-sm btn-danger">Pending</span><br>' . $g['created_at'] . ' '; ?></td>
-												<!-- <td><?= $g['created_at'] ?></td> -->
+												<td><?= $bagging1['id_bagging'] ?></td>
+												<td><?= date('d-m-Y H:i:s', strtotime($bagging1['created_at'])) ?></td>
+												<td><?= getNamaUser($bagging1['created_by']) ?></td>
+												<td><?= getStatusBaggingOutbond($bagging1['id_bagging']) ?></td>
 												<td>
-													<?php if ($g['status_eksekusi'] == 0) {
-													?>
-														<!-- <a href="#" class="btn btn-sm text-light btn-edit" data-id="<?= $g['shipment_id']; ?>" style="background-color: #9c223b;">Update</a> -->
-														<a href="#" class="btn btn-sm text-light btn-edit" data-toggle="modal" data-target="#deleteModal<?= $g['id_gateway'] ?>" style=" background-color: #9c223b;">Update</a>
-													<?php } else {
-														echo '-';
-													} ?>
+													<a class="btn btn-primary" href="<?= base_url('dispatcher/Scan/doScanOut/' . $bagging1['id_bagging']) ?>">SCAN OUT</a>
 												</td>
 											</tr>
-
 										<?php } ?>
 									</tbody>
 
@@ -100,93 +76,71 @@
 </div>
 <!--end::Content-->
 
-<?php foreach ($gateway as $gg) {
-?>
-	<form action="<?= base_url('dispatcher/scan/cek_id') ?>" method="post">
-		<div class="modal fade" id="deleteModal<?= $gg['id_gateway'] ?>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-			<div class="modal-dialog" role="document">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h5 class="modal-title" id="exampleModalLabel">Scan In/Out With <b>
 
-								<?= $gg['shipment_id'] ?>
-							</b>
-						</h5>
-						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-							<span aria-hidden="true">&times;</span>
-						</button>
-					</div>
-					<?php if ($gg['is_incoming'] == 1) {
-	// echo $g['sts'];
-						if ($gg['sts'] == 'out') {
-					?>
-							<div class="col-md-6">
-								<div class="form-group">
-									<label for="exampleInputEmail1">Continue To<span style="color: red;">*</span></label>
-									<div class="form-check">
-										<input class="form-check-input" required type="radio" name="is_delivery" id="flexRadioDefault1" value="1">
-										<label class="form-check-label" for="flexRadioDefault1">
-											Delivery
-										</label>
-									</div>
-									<div class="form-check">
-										<input class="form-check-input" required type="radio" name="is_delivery" id="flexRadioDefault2" value="2">
-										<label class="form-check-label" for="flexRadioDefault2">
-											Hub Jakarta Pusat
-										</label>
-									</div>
-								</div>
-							</div>
+<script>
+    const scannerVideo = document.getElementById('scanner-video');
+    const scanResultInput = document.getElementById('scan-result');
+    const scanButton = document.getElementById('scan-button');
 
-						<?php	} else {
-						?>
-							<div class="modal-body">
-								<h4>Are you sure ?</h4>
-							</div>
-						<?php	}
-					} else {
-						?>
-						<div class="modal-body">
-							<h4>Are you sure ?</h4>
-						</div>
+    let scanner;
 
-					<?php	} ?>
+    scanButton.addEventListener('click', () => {
+        scanner = new Instascan.Scanner({
+            video: scannerVideo,
+            scanPeriod: 5,
+            mirror: false,
+        });
 
-					<div class="modal-footer">
-						<input type="hidden" name="shipment_id" value="<?= $gg['shipment_id'] ?>" class="shipment_id">
-						<input type="hidden" name="is_incoming" value="<?= $gg['is_incoming'] ?>">
-						<button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
-						<button type="submit" class="btn btn-primary">Yes</button>
-					</div>
-				</div>
-			</div>
-		</div>
-	</form>
+        scanner.addListener('scan', (content) => {
+            scanResultInput.value = content;
+        });
 
-<?php } ?>
-<!-- 
-<form action="<?= base_url('dispatcher/scan/cek_id') ?>" method="post">
-	<div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-		<div class="modal-dialog" role="document">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title" id="exampleModalLabel">Scan In/Out With <b>
-							<span id="id2"></span>
-						</b>
-					</h5>
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-						<span aria-hidden="true">&times;</span>
-					</button>
-				</div>
-				<div class="modal-body">
-					<h4>Are you sure ?</h4>
-				</div>
-				<div class="modal-footer">
-					<input type="hidden" name="shipment_id" class="shipment_id">
-					<button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
-					<button type="submit" class="btn btn-primary">Yes</button>
-				</div>
-			</div>
-		</div>
-	</div>
-</form> -->
+        Instascan.Camera.getCameras().then((cameras) => {
+            if (cameras.length > 0) {
+                scanner.start(cameras[0]);
+            } else {
+                console.error('Tidak ada kamera yang tersedia');
+            }
+        }).catch((err) => {
+            console.error(err);
+        });
+    });
+</script>
+
+<script>
+    // script.js file
+
+    function domReady(fn) {
+        if (
+            document.readyState === "complete" ||
+            document.readyState === "interactive"
+        ) {
+            setTimeout(fn, 1000);
+        } else {
+            document.addEventListener("DOMContentLoaded", fn);
+        }
+    }
+
+    domReady(function() {
+
+        // If found you qr code
+        function onScanSuccess(decodeText, decodeResult) {
+            var hasilScan = document.getElementById("hasilScan");
+            hasilScan.value = decodeText;
+            var formScan = document.getElementById('scanOutbond')
+            formScan.submit();
+            htmlscanner.clear();
+        }
+
+        let htmlscanner = new Html5QrcodeScanner(
+            "my-qr-reader", {
+                fps: 10,
+                qrbos: 250
+            }
+        );
+        htmlscanner.render(onScanSuccess);
+
+    });
+</script>
+
+

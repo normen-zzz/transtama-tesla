@@ -196,7 +196,7 @@ class Ap extends CI_Controller
 			$pesan = "Hallo, ada pengajuan Ap No. *$no_ap* Dengan Tujuan *$purpose* Tanggal *$date*. Silahkan approve melalui link berikut : $link . Terima Kasih";
 			// no pak sam
 			$this->wa->pickup('+6281808008082', "$pesan");
-			// $this->wa->pickup('+6285157906966', "$pesan");
+			
 			//Norman
 			$this->wa->pickup('+6285697780467', "$pesan");
 		} else {
@@ -204,7 +204,7 @@ class Ap extends CI_Controller
 			$link = "https://tesla-smartwork.transtama.com/approval/detailOps/$no_ap";
 			$pesan = "Hallo, ada pengajuan Ap No. *$no_ap* Oleh *$nama_user*  Dengan Tujuan *$purpose* Tanggal *$date*. Silahkan Approve Melalu Link Berikut : $link . Terima Kasih";
 			// no manager ops
-			$this->wa->pickup('+6281398433940', "$pesan");
+			$this->wa->pickup('+6281212603705', "$pesan");
 			//Norman
 			$this->wa->pickup('+6285697780467', "$pesan");
 		}
@@ -330,8 +330,7 @@ class Ap extends CI_Controller
 			// no pak sam
 
 			$this->wa->pickup('+6281808008082', "$pesan");
-			$this->wa->pickup('+6285157906966', "$pesan");
-			// $this->wa->pickup('+6285157906966', "$pesan");
+			
 			//Norman
 			$this->wa->pickup('+6285697780467', "$pesan");
 
@@ -353,6 +352,45 @@ class Ap extends CI_Controller
 		} else {
 			$this->session->set_flashdata('message', 'Dihapus');
 			redirect('shipper/customer');
+		}
+	}
+	public function voidAp($no_ap) {
+		$void = $this->db->update('tbl_pengeluaran',array('status' => 6),array('no_pengeluaran' => $no_ap));
+		if ($void) {
+			$this->session->set_flashdata('message', 'Void AP');
+			redirect('shipper/ap');
+		} else {
+			$this->session->set_flashdata('message', 'Failed');
+			redirect('shipper/ap');
+		}
+	}
+
+	public function takeBackAp($no_ap) {
+		if ($this->session->userdata('id_atasan') == NULL) {
+			$update = array(
+				'approve_by_sm' => NULL,
+				'created_sm' => NULL,
+				'approve_by_gm' => NULL,
+				'created_gm' => NULL,
+				'received_by' => NULL,
+				'created_received' => NULL,
+				'approve_mgr_finance' => NULL,
+				'created_mgr_finance' => NULL
+			);
+			$takeback = $this->db->update('tbl_approve_pengeluaran',$update,array('no_pengeluaran' => $no_ap));
+			$updatestatus = $this->db->update('tbl_pengeluaran',array('status' => 2),array('no_pengeluaran' => $no_ap));
+		}else{
+			$takeback = $this->db->delete('tbl_approve_pengeluaran',array('no_pengeluaran' => $no_ap));
+			$updatestatus = $this->db->update('tbl_pengeluaran',array('status' => 0),array('no_pengeluaran' => $no_ap));
+		}
+		
+		if ($takeback && $updatestatus) {
+			
+			$this->session->set_flashdata('message', 'Success');
+			redirect('shipper/ap/detail/'.$no_ap);
+		} else {
+			$this->session->set_flashdata('message', 'Failed');
+			redirect('shipper/ap/detail/'.$no_ap);
 		}
 	}
 	public function edit()

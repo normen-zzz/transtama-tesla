@@ -19,6 +19,32 @@
 								<i class="fas fa-chevron-circle-left text-light"> </i>
 								Back
 							</a>
+
+							<?php if ($info['id_user'] == $this->session->userdata('id_user')) { ?>
+								
+							
+							<a onclick="return confirm('Are you sure Void this ap ?');" href="<?= base_url('finance/Ap/voidAp/'.$info['no_pengeluaran']) ?>" class="btn mr-2 text-light" style="background-color: #9c223b;">
+								<i class="fas fa-minus-circle text-light"></i>
+								Void
+							</a>
+
+							<a onclick="return confirm('Are you sure return this ap ?');" href="<?= base_url('finance/Ap/takeBackAp/'.$info['no_pengeluaran']) ?>" class="btn mr-2 text-light" style="background-color: #9c223b;">
+								
+							Return
+							</a>
+						<?php } ?>
+
+						<?php if ($info['status'] == 0 && $this->session->userdata('id_user') == 14) { ?>
+							<a href="<?= base_url('finance/ap/approve/' . $info['no_pengeluaran']) ?>" class="btn mr-2 text-light" style="background-color: #9c223b;">
+								Approve
+							</a>
+
+							<!-- modal decline  -->
+							<button type="button" class="btn mr-2 text-light" style="background-color: #9c223b;" data-toggle="modal" data-target="#modalDecline">
+								Decline
+							</button>
+
+						<?php } ?>
 						</div>
 					</div>
 					<!-- /.card-header -->
@@ -159,8 +185,10 @@
 														</td>
 
 														<td><span <?php $approve = $this->db->get_where('tbl_approve_pengeluaran', array('no_pengeluaran' => $c['no_pengeluaran']));
-																	if ($approve->num_rows() == 0) { ?> class='edit' <?php } ?>>Rp. <?= $c['amount_proposed'] ?></span>
-															<input type='number' name="jumlah" class='form-control txtedit' data-id="<?= $c['id_pengeluaran'] ?>" data-url='<?= base_url() ?>/finance/ap/editApSatuanAjax' data-field='amount_proposed' id='amount_proposedtxt_<?= $c['amount_proposed'] ?>' value='<?= $c['amount_proposed'] ?>'>
+																	if ($approve->num_rows() == 0) { ?> class='edit' <?php } else {
+																														if ($this->session->userdata('id_atasan') == NULL && $info['status'] < 3) { ?> class='edit' <?php }
+																																																			} ?>>Rp. <?= $c['amount_proposed'] ?></span>
+															<input type='number' name="jumlah" class='form-control txtedit' data-id="<?= $c['id_pengeluaran'] ?>" data-field='amount_proposed' data-url='<?= base_url() ?>/finance/ap/editApSatuanAjax' id='amount_proposedtxt_<?= $c['amount_proposed'] ?>' value='<?= $c['amount_proposed'] ?>'>
 														</td>
 
 														<td>
@@ -387,3 +415,29 @@
 	</div>
 	<!-- /.modal -->
 <?php } ?>
+
+<!-- modalDecline -->
+<div class="modal fade" id="modalDecline" tabindex="-1" role="dialog" aria-labelledby="modalDecline" aria-hidden="true">
+	<div class="modal-dialog modal-lg" role="document">
+		<div class="modal-content">
+			<form action="<?= base_url('finance/ap/decline/'.$info['no_pengeluaran']) ?>" method="POST">
+				<div class="modal-header">
+					<h5 class="modal-title" id="modalDecline">Decline AP <?= $info['no_pengeluaran'] ?></h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">x</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<div class="form-group">
+						<label for="note_cs">Reason</label>
+						<textarea class="form-control" name="reason" required></textarea>
+						
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="submit" class="btn btn-danger">Decline</button>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>

@@ -24,6 +24,7 @@
 										<button type="submit" class="btn btn-success mt-2">View</button>
 									</form>
 								</div>
+								<?php if ($tracking != NULL) { ?>
 								<div class="col-md-8">
 									<h4 class="title">Milestone AWB <?= $shipment_id ?></h4>
 									<div class="row">
@@ -31,7 +32,9 @@
 										<div class="col-md-6">Consignee : <b><?= $shipment['consigne'] ?> - <?= $shipment['tree_consignee'] ?></b> </div>
 									</div>
 									<div class="row">
-									<?php $user = $this->db->get_where('tb_user', array('id_user' => $shipment['id_user']))->row_array() ?>
+									<?php $user = 
+									$user = $this->db->query("SELECT nama_user FROM tb_user WHERE id_user =".$shipment['id_user']."")->row_array();
+									 ?>
 									<div class="col">Driver : <b><?= $user['nama_user'] ?></b> </div>
 								</div>
 									<br>
@@ -61,9 +64,9 @@
 													<td><?= $t['flag'] ?></td>
 													<td><?= ($t['status_eksekusi'] == 1) ? 'Finish' : 'Pending' ?></td>
 													<td>
-														<a href="#" class="btn btn-sm text-light mb-1" data-toggle="modal" data-target="#modal-lg-dl-luar<?= $t['id_tracking'] ?>" style="background-color: #9c223b;">
+														<button type="button" href="#" class="btn btn-sm text-light mb-1 modalEditTracking" data-toggle="modal" data-target="#modal-lg-dl-luar" data-id_tracking="<?=$t['id_tracking'] ?>" style="background-color: #9c223b;">
 															<span class="fa fa-edit">
-															</span> Update</a>
+															</span> Update</button>
 														<a href="<?= base_url('superadmin/order/deleteShipmentTracking/' . $t['id_tracking'] . '/' . $t['shipment_id']) ?>" onclick="return confirm('Are you sure ?')" class="btn btn-sm text-light mb-1" style="background-color: #9c223b;">
 															<span class="fa fa-trash">
 															</span> Delete</a>
@@ -74,7 +77,7 @@
 
 										</tbody>
 									</table>
-
+									<?php } ?>
 								</div>
 							</div>
 						</div>
@@ -89,101 +92,7 @@
 		<!--/. container-fluid -->
 	</section>
 	<!-- /.content -->
-	<?php foreach ($tracking as $t) {
-	?>
-		<div class="modal fade" id="modal-lg-dl-luar<?= $t['id_tracking'] ?>">
-			<div class="modal-dialog modal-lg">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h4 class="modal-title">Update Status Shipment <b><?= $t['shipment_id'] ?></b> </h4>
-
-						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-							<span aria-hidden="true">&times;</span>
-						</button>
-					</div>
-					<div class="modal-body">
-						<form action="<?= base_url('superadmin/order/updateShipmentTracking') ?>" method="POST" enctype="multipart/form-data">
-							<div class="card-body">
-								<div class="row">
-									<input type="text" name="id_so" class="form-control" hidden value="<?= $t['id_so'] ?>">
-									<input type="text" name="id_tracking" class="form-control" hidden value="<?= $t['id_tracking'] ?>">
-									<input type="text" name="shipment_id" class="form-control" hidden value="<?= $t['shipment_id'] ?>">
-									<div class="col-md-6">
-										<label for="status">Status</label>
-										<input type="text" name="status" class="form-control" value="<?= $t['status'] ?>">
-
-									</div>
-									<div class="col-md-6">
-										<div class="form-group">
-											<label for="exampleInputPassword1">Note :<span style="color: red;">Soekarno Hatta or, Cengkareng, or consigne nama</span> </label>
-											<input type="text" class="form-control" name="note" value="<?= $t['note'] ?>">
-										</div>
-
-									</div>
-									<div class="col-md-4">
-										<div class="form-group">
-											<label for="exampleInputEmail1">Date<span style="color: red;">*</span></label>
-											<input type="date" class="form-control" value="<?= $t['created_at'] ?>" id="tgl_pickup" required name="date">
-										</div>
-									</div>
-									<div class="col-md-4">
-										<label for="status">Flag</label>
-										<input type="text" name="flag" class="form-control" value="<?= $t['flag'] ?>">
-
-									</div>
-									<div class="col-md-4">
-										<label for="status">Excecution Status</label>
-
-										<select name="status_eksekusi" class="form-control">
-											<option value="0" <?php if ($t['status_eksekusi'] == 0) {
-																	echo 'selected';
-																} ?>>Pending</option>
-											<option value="1" <?php if ($t['status_eksekusi'] == 1) {
-																	echo 'selected';
-																} ?>>Success</option>
-										</select>
-
-
-									</div>
-									<div class="col-md-4">
-										<div class="form-group">
-											<label for="exampleInputEmail1">Time<span style="color: red;">*</span></label>
-											<?php $phpdate = strtotime($t['time']);
-											$mysqldate = date('H:i', $phpdate);
-											?>
-											<input type="time" class="form-control" required name="time" value="<?= $mysqldate ?>">
-										</div>
-									</div>
-
-									<div class="col-md-4">
-										<div class="form-group">
-											<label for="exampleInputEmail1">POD/POP</label>
-											<!-- <input type="file" class="form-control" name="ktp"> -->
-											<input type="file" class="form-control" name="ktp[]" accept="image/*" capture multiple>
-										</div>
-
-									</div>
-
-
-
-								</div>
-							</div>
-							<!-- /.card-body -->
-					</div>
-					<div class="modal-footer justify-content-between">
-						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-						<button type="submit" class="btn btn-primary">Submit</button>
-					</div>
-					</form>
-				</div>
-				<!-- /.modal-content -->
-			</div>
-			<!-- /.modal-dialog -->
-		</div>
-
-	<?php } ?>
-
-
+	<?php if ($tracking != NULL) { ?>
 	<div class="modal fade" id="modal-lg-dl-add<?= $shipment_id ?>">
 		<div class="modal-dialog modal-lg">
 			<div class="modal-content">
@@ -206,6 +115,7 @@
 									<select name="status" class="form-control">
 										<option value="Request Pickup From Shipper">Request Pickup From Shipper</option>
 										<option value="Driver Menuju Lokasi Pickup">Driver Menuju Lokasi Pickup</option>
+										<option value="Driver Telah Sampai Di Lokasi Pickup">Driver Menuju Lokasi Pickup</option>
 										<option value="Shipment Telah Dipickup Dari Shipper">Shipment Telah Dipickup Dari Shipper</option>
 										<option value="Shipment Telah Tiba Di Hub Jakarta Pusat">Shipment Telah Tiba Di Hub Jakarta Pusat</option>
 										<option value="Shipment Keluar Dari Hub Jakarta Pusat">Shipment Keluar Dari Hub Jakarta Pusat</option>
@@ -265,3 +175,129 @@
 		</div>
 		<!-- /.modal-dialog -->
 	</div>
+	<?php } ?>
+
+	<div class="modal fade" id="modal-lg-dl-luar">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h4 class="modal-title">Update Status Shipment</b> </h4>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<form action="<?= base_url('superadmin/order/updateShipmentTracking') ?>" method="POST" enctype="multipart/form-data">
+							<div class="card-body">
+								<div class="row" id="content-tracking">
+									
+									
+								</div>
+							</div>
+							<!-- /.card-body -->
+					</div>
+					<div class="modal-footer justify-content-between">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+						<button type="submit" class="btn btn-primary">Submit</button>
+					</div>
+					</form>
+				</div>
+				<!-- /.modal-content -->
+			</div>
+			<!-- /.modal-dialog -->
+		</div>
+
+
+
+
+
+
+	<script>
+		$(document).ready(function() {
+			$('.modalEditTracking').click(function() {
+				var id_tracking = $(this).data('id_tracking'); // Mendapatkan ID dari atribut data-id tombol yang diklik
+				// $('#content-tracking').html('');
+				// Memuat data menggunakan AJAX dengan mengirimkan ID sebagai parameter
+				$.ajax({
+					url: '<?php echo base_url("superadmin/order/getModalTracking"); ?>',
+					type: 'GET',
+					dataType: 'json',
+					data: {
+						id_tracking: id_tracking
+					},
+					success: function(response) {
+						// Menampilkan data ke dalam modal
+
+						var time = response.time;
+
+						var content = '<input type="text" name="id_so" class="form-control" hidden value="'+response.id_so+'">'+
+									'<input type="text" name="id_tracking" class="form-control" hidden value="'+response.id_tracking+'">'+
+									'<input type="text" name="shipment_id" class="form-control" hidden value="'+response.shipment_id+'">'+
+									'<div class="col-md-6">'+
+										'<label for="status">Status</label>'+
+										'<input type="text" name="status" class="form-control" value="'+response.status+'">'+
+
+									'</div>'+
+									'<div class="col-md-6">'+
+										'<div class="form-group">'+
+											'<label for="exampleInputPassword1">Note :<span style="color: red;">Soekarno Hatta or, Cengkareng, or consigne nama</span> </label>'+
+											'<input type="text" class="form-control" name="note" value="'+response.note+'">'+
+										'</div>'+
+
+									'</div>'+
+									'<div class="col-md-4">'+
+										'<div class="form-group">'+
+											'<label for="exampleInputEmail1">Date<span style="color: red;">*</span></label>'+
+											'<input type="date" class="form-control" value="'+response.created_at+'" id="tgl_pickup" required name="date">'+
+										'</div>'+
+									'</div>'+
+									'<div class="col-md-4">'+
+										'<label for="status">Flag</label>'+
+										'<input type="text" name="flag" class="form-control" value="'+response.flag+'">'+
+
+									'</div>'+
+									'<div class="col-md-4">'+
+										'<label for="status">Excecution Status</label>'+
+
+										'<select name="status_eksekusi" class="form-control">'+
+											'<option value="0"';
+
+											if (response.status_eksekusi == 0) {
+												content += 'selected';
+											}
+											content += '>Pending</option>'+
+											'<option value="1"';
+											if (response.status_eksekusi == 1) {
+												content += 'selected';
+											}
+											content += '>Success</option>'+
+										'</select>'+
+
+									'</div>'+
+									'<div class="col-md-4">'+
+										'<div class="form-group">'+
+											'<label for="exampleInputEmail1">Time<span style="color: red;">*</span></label>'+
+											
+											'<input type="time" class="form-control" required name="time" value="'+response.time+'">'+
+										'</div>'+
+									'</div>'+
+
+									'<div class="col-md-4">'+
+										'<div class="form-group">'+
+											'<label for="exampleInputEmail1">POD/POP</label>'+
+											
+											'<input type="file" class="form-control" name="ktp[]" accept="image/*" capture multiple>'+
+										'</div>'+
+
+									'</div>';
+						$('#content-tracking').html(content);
+						$('#selectField').select2();
+
+					},
+					error: function() {
+						alert('Terjadi kesalahan dalam memuat data.');
+					}
+				});
+			});
+		})
+	</script>

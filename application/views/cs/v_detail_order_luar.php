@@ -91,6 +91,15 @@
 												<i class="fas fa-plus-circle text-light"> </i>
 												Single Order
 											</a>
+											<!-- button to open modal bulk order  -->
+											<button class="btn mr-2 text-light" style="background-color: #9c223b;" data-toggle="modal" data-target="#modalBulkOrder">
+												<i class="fas fa-plus-circle text-light"> </i>
+												Bulk Order
+											</button>
+
+
+											
+											 
 											<!-- <a href="<?= base_url('cs/salesOrder/bulk/' . $p['id_so']) ?>" class="btn mr-2 text-light" style="background-color: #9c223b;">
 												<i class="fas fa-plus-circle text-light"> </i>
 												Bulk Order
@@ -141,12 +150,12 @@
 											<td><a href="<?= base_url('cs/salesOrder/print/' . $shp['shipment_id']) ?>"> <?= $shp['shipment_id'] ?></a>
 												<br> <?= $shp['service_name'] ?>
 											</td>
-											<td><?= $shp['shipper'] ?> <br> No. DO: <?= $shp['note_cs'] ?></td>
+											<td><?= $shp['shipper'] . ' (' . $shp['mark_shipper'] . ') ' ?> <br> No. DO: <?= $shp['note_cs'] ?></td>
 											<td><?= $shp['destination'] ?>, <?= $shp['city_consigne'] ?> <?= $shp['state_consigne'] ?></td>
 											<td><?= $shp['consigne'] ?></td>
 											<td style="color: green;"><?= $get_last_status['status'] ?> <br> <?= longdate_indo($get_last_status['created_at']), ' ' . $get_last_status['time'] ?>
 												<br>
-												<?php if ($get_last_status['flag'] == 11 || $get_last_status['flag'] == 5) {
+												<?php if ($get_last_status['flag'] == 12 || $get_last_status['flag'] == 6) {
 												?>
 													<a href="#" class="btn font-weight-bolder text-light" data-toggle="modal" data-target="#modal-pod<?= $shp['shipment_id'] ?>" style="background-color: #9c223b;">
 														<span class="svg-icon svg-icon-md">
@@ -160,7 +169,7 @@
 													// apakah dia jabodetabek
 													if ($shp['is_jabodetabek'] == 1) {
 												?>
-														<?php if ($get_last_status['flag'] >= 7  && $get_last_status['flag'] <= 10) {
+														<?php if ($get_last_status['flag'] >= 8  && $get_last_status['flag'] <= 11) {
 														?>
 															<!-- <a href="#" class="btn btn-sm text-light mb-1" data-toggle="modal" data-target="#modal-lg-dl-luar<?= $shp['shipment_id'] ?>" style="background-color: #9c223b;">
 																<span class="svg-icon svg-icon-md">
@@ -175,7 +184,7 @@
 														<!-- kalo bukan jabodetabek -->
 													<?php	} else {
 													?>
-														<?php if ($get_last_status['flag'] >= 7  && $get_last_status['flag'] <= 10) {
+														<?php if ($get_last_status['flag'] >= 8 && $get_last_status['flag'] <= 11) {
 														?>
 															<a href="#" class="btn btn-sm text-light mb-1" data-toggle="modal" data-target="#modal-lg-dl-luar<?= $shp['shipment_id'] ?>" style="background-color: #9c223b;">
 																<span class="svg-icon svg-icon-md">
@@ -192,12 +201,12 @@
 													?>
 													<?php	} else {
 
-													if ($get_last_status['flag'] >= 5  && $get_last_status['flag'] <= 7) {
+													if ($get_last_status['flag'] >= 6  && $get_last_status['flag'] <= 8) {
 													?>
 														<span class="badge badge-secondary mb-1">Menunggu scan in/out HUB</span>
 														<a onclick='$("#modalLoading").modal("show");' href="<?= base_url('cs/order/edit/' . $shp['id'] . '/' . $shp['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Edit</a>
 														<a onclick='$("#modalLoading").modal("show");' href="<?= base_url('cs/order/detail/' . $shp['id'] . '/' . $shp['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Detail</a>
-													<?php	} elseif ($get_last_status['flag'] == 11) {
+													<?php	} elseif ($get_last_status['flag'] == 12) {
 													?>
 														<!-- <a href="#" class="btn btn-sm text-light mb-1" data-toggle="modal" data-target="#modal-lg-dl-incoming<?= $shp['shipment_id'] ?>" style="background-color: #9c223b;">
 															<span class="svg-icon svg-icon-md">
@@ -437,3 +446,70 @@
 		</div>
 
 	<?php } ?>
+
+	<!-- modalBulkOrder -->
+	<div class="modal fade" id="modalBulkOrder" tabindex="-1" role="dialog" aria-labelledby="modalBulkOrderLabel" aria-hidden="true">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="modalBulkOrderLabel">Bulk Order <a href="<?= base_url('cs/salesOrder/downloadTemplateBulkInput') ?>" class="btn btn-primary">Download Template</a></h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<form id="bulkInput">
+					<div class="modal-body">
+						<div class="form-group">
+							<label for="exampleInputPassword1">Upload File Excel</label>
+							<input type="file" class="form-control" name="file" required>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+						<button type="submit" class="btn btn-primary">Submit</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+	<script>
+		$(document).ready(function() {
+			
+
+			$('#bulkInput').submit(function(e) {
+				e.preventDefault();
+				$.ajax({
+					url: '<?= base_url('cs/salesOrder/processAddImport/'.$p['id_so']) ?>',
+					type: 'POST',
+					data: new FormData(this),
+					processData: false,
+					contentType: false,
+					cache: false,
+					success: function(data) {
+						var obj = JSON.parse(data);
+						if (obj.status == 'success') {
+							// toast 
+							Swal.fire({
+								icon: 'success',
+								title: 'Success',
+								text: 'Data berhasil di import'
+							}).then((result) => {
+								location.reload();
+							});
+						} else {
+							
+							Swal.fire({
+								icon: 'error',
+								title: 'Failed',
+								text: 'Data gagal di import karena ' + obj.message
+							}).then((result) => {
+								location.reload();
+							});
+						}
+						
+					}
+				});
+			});
+		});
+	</script>

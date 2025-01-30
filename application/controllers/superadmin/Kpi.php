@@ -9,6 +9,7 @@ class Kpi extends CI_Controller
         if (!$this->session->userdata('id_user')) {
             redirect('backoffice');
         }
+        $this->db->query("SET sql_mode=(SELECT REPLACE(@@sql_mode, 'ONLY_FULL_GROUP_BY', ''));");
         $this->load->model('UserModel');
         $this->load->model('KpiModel');
         cek_role();
@@ -21,36 +22,39 @@ class Kpi extends CI_Controller
             $data['awal'] = date('Y-m-d');
             $data['akhir'] = date('Y-m-t');
             $data['sales'] = $this->db->get_where('tb_user', array('id_role' => 6));
+            $data['noinvoice'] = $this->KpiModel->getInvoice(strtotime(date('Y-m-d')), strtotime(date('Y-m-t')));
             $this->backend->display('superadmin/kpi/finance/v_kpi_finance', $data);
         } else {
             $data['title'] = 'KPI FINANCE';
             $data['awal'] = $this->input->post('awal');
             $data['akhir'] = $this->input->post('akhir');
             $data['sales'] = $this->db->get_where('tb_user', array('id_role' => 6));
+
+            $data['noinvoice'] = $this->KpiModel->getInvoice(strtotime($this->input->post('awal')), strtotime($this->input->post('akhir')));
             $this->backend->display('superadmin/kpi/finance/v_kpi_finance', $data);
         }
     }
 
-    public function detailInvoice($user = NULL, $awal = NULL, $akhir = NULL)
+    public function detailInvoice($awal = NULL, $akhir = NULL)
     {
         if ($this->input->post('awal') != NULL) {
             $data['title'] = 'KPI Invoice';
             $data['awal'] = date('Y-m-d', strtotime($this->input->post('awal')));
             $data['akhir'] = date('Y-m-d', strtotime($this->input->post('akhir')));
             $data['user'] = $this->db->get_where('tb_user', array('id_user' => $this->input->post('user')))->row_array();
-            $data['noinvoice'] = $this->KpiModel->getInvoice($this->input->post('user'), strtotime($this->input->post('awal')), strtotime($this->input->post('akhir')));
+            $data['noinvoice'] = $this->KpiModel->getInvoice(strtotime($this->input->post('awal')), strtotime($this->input->post('akhir')));
             $this->backend->display('superadmin/kpi/finance/v_detailInvoice', $data);
         } else {
             $data['title'] = 'KPI Invoice';
             $data['awal'] = date('Y-m-d', $awal);
             $data['akhir'] = date('Y-m-d', $akhir);
-            $data['user'] = $this->db->get_where('tb_user', array('id_user' => $user))->row_array();
-            $data['noinvoice'] = $this->KpiModel->getInvoice($user, $awal, $akhir);
+            // $data['user'] = $this->db->get_where('tb_user', array('id_user' => $user))->row_array();
+            $data['noinvoice'] = $this->KpiModel->getInvoice($awal, $akhir);
             $this->backend->display('superadmin/kpi/finance/v_detailInvoice', $data);
         }
     }
 
-    //KPI SALES
+    //KPI SALES DONEEEEEEEEEEEEEEEEEEEEEEEEEE
     public function sales()
     {
         if ($this->input->post('awal') == NULL) {
@@ -59,13 +63,13 @@ class Kpi extends CI_Controller
             $data['title'] = 'KPI SALES';
             $data['awal'] = date('Y-m-d');
             $data['akhir'] = date('Y-m-t');
-            $data['sales'] = $this->db->get_where('tb_user', array('id_role' => 4));
+            $data['sales'] = $this->db->get_where('tb_user', array('id_role' => 4,'status' => 1));
             $this->backend->display('superadmin/kpi/sales/v_kpi_sales', $data);
         } else {
             $data['title'] = 'KPI SALES';
             $data['awal'] = $this->input->post('awal');
             $data['akhir'] = $this->input->post('akhir');
-            $data['sales'] = $this->db->get_where('tb_user', array('id_role' => 4));
+            $data['sales'] = $this->db->get_where('tb_user', array('id_role' => 4,'status' => 1));
             $this->backend->display('superadmin/kpi/sales/v_kpi_sales', $data);
         }
     }
@@ -110,10 +114,18 @@ class Kpi extends CI_Controller
             $data['awal'] = date('Y-m-d');
             $data['akhir'] = date('Y-m-t');
             $data['resionjs'] = $this->KpiModel->getResiOnJs(strtotime(date('Y-m-d')), strtotime(date('Y-m-t')));
+            $data['reservasi'] = $this->KpiModel->getResiOnReservasi(strtotime(date('Y-m-d')), strtotime(date('Y-m-t')));
+            $data['daerah'] = $this->KpiModel->getResiOnDaerah(strtotime(date('Y-m-d')), strtotime(date('Y-m-t')));
+            $data['visit'] = $this->KpiModel->getVisitCs(strtotime(date('Y-m-d')), strtotime(date('Y-m-t')));
+            // $data['update'] = $this->KpiModel->getUpdateSistem(strtotime(date('Y-m-d')), strtotime(date('Y-m-t')));
         } else {
             $data['awal'] = $this->input->post('awal');
             $data['akhir'] = $this->input->post('akhir');
             $data['resionjs'] = $this->KpiModel->getResiOnJs(strtotime($this->input->post('awal')), strtotime($this->input->post('akhir')));
+            $data['reservasi'] = $this->KpiModel->getResiOnReservasi(strtotime($this->input->post('awal')), strtotime($this->input->post('akhir')));
+            $data['daerah'] = $this->KpiModel->getResiOnDaerah(strtotime($this->input->post('awal')), strtotime($this->input->post('akhir')));
+            $data['visit'] = $this->KpiModel->getVisitCs(strtotime($this->input->post('awal')), strtotime($this->input->post('akhir')));
+            // $data['update'] = $this->KpiModel->getUpdateSistem(strtotime($this->input->post('awal')), strtotime($this->input->post('akhir')));
         }
         $this->backend->display('superadmin/kpi/cs/v_kpi_cs', $data);
     }
@@ -128,59 +140,86 @@ class Kpi extends CI_Controller
             $this->backend->display('superadmin/kpi/cs/v_detail_jobsheet', $data);
         } else {
             $data['title'] = 'KPI CS (Jobsheet)';
-            $data['awal'] = date('Y-m-d', $this->input->post('awal'));
-            $data['akhir'] = date('Y-m-d', $this->input->post('akhir'));
-            $data['resionjs'] = $this->KpiModel->getResiOnJs($this->input->post('awal'), $this->input->post('akhir'));
+            $data['awal'] = $this->input->post('awal');
+            $data['akhir'] = $this->input->post('akhir');
+            $data['resionjs'] = $this->KpiModel->getResiOnJs(strtotime($this->input->post('awal')), strtotime($this->input->post('akhir')));
             $this->backend->display('superadmin/kpi/cs/v_detail_jobsheet', $data);
         }
     }
 
-    public function detailVisitCs($bulan = NULL, $tahun = NULL)
+    public function detailVisitCs($awal = NULL, $akhir = NULL)
     {
-        if ($this->input->post('date') == NULL) {
+        if ($this->input->post('awal') == NULL) {
             $data['title'] = 'KPI CS (Visit)';
-            $data['date'] =  $tahun . '-' . $bulan;
-            $data['visit'] = $this->KpiModel->getVisitCs($bulan, $tahun);
+            $data['date'] =  $awal . '-' . $akhir;
+            $data['visit'] = $this->KpiModel->getVisitCs($awal, $akhir);
+            $data['awal'] = date('Y-m-d', $awal);
+            $data['akhir'] = date('Y-m-d', $akhir);
             // var_dump(date('Y-m', strtotime($tahun . '-' . $bulan)));
             $this->backend->display('superadmin/kpi/cs/v_detail_visit', $data);
         } else {
             $data['title'] = 'KPI CS (Visit)';
             $data['date'] = $this->input->post('date');
-            $data['visit'] = $this->KpiModel->getVisitCs(date('m', strtotime($this->input->post('date'))), date('Y', strtotime($this->input->post('date'))));
+            $data['awal'] = $this->input->post('awal');
+            $data['akhir'] = $this->input->post('akhir');
+            $data['visit'] = $this->KpiModel->getVisitCs(strtotime($this->input->post('awal')), strtotime($this->input->post('akhir')));
             $this->backend->display('superadmin/kpi/cs/v_detail_visit', $data);
         }
     }
 
-    public function detailDeliveryDaerah($bulan = NULL, $tahun = NULL)
+    public function detailDeliveryDaerah($awal = NULL, $akhir = NULL)
     {
-        if ($this->input->post('date') == NULL) {
+        if ($this->input->post('awal') == NULL) {
             $data['title'] = 'KPI CS (Delivery Daerah)';
-            $data['date'] =  $tahun . '-' . $bulan;
-            $data['resi'] = $this->KpiModel->getDeliveryDaerah($bulan, $tahun);
+            $data['date'] =  $awal . '-' . $akhir;
+            $data['resi'] = $this->KpiModel->getDeliveryDaerah($awal, $akhir);
             // var_dump(date('Y-m', strtotime($tahun . '-' . $bulan)));
             $this->backend->display('superadmin/kpi/cs/v_detail_delivery_daerah', $data);
         } else {
-            $data['title'] = 'KPI CS (Visit)';
-            $data['date'] = $this->input->post('date');
-            $data['resi'] = $this->KpiModel->getDeliveryDaerah(date('m', strtotime($this->input->post('date'))), date('Y', strtotime($this->input->post('date'))));
+            $data['title'] = 'KPI CS (Delivery Daerah)';
+            $data['awal'] = $this->input->post('awal');
+            $data['akhir'] = $this->input->post('akhir');
+            $data['resi'] = $this->KpiModel->getDeliveryDaerah(strtotime($this->input->post('awal')), strtotime($this->input->post('akhir')));
             $this->backend->display('superadmin/kpi/cs/v_detail_delivery_daerah', $data);
         }
     }
 
-    public function detailReservasi($bulan = NULL, $tahun = NULL)
+    public function detailReservasi($awal = NULL, $akhir = NULL)
     {
-        if ($this->input->post('date') == NULL) {
+        if ($this->input->post('awal') == NULL) {
             $data['title'] = 'KPI CS (Reservasi)';
-            $data['date'] =  $tahun . '-' . $bulan;
-            $data['resi'] = $this->KpiModel->getReservasi($bulan, $tahun);
+            $data['date'] =  $awal . '-' . $akhir;
+            $data['resi'] = $this->KpiModel->getReservasi($awal, $akhir);
             // var_dump(date('Y-m', strtotime($tahun . '-' . $bulan)));
             $this->backend->display('superadmin/kpi/cs/v_detail_reservasi', $data);
         } else {
             $data['title'] = 'KPI CS (Reservasi)';
             $data['date'] = $this->input->post('date');
-            $data['resi'] = $this->KpiModel->getReservasi(date('m', strtotime($this->input->post('date'))), date('Y', strtotime($this->input->post('date'))));
+            $data['awal'] = $this->input->post('awal');
+            $data['akhir'] = $this->input->post('akhir');
+            $data['resi'] = $this->KpiModel->getReservasi(strtotime($this->input->post('awal')), strtotime($this->input->post('akhir')));
             $this->backend->display('superadmin/kpi/cs/v_detail_reservasi', $data);
         }
+    }
+
+    public function detailUpdateSistem($awal = NULL, $akhir = NULL)
+    {
+        if ($this->input->post('awal') == NULL) {
+            $data['title'] = 'KPI CS (Reservasi)';
+            $data['date'] =  $awal . '-' . $akhir;
+            $data['resi'] = $this->KpiModel->getUpdateSistem($awal, $akhir);
+            $data['awal'] = date('Y-m-d', $awal);
+            $data['akhir'] = date('Y-m-d', $akhir);
+            // var_dump(date('Y-m', strtotime($tahun . '-' . $bulan)));
+
+        } else {
+            $data['title'] = 'KPI CS (Reservasi)';
+            $data['date'] = $this->input->post('date');
+            $data['awal'] = $this->input->post('awal');
+            $data['akhir'] = $this->input->post('akhir');
+            $data['resi'] = $this->KpiModel->getUpdateSistem(strtotime($this->input->post('awal')), strtotime($this->input->post('akhir')));
+        }
+        $this->backend->display('superadmin/kpi/cs/v_detail_update_sistem', $data);
     }
     //END OF KPI CS
 
@@ -192,42 +231,99 @@ class Kpi extends CI_Controller
         if ($this->input->post('awal') == NULL) {
             $data['awal'] = date('Y-m-d');
             $data['akhir'] = date('Y-m-t');
-            $data['resionjs'] = $this->KpiModel->getResiOnJs(strtotime(date('Y-m-d')), strtotime(date('Y-m-t')));
+
+            $data['pickup'] = $this->KpiModel->getSoOps(strtotime(date('Y-m-d')), strtotime(date('Y-m-t'))); //dpne
+            $data['delivery'] = $this->KpiModel->getDelivery(strtotime(date('Y-m-d')), strtotime(date('Y-m-t')));
+            $data['outbond'] = $this->KpiModel->getOutbond(strtotime(date('Y-m-d')), strtotime(date('Y-m-t')));
+            $data['gateway'] = $this->KpiModel->getGateway(strtotime(date('Y-m-d')), strtotime(date('Y-m-t')));
+            $data['pod'] = $this->KpiModel->getPodJabodetabek(strtotime(date('Y-m-d')), strtotime(date('Y-m-t')));
+            $data['handover'] = $this->KpiModel->getHandover(strtotime(date('Y-m-d')), strtotime(date('Y-m-t')));
+            $data['input'] = $this->KpiModel->getInput(strtotime(date('Y-m-d')), strtotime(date('Y-m-t')));
+            $data['meetup'] = $this->KpiModel->getVisitOps(strtotime(date('Y-m-d')), strtotime(date('Y-m-t')));
         } else {
             $data['awal'] = $this->input->post('awal');
             $data['akhir'] = $this->input->post('akhir');
-            $data['resionjs'] = $this->KpiModel->getResiOnJs(strtotime($this->input->post('awal')), strtotime($this->input->post('akhir')));
+
+            $data['pickup'] = $this->KpiModel->getSoOps(strtotime($this->input->post('awal')), strtotime($this->input->post('akhir')));//done
+            $data['delivery'] = $this->KpiModel->getDelivery(strtotime($this->input->post('awal')), strtotime($this->input->post('akhir')));
+            $data['outbond'] = $this->KpiModel->getOutbond(strtotime($this->input->post('awal')), strtotime($this->input->post('akhir')));
+            $data['gateway'] = $this->KpiModel->getGateway(strtotime($this->input->post('awal')), strtotime($this->input->post('akhir')));
+            $data['pod'] = $this->KpiModel->getPodJabodetabek(strtotime($this->input->post('awal')), strtotime($this->input->post('akhir')));
+            $data['handover'] = $this->KpiModel->getHandover(strtotime($this->input->post('awal')), strtotime($this->input->post('akhir')));
+            $data['input'] = $this->KpiModel->getInput(strtotime($this->input->post('awal')), strtotime($this->input->post('akhir')));
+            $data['meetup'] = $this->KpiModel->getVisitOps(strtotime($this->input->post('awal')), strtotime($this->input->post('akhir')));
+            // print_r($this->KpiModel->getInput(strtotime($this->input->post('awal')), strtotime($this->input->post('akhir')))->result_array());
         }
         $this->backend->display('superadmin/kpi/ops/v_kpi_ops', $data);
+        
     }
 
-    public function detailPickup($bulan = NULL, $tahun = NULL)
+    public function detailPickup($awal = NULL, $akhir = NULL)
     {
         if ($this->input->post('date') == NULL) {
+            $data['awal'] = date('Y-m-d',$awal);
+            $data['akhir'] = date('Y-m-d',$akhir);
             $data['title'] = 'KPI OPS (Pickup)';
-            $data['date'] =  $tahun . '-' . $bulan;
-            $data['pickup'] = $this->KpiModel->getPickup($bulan, $tahun);
+            $data['pickup'] = $this->KpiModel->getSoOps($awal, $akhir);
             $this->backend->display('superadmin/kpi/ops/v_detail_pickup', $data);
         } else {
+            $data['awal'] = $this->input->post('awal');
+            $data['akhir'] = $this->input->post('akhir');
             $data['title'] = 'KPI OPS (Pickup)';
-            $data['date'] = $this->input->post('date');
-            $data['pickup'] = $this->KpiModel->getPickup(date('m', strtotime($this->input->post('date'))), date('Y', strtotime($this->input->post('date'))));
+            $data['pickup'] = $this->KpiModel->getSoOps(strtotime($this->input->post('awal')), strtotime($this->input->post('akhir')));
             $this->backend->display('superadmin/kpi/ops/v_detail_pickup', $data);
         }
     }
 
-    public function detailOutbond($bulan = NULL, $tahun = NULL)
+    public function detailDelivery($awal = NULL, $akhir = NULL)
     {
         if ($this->input->post('date') == NULL) {
-            $data['title'] = 'KPI OPS (Outbond)';
-            $data['date'] =  $tahun . '-' . $bulan;
-            $data['pickup'] = $this->KpiModel->getOutbond($bulan, $tahun);
-            $this->backend->display('superadmin/kpi/ops/v_detail_pickup', $data);
-        } else {
+            $data['awal'] = date('Y-m-d',$awal);
+            $data['akhir'] = date('Y-m-d',$akhir);
             $data['title'] = 'KPI OPS (Pickup)';
+            $data['delivery'] = $this->KpiModel->getDelivery($awal, $akhir);
+            $this->backend->display('superadmin/kpi/ops/v_detail_delivery', $data);
+        } else {
+            $data['awal'] = $this->input->post('awal');
+            $data['akhir'] = $this->input->post('akhir');
+            $data['title'] = 'KPI OPS (Pickup)';
+            $data['delivery'] = $this->KpiModel->getDelivery(strtotime($this->input->post('awal')), strtotime($this->input->post('akhir')));
+            $this->backend->display('superadmin/kpi/ops/v_detail_delivery', $data);
+        }
+    }
+
+    public function detailOutbond($awal = NULL, $akhir = NULL)
+    {
+        if ($this->input->post('date') == NULL) {
+            $data['awal'] = date('Y-m-d',$awal);
+            $data['akhir'] = date('Y-m-d',$akhir);
+            $data['title'] = 'KPI OPS (Outbond)';
+            $data['outbond'] = $this->KpiModel->getOutbond($awal, $akhir);
+            $this->backend->display('superadmin/kpi/ops/v_detail_outbond', $data);
+        } else {
+            $data['awal'] = $this->input->post('awal');
+            $data['akhir'] = $this->input->post('akhir');
+            $data['title'] = 'KPI OPS (outbond)';
             $data['date'] = $this->input->post('date');
-            $data['pickup'] = $this->KpiModel->getPickup(date('m', strtotime($this->input->post('date'))), date('Y', strtotime($this->input->post('date'))));
-            $this->backend->display('superadmin/kpi/ops/v_detail_pickup', $data);
+            $data['outbond'] = $this->KpiModel->getOutbond(strtotime($this->input->post('awal')), strtotime($this->input->post('akhir')));
+            $this->backend->display('superadmin/kpi/ops/v_detail_outbond', $data);
+        }
+    }
+    public function detailPod($awal = NULL, $akhir = NULL)
+    {
+        if ($this->input->post('date') == NULL) {
+            $data['awal'] = date('Y-m-d',$awal);
+            $data['akhir'] = date('Y-m-d',$akhir);
+            $data['title'] = 'KPI OPS (POD)';
+            $data['pod'] = $this->KpiModel->getPodJabodetabek($awal, $akhir);
+            $this->backend->display('superadmin/kpi/ops/v_detail_podJabodetabek', $data);
+        } else {
+            $data['awal'] = $this->input->post('awal');
+            $data['akhir'] = $this->input->post('akhir');
+            $data['title'] = 'KPI OPS (POD)';
+            $data['date'] = $this->input->post('date');
+            $data['pod'] = $this->KpiModel->getPodJabodetabek(strtotime($this->input->post('awal')), strtotime($this->input->post('akhir')));
+            $this->backend->display('superadmin/kpi/ops/v_detail_podJabodetabek', $data);
         }
     }
 

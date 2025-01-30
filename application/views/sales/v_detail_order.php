@@ -1,6 +1,6 @@
 	<?php
-	$getTanggalPickup = $this->db->select_max('created_at')->get_where('tbl_tracking_real', array('id_so' => $p['id_so'], 'flag' => 3))->row_array();
-	$getWaktuPickup = $this->db->select_max('time')->get_where('tbl_tracking_real', array('id_so' => $p['id_so'], 'flag' => 3))->row_array();
+	$getTanggalPickup = $this->db->select_max('created_at')->get_where('tbl_tracking_real', array('id_so' => $p['id_so'], 'flag' => 4))->row_array();
+	$getWaktuPickup = $this->db->select_max('time')->get_where('tbl_tracking_real', array('id_so' => $p['id_so'], 'flag' => 4))->row_array();
 	$WaktuPickup = date('H:i:s', strtotime($getWaktuPickup['time']));
 
 
@@ -228,6 +228,49 @@
 
 							<?php	} ?>
 
+							<?php if ($detailrequest) { ?>
+								<div class="row">
+									<h3>History Request Price</h3>
+									<table class="table table-bordered">
+										<thead>
+											<tr>
+
+												<th>ID Request</th>
+												<th>Request At</th>
+												<th>Customer</th>
+												<th>From</th>
+												<th>To</th>
+												<th>Moda</th>
+												<th>Jenis</th>
+												<th>Berat (KG)</th>
+												<th>Koli</th>
+												<th>Dimension</th>
+												<th>Price Approved</th>
+												<th>Notes Sales</th>
+												<th>Notes CS</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr>
+												<td>REQP - <?= $detailrequest['id_detailrequest'] ?></td>
+												<td><?= date('d-m-Y H:i:s', strtotime($detailrequest['created_at']))  ?></td>
+												<td><?= getNameCustomer($detailrequest['customer']) ?></td>
+												<td><?= $detailrequest['alamat_from'] . ', ' . $detailrequest['kecamatan_from'] . ', ' . $detailrequest['kota_from'] . ', ' . $detailrequest['provinsi_from'] ?></td>
+												<td><?= $detailrequest['alamat_to'] . ', ' . $detailrequest['kecamatan_to'] . ', ' . $detailrequest['kota_to'] . ', ' . $detailrequest['provinsi_to'] ?></td>
+												<td><?= moda($detailrequest['moda'])  ?></td>
+												<td><?= $detailrequest['jenis'] ?></td>
+												<td><?= $detailrequest['berat'] ?></td>
+												<td><?= $detailrequest['koli'] ?></td>
+												<td><?= (int)$detailrequest['panjang'] . ' X ' . (int)$detailrequest['lebar'] . ' X ' . (int)$detailrequest['tinggi'] ?><br> Air :<?= ((int)$detailrequest['panjang'] * (int)$detailrequest['lebar'] * (int)$detailrequest['tinggi']) / 6000 ?> KG<br>Land :<?= ((int)$detailrequest['panjang'] * (int)$detailrequest['lebar'] * (int)$detailrequest['tinggi']) / 4000 ?> KG</td>
+												<td><?= rupiah($detailrequest['price']) ?> </td>
+												<td><?= $detailrequest['notes_sales'] ?></td>
+												<td><?= $detailrequest['notes_cs'] ?></td>
+											</tr>
+
+										</tbody>
+									</table>
+								</div>
+							<?php } ?>
 							<div class="row">
 								<div class="col-md-12">
 									<form action="<?= base_url('sales/salesOrder/prosesSo') ?>" method="POST">
@@ -268,7 +311,7 @@
 																// jika tanggal sekarang dan tanggal pickup beda sehari
 																if ($interval->format('%a') == 1) {
 																	// jika jam sekarang diatas jam 12 malam dan dibawah jam 9 pagi
-																	if (date('H:i:s', strtotime('08:00:01')) >= date('H:i:s', strtotime('00:00:01')) && date('H:i:s', strtotime('08:00:01')) <= date('H:i:s', strtotime('09:00:00'))) {
+																	if (date('H:i:s') >= date('H:i:s', strtotime('00:00:01')) && date('H:i:s') <= date('H:i:s', strtotime('09:00:00'))) {
 														?>
 																		<a href="#" class="btn mr-2 text-light" data-toggle="modal" data-target="#modal-import" style="background-color: #9c223b;">
 																			<i class="fas fa-upload text-light"> </i>
@@ -322,7 +365,7 @@
 																																												echo  $shp['service_name'];;
 																																											} ?> </td>
 														<td><?= $shp['shipper'] ?></td>
-														<td><?= $shp['consigne'] ?>/ <br> <?= $shp['city_consigne'] ?></td>
+														<td><?= $shp['consigne'] ?>/ <br> <?= ucwords($shp['destination']) . '. ' . '<br>'  . '<b>' . ucwords(strtolower($shp['city_consigne'])) . '</b>' . ', ' . '<b>' . ucwords(strtolower($shp['state_consigne'])) . '</b>'  ?></td>
 														<!-- <td><?= $shp['city_consigne'] ?>, <?= $shp['state_consigne'] ?></td> -->
 
 														<!-- <?php if ($shp['service_name'] == 'Same Day Service') {
@@ -335,6 +378,7 @@
 																	<span class="svg-icon svg-icon-md">
 																	</span>View POD</a>
 															<?php	} ?>
+															
 
 														</td>
 													<?php } else {
@@ -396,8 +440,9 @@
 																																															?> disabled <?php } ?>>
 														</td>
 														<td>
-															<input type="text" name="so_note[]" value="<?= $shp['so_note'] ?>" class="form-control" style="width: 200px;" <?php if ($shp['status_so'] >= 1) {
-																																											?> disabled <?php } ?>>
+
+															<textarea class="form-control" style="width: 200px;" <?php if ($shp['status_so'] >= 1) {
+																													?> disabled <?php } ?> name="so_note[]" id="so_note" cols="30" rows="3"><?= $shp['so_note'] ?></textarea>
 														</td>
 														<td>
 															<?php
@@ -514,7 +559,7 @@
 																	// jika tanggal sekarang dan tanggal pickup beda sehari
 																	if ($interval->format('%a') == 1) {
 																		// jika jam sekarang diatas jam 12 malam dan dibawah jam 9 pagi
-																		if (date('H:i:s', strtotime('08:00:01')) >= date('H:i:s', strtotime('00:00:01')) && date('H:i:s', strtotime('08:00:01')) <= date('H:i:s', strtotime('09:00:00'))) {
+																		if (date('H:i:s') >= date('H:i:s', strtotime('00:00:01')) && date('H:i:s') <= date('H:i:s', strtotime('09:00:00'))) {
 																			echo 'Karna pickup diatas jam 9 Malam, maka submit so bisa dilakukan sampai jam 9 pagi <br>';
 																			echo "<button type='submit' class='btn btn-success' onclick='return confirm('Are you sure ?')'>Submit SO</button>";
 																		} else {
@@ -556,7 +601,26 @@
 																echo '-';
 															}
 														} else {
-															echo  "<h4>SO Late Submit </h4> <br> <a href=" . base_url('#') . " 'onclick='return confirm('Are You Sure ?')' class='btn btn-sm mb-1 text-light' data-toggle='modal' data-target='#modal-request' style='background-color: #9c223b;'>Request Aktivasi</a>";
+															$date1 = new DateTime(date('Y-m-d'));
+															$date2 = new DateTime(date('Y-m-d', strtotime($getTanggalPickup['created_at'])));
+															$interval = date_diff($date2, $date1);
+															// jika waktu pickup diatas jam 9 dan dibawah jam 12 
+															if ($WaktuPickup >= date('H:i:s', strtotime('21:00:00')) && $WaktuPickup <= date('H:i:s', strtotime('23:59:59'))) {
+																// jika tanggal sekarang dan tanggal pickup beda sehari
+																if ($interval->format('%a') == 1) {
+																	// jika jam sekarang diatas jam 12 malam dan dibawah jam 9 pagi
+																	if (date('H:i:s') >= date('H:i:s', strtotime('00:00:01')) && date('H:i:s') <= date('H:i:s', strtotime('09:00:00'))) {
+																		echo 'Karna pickup diatas jam 9 Malam, maka submit so bisa dilakukan sampai jam 9 pagi <br>';
+																		echo "<button type='submit' class='btn btn-success' onclick='return confirm('Are you sure ?')'>Submit SO</button>";
+																	} else {
+																		echo  "<h4>SO Late Submit (Diatas jam 9 pagi)</h4>  <br> <a href=" . base_url('#') . " 'onclick='return confirm('Are You Sure ?')' class='btn btn-sm mb-1 text-light' data-toggle='modal' data-target='#modal-request' style='background-color: #9c223b;'>Request Aktivasi</a>";
+																	}
+																} else {
+																	echo  "<h4>SO Late Submit (Lebih dari sehari) </h4> <br> <a href=" . base_url('#') . " 'onclick='return confirm('Are You Sure ?')' class='btn btn-sm mb-1 text-light' data-toggle='modal' data-target='#modal-request' style='background-color: #9c223b;'>Request Aktivasi</a>";
+																}
+															} else {
+																echo  "<h4>SO Late Submit </h4> <br> <a href=" . base_url('#') . " 'onclick='return confirm('Are You Sure ?')' class='btn btn-sm mb-1 text-light' data-toggle='modal' data-target='#modal-request' style='background-color: #9c223b;'>Request Aktivasi</a>";
+															}
 														}
 													}
 
@@ -660,7 +724,7 @@
 								<div class="col-md-6">
 									<div class="form-group">
 										<label for="exampleInputEmail1">Freight</label>
-										<input type="text" class="form-control" id="exampleInputEmail1" required name="freight_baru">
+										<input type="text" class="form-control" id="exampleInputEmail1" value="<?= $shp['freight_kg'] ?>" required name="freight_baru">
 										<input type="text" class="form-control" id="exampleInputEmail1" name="id" hidden required value="<?= $shp['id'] ?>">
 										<input type="text" class="form-control" id="exampleInputEmail1" name="id_so" hidden required value="<?= $p['id_so'] ?>">
 									</div>
@@ -668,7 +732,7 @@
 								<div class="col-md-6">
 									<div class="form-group">
 										<label for="exampleInputEmail1">Special Freight</label>
-										<input type="text" class="form-control" id="exampleInputEmail1" required name="special_freight_baru">
+										<input type="text" class="form-control" id="exampleInputEmail1" value="<?= $shp['special_freight'] ?>" required name="special_freight_baru">
 										<!-- <input type="text" class="form-control" id="exampleInputEmail1" hidden required value="<?= $msr['id_msr'] ?>" name="id_msr"> -->
 									</div>
 
@@ -676,7 +740,7 @@
 								<div class="col-md-6">
 									<div class="form-group">
 										<label for="exampleInputEmail1">Packing</label>
-										<input type="text" class="form-control" id="exampleInputEmail1" required name="packing_baru">
+										<input type="text" class="form-control" id="exampleInputEmail1" value="<?= $shp['packing'] ?>" required name="packing_baru">
 										<!-- <input type="text" class="form-control" id="exampleInputEmail1" hidden required value="<?= $msr['id_msr'] ?>" name="id_msr"> -->
 									</div>
 
@@ -684,38 +748,45 @@
 								<div class="col-md-6">
 									<div class="form-group">
 										<label for="exampleInputEmail1">Others</label>
-										<input type="text" class="form-control" id="exampleInputEmail1" required name="others_baru">
+										<input type="text" class="form-control" id="exampleInputEmail1" value="<?= $shp['others'] ?>" required name="others_baru">
 									</div>
 
 								</div>
 								<div class="col-md-6">
 									<div class="form-group">
 										<label for="exampleInputEmail1">Surcharge</label>
-										<input type="text" class="form-control" id="exampleInputEmail1" required name="surcharge_baru">
+										<input type="text" class="form-control" id="exampleInputEmail1" value="<?= $shp['surcharge'] ?>" required name="surcharge_baru">
 									</div>
 
 								</div>
 								<div class="col-md-6">
 									<div class="form-group">
 										<label for="exampleInputEmail1">Insurance</label>
-										<input type="text" class="form-control" id="exampleInputEmail1" required name="insurance_baru">
+										<input type="text" class="form-control" id="exampleInputEmail1" value="<?= $shp['insurance'] ?>" required name="insurance_baru">
 									</div>
 
 								</div>
 								<div class="col-md-6">
 									<div class="form-group">
 										<label for="exampleInputEmail1">Disc</label>
-										<input type="number" class="form-control" id="exampleInputEmail1" required name="disc_baru">
+										<input type="number" class="form-control" id="exampleInputEmail1" value="<?= $shp['disc'] * 100 ?>" required name="disc_baru">
 									</div>
 
 								</div>
 								<div class="col-md-6">
 									<div class="form-group">
 										<label for="exampleInputEmail1">Cn</label>
-										<input type="number" class="form-control" id="exampleInputEmail1" required name="cn_baru">
+										<input type="number" class="form-control" id="exampleInputEmail1" value="<?= $shp['cn'] * 100 ?>" required name="cn_baru">
 									</div>
 
 								</div>
+								<div class="col-md-6">
+										<div class="form-group">
+											<label for="exampleInputEmail1">Special Cn</label>
+											<input type="number" class="form-control" id="exampleInputEmail1" required name="special_cn_baru" value="<?= $cek_so_baru['special_cn_baru'] ?>">
+										</div>
+
+									</div>
 								<div class="col-md-6">
 									<div class="form-group">
 										<label for="exampleInputEmail1">Reason</label>
@@ -724,7 +795,6 @@
 
 								</div>
 							</div>
-
 					</div>
 					<div class="modal-footer justify-content-between">
 						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -736,7 +806,6 @@
 			</div>
 			<!-- /.modal-dialog -->
 		</div>
-		<!-- /.modal -->
 
 	<?php } ?>
 
@@ -815,6 +884,13 @@
 										<div class="form-group">
 											<label for="exampleInputEmail1">Cn</label>
 											<input type="number" class="form-control" id="exampleInputEmail1" required name="cn_baru" value="<?= $cek_so_baru['cn_baru'] ?>">
+										</div>
+
+									</div>
+									<div class="col-md-6">
+										<div class="form-group">
+											<label for="exampleInputEmail1">Special Cn</label>
+											<input type="number" class="form-control" id="exampleInputEmail1" required name="special_cn_baru" value="<?= $cek_so_baru['special_cn_baru'] ?>">
 										</div>
 
 									</div>

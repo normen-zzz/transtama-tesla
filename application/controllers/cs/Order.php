@@ -32,6 +32,7 @@ class Order extends CI_Controller
         $data['order'] = $this->db->order_by('id', 'DESC')->get('tbl_shp_order')->result_array();
         $this->backend->display('cs/v_order', $data);
     }
+	
 
     public function detail($id, $id_so)
     {
@@ -48,6 +49,8 @@ class Order extends CI_Controller
         $data['province'] = $this->db->get('tb_province')->result_array();
         $data['service'] = $this->db->get('tb_service_type')->result_array();
         $data['p'] = $this->order->order($id)->row_array();
+		 $data['invoice'] = $this->db->query('SELECT status FROM tbl_invoice WHERE shipment_id = ' . $id . '')->row_array();
+		  $data['dimension'] = $this->db->get_where('tbl_dimension',array('shipment_id' => $data['p']['shipment_id']))->result_array();
         $this->backend->display('cs/v_edit_order', $data);
     }
     public function editOrder($id, $id_so)
@@ -61,10 +64,10 @@ class Order extends CI_Controller
         $this->backend->display('cs/v_edit_order_dua', $data);
     }
 
-    function view_data_query()
+     function view_data_query()
     {
-        $query  = "SELECT a.*, b.nama_user FROM tbl_shp_order a JOIN tb_user b ON a.id_user=b.id_user";
-        $search = array('nama_user', 'shipment_id', 'order_id', 'shipper', 'consigne');
+        $query  = "SELECT a.tgl_pickup,a.shipper,a.consigne,a.shipment_id,a.created_at,a.id_so,a.id, b.nama_user FROM tbl_shp_order a JOIN tb_user b ON a.id_user=b.id_user";
+        $search = array('shipment_id', 'shipper');
         $where  = array('a.deleted' => 0);
         // $where  = array('a.id_user' => $this->session->userdata('id_user'));
 
@@ -73,6 +76,22 @@ class Order extends CI_Controller
         // $isWhere = 'artikel.deleted_at IS NULL';
         header('Content-Type: application/json');
         echo $this->M_Datatables->get_tables_query($query, $search, $where, $isWhere);
+    }
+	public function deleteDo($id_do)
+    {
+        $do = $this->db->get_where('tbl_no_do', ['id_berat' => $id_do])->row_array();
+        $shipment = $this->db->query('SELECT berat_js,koli FROM tbl_shp_order WHERE shipment_id = ' . $do['shipment_id'] . ' ')->row_array();
+        $updateshipment = $this->db->update('tbl_shp_order', array('berat_js' =>(int)$shipment['berat_js'] - (int)$do['berat'],'koli' => (int)$shipment['koli'] - (int)$do['koli']),array('shipment_id' => $do['shipment_id']));
+         
+        if ($updateshipment) {
+            $delete = $this->db->delete('tbl_no_do',array('id_berat' => $id_do));
+            if ($delete) {
+                $this->session->set_flashdata('message', '<div class="alert
+                alert-success" role="alert">Success</div>');
+            redirect($_SERVER['HTTP_REFERER']);
+            }
+
+        }
     }
     public function processEdit()
     {
@@ -101,9 +120,11 @@ class Order extends CI_Controller
         $no_do = $this->input->post('note_cs');
         $no_do = implode(',', $no_do);
         $data = array(
+            'berat_js' => $total_weight,
             'weight' => $total_weight,
             'destination' => $this->input->post('destination'),
             'state_shipper' => $this->input->post('state_shipper'),
+            'mark_shipper' => $this->input->post('mark_shipper'),
             // 'city_shipper' => $this->input->post('city_shipper'),
             'consigne' => $this->input->post('consigne'),
             'state_consigne' => $this->input->post('state_consigne'),
@@ -112,8 +133,7 @@ class Order extends CI_Controller
             'sender' => $this->input->post('sender'),
             'service_type' => $this->input->post('service_type'),
             'tree_shipper' => $this->input->post('tree_shipper'),
-            'tree_consignee' => $this->input->post('tree_consignee'),
-            'berat_js' => $total_weight,
+            'tree_consignee' => $this->input->post('tree_consignee'), 
             'koli' => $total_koli,
             'note_cs' => $no_do,
             // 'no_so' => $this->input->post('no_so'),
@@ -124,11 +144,38 @@ class Order extends CI_Controller
             'is_weight_print' => $this->input->post('is_weight_print'),
         );
         $shipment = $this->db->get_where('tbl_shp_order', array('id' => $this->input->post('id')))->row_array();
-        if ($shipment['update_at'] == NULL) {
-            $data['update_at'] = date('Y-m-d H:i:s');
+        $dataEdit = array(
+            'shipment_id' => $shipment['shipment_id'],
+            'berat_js' => $total_weight,
+            'destination' => $this->input->post('destination'),
+            'state_shipper' => $this->input->post('state_shipper'),
+            // 'city_shipper' => $this->input->post('city_shipper'),
+            'consigne' => $this->input->post('consigne'),
+            'state_consigne' => $this->input->post('state_consigne'),
+            'city_consigne' => $this->input->post('city_consigne'),
+            'pu_commodity' => $this->input->post('pu_commodity'),
+            'sender' => $this->input->post('sender'),
+            'service_type' => $this->input->post('service_type'),
+            'tree_shipper' => $this->input->post('tree_shipper'),
+            'tree_consignee' => $this->input->post('tree_consignee'), 
+            'koli' => $total_koli,
+            'note_cs' => $no_do,
+            // 'no_so' => $this->input->post('no_so'),
+            'no_stp' => $this->input->post('no_stp'),
+            'no_smu' => $this->input->post('no_smu'),
+            'flight_at' => $this->input->post('flight_at'),
+            'note_shipment' => $this->input->post('note_shipment'),
+            'is_weight_print' => $this->input->post('is_weight_print'),
+            'edited_at' => date('Y-m-d H:i:s'),
+            'edited_by' => $this->session->userdata('id_user')
+        );
+        
+        if ($shipment['updatesistem_at'] == NULL) {
+            $data['updatesistem_at'] = date('Y-m-d H:i:s');
         }
 
         $update =  $this->db->update('tbl_shp_order', $data, ['id' => $this->input->post('id')]);
+        $this->db->insert('tbl_shp_order_edit',$dataEdit);
         if ($update) {
             $this->session->set_flashdata('message', '<div class="alert
                 alert-success" role="alert">Success</div>');
@@ -138,7 +185,10 @@ class Order extends CI_Controller
                 alert-danger" role="alert">Failed</div>');
             redirect('cs/order/edit/' . $this->input->post('id') . '/' . $this->input->post('id_so'));
         }
+        
     }
+
+    // buat orang selanjutnya yang lanjutin ni codingan, sumpah sy nyerah kalo benerin bugnya sendirian semua wkwkwkkw #norman
 
     public function tambahDo()
     {
@@ -213,17 +263,18 @@ class Order extends CI_Controller
         $mpdf->WriteHTML($data);
         $mpdf->Output();
     }
-    public function printAll($id)
+   public function printAll($id)
     {
         $mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => [74, 105]]);
 
         $where = array('id_so' => $id);
-        $this->db->select('*, b.service_name, b.prefix');
+        $this->db->select('a.berat_js,a.shipment_id,a.id_so,a.shipper,a.tree_shipper,a.tree_consignee,a.consigne,a.destination,a.city_consigne,a.state_consigne,a.city_shipper,a.koli,a.is_weight_print,a.state_shipper,a.signature,a.created_at,a.sender,a.tgl_pickup, b.service_name, b.prefix');
         $this->db->from('tbl_shp_order a');
         $this->db->join('tb_service_type b', 'a.service_type=b.code');
         $this->db->where('a.id_so', $id);
+        $this->db->where('a.deleted', 0);
         $data['orders'] = $this->db->get()->result_array();
-        $data = $this->load->view('superadmin/v_cetak_all', $data, TRUE);
+        $data = $this->load->view('shipper/v_cetak_all', $data, TRUE);
         $mpdf->WriteHTML($data);
         $mpdf->Output();
     }
@@ -248,7 +299,7 @@ class Order extends CI_Controller
     public function report()
     {
         $data['title'] = 'Report Order';
-        $data['order'] = $this->pengajuan->getLaporan()->result_array();
+        //$data['order'] = $this->pengajuan->getLaporan()->result_array();
         $this->backend->display('cs/v_report', $data);
     }
     public function filterLaporan()
@@ -348,6 +399,7 @@ class Order extends CI_Controller
 
 
             $leadtime = $diterima->diff($pickup)->d;
+			$mark = ' ('.$row["mark_shipper"].')';
 
             $sheet->setCellValue('A' . $x, $no)->getColumnDimension('A')
                 ->setAutoSize(true);
@@ -361,7 +413,7 @@ class Order extends CI_Controller
                 ->setAutoSize(true);
             $sheet->setCellValue('F' . $x, $row['no_stp'])->getColumnDimension('F')
                 ->setAutoSize(true);
-            $sheet->setCellValue('G' . $x, $row['shipper'])->getColumnDimension('G')
+             $sheet->setCellValue('G' . $x, $row['shipper'].$mark)->getColumnDimension('G')
                 ->setAutoSize(true);
             $sheet->setCellValue('H' . $x, $row['consigne'])->getColumnDimension('H')
                 ->setAutoSize(true);
@@ -383,8 +435,19 @@ class Order extends CI_Controller
                 ->setAutoSize(true);
             $sheet->setCellValue('Q' . $x, $row['no_smu'])->getColumnDimension('Q')
                 ->setAutoSize(true);
-            $sheet->setCellValue('R' . $x, $row['tgl_diterima'])->getColumnDimension('R')
-                ->setAutoSize(true);
+           if ($row['tgl_diterima'] != NULL) {
+                $sheet->setCellValue('R' . $x, $row['tgl_diterima'])->getColumnDimension('R')
+                    ->setAutoSize(true);
+            } else {
+                // jika status mengandung kata paket telah diterima
+                if (strpos($tracking['status'], 'Diterima') !== false) {
+                    $sheet->setCellValue('R' . $x, $tracking['created_at'])->getColumnDimension('R')
+                        ->setAutoSize(true);
+                } else {
+                    $sheet->setCellValue('R' . $x, '')->getColumnDimension('R')
+                        ->setAutoSize(true);
+                }
+            }
             $sheet->setCellValue('S' . $x, $tracking['status'])->getColumnDimension('S')
                 ->setAutoSize(true);
             $sheet->setCellValue('T' . $x, $leadtime)->getColumnDimension('T')
@@ -407,7 +470,7 @@ class Order extends CI_Controller
                 ->setAutoSize(true);
             $sheet->setCellValue('AC' . $x, '')->getColumnDimension('AC')
                 ->setAutoSize(true);
-            $sheet->setCellValue('AD' . $x, $tracking['created_at'])->getColumnDimension('AD')
+            $sheet->setCellValue('AD' . $x, $tracking['update_at'])->getColumnDimension('AD')
                 ->setAutoSize(true);
             $x++;
             $no++;

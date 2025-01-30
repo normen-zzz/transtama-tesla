@@ -89,16 +89,11 @@ function getGrade($nilai)
                             </thead>
                             <tbody>
                                 <?php $nilai = 0;
+                                $totalNilai = 0;
                                 foreach ($salestracker->result_array() as $s) {
                                     $date1 = date_create(date('Y-m-d', strtotime($s['start_date'])));
                                     $date2 = date_create(date('Y-m-d', strtotime($s['created_at'])));
-
                                     $diff = date_diff($date2, $date1);
-                                    // echo $track['start_date'] . '<br>';
-                                    // echo $track['created_at'] .s '<br>';
-                                    // echo $sales['nama_user'] . $diff->format(" %R%a days <br>");
-
-
                                     // jika meeting plan disubmit hari yang sama
                                     if ($diff->format("%R%a") == 0) {
 
@@ -140,12 +135,15 @@ function getGrade($nilai)
                                     <?php } ?>
                                     <td><?= getGrade($nilai)  ?></td>
                                     </tr>
-                                <?php
+                                <?php $totalNilai += $nilai;
                                 } ?>
                             </tbody>
                             <tfoot>
                                 <tr>
                                     <td colspan="12" class="text-center"><b>TOTAL : <?= $salestracker->num_rows() ?> Data</b></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="12" class="text-center"><b>NILAI TOTAL : <?= $totalNilai/$salestracker->num_rows().' ('.GetGrade($totalNilai/$salestracker->num_rows()).')' ?></b></td>
                                 </tr>
                             </tfoot>
 

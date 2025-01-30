@@ -27,25 +27,27 @@ function getGrade($nilai)
                     <div class="card-header">
 
                         <h2 class="card-title">KPI DETAIL DELIVERY DAERAH CS
-                            <div class="row">
-                                <form action="<?= base_url('superadmin/Kpi/detailDeliveryDaerah') ?>" method="POST">
-                                    <div class="row ml-2">
-                                        <div class="form-group mr-2">
-                                            <label>Bulan</label><br>
-                                            <input type="month" <?php if ($date != NULL) { ?> value="<?= $date ?>" <?php } ?> name="date" id="date" class="form-control">
+                        <div class="row">
+                            <form action="<?= base_url('superadmin/Kpi/detailDeliveryDaerah') ?>" method="POST">
+                                <div class="row ml-2">
+                                    <div class="form-group mr-2">
+                                        <label>Start</label><br>
+                                        <input type="date" <?php if ($awal != NULL) { ?> value="<?= $awal ?>" <?php } ?> name="awal" id="awal" class="form-control">
 
 
-                                        </div>
-
-
-                                        <div class="form-group"> <br>
-                                            <button type="submit" class="btn btn-success mt-4 ml-3">Tampilkan</button>
-                                            <!-- <a href="<?= base_url('superadmin/SalesTracker') ?>" class="btn btn-primary mt-4 ml-1">Reset Filter</a> -->
-                                        </div>
+                                    </div>
+                                    <div class="form-group mr-3">
+                                        <label>End</label> <br>
+                                        <input type="date" <?php if ($akhir != NULL) { ?> value="<?= $akhir ?>" <?php } ?> name="akhir" id="akhir" class="form-control">
                                     </div>
 
-                                </form>
-                            </div>
+                                    <div class="form-group"> <br>
+                                        <button type="submit" class="btn btn-success ml-3">Tampilkan</button>
+                                    </div>
+                                </div>
+
+                            </form>
+                        </div>
                             <!-- <button class="btn btn-icon waves-effect waves-light btn-success mb-4" data-toggle="modal" data-target="#addBukti"> <i class="fas fa-plus"></i> Lakukan Pembayaran Sample </button> -->
 
                             <!-- <div class="row">
@@ -87,6 +89,7 @@ function getGrade($nilai)
                                     $nilai = 0;
                                     $city = $this->db->get_where('tb_city', array('city_name' => $s['city_consigne']))->row_array();
 
+                                    if ($city != NULL) {
                                     if ($city['lead_awal'] != NULL) {
 
                                         if ($diff->format("%R%a") < $city['lead_awal']) {
@@ -103,10 +106,7 @@ function getGrade($nilai)
                                             $nilai = 30;
                                         }
                                     }
-
-
-
-
+                                
                                 ?>
                                     <tr>
                                         <td><?= $s['shipment_id'] ?></td>
@@ -125,7 +125,7 @@ function getGrade($nilai)
 
                                     </tr>
                                 <?php
-                                } ?>
+                               } } ?>
                             </tbody>
 
 

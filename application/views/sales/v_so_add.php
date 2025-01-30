@@ -208,34 +208,89 @@
 														</div>
 
 
+
+
 													</div>
+													<div class="col">
+														<div class="ln_solid"></div>
 
+														<div id="nextkolom2" name="nextkolom2"></div>
+
+														<div class="ln_solid"></div>
+
+													</div>
+													<button type="button" class="btn btn-info tambahBarisDo"><i class="fa fa-plus">Tambah No DO</i> </button>
+													<button type="button" id="jumlahkolom2" value="1" style="display:none"></button>
+
+
+													<div class="ln_solid2"></div>
+													<div id="nextkolom" name="nextkolom"></div>
+													<button type="button" id="jumlahkolom" value="1" style="display:none"></button>
+
+													
+
+													<button onclick='$("#modalLoading").modal("show");' type="submit" class="btn btn font-weight-bolder text-uppercase px-9 py-4 text-light mt-10 float-right" data-wizard-type="action-submit" style="background-color: #9c223b;">Submit</button>
 											</div>
 
-											<div class="d-flex justify-content-between border-top mt-5 pt-10">
 
-												<div>
-													<button onclick='$("#modalLoading").modal("show");' type="submit" class="btn btn font-weight-bolder text-uppercase px-9 py-4 text-light" data-wizard-type="action-submit" style="background-color: #9c223b;">Submit</button>
-												</div>
-											</div>
-											<!--end: Wizard Actions-->
-										</form>
-										<!--end: Wizard Form-->
 									</div>
+
+
+
+
+
+									<!--end: Wizard Actions-->
+									</form>
+									<!--end: Wizard Form-->
 								</div>
-								<!--end: Wizard Body-->
-
 							</div>
-						</div>
-						<!-- /.card-body -->
-					</div>
-					<!-- /.card -->
-				</div>
+							<!--end: Wizard Body-->
 
+						</div>
+					</div>
+					<!-- /.card-body -->
+				</div>
+				<!-- /.card -->
 			</div>
-			<!-- /.row -->
+
+		</div>
+		<!-- /.row -->
 
 		</div>
 		<!--/. container-fluid -->
 	</section>
-	<!-- /.content --
+	<!-- /.content -->
+
+	<script>
+		$(document).ready(function() {
+			var i = 1;
+			$(".tambahBarisDo").on('click', function() {
+				row = '<div class="rec-element2">' +
+					'<div class="form-group">' +
+					'<label class="control-label col-md-6 col-sm-6 col-xs-12" for="first-name">No. DO/DN ' + i + ' <span class="required"></span>' +
+					'</label>' +
+					'<div class="col-md-12 col-sm-12 col-xs-12"> ' +
+					'<div class="input-group">' +
+					'<input type="text" name="doReqPickup[]" id="doReqPickup' + i + '" alt="' + i + '" class="form-control">' +
+					'<span class="input-group-btn">' +
+					'<button type="button" class="btn btn-warning del-element2"><i class="fa fa-minus-square"></i> Hapus</button>' +
+					'</span>' +
+					'</div>' +
+					'</div>' +
+					'</div>' +
+					'<div class="ln_solid"></div>' +
+
+					'</div>';
+				$(row).insertBefore("#nextkolom2");
+				$('#jumlahkolom2').val(i + 1);
+				i++;
+			});
+			$(document).on('click', '.del-element2', function(e) {
+				e.preventDefault()
+				i--;
+				//$(this).parents('.rec-element').fadeOut(400);
+				$(this).parents('.rec-element2').remove();
+				$('#jumlahkolom2').val(i - 1);
+			});
+		});
+	</script>

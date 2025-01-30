@@ -220,6 +220,36 @@
 															</div>
 
 
+
+														</div>
+														<div class="col">
+															<?php if ($do != NULL) {
+																$no = 1;
+																foreach ($do->result_array() as $do1) {
+															?>
+																	<div class="rec-element2">
+
+																		<div class="form-group">
+																			<label class="control-label col-md-6 col-sm-6 col-xs-12" for="first-name">No. DO/DN <?= $no ?> <span class="required"></span>
+																			</label>
+																			<div class="col-md-12 col-sm-12 col-xs-12">
+																				<div class="input-group">
+																					<input type="text" name="doReqPickup[]" id="doReqPickup" value="<?= $do1['do'] ?>" class="form-control">
+																					<span class="input-group-btn">
+																						<button type="button" class="btn btn-warning del-element2"><i class="fa fa-minus-square"></i> Hapus</button>
+																					</span>
+																				</div>
+																			</div>
+																		</div>
+
+																		<div class="ln_solid"></div>
+																	</div>
+																	
+															<?php $no++;
+																}
+															} ?>
+															<div id="nextkolom2" name="nextkolom2"></div>
+															<button type="button" class="btn btn-info tambahBarisDo"><i class="fa fa-plus">Tambah No DO</i> </button>
 														</div>
 
 												</div>
@@ -256,4 +286,39 @@
 		</div>
 		<!--/. container-fluid -->
 	</section>
-	<!-- /.content --
+	<!-- /.content -->
+
+	<script>
+		$(document).ready(function() {
+			var i = <?= $do->num_rows() + 1 ?>;
+			$(".tambahBarisDo").on('click', function() {
+				row = '<div class="rec-element2">' +
+					'<div class="form-group">' +
+					'<label class="control-label col-md-6 col-sm-6 col-xs-12" for="first-name">No. DO/DN ' + i + ' <span class="required"></span>' +
+					'</label>' +
+					'<div class="col-md-12 col-sm-12 col-xs-12"> ' +
+					'<div class="input-group">' +
+					'<input type="text" name="doReqPickup[]" id="doReqPickup' + i + '" alt="' + i + '" class="form-control">' +
+					'<span class="input-group-btn">' +
+					'<button type="button" class="btn btn-warning del-element2"><i class="fa fa-minus-square"></i> Hapus</button>' +
+					'</span>' +
+					'</div>' +
+					'</div>' +
+					'</div>' +
+					'<div class="ln_solid"></div>' +
+
+					'</div>';
+				$(row).insertBefore("#nextkolom2");
+				$('#jumlahkolom2').val(i + 1);
+				i++;
+			});
+			$(document).on('click', '.del-element2', function(e) {
+				e.preventDefault()
+				i--;
+				//$(this).parents('.rec-element').fadeOut(400);
+				$(this).parents('.rec-element2').remove();
+				$('#jumlahkolom2').val(i - 1);
+			});
+		});
+	</script>
+

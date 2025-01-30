@@ -78,7 +78,7 @@ function getGrade($nilai)
                     <nav>
                         <div class="nav nav-tabs nav-fill" id="nav-tab" role="tablist">
                             <a class="nav-item nav-link active" id="nav-invoice-tab" data-toggle="tab" href="#nav-invoice" role="tab" aria-controls="nav-invoice" aria-selected="true">Invoice</a>
-                            <a class="nav-item nav-link" id="nav-payment-tab" data-toggle="tab" href="#nav-payment" role="tab" aria-controls="nav-payment" aria-selected="false">Payment</a>
+                            <!-- <a class="nav-item nav-link" id="nav-payment-tab" data-toggle="tab" href="#nav-payment" role="tab" aria-controls="nav-payment" aria-selected="false">Payment</a> -->
 
                         </div>
                     </nav>
@@ -97,21 +97,16 @@ function getGrade($nilai)
                                     <thead>
                                         <tr>
                                             <th>No</th>
-                                            <th>Name</th>
+                                            <th>Jumlah Invoice</th>
                                             <th>Nilai</th>
                                             <th>Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         <?php $no = 1;
-                                        foreach ($sales->result_array() as $s) {
+                                        
                                             $nilai = 0;
-                                            $this->db->select('*');
-                                            $this->db->where('id_user', $s['id_user']);
-                                            $this->db->where('created_at >=', date('Y-m-d', strtotime($awal)));
-                                            $this->db->where('created_at <=', date('Y-m-d', strtotime($akhir)));
-                                            $this->db->group_by('no_invoice');
-                                            $noinvoice = $this->db->get('tbl_invoice');
+                                            
 
                                             foreach ($noinvoice->result_array() as $inv1) {
                                                 $this->db->select('shipment_id');
@@ -127,7 +122,7 @@ function getGrade($nilai)
                                                     if ($pod != NULL) {
                                                         // memberi jarak sehari
                                                         $pod_sampe = date_create(date("Y-m-d", strtotime("1 day", strtotime($pod['tgl_sampe']))));
-                                                        $date2 = date_create(date('Y-m-d', strtotime($inv1['created_at'])));
+                                                        $date2 = date_create(date('Y-m-d', strtotime($inv1['update_at'])));
                                                         $diff = date_diff($pod_sampe, $date2);
                                                         // jarak invoice dibuat dari pod diterima
                                                         // echo $inv1['no_invoice'] . '/' . $pod['shipment_id'] . $diff->format(" %R%a days <br>");
@@ -158,14 +153,14 @@ function getGrade($nilai)
 
                                         ?>
                                             <tr>
-                                                <td><?= $no; ?></td>
-                                                <td><?= $s['nama_user'] ?></td>
+                                             
+                                                <td><?= $noinvoice->num_rows() ?></td>
                                                 <td><?= getGrade($nilai)  ?></td>
-                                                <td><a class="btn btn-primary" href="<?= base_url('superadmin/Kpi/detailInvoice/' . $s['id_user'] . '/' . strtotime($awal) . '/' . strtotime($akhir)) ?>">Detail</a></td>
+                                                <td><a target="_blank" class="btn btn-primary" href="<?= base_url('superadmin/Kpi/detailInvoice/' . strtotime($awal) . '/' . strtotime($akhir)) ?>">Detail</a></td>
 
                                             </tr>
                                         <?php $no++;
-                                        } ?>
+                                         ?>
                                     </tbody>
                                 </table>
                             </div>
@@ -229,7 +224,7 @@ function getGrade($nilai)
                                                 <td><?= $no ?></td>
                                                 <td><?= $s['nama_user'] ?></td>
                                                 <td><?= getGrade($nilai)  ?></td>
-                                                <td><a class="btn btn-primary" href="<?= base_url('superadmin/Kpi/detailClosingMeeting/' . $s['id_user'] . '/' . strtotime($awal) . '/' . strtotime($akhir)) ?>">Detail</a></td>
+                                                <td><a class="btn btn-primary" target="_blank" href="<?= base_url('superadmin/Kpi/detailClosingMeeting/' . $s['id_user'] . '/' . strtotime($awal) . '/' . strtotime($akhir)) ?>">Detail</a></td>
 
                                             </tr>
                                         <?php $no++;

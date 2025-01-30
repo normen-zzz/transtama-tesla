@@ -49,6 +49,11 @@
 															</div>
 														</div>
 
+														<div class="form-group">
+																<label for="exampleInputEmail1">Mark Shipper</label>
+																<input type="text" class="form-control" id="mark_shipper" name="mark_shipper" value="<?= $p['mark_shipper'] ?>">
+															</div>
+
 														<div class="col-md-4">
 															<div class="form-group">
 																<label for="exampleInputPassword1">Destination</label>
@@ -271,22 +276,58 @@
 																		<input type="text" class="form-control" hidden name="id_do[]" value="<?= $do['id_berat'] ?>">
 																	</div>
 																</div>
-																<div class="col-md-3">
+																<div class="col-md-2">
 																	<div class="form-group">
 																		<label for="exampleInputEmail1">No. SO/PO <?= $no; ?></label>
 																		<input type="text" class="form-control" name="no_so[]" value="<?= $do['no_so'] ?>">
 																	</div>
 																</div>
-																<div class="col-md-3">
+																<div class="col-md-2">
 																	<div class="form-group">
 																		<label for="exampleInputEmail1">Collie <?= $no; ?></label>
-																		<input type="text" class="form-control" name="collie[]" value="<?= $do['koli'] ?>">
+																		
+
+																		<?php if ($invoice == NULL) { ?>
+																			<input type="text" class="form-control" name="collie[]" value="<?= $do['koli'] ?>">
+																			<?php } else {
+																			if ($invoice['status'] == 1 || $invoice['status'] == 2) { ?>
+																				<input type="text" class="form-control" name="collie[]" readonly value="<?= $do['koli'] ?>">
+																			<?php } else { ?>
+																				<input type="text" class="form-control" name="collie[]" value="<?= $do['koli'] ?>">
+																		<?php }
+																		} ?>
 																	</div>
 																</div>
-																<div class="col-md-3">
+																<div class="col-md-2">
 																	<div class="form-group">
 																		<label for="exampleInputEmail1">Weight <?= $no; ?></label>
-																		<input type="text" class="form-control" name="weight[]" value="<?= $do['berat'] ?>">
+																		<?php if ($invoice == NULL) { ?>
+																			<input type="text" class="form-control" name="weight[]" value="<?= $do['berat'] ?>">
+																			
+																			<?php } else {
+																			if ($invoice['status'] == 1 || $invoice['status'] == 2) { ?>
+																				<input type="text" class="form-control" name="weight[]" readonly value="<?= $do['berat'] ?>">
+																			<?php } else { ?>
+																				<input type="text" class="form-control" name="weight[]" value="<?= $do['berat'] ?>">
+																				
+																		<?php }
+																		} ?>
+
+																	</div>
+																</div>
+																<div class="col-md-2">
+																	<div class="form-group">
+																		<label for="exampleInputEmail1">Action</label>
+																		<?php if ($invoice == NULL) { ?>
+																			<a class=" form-control btn btn-danger" href="<?= base_url('cs/Order/deleteDo/'.$do['id_berat']) ?>">Delete</a>
+																			<?php } else {
+																			if ($invoice['status'] == 1 || $invoice['status'] == 2) { ?>
+																				-
+																			<?php } else { ?>
+																				<a class=" form-control btn btn-danger" href="<?= base_url('cs/Order/deleteDo/'.$do['id_berat']) ?>">Delete</a>
+																		<?php }
+																		} ?>
+
 																	</div>
 																</div>
 																<br>
@@ -315,13 +356,32 @@
 															<div class="col-md-4">
 																<div class="form-group">
 																	<label for="exampleInputEmail1">Koli </label>
-																	<input type="text" class="form-control" name="koli" value="<?= $p['koli'] ?>">
+																	
+
+																	<?php if ($invoice == NULL) { ?>
+																		<input type="text" class="form-control" name="koli" value="<?= $p['koli'] ?>">
+																			<?php } else {
+																			if ( $invoice['status'] != 2) { ?>
+																				<input type="text" class="form-control" name="koli" readonly value="<?= $p['koli'] ?>">
+																			<?php } else { ?>
+																				<input type="text" class="form-control" name="koli" value="<?= $p['koli'] ?>">
+																		<?php }
+																		} ?>
 																</div>
 															</div>
 															<div class="col-md-6">
 																<div class="form-group">
 																	<label for="exampleInputEmail1">Weight </label>
-																	<input type="text" class="form-control" name="weight" value="<?= $p['berat_js'] ?>">
+																	<?php if ($invoice == NULL) { ?>
+																		<input type="text" class="form-control" name="weight" value="<?= $p['berat_js'] ?>">
+																			<?php } else {
+																			if ($invoice['status'] != 2) { ?>
+																				<input type="text" class="form-control" name="weight" readonly value="<?= $p['berat_js'] ?>">
+																			<?php } else { ?>
+																				<input type="text" class="form-control" name="weight" value="<?= $p['berat_js'] ?>">
+																		<?php }
+																		} ?>
+																	
 																</div>
 															</div>
 														<?php 	} ?>
@@ -332,8 +392,20 @@
 												<!--begin: Wizard Actions-->
 												<div class="d-flex justify-content-between border-top mt-5 pt-10">
 
+												
+
 													<div>
+													<?php if ($invoice == NULL) { ?>
+                                               
 														<button onclick='$("#modalLoading").modal("show");' type="submit" class="btn btn font-weight-bolder text-uppercase px-9 py-4 text-light" style="background-color: #9c223b;">Submit</button>
+											   <?php } else { 
+													if ($invoice['status'] == 1 || $invoice['status'] == 2) {
+												   ?>
+													
+													<?php } else{ ?>
+														<button onclick='$("#modalLoading").modal("show");' type="submit" class="btn btn font-weight-bolder text-uppercase px-9 py-4 text-light" style="background-color: #9c223b;">Submit</button>
+													<?php } }?>
+														
 
 													</div>
 												</div>
@@ -361,11 +433,70 @@
 														</div>
 
 														<div>
+														<?php if ($invoice == NULL) { ?>
+                                               
 															<button type="submit" class="btn btn font-weight-bolder text-uppercase px-9 py-4 text-light" style="background-color: #9c223b;">Submit Tambah Do</button>
+											   <?php } else { 
+													if ($invoice['status'] == 1 || $invoice['status'] == 2) {
+												   ?>
+												
+													<?php } else{ ?>
+														<button type="submit" class="btn btn font-weight-bolder text-uppercase px-9 py-4 text-light" style="background-color: #9c223b;">Submit Tambah Do</button>
+
+													<?php }}?>
+															
 														</div>
 													</form>
 												</div>
 											</div>
+											
+											<?php if ($dimension != NULL) { ?>
+												
+											
+											<div class="row" style="margin-top: 100px ;">
+												<div class="col">
+													<h2>Dimension From Outbond</h2>
+													<table class="table">
+														<thead>
+															<tr>
+																<th>Koli</th>
+																<th>Panjang</th>
+																<th>Lebar</th>
+																<th>Tinggi</th>
+																<th>Berat Aktual</th>
+																<th>Berat Volume</th>
+																<th>No DO</th>
+															</tr>
+														</thead>
+														<tbody>
+															<?php foreach ($dimension as $dimension1) { ?>
+															<tr>
+																<td scope="row"><?= $dimension1['koli'] ?></td>
+																<td><?= $dimension1['panjang'] ?></td>
+																<td><?= $dimension1['lebar'] ?></td>
+																<td><?= $dimension1['tinggi'] ?></td>
+																<?php if ($dimension1['berat_aktual'] > $dimension1['berat_volume']) { ?>
+																	<td><strong><?= $dimension1['berat_aktual'] ?></strong></td>
+																	<td><?= $dimension1['berat_volume'] ?></td>
+																<?php } elseif ($dimension1['berat_aktual'] < $dimension1['berat_volume']){ ?>
+																	
+																	<td><?= $dimension1['berat_aktual'] ?></td>
+																	<td><strong><?= $dimension1['berat_volume'] ?></strong></td>
+																	<?php } else{ ?>
+																		<td><?= $dimension1['berat_aktual'] ?></td>
+																	<td><strong><?= $dimension1['berat_volume'] ?></strong></td>
+																		<?php } ?>
+																
+																
+																<td><?= $dimension1['no_do'] ?></td>
+															</tr>
+															
+															<?php } ?>
+														</tbody>
+													</table>
+												</div>
+											</div>
+											<?php } ?>
 											<!--end: Wizard Form-->
 										</div>
 									</div>

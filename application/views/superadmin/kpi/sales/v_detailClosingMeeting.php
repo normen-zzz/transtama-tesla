@@ -77,6 +77,7 @@ function getGrade($nilai)
                                     <!-- <th>Created At</th> -->
                                     <th>Start Date</th>
                                     <th>End Date</th>
+                                    <th>Close At</th>
                                     <th>PIC</th>
                                     <th>summary</th>
                                     <!-- <th>image</th> -->
@@ -88,7 +89,9 @@ function getGrade($nilai)
                             </thead>
                             <tbody>
                                 <?php $nilai = 0;
+                                $totalNilai = 0;
                                 foreach ($salestracker->result_array() as $s) {
+                                    if ($s['closing_at'] != NULL) {
                                     $date1 = date_create(date('Y-m-d', strtotime($s['closing_at'])));
                                     $date2 = date_create(date('Y-m-d', strtotime($s['end_date'])));
                                     $diff = date_diff($date2, $date1);
@@ -96,11 +99,15 @@ function getGrade($nilai)
                                     $datetime2 = strtotime($s['end_date']);
                                     $interval  = abs($datetime2 - $datetime1);
                                     $minutes   = round($interval / 60);
-                                    if ($diff->format("%R%a") == 0) {
-                                        if ($minutes <= 10 && $minutes > 0) {
+                                    //jika perbedaan hari tidak ada
+                                    if ($s['end_date'] == NULL) {
+                                        $nilai = 30;
+                                    }
+                                    else{
 
-                                            // echo $s['nama_user'] . 'Kurang 10 <br>';
-                                            // nilai A
+                                    if ($diff->format("%R%a") == 0) {
+                                        //mencari perbedaan menit
+                                        if ($minutes <= 10 && $minutes > 0) {
                                             $nilai = 90;
                                         } elseif ($minutes > 10) {
                                             // nilai B 
@@ -115,6 +122,11 @@ function getGrade($nilai)
                                         $nilai = 30;
                                         // Nilai D
                                     }
+                                    }
+                                } else{
+                                    $nilai = 30;
+                                    // Nilai D
+                                }
                                 ?>
                                     <tr>
                                         <td <?php if ($s['end_date'] == NULL) { ?> class="text-danger" <?php } ?>><?= $s['subject'] ?></td>
@@ -124,6 +136,8 @@ function getGrade($nilai)
                                         <td <?php if ($s['end_date'] == NULL) { ?> class="text-danger" <?php } ?>><?php if ($s['end_date'] != NULL) {
                                                                                                                         echo date('D d/m/Y H:i:s', strtotime($s['end_date']));
                                                                                                                     } ?></td>
+                                        <td <?php if ($s['end_date'] == NULL) { ?> class="text-danger" <?php } ?>><?= date('D d/m/Y H:i:s', strtotime($s['closing_at'])) ?></td>
+
                                         <td <?php if ($s['end_date'] == NULL) { ?> class="text-danger" <?php } ?>><?= $s['contact'] ?></td>
                                         <td <?php if ($s['end_date'] == NULL) { ?> class="text-danger" <?php } ?>><?= $s['summary'] ?></td>
                                         <!-- <td><img src="<?= base_url('uploads/salestracker/' . $s['image']) ?>" alt="" srcset="" width="70px"></td> -->
@@ -135,11 +149,13 @@ function getGrade($nilai)
                                     <td><?= getGrade($nilai)  ?></td>
                                     </tr>
                                 <?php
+                                    $totalNilai += $nilai;
                                 } ?>
                             </tbody>
 
 
                         </table>
+                        <p>total nilai = <?= $totalNilai/$salestracker->num_rows() ?> </p>
                     </div>
                     <!-- /.card-body -->
                 </div>

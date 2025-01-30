@@ -5,6 +5,7 @@
 <head>
 	<?php date_default_timezone_set('Asia/Jakarta');
 	setlocale(LC_TIME, "id_ID.UTF8"); ?>
+	<meta name="google-site-verification" content="n65eZx_Lmo6Qx0NYgwvqO_n21_VmI4GWGnl6CIWAAH8" />
 	<meta charset="utf-8" />
 	<title>Tesla Smartwork</title>
 	<meta name="description" content="Updates and statistics" />
@@ -25,6 +26,7 @@
 	<link href="<?= base_url('assets/back/metronic/') ?>css/pages/wizard/wizard-3.css" rel="stylesheet" type="text/css" />
 	<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/css/datepicker.css" rel="stylesheet" type="text/css" />
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.form/4.3.0/jquery.form.min.js" integrity="sha384-qlmct0AOBiA2VPZkMY3+2WqkHtIQ9lSdAsAn5RUJD/3vA5MKDgSGcdmIv4ycVxyn" crossorigin="anonymous"></script>
+		<script src="https://code.jquery.com/jquery-3.7.0.js" integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM=" crossorigin="anonymous"></script>
 
 
 	<!-- scan -->
@@ -41,6 +43,7 @@
 	<link rel="stylesheet" href="<?= base_url('assets/back/metronic/') ?>plugins/custom/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
 
 	<link type="text/css" href="<?= base_url('assets/back/metronic/') ?>css/jquery.signature.css" rel="stylesheet">
+	
 
 	<link rel="shortcut icon" href="<?= base_url('uploads/') ?>icon512.png" />
 	<style>
@@ -94,6 +97,8 @@
 
 
 	<?php $this->load->view('templates/back/navbar'); ?>
+		
+	
 	<?= $_content; ?>
 	<?php $this->load->view('templates/back/footer'); ?>
 
@@ -180,7 +185,7 @@
 	<script src="<?= base_url('assets/back/metronic/') ?>plugins/global/plugins.bundle.js"></script>
 
 	<script src="<?php echo base_url() ?>assets/scans/js/qrcodelib.js"></script>
-	<script src="<?php echo base_url() ?>assets/scans/js/webcodecamjquery.js"></script>
+	<!-- <script src="<?php echo base_url() ?>assets/scans/js/webcodecamjquery.js"></script> -->
 	<script src="<?php echo base_url() ?>assets/scans/app/core/scan.js"></script>
 
 	<script src="<?= base_url('assets/back/metronic/') ?>plugins/custom/prismjs/prismjs.bundle.js"></script>
@@ -426,32 +431,32 @@
 
 
 	<script type="text/javascript">
-		$(document).ready(function() {
-			$('#consigne').on('input', function() {
-				var kode = $(this).val();
-				console.log(kode);
+		//$(document).ready(function() {
+		// 	$('#consigne').on('input', function() {
+		// 		var kode = $(this).val();
+		// 		console.log(kode);
 
-				$.ajax({
-					type: "POST",
-					url: "<?php echo base_url('shipper/order/get_consigne') ?>",
-					dataType: "JSON",
-					data: {
-						kode: kode
-					},
-					cache: false,
-					success: function(data) {
-						$.each(data, function(consigne, destination) {
-							$('[name="consigne"]').val(data.consigne);
-							$('[name="destination"]').val(data.destination);
-						});
-					}
+		// 		$.ajax({
+		// 			type: "POST",
+		// 			url: "<?php echo base_url('shipper/order/get_consigne') ?>",
+		// 			dataType: "JSON",
+		// 			data: {
+		// 				kode: kode
+		// 			},
+		// 			cache: false,
+		// 			success: function(data) {
+		// 				$.each(data, function(consigne, destination) {
+		// 					$('[name="consigne"]').val(data.consigne);
+		// 					$('[name="destination"]').val(data.destination);
+		// 				});
+		// 			}
 
-				});
-				return false;
+		// 		});
+		// 		return false;
 
-			});
+		// 	});
 
-		});
+		// });
 	</script>
 
 
@@ -474,7 +479,7 @@
 					success: function(data) {
 						$('#origin_destination').val(data.alamat);
 						// $('#sender').val(data.pic);
-						$('#id_customer').val(data.id_customer);
+						// $('#id_customer').val(data.id_customer);
 						$('#state_shipper').val(data.provinsi);
 						$('#city_shipper').val(data.kota);
 						$('#shipper').val(data.nama_pt);
@@ -672,7 +677,7 @@
 		}
 	</script>
 
-	<script>
+		<script>
 		var tabel = null;
 		$(document).ready(function() {
 			tabel = $('#mytablereport').DataTable({
@@ -1380,99 +1385,7 @@
 	</script>
 
 
-	<script>
-		var tabel = null;
-		$(document).ready(function() {
-			tabel = $('#mytablesoincs').DataTable({
-				"processing": true,
-				// "responsive": true,
-				"serverSide": true,
-				"ordering": true, // Set true agar bisa di sorting
-				"dom": "<'row'<'col-lg-10 col-md-10 col-xs-12'f>>" +
-					"<'row'<'col-sm-12'tr>>" +
-					"<'row'<'col-sm-12 col-md-5'i><'col-sm-12 col-md-7'p>>" +
-					"<'row'<'col-lg-10 col-md-10 col-xs-12'l>>",
-				"order": [
-					[0, 'desc']
-				], // Default sortingnya berdasarkan kolom / field ke 0 (paling pertama)
-				"ajax": {
-					"url": "<?= base_url('cs/salesOrder/view_data_query'); ?>", // URL file untuk proses select datanya
-					"type": "POST"
-				},
-				"deferRender": true,
-				"aLengthMenu": [
-					[5, 10, 50],
-					[5, 10, 50]
-				], // Combobox Limit
-				"columns": [{
-						"data": "id_so",
-						"render": function(data, type, row, meta) {
-							return row.sales
-						}
-					}, {
-						"data": "tgl_pickup",
-					},
-					{
-						"data": "time",
-					},
-					{
-						"data": "shipper",
-					},
-					{
-						"data": "destination",
-					},
-					{
-						"data": "pu_poin",
-					},
-					{
-						"data": "status",
-						"render": function(data, type, row, meta) {
-							if (data == 0) {
-								return '<span class="label label-danger label-inline font-weight-lighter" style="width: 100px;">Request Pickup</span>';
-							} else if (data == 5) {
-								return '<span class="label label-secondary label-inline font-weight-lighter" style="width: 100px;">Cancel</span>';
-
-							} else {
-								return '<span class="label label-success label-inline font-weight-lighter" style="width: 100px;">Pickuped</span>';
-
-							}
-						}
-					},
-					{
-						"data": "is_incoming",
-						"render": function(data, type, row, meta) {
-							if (data == 0) {
-								return 'Outgoing';
-							} else {
-								return 'Incoming';
-							}
-						}
-					},
-					// {
-					// 	"data": "status",
-					// 	"render": function(data, type, row, meta) {
-					// 		if (data == 0) {
-					// 			return '<a href="#" class="btn btn-danger font-weight-bold btn-pill">Order In</a>';
-					// 		} else if (data == 1) {
-					// 			return '<a href="#" class="btn btn-success font-weight-bold btn-pill">Order PU</a>';
-					// 		} else if (data == 2) {
-					// 			return '<a href="#" class="btn btn-success font-weight-bold btn-pill">Order Pickuped</a>';
-					// 		} else {
-					// 			return '<a href="#" class="btn btn-success font-weight-bold btn-pill">Order Finished</a>';
-					// 		}
-					// 	}
-					// },
-					{
-						"data": "id_so",
-						"render": function(data, type, row, meta) {
-							return `<a onclick='$("#modalLoading").modal("show");' href="<?= base_url('cs/salesOrder/detail/') ?>` + data + `" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Detail</a>`;
-
-						}
-					},
-				],
-			});
-		});
-	</script>
+	
 
 
 
@@ -1794,7 +1707,13 @@
 							return today.toLocaleDateString("en-US", options);
 						}
 
-					} // Tampilkan nama sub kategori
+					}, // Tampilkan nama sub kategori
+					{
+						"data": "id",
+						"render": function(data, type, row, meta) {
+							return '<a href="<?= base_url('superadmin/order/edit/') ?>' + data + '/' + row.id_so + '" class="btn btn-sm text-light" style="background-color: #9c223b;">Edit</a>';
+						}
+					},
 
 				],
 			});
@@ -2132,6 +2051,18 @@
 			$(".modal-body #kota").val(kota);
 			$(".modal-body #alamat").val(alamat);
 
+		});
+	</script>
+	
+	<script>
+		$('button[type="submit"]').on('click', function() {
+			var button = $(this);
+			setTimeout(function() {
+				button.prop('disabled', true);
+				setTimeout(function() {
+					button.prop('disabled', false);
+				}, 3000); // Jeda 2 detik untuk mengaktifkan kembali tombol
+			}, 200); // Jeda 1 detik untuk menonaktifkan tombol
 		});
 	</script>
 

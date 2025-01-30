@@ -13,6 +13,7 @@ class CsModel extends CI_Model
         $this->db->where('a.date_request <=', $akhir);
         $this->db->where('a.price', NULL);
         $this->db->order_by('a.id_request_price', 'desc');
+        $this->db->group_by('a.group');
         return $this->db->get();
     }
     public function getRequestPriceApprove($awal, $akhir)
@@ -24,6 +25,7 @@ class CsModel extends CI_Model
         $this->db->where('a.date_request <=', $akhir);
         $this->db->where('a.price !=', NULL);
         $this->db->order_by('a.id_request_price', 'desc');
+        $this->db->group_by('a.group');
         return $this->db->get();
     }
 }

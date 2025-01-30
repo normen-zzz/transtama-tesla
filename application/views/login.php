@@ -6,6 +6,7 @@
 <head>
 
 	<meta charset="utf-8" />
+	<meta name="google-site-verification" content="n65eZx_Lmo6Qx0NYgwvqO_n21_VmI4GWGnl6CIWAAH8" />
 	<title>Login Page</title>
 	<meta name="description" content="Login Shipper Transtama" />
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
@@ -49,10 +50,10 @@
 						<!--begin::Form-->
 						<form class="form" action="<?= base_url('backoffice') ?>" method="POST">
 							<div class="form-group">
-								<input class="form-control form-control-solid h-auto py-5 px-6" required type="text" placeholder="Username" name="username" autocomplete="off" />
+								<input class="form-control form-control-solid h-auto py-5 px-6" required type="text" placeholder="Username" name="username" autocomplete />
 							</div>
 							<div class="form-group">
-								<input class="form-control form-control-solid h-auto py-5 px-6" required type="password" placeholder="Password" name="password" autocomplete="off" />
+								<input class="form-control form-control-solid h-auto py-5 px-6" required type="password" placeholder="Password" name="password" autocomplete />
 							</div>
 							<!--begin::Action-->
 							<div class="form-group d-flex align-items-center">
@@ -69,33 +70,7 @@
 
 			</div>
 			<!--begin::Aside-->
-			<div class="login-aside d-flex flex-row-auto bgi-size-cover bgi-no-repeat p-5 p-lg-5" style="background-image: url(<?= base_url('assets/back/metronic/') ?>media/bg/back.png); height:150px;">
-				<!--begin: Aside Container-->
-				<div class="d-flex flex-row-fluid flex-column justify-content-between">
-					<!--begin: Aside header-->
-					<a href="#" class="flex-column-auto mt-5 pb-lg-0 pb-10">
-						<!-- <img src="<?= base_url('uploads/tlx.jpeg') ?>" class="max-h-70px" alt="logo" /> -->
-						<!-- <h2>PT TRANSTAMA LOGISTIK</h2> -->
-					</a>
-					<!--end: Aside header-->
-					<!--begin: Aside content-->
-					<div class="flex-column-fluid d-flex flex-column justify-content-center">
-
-						<h3 class="font-size-h1 mb-5 text-white"></h3>
-						<h2 class="font-weight-lighter text-white opacity-80"></h2>
-					</div>
-					<!--end: Aside content-->
-					<!--begin: Aside footer for desktop-->
-					<div class="d-none flex-column-auto d-lg-flex justify-content-between">
-						<!-- <div class="opacity-70 font-weight-bold text-white">PT TRANSTAMA LOGISTIK</div> -->
-						<div class="d-flex">
-							<a href="#" class="text-white ml-10">PT TRANSTAMA LOGISTIK</a>
-						</div>
-					</div>
-					<!--end: Aside footer for desktop-->
-				</div>
-				<!--end: Aside Container-->
-			</div>
+			
 			<!--begin::Aside-->
 			<!--begin::Content-->
 

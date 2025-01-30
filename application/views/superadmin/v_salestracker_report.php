@@ -32,7 +32,7 @@
 												?>
 													<option <?php if ($sales == $u['id_user']) {
 																echo 'selected';
-															} ?> value="<?= $u['id_user'] ?>"><?= $u['nama_user'] ?></option>
+															} ?> value="<?= $u['id_user'] ?>"><?= $u['username'] ?></option>
 												<?php } ?>
 											</select>
 										</div>
@@ -75,7 +75,7 @@
 
 							</div><!-- end col -->
 						</div>
-						<table class="table table-bordered" id="myTableSalesTracker">
+						<table  class="table table-bordered" id="myTableSalesTracker">
 							<!-- <a href="<?= base_url('shipper/order/add') ?>" class="btn btn-success mr-2 mb-4">
 									<i class="fas fa-plus-circle"> </i>Add
 								</a> -->
@@ -142,11 +142,3 @@
 	<!--/. container-fluid -->
 </section>
 <!-- /.content -->
-<script>
-	$(document).ready(function() {
-		var myTable = $('.datatable').DataTable({
-			"ordering": false,
-			"dom": '<"top"f>rt<"bottom"ilp><"clear">'
-		});
-	});
-</script>

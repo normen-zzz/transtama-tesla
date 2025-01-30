@@ -82,7 +82,7 @@ function getGrade($nilai)
 															<h4>SCAN IN</h4>
 														</div>
 														<div class="navbar-form navbar-center">
-															<select class="form-control" id="camera-selectIn" style="width: 80%;"></select>
+															<select class="form-control" id="selectCamera" style="width: 80%;"></select>
 														</div>
 
 													</div>

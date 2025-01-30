@@ -90,6 +90,8 @@ function getGrade($nilai)
 
                         <div class="tab-content" id="nav-tabContent">
                             <div class="tab-pane fade show active" id="nav-plan" role="tabpanel" aria-labelledby="nav-plan-tab">
+
+                            <!-- meeting plan  -->
                                 <table class="table table-separate table-head-custom table-checkable datatable">
 
                                     <div class="flash-data" data-flashdata="<?= $this->session->flashdata('message'); ?>"></div>
@@ -106,10 +108,10 @@ function getGrade($nilai)
                                         <?php $no = 1;
                                         foreach ($sales->result_array() as $s) {
                                             $nilai = 0;
-                                            $this->db->where('id_sales', $s['id_user']);
-                                            $this->db->where('start_date >=', date('Y-m-d', strtotime($awal)));
-                                            $this->db->where('start_date <=', date('Y-m-d', strtotime($akhir)));
-                                            $salesTracker = $this->db->get('tbl_sales_tracker');
+
+
+                                            $salesTracker = $this->db->query('SELECT start_date,created_at FROM tbl_sales_tracker WHERE id_sales = ' . $s["id_user"] . ' AND start_date >= "' . date('Y-m-d', strtotime($awal)) . '" AND start_date <= "' . date('Y-m-d', strtotime($akhir)) . '"');
+
 
                                             foreach ($salesTracker->result_array() as $track) {
 
@@ -151,8 +153,8 @@ function getGrade($nilai)
                                             <tr>
                                                 <td><?= $no; ?></td>
                                                 <td><?= $s['nama_user'] ?></td>
-                                                <td><?= getGrade($nilai)  ?></td>
-                                                <td><a class="btn btn-primary" href="<?= base_url('superadmin/Kpi/detailMeetingPlan/' . $s['id_user'] . '/' . strtotime($awal) . '/' . strtotime($akhir)) ?>">Detail</a></td>
+                                                <td><?= getGrade($nilai).' / '.$nilai  ?></td>
+                                                <td><a target="_blank" class="btn btn-primary" href="<?= base_url('superadmin/Kpi/detailMeetingPlan/' . $s['id_user'] . '/' . strtotime($awal) . '/' . strtotime($akhir)) ?>">Detail</a></td>
 
                                             </tr>
                                         <?php $no++;
@@ -177,35 +179,38 @@ function getGrade($nilai)
                                         <?php $no = 1;
                                         foreach ($sales->result_array() as $s) {
                                             $nilai = 0;
-                                            $this->db->where('id_sales', $s['id_user']);
-                                            $this->db->where('start_date >=', date('Y-m-d', strtotime($awal)));
-                                            $this->db->where('start_date <=', date('Y-m-d', strtotime($akhir)));
-                                            $salesTracker = $this->db->get_where('tbl_sales_tracker', array('id_sales' => $s['id_user']));
+                                            $jumlahTracker = 1;
+                                            $salesTracker = $this->db->query('SELECT closing_at,end_date FROM tbl_sales_tracker WHERE id_sales = ' . $s["id_user"] . ' AND start_date >= "' . date('Y-m-d', strtotime($awal)) . '" AND start_date <= "' . date('Y-m-d', strtotime($akhir)) . '"');
                                             foreach ($salesTracker->result_array() as $track) {
-                                                $date1 = date_create(date('Y-m-d', strtotime($track['closing_at'])));
-                                                $date2 = date_create(date('Y-m-d', strtotime($track['end_date'])));
-                                                $diff = date_diff($date2, $date1);
+                                                if ($track['closing_at'] != NULL) {
+                                                    $date1 = date_create(date('Y-m-d', strtotime($track['closing_at'])));
+                                                    $date2 = date_create(date('Y-m-d', strtotime($track['end_date'])));
+                                                    $diff = date_diff($date2, $date1);
 
-                                                $datetime1 = strtotime($track['closing_at']);
-                                                $datetime2 = strtotime($track['end_date']);
-                                                $interval  = abs($datetime2 - $datetime1);
-                                                $minutes   = round($interval / 60);
-                                                // echo 'Diff. in minutes is: ' . $minutes . '<br>';
-                                                if ($diff->format("%R%a") == 0) {
-                                                    if ($minutes <= 10 && $minutes > 0) {
+                                                    $datetime1 = strtotime($track['closing_at']);
+                                                    $datetime2 = strtotime($track['end_date']);
+                                                    $interval  = abs($datetime2 - $datetime1);
+                                                    $minutes   = round($interval / 60);
+                                                    // echo 'Diff. in minutes is: ' . $minutes . '<br>';
+                                                    if ($diff->format("%R%a") == 0) {
+                                                        if ($minutes <= 10 && $minutes > 0) {
 
-                                                        // echo $s['nama_user'] . 'Kurang 10 <br>';
-                                                        // nilai A
-                                                        $nilai += 90;
-                                                    } elseif ($minutes > 10) {
-                                                        // nilai B 
-                                                        $nilai += 70;
-                                                    } elseif ($minutes < 0) {
+                                                            // echo $s['nama_user'] . 'Kurang 10 <br>';
+                                                            // nilai A
+                                                            $nilai += 90;
+                                                        } elseif ($minutes > 10) {
+                                                            // nilai B 
+                                                            $nilai += 70;
+                                                        } elseif ($minutes < 0) {
+                                                            $nilai += 50;
+                                                        }
+                                                    } elseif ($diff->format("%R%a") == 1) {
+                                                        // nilai C
                                                         $nilai += 50;
+                                                    } else {
+                                                        $nilai += 30;
+                                                        // Nilai D
                                                     }
-                                                } elseif ($diff->format("%R%a") == 1) {
-                                                    // nilai C
-                                                    $nilai += 50;
                                                 } else {
                                                     $nilai += 30;
                                                     // Nilai D
@@ -215,12 +220,13 @@ function getGrade($nilai)
                                                 $nilai = $nilai / $salesTracker->num_rows();
                                             }
 
+
                                         ?>
                                             <tr>
                                                 <td><?= $no ?></td>
                                                 <td><?= $s['nama_user'] ?></td>
-                                                <td><?= getGrade($nilai)  ?></td>
-                                                <td><a class="btn btn-primary" href="<?= base_url('superadmin/Kpi/detailClosingMeeting/' . $s['id_user'] . '/' . strtotime($awal) . '/' . strtotime($akhir)) ?>">Detail</a></td>
+                                                <td><?= getGrade($nilai) . ' / ' . $nilai  ?></td>
+                                                <td><a class="btn btn-primary" target="_blank" href="<?= base_url('superadmin/Kpi/detailClosingMeeting/' . $s['id_user'] . '/' . strtotime($awal) . '/' . strtotime($akhir)) ?>">Detail</a></td>
 
                                             </tr>
                                         <?php $no++;
@@ -243,16 +249,17 @@ function getGrade($nilai)
                                         <?php $no = 1;
                                         foreach ($sales->result_array() as $s) {
                                             $nilai = 0;
-                                            $this->db->where('id_sales', $s['id_user']);
-                                            $this->db->where('tgl_pickup >=', date('Y-m-d', strtotime($awal)));
-                                            $this->db->where('tgl_pickup <=', date('Y-m-d', strtotime($akhir)));
-                                            $so = $this->db->get('tbl_so');
+                                            $totalSo = 0;
+                                            $totalNilai = 0;
+                                            $so = $this->db->query('SELECT id_so,submitso_at,tgl_pickup FROM tbl_so WHERE id_sales =' . $s['id_user'] . ' AND tgl_pickup >= "' . date('Y-m-d', strtotime($awal)) . '" AND tgl_pickup <= "' . date('Y-m-d', strtotime($akhir)) . '"');
                                             foreach ($so->result_array() as $so1) {
-                                                $this->db->where('id_so', $so1['id_so']);
-                                                $this->db->where('flag', 3);
-                                                $this->db->order_by('id_so', "DESC");
-                                                $this->db->limit(1);
-                                                $trackingResi = $this->db->get('tbl_tracking_real')->row_array();
+
+
+                                                $queryTrackingResi = $this->db->query("SELECT created_at,time FROM tbl_tracking_real WHERE id_so =" . $so1['id_so'] . " AND flag = 4 ORDER BY id_so DESC LIMIT 1 ");
+                                                $trackingResi = $queryTrackingResi->row_array();
+
+
+
 
                                                 if ($so1['submitso_at'] != NULL && $trackingResi != NULL) {
 
@@ -262,7 +269,7 @@ function getGrade($nilai)
                                                     // echo $so1['id_so'] . $diff->format(" %R%a days <br>");
 
                                                     $datetime1 = strtotime($so1['submitso_at']);
-                                                    $datetime2 = strtotime($trackingResi['created_at']);
+                                                    $datetime2 = strtotime($trackingResi['created_at'] . $trackingResi['time']);
                                                     $interval  = abs($datetime2 - $datetime1);
                                                     $minutes   = round($interval / 60);
 
@@ -274,7 +281,7 @@ function getGrade($nilai)
                                                             $nilai += 70;
                                                         }
                                                     } elseif ($diff->format("%R%a") == 1) {
-                                                        if (date('H:i:s', strtotime($trackingResi['created_at'])) >= '21:00:00') {
+                                                        if (date('H:i:s', strtotime($trackingResi['created_at'] . $trackingResi['time'])) >= '21:00:00') {
                                                             $nilai += 70;
                                                         } else {
                                                             $nilai += 50;
@@ -282,11 +289,14 @@ function getGrade($nilai)
                                                     } elseif ($diff->format("%R%a") > 1) {
                                                         $nilai += 30;
                                                     }
-                                                }
+                                                    $totalSo += 1;
+                                                } 
+                                               
+
                                                 // echo $nilai . '<br>';
                                             }
-                                            if ($so->num_rows() != 0) {
-                                                $nilai = $nilai / $so->num_rows();
+                                            if ($totalSo != 0) {
+                                                $totalNilai = $nilai / $totalSo;
                                                 // echo  $so->num_rows();
                                             }
 
@@ -294,8 +304,8 @@ function getGrade($nilai)
                                             <tr>
                                                 <td><?= $no; ?></td>
                                                 <td><?= $s['nama_user'] ?></td>
-                                                <td><?= getGrade($nilai); ?></td>
-                                                <td><a class="btn btn-primary" href="<?= base_url('superadmin/Kpi/detailSo/' . $s['id_user'] . '/' . strtotime($awal) . '/' . strtotime($akhir)) ?>">Detail</a></td>
+                                                <td><?= getGrade($totalNilai) . '/' . $totalNilai.' / '.$totalSo; ?></td>
+                                                <td><a target="_blank" class="btn btn-primary" href="<?= base_url('superadmin/Kpi/detailSo/' . $s['id_user'] . '/' . strtotime($awal) . '/' . strtotime($akhir)) ?>">Detail</a></td>
 
                                             </tr>
                                         <?php $no++;

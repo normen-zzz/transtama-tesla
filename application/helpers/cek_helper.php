@@ -17,6 +17,6 @@ function cek_role()
     // var_dump($cek_data);
     // die;
     if ($role != $id_role) {
-        redirect('backoffice/blocked');
+        redirect('backoffice');
     }
 }

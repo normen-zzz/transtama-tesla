@@ -69,6 +69,15 @@
                                                                 <a href="#" class="btn btn-sm mb-1 text-light" data-toggle="modal" data-target="#modal-lg-decline<?= $j['id'] ?>" style="background-color: #9c223b;">Add New SO</a>
                                                             <?php }
                                                             ?>
+
+                                                            <?php if ($j['status_revisi'] == 4 || $j['status_revisi'] == 5 || $j['status_revisi'] == 6 || $j['status_revisi'] == 8 ) { ?>
+                                                                <a href="#" class="btn btn-sm mb-1 text-light" data-toggle="modal" data-target="#modal-lg-decline<?= $j['id'] ?>" style="background-color: #9c223b;">Add New SO</a>
+                                                            <?php } ?>
+															
+															<?php if ($j['status_revisi'] == 7 ) { ?>
+                                                                <a href="#" class="btn btn-sm mb-1 text-light" data-toggle="modal" data-target="#modal-lg-decline<?= $j['id'] ?>" style="background-color: #9c223b;">Add New SO (After Approve)</a>
+                                                            <?php } ?>
+															
                                                         </td>
 
 
@@ -108,12 +117,12 @@
                     </div>
                     <div class="modal-body">
                         <form action="<?= base_url('sales/salesOrder/addNewSo') ?>" method="POST">
-
+                            <?php $so = $this->db->query("SELECT freight_kg,special_freight,packing,others,surcharge,insurance,disc,cn,specialcn FROM tbl_shp_order WHERE id = " . $shp['id'] . " ")->row_array(); ?>
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="exampleInputEmail1">Freight</label>
-                                        <input type="text" class="form-control" id="exampleInputEmail1" required name="freight_baru">
+                                        <input type="text" class="form-control"  id="exampleInputEmail1" required name="freight_baru" value="<?= $so['freight_kg'] ?>">
                                         <input type="text" class="form-control" id="exampleInputEmail1" name="id" hidden required value="<?= $shp['id'] ?>">
                                         <input type="text" class="form-control" id="exampleInputEmail1" name="id_so" hidden required value="<?= $shp['id_so'] ?>">
                                     </div>
@@ -121,7 +130,7 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="exampleInputEmail1">Special Freight</label>
-                                        <input type="text" class="form-control" id="exampleInputEmail1" required name="special_freight_baru">
+                                        <input type="text" class="form-control" id="exampleInputEmail1" required name="special_freight_baru" value="<?= $so['special_freight'] ?>" >
                                         <!-- <input type="text" class="form-control" id="exampleInputEmail1" hidden required value="<?= $msr['id_msr'] ?>" name="id_msr"> -->
                                     </div>
 
@@ -129,7 +138,7 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="exampleInputEmail1">Packing</label>
-                                        <input type="text" class="form-control" id="exampleInputEmail1" required name="packing_baru">
+                                        <input type="text" class="form-control" id="exampleInputEmail1" required name="packing_baru" value="<?= $so['packing'] ?>">
                                         <!-- <input type="text" class="form-control" id="exampleInputEmail1" hidden required value="<?= $msr['id_msr'] ?>" name="id_msr"> -->
                                     </div>
 
@@ -137,35 +146,35 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="exampleInputEmail1">Others</label>
-                                        <input type="text" class="form-control" id="exampleInputEmail1" required name="others_baru">
+                                        <input type="text" class="form-control" id="exampleInputEmail1" required name="others_baru" value="<?= $so['others'] ?>">
                                     </div>
 
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="exampleInputEmail1">Surcharge</label>
-                                        <input type="text" class="form-control" id="exampleInputEmail1" required name="surcharge_baru">
+                                        <input type="text" class="form-control" id="exampleInputEmail1" required name="surcharge_baru" value="<?= $so['surcharge'] ?>">
                                     </div>
 
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="exampleInputEmail1">Insurance</label>
-                                        <input type="text" class="form-control" id="exampleInputEmail1" required name="insurance_baru">
+                                        <input type="text" class="form-control" id="exampleInputEmail1" required name="insurance_baru" value="<?= $so['insurance'] ?>">
                                     </div>
 
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="exampleInputEmail1">Disc</label>
-                                        <input type="number" class="form-control" id="exampleInputEmail1" required name="disc_baru" placeholder="ex: 2, it measn 2 %">
+                                        <label for="exampleInputEmail1">Disc (%)</label>
+                                        <input type="number" class="form-control" id="exampleInputEmail1" required name="disc_baru" placeholder="ex: 2, it measn 2 %" value="<?= $so['disc'] * 100 ?>">
                                     </div>
 
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="exampleInputEmail1">Cn</label>
-                                        <input type="number" class="form-control" id="exampleInputEmail1" required name="cn_baru" placeholder="ex: 2, it measn 2 %">
+                                        <label for="exampleInputEmail1">Cn (%)</label>
+                                        <input type="number" class="form-control" id="exampleInputEmail1"  required name="cn_baru" placeholder="ex: 2, it measn 2 %" value="<?= $so['cn'] * 100 ?>">
                                     </div>
 
                                 </div>
@@ -173,7 +182,7 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="exampleInputEmail1">Special Cn</label>
-                                        <input type="number" class="form-control" id="exampleInputEmail1" required name="special_cn_baru" placeholder="ex: 10000">
+                                        <input type="number" class="form-control" id="exampleInputEmail1" required name="special_cn_baru" placeholder="ex: 10000" value="<?= $so['specialcn'] ?>">
                                     </div>
 
                                 </div>
@@ -220,7 +229,7 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="exampleInputEmail1">Freight</label>
-                                        <input type="text" class="form-control" id="exampleInputEmail1" required name="freight_baru">
+                                        <input type="text" class="form-control" id="exampleInputEmail1" value="<?= $shp['freight_kg'] ?>" required name="freight_baru">
                                         <input type="text" class="form-control" id="exampleInputEmail1" name="id" hidden required value="<?= $shp['id'] ?>">
                                         <input type="text" class="form-control" id="exampleInputEmail1" name="id_so" hidden required value="<?= $shp['id_so'] ?>">
                                     </div>
@@ -228,7 +237,7 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="exampleInputEmail1">Special Freight</label>
-                                        <input type="text" class="form-control" id="exampleInputEmail1" required name="special_freight_baru">
+                                        <input type="text" class="form-control" id="exampleInputEmail1" value="<?= $shp['special_freight'] ?>" required name="special_freight_baru">
                                         <!-- <input type="text" class="form-control" id="exampleInputEmail1" hidden required value="<?= $msr['id_msr'] ?>" name="id_msr"> -->
                                     </div>
 
@@ -236,7 +245,7 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="exampleInputEmail1">Packing</label>
-                                        <input type="text" class="form-control" id="exampleInputEmail1" required name="packing_baru">
+                                        <input type="text" class="form-control" id="exampleInputEmail1" value="<?= $shp['packing'] ?>" required name="packing_baru">
                                         <!-- <input type="text" class="form-control" id="exampleInputEmail1" hidden required value="<?= $msr['id_msr'] ?>" name="id_msr"> -->
                                     </div>
 
@@ -244,35 +253,42 @@
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="exampleInputEmail1">Others</label>
-                                        <input type="text" class="form-control" id="exampleInputEmail1" required name="others_baru">
+                                        <input type="text" class="form-control" id="exampleInputEmail1" value="<?= $shp['others'] ?>" required name="others_baru">
                                     </div>
 
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="exampleInputEmail1">Surcharge</label>
-                                        <input type="text" class="form-control" id="exampleInputEmail1" required name="surcharge_baru">
+                                        <input type="text" class="form-control" id="exampleInputEmail1" required value="<?= $shp['surcharge'] ?>" name="surcharge_baru">
                                     </div>
 
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="exampleInputEmail1">Insurance</label>
-                                        <input type="text" class="form-control" id="exampleInputEmail1" required name="insurance_baru">
+                                        <input type="text" class="form-control" id="exampleInputEmail1" value="<?= $shp['insurance'] ?>" required name="insurance_baru">
                                     </div>
 
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="exampleInputEmail1">Disc</label>
-                                        <input type="number" class="form-control" id="exampleInputEmail1" required name="disc_baru" placeholder="ex: 2, it measn 2 %">
+                                        <input type="number" class="form-control" id="exampleInputEmail1" value="<?= $shp['disc'] ?>" required name="disc_baru" placeholder="ex: 2, it measn 2 %">
                                     </div>
 
                                 </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="exampleInputEmail1">Cn</label>
-                                        <input type="number" class="form-control" id="exampleInputEmail1" required name="cn_baru" placeholder="ex: 2, it measn 2 %">
+                                        <input type="number" class="form-control" id="exampleInputEmail1" value="<?= $shp['cn'] * 100 ?>" required name="cn_baru" placeholder="ex: 2, it measn 2 %">
+                                    </div>
+
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="exampleInputEmail1">Special Cn</label>
+                                        <input type="number" class="form-control" id="exampleInputEmail1" value="<?= $shp['specialcn'] ?>" required name="special_cn_baru" placeholder="ex: 10000" value="<?= $so['specialcn'] ?>">
                                     </div>
 
                                 </div>

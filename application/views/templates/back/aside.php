@@ -107,13 +107,13 @@
 								</span></i>Tracking</span>
 						</a>
 					</li>
-					<li class="menu-item menu-item" aria-haspopup="true">
+					<!-- <li class="menu-item menu-item" aria-haspopup="true">
 						<a href="<?= base_url('superadmin/order/generate') ?>" class="menu-link">
 							<span class="menu-text"><span class="svg-icon svg-icon-danger svg-icon mr-2">
 									<i class="fa fa-cog text-danger mr-2">
 								</span></i>Generate Resi</span>
 						</a>
-					</li>
+					</li> -->
 
 
 
@@ -156,13 +156,13 @@
 								</span></i>Sales</span>
 						</a>
 					</li>
-					<li class="menu-item menu-item" aria-haspopup="true">
+					<!-- <li class="menu-item menu-item" aria-haspopup="true">
 						<a href="<?= base_url('superadmin/order/generate') ?>" class="menu-link">
 							<span class="menu-text"><span class="svg-icon svg-icon-danger svg-icon mr-2">
 									<i class="fa fa-cog text-danger mr-2">
 								</span></i>Generate Resi</span>
 						</a>
-					</li>
+					</li> -->
 
 
 
@@ -176,6 +176,15 @@
 						<i class="far fa-map text-danger mr-2" aria-hidden="true">
 
 					</span></i>Sales Tracker</span>
+			</a>
+		</li>
+		<li class="menu-item menu-item" aria-haspopup="true">
+			<a href="<?= base_url('Drive') ?>" class="menu-link">
+				<span class="menu-text"><span class="svg-icon svg-icon-danger svg-icon mr-2">
+
+						<i class="fas fa-sd-card text-danger mr-2" aria-hidden="true">
+
+					</span></i>Drive</span>
 			</a>
 		</li>
 		<li class="menu-item menu-item" aria-haspopup="true">
@@ -227,22 +236,45 @@
 						</span></i>Sales Order</span>
 				</a>
 			</li>
-			<li class="menu-item menu-item" aria-haspopup="true">
-				<a href="<?= base_url('shipper/scan') ?>" class="menu-link">
-					<span class="menu-text"><span class="svg-icon svg-icon-danger svg-icon mr-2">
-							<i class="fa fa-eye text-danger mr-2">
-						</span></i>Scan In/Out</span>
+		
+			<li class="menu-item menu-item-submenu menu-item-rel" data-menu-toggle="click" aria-haspopup="true">
+				<a href="javascript:;" class="menu-link menu-toggle">
+					<span class="menu-text">
+						<span class="menu-text"> <i class="fa fa-eye mr-2 text-danger"></i>OUTBOND</span>
+						<!--end::Svg Icon-->
+						<span class="menu-desc"></span>
+						<i class="menu-arrow"></i>
+
 				</a>
+				<div class="menu-submenu menu-submenu-classic menu-submenu-left">
+					<ul class="menu-subnav">
+						<li class="menu-item" aria-haspopup="true">
+							<a href="<?= base_url('Shipper/Outbond') ?>" class="menu-link">
+								<span class="menu-text"><i class="fa fa-book text-danger mr-2"></i>SCAN IN</span>
+							</a>
+						</li>
+						<li class="menu-item" aria-haspopup="true">
+							<a href="<?= base_url('Shipper/Outbond/bagging') ?>" class="menu-link">
+								<span class="menu-text"><i class="fa fa-car-side text-danger mr-2"></i>SCAN OUT</span>
+							</a>
+						</li>
+
+
+
+
+
+					</ul>
+				</div>
 			</li>
-			<li class="menu-item menu-item" aria-haspopup="true">
+			<!-- <li class="menu-item menu-item" aria-haspopup="true">
 				<a href="<?= base_url('shipper/Order/generateResi') ?>" class="menu-link">
 					<span class="menu-text"><span class="svg-icon svg-icon-danger svg-icon mr-2">
 							<i class="fa fa-book text-danger mr-2">
 						</span></i>Generate Resi</span>
 				</a>
-			</li>
+			</li> -->
 
-			
+
 
 		<?php	} else {
 		?>
@@ -345,6 +377,13 @@
 								</span></i>Tracking</span>
 						</a>
 					</li>
+					<li class="menu-item menu-item" aria-haspopup="true">
+						<a href="<?= base_url('cs/Milestone') ?>" class="menu-link">
+							<span class="menu-text"><span class="svg-icon svg-icon-danger svg-icon mr-2">
+									<i class="fa fa-truck text-danger mr-2">
+								</span></i>Milestone</span>
+						</a>
+					</li>
 					<li class="menu-item" aria-haspopup="true">
 						<a href="<?= base_url('cs/order/report') ?>" class="menu-link">
 							<span class="menu-text">
@@ -388,13 +427,15 @@
 			</a>
 		</li>
 
-		<!-- <li class="menu-item menu-item" aria-haspopup="true">
+		<li class="menu-item menu-item" aria-haspopup="true">
 			<a href="<?= base_url('cs/RequestPrice') ?>" class="menu-link">
 				<span class="menu-text"><span class="svg-icon svg-icon-danger svg-icon mr-2">
-						<i class="fa fa-dollar-sign text-danger mr-2">
+
+						<i class="far fa-map text-danger mr-2" aria-hidden="true">
+
 					</span></i>Request Price</span>
 			</a>
-		</li> -->
+		</li>
 
 
 		<li class="menu-item menu-item-submenu menu-item-rel" data-menu-toggle="click" aria-haspopup="true">
@@ -432,6 +473,15 @@
 
 				</ul>
 			</div>
+		</li>
+		<li class="menu-item menu-item" aria-haspopup="true">
+			<a href="<?= base_url('Drive') ?>" class="menu-link">
+				<span class="menu-text"><span class="svg-icon svg-icon-danger svg-icon mr-2">
+
+						<i class="fas fa-sd-card text-danger mr-2" aria-hidden="true">
+
+					</span></i>Drive</span>
+			</a>
 		</li>
 
 		<li class="menu-item menu-item" aria-haspopup="true">
@@ -508,13 +558,13 @@
 			</a>
 		</li>
 
-		<li class="menu-item menu-item" aria-haspopup="true">
+		<!-- <li class="menu-item menu-item" aria-haspopup="true">
 			<a href="<?= base_url('sales/SalesOrder/generateResi') ?>" class="menu-link">
 				<span class="menu-text"><span class="svg-icon svg-icon-danger svg-icon mr-2">
 						<i class="fa fa-book text-danger mr-2">
 					</span></i>Generate Resi</span>
 			</a>
-		</li>
+		</li> -->
 		<li class="menu-item menu-item" aria-haspopup="true">
 			<a href="<?= base_url('sales/salesOrder/report') ?>" class="menu-link">
 				<span class="menu-text"><span class="svg-icon svg-icon-danger svg-icon mr-2">
@@ -529,6 +579,16 @@
 				<span class="menu-text"><span class="svg-icon svg-icon-danger svg-icon mr-2">
 						<i class="fa fa-dollar-sign text-danger mr-2">
 					</span></i>Account Payable</span>
+			</a>
+		</li>
+		
+		<li class="menu-item menu-item" aria-haspopup="true">
+			<a href="<?= base_url('Drive') ?>" class="menu-link">
+				<span class="menu-text"><span class="svg-icon svg-icon-danger svg-icon mr-2">
+
+						<i class="fas fa-sd-card text-danger mr-2" aria-hidden="true">
+
+					</span></i>Drive</span>
 			</a>
 		</li>
 
@@ -560,6 +620,15 @@
 						<i class="far fa-map text-danger mr-2" aria-hidden="true">
 
 					</span></i>Sales Tracker</span>
+			</a>
+		</li>
+		<li class="menu-item menu-item" aria-haspopup="true">
+			<a href="<?= base_url('Drive') ?>" class="menu-link">
+				<span class="menu-text"><span class="svg-icon svg-icon-danger svg-icon mr-2">
+
+						<i class="fas fa-sd-card text-danger mr-2" aria-hidden="true">
+
+					</span></i>Drive</span>
 			</a>
 		</li>
 		<li class="menu-item menu-item" aria-haspopup="true">

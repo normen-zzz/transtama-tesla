@@ -262,7 +262,7 @@ class Order extends CI_Controller
 
     function view_data_query()
     {
-        $query  = "SELECT a.*, b.nama_user FROM tbl_shp_order a JOIN tb_user b ON a.id_user=b.id_user";
+        $query  = "SELECT a.id,a.tgl_pickup,a.shipper,a.consigne,a.shipment_id,a.created_at,a.id_so, b.nama_user FROM tbl_shp_order a JOIN tb_user b ON a.id_user=b.id_user";
         $search = array('nama_user', 'shipment_id', 'order_id', 'shipper', 'consigne');
         $where  = null;
         // jika memakai IS NULL pada where sql
@@ -271,7 +271,6 @@ class Order extends CI_Controller
         header('Content-Type: application/json');
         echo $this->M_Datatables->get_tables_query($query, $search, $where, $isWhere);
     }
-
 
     public function report()
     {
@@ -304,22 +303,38 @@ class Order extends CI_Controller
         $this->dompdf->stream("Print_Order" . $start . '-' . $end . ".pdf", array('Attachment' => 0));
     }
    
-	 public function tracking($shipment_id = Null)
+	public function tracking($shipment_id = Null)
     {
-         if ($shipment_id == NULL) {
+
+        if ($shipment_id == NULL) {
             $shipment_id = $this->input->post('shipment_id');
-            $data['shipment_id'] = $shipment_id;
+            if ($shipment_id != null) {
+                $data['tracking'] = $this->db->get_where('tbl_tracking_real', ['shipment_id' => $shipment_id])->result_array();
+                $data['shipment'] = $this->db->query("SELECT id_user,shipper,tree_shipper,consigne,tree_consignee FROM tbl_shp_order WHERE shipment_id = $shipment_id ")->row_array();
+            } else{
+
+                $data['tracking'] = null;
+                $data['shipment'] = null;
+            }
+        } else{
             $data['tracking'] = $this->db->get_where('tbl_tracking_real', ['shipment_id' => $shipment_id])->result_array();
-            $data['shipment'] = $this->db->get_where('tbl_shp_order', ['shipment_id' => $shipment_id])->row_array();
-            $data['title'] = 'Sales Order';
-            $this->backend->display('superadmin/v_tracking', $data);
-        } else {
-            $data['shipment_id'] = $shipment_id;
-            $data['tracking'] = $this->db->get_where('tbl_tracking_real', ['shipment_id' => $shipment_id])->result_array();
-            $data['shipment'] = $this->db->get_where('tbl_shp_order', ['shipment_id' => $shipment_id])->row_array();
-            $data['title'] = 'Sales Order';
-            $this->backend->display('superadmin/v_tracking', $data);
+            $data['shipment'] = $this->db->query("SELECT id_user,shipper,tree_shipper,consigne,tree_consignee FROM tbl_shp_order WHERE shipment_id = $shipment_id ")->row_array();
         }
+        $data['shipment_id'] = $shipment_id;
+
+        $data['title'] = 'Sales Order';
+        $this->backend->display('superadmin/v_tracking', $data);
+    }
+    public function getModalTracking()
+    {
+        $id_tracking = $this->input->get('id_tracking'); // Mengambil ID dari parameter GET
+
+
+        $data1 = $this->db->get_where('tbl_tracking_real', ['id_tracking' => $id_tracking])->row();
+
+
+        // Kirim data sebagai respons JSON
+        echo json_encode($data1);
     }
     public function updateShipmentTracking()
     {

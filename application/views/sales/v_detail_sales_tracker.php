@@ -63,15 +63,19 @@
                             </div>
 
                             <?php if ($dataSalesTracker['end_date'] != NULL) { ?>
+							
+							<div class="form-group">
+                                    <label for="exampleInputPassword1">Gps</label>
+                                    <a target="_blank" href="https://maps.google.com?q=<?= $dataSalesTracker['geo_location'] ?>" class="link-info">maps</a>
+                                </div>
+								
+							
                                 <div class="form-group">
                                     <label for="exampleInputPassword1">Summary</label>
                                     <input type="text" value="<?= $dataSalesTracker['summary'] ?>" placeholder="Cth: Kevin" class="form-control" name="summary">
                                 </div>
 
-                                <div class="form-group">
-                                    <label for="exampleInputPassword1">Gps</label>
-                                    <a href="https://maps.google.com?q=<?= $dataSalesTracker['geo_location'] ?>" class="link-info">maps</a>
-                                </div>
+                                
 
                                 <div class="form-group">
                                     <label for="exampleInputPassword1">Image</label>

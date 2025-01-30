@@ -19,6 +19,15 @@
 								<i class="fas fa-chevron-circle-left text-light"> </i>
 								Back
 							</a>
+							<a onclick="return confirm('Are you sure Void this ap ?');" href="<?= base_url('shipper/Ap/voidAp/'.$info['no_pengeluaran']) ?>" class="btn mr-2 text-light" style="background-color: #9c223b;">
+								<i class="fas fa-minus-circle text-light"></i>
+								Void
+							</a>
+
+							<a onclick="return confirm('Are you sure return this ap ?');" href="<?= base_url('shipper/Ap/takeBackAp/'.$info['no_pengeluaran']) ?>" class="btn mr-2 text-light" style="background-color: #9c223b;">
+								
+							Return
+							</a>
 						</div>
 					</div>
 					<!-- /.card-header -->
@@ -168,9 +177,13 @@
 															<input type='text' class='form-control txtedit' data-id="<?= $c['id_pengeluaran'] ?>" data-url='<?= base_url() ?>/shipper/ap/editApSatuanAjax' data-field='description' id='descriptiontxt_<?= $c['id_pengeluaran'] ?>' value='<?= $c['description'] ?>'>
 														</td>
 
-														<td <?php $approve = $this->db->get_where('tbl_approve_pengeluaran', array('no_pengeluaran' => $c['no_pengeluaran']));
-															if ($approve->num_rows() == 0) { ?> class='edit' <?php } ?>><span>Rp. <?= $c['amount_proposed'] ?></span>
-															<input type='number' name="jumlah" class='form-control txtedit' data-id="<?= $c['id_pengeluaran'] ?>" data-url='<?= base_url() ?>/shipper/ap/editApSatuanAjax' data-field='amount_proposed' id='amount_proposedtxt_<?= $c['amount_proposed'] ?>' value='<?= $c['amount_proposed'] ?>'>
+														
+
+														<td><span <?php $approve = $this->db->get_where('tbl_approve_pengeluaran', array('no_pengeluaran' => $c['no_pengeluaran']));
+																	if ($approve->num_rows() == 0) { ?> class='edit' <?php } else {
+																														if ($this->session->userdata('id_atasan') == NULL && $info['status'] < 3) { ?> class='edit' <?php }
+																																																			} ?>>Rp. <?= $c['amount_proposed'] ?></span>
+															<input type='number' name="jumlah" class='form-control txtedit' data-id="<?= $c['id_pengeluaran'] ?>" data-field='amount_proposed' data-url='<?= base_url() ?>/shipper/ap/editApSatuanAjax' id='amount_proposedtxt_<?= $c['amount_proposed'] ?>' value='<?= $c['amount_proposed'] ?>'>
 														</td>
 
 														<td>
@@ -192,7 +205,7 @@
 																<!--<p class="text-danger">***Choose file jika ingin mengubah foto dan klik submit***</p>-->
 																<!-- <a data-toggle="modal" data-target="#modal-edit<?= $c['id_pengeluaran'] ?>" class=" btn btn-sm text-light mt-1" style="background-color: #9c223b;"> <i class="fa fa-edit text-light"></i> Edit</a> -->
 
-																<form action="<?= base_url('cs/ap/edit') ?>" method="POST" enctype="multipart/form-data">
+																<form action="<?= base_url('shipper/ap/edit') ?>" method="POST" enctype="multipart/form-data">
 																	<input type="text" name="id_pengeluaran" value="<?= $c['id_pengeluaran'] ?>" hidden>
 																	<input type="text" name="no_pengeluaran" value="<?= $c['no_pengeluaran'] ?>" hidden>
 																	<input type="file" class="form-control-file" id="attachmentedit<?= $c['id_pengeluaran'] ?>" data-idpengeluaran="<?= $c['id_pengeluaran'] ?>" name="attachment" onchange="handleImageUploadTracker(this.id);" accept="image/*" capture>
