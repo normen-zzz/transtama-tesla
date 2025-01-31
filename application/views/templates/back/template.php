@@ -543,11 +543,7 @@
 
 
 
-	<script type="text/javascript">
-		$('select').select2({
-			allowClear: true,
-		});
-	</script>
+	
 
 	<script type="text/javascript">
 		function confirm_delete() {

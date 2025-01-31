@@ -17,6 +17,11 @@ function cek_role()
     // var_dump($cek_data);
     // die;
     if ($role != $id_role) {
-        redirect('backoffice');
+        if ($role == 8 && $id_role == 4) {
+            # code...
+        } else{
+            redirect('backoffice');
+        }
+       
     }
 }

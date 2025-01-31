@@ -34,6 +34,8 @@ class SalesOrder extends CI_Controller
     {
         $id_atasan = $this->session->userdata('id_atasan');
         // kalo dia atasan sales
+        $data['shipperPtp'] = $this->db->get('customer_ptp');
+        $data['destination'] = $this->db->get('city_ptp');
         if ($id_atasan == 0 || $id_atasan == NULL) {
             $this->db->select('a.*,b.nama_user');
             $this->db->from('tbl_so a');
@@ -1032,7 +1034,7 @@ class SalesOrder extends CI_Controller
         // no bu sri
         $this->wa->pickup('+6285697780467', "$pesan");
         $this->wa->pickup('+62818679758', "$pesan");
-        
+
 
         $this->session->set_flashdata('message', '<div class="alert
         alert-success" role="alert">Success Approve</div>');
@@ -1100,10 +1102,10 @@ class SalesOrder extends CI_Controller
         $data['moda'] = $this->db->get('tbl_moda')->result_array();
         $data['packing'] = $this->db->get('tbl_packing')->result_array();
         $data['p'] = $this->db->get_where('tbl_so', ['id_so' => $id])->row_array();
-        $dataDo = $this->db->get_where('do_requestpickup',['id_so' => $id]);
+        $dataDo = $this->db->get_where('do_requestpickup', ['id_so' => $id]);
         if ($dataDo) {
             $data['do'] = $dataDo;
-        } else{
+        } else {
             $data['do'] = NULL;
         }
         $this->backend->display('sales/v_edit_order', $data);
@@ -1958,4 +1960,104 @@ class SalesOrder extends CI_Controller
     //     $writer->save('php://output');
     //     exit;
     // }
+
+    // getAlamatShipperPtp
+    public function getAlamatShipperPtp()
+    {
+        $id = $this->input->post('id');
+        $data = $this->db->get_where('customer_ptp', ['id_customer_ptp' => $id])->row_array();
+        echo json_encode($data);
+    }
+
+    public function addPtpRequest()
+    {
+
+        $shipper = $this->db->get_where('customer_ptp', ['id_customer_ptp' => $this->input->post('shipper')])->row_array();
+        $destination = $this->db->get_where('city_ptp', ['id_city_ptp' => $this->input->post('destination')])->row_array();
+
+        $id_atasan = $this->db->get_where('tb_user', ['id_user' => $this->session->userdata('id_user')])->row_array();
+        $data = array(
+            'tgl_pickup' => date('Y-m-d', strtotime($this->input->post('tgl_pickup'))),
+            'shipper' => strtoupper($shipper['nama_customer']),
+            'pu_moda' => 'Granmax',
+            'pu_poin' => strtoupper('BANDARA CGK'),
+            'destination' => strtoupper($destination['name']),
+            'time' => date('H:i:s', strtotime($this->input->post('tgl_pickup'))),
+            'koli' => $this->input->post('koli'),
+            'kg' => $this->input->post('kg'),
+            'type' => 0,
+            'commodity' => $this->input->post('commodity'),
+            'service' => 'Port to Port Service',
+            'note' => $this->input->post('note'),
+            'shipper_address' => $shipper['address'] . ' ' . $shipper['city'] . ' ' . $shipper['state'],
+            'consigne' => $this->input->post('consignee'),
+            'consigne_address' => $this->input->post('address_consignee'),
+            'payment' => 'CREDIT',
+            'packing' => 'NULL',
+            'is_incoming' => 0,
+            'id_sales' => $this->session->userdata('id_user'),
+            'id_atasan_sales' => $id_atasan['id_atasan'],
+            'is_ptp' => 1,
+        );
+        $id_atasan = $this->session->userdata('id_atasan');
+        // kalo dia atasan
+        if ($id_atasan == 0 || $id_atasan == NULL) {
+            $data_approve = array(
+                'status_approve' => 1,
+            );
+            $data = array_merge($data, $data_approve);
+        } else {
+            $data_approve = array(
+                'status_approve' => 0,
+            );
+            $data = array_merge($data, $data_approve);
+        }
+        // var_dump($data);
+        // die;
+
+        $insert =  $this->db->insert('tbl_so', $data);
+        $id_so = $this->db->insert_id();
+        // var_dump($insert);
+        // die;
+        if ($insert) {
+            $doReqPickup = $this->input->post('doReqPickup');
+            if (sizeof($doReqPickup) != 0) {
+                for ($i = 0; $i < sizeof($doReqPickup); $i++) {
+
+                    $dataDo = [
+                        'do' => $doReqPickup[$i],
+                        'id_so' => $id_so,
+                    ];
+                    $this->db->insert('do_requestpickup', $dataDo);
+                }
+            }
+
+
+            $sales = $this->session->userdata('nama_user');
+
+
+
+            $pesanDestination = "dengan tujuan *" . strtoupper($destination['name']) . "*";
+
+
+            $pesanPickUp = "dan pick up di *BANDARA CGK*";
+            $pesan = "Hallo Cs dan Ops, ada pickup dari *" . $shipper['nama_customer'] . "* $pesanDestination $pesanPickUp *PORT TO PORT SERVICE* tanggal *" . date('Y-m-d', strtotime($this->input->post('tgl_pickup'))) . "* jam *" . date('H:i:s', strtotime($this->input->post('tgl_pickup'))) . "* dengan jenis barang " . $this->input->post('commodity') . ". Catatan : " . $this->input->post('note') . ". *Sales : $sales*";
+            // kirim wa
+            $this->wa->pickup('+6285697780467', "$pesan"); //Nomor Norman IT
+            // $this->wa->pickup('+6281293753199', "$pesan"); //Nomor Bu Lili CS
+            // $this->wa->pickup('+6285894438583', "$pesan"); //Mba Yunita  CS
+            // $this->wa->pickup('+6281212603705', "$pesan"); //Mas Ali OPS
+            // $this->wa->pickup('+6281398433940', "$pesan"); //Sarwan OPS
+
+
+
+            $this->session->set_flashdata('message', '<div class="alert
+                    alert-success" role="alert">Success</div>');
+            redirect('sales/salesOrder');
+        } else {
+            $this->session->set_flashdata('message', '<div class="alert
+                    alert-danger" role="alert">Failed</div>');
+            redirect('sales/salesOrder/add');
+        }
+    }
 }
