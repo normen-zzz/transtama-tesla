@@ -48,7 +48,7 @@
 										<?php foreach ($bagging->result_array() as $bagging1) { ?>
 
 											<tr>
-												<td><?= $bagging1['id_bagging'] ?></td>
+												<td><?= $bagging1['id_bagging'] ?> <br> SMU: <b><?= $bagging1['smu'] ?></b></td>
 												<td><?= date('d-m-Y H:i:s', strtotime($bagging1['created_at'])) ?></td>
 												<td><?= getNamaUser($bagging1['created_by']) ?></td>
 												<td><?= getStatusBaggingOutbond($bagging1['id_bagging']) ?></td>

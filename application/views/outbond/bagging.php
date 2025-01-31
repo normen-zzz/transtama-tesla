@@ -52,7 +52,7 @@
                                     <!-- <div class="flash-data" data-flashdata="<?= $this->session->flashdata('message'); ?>"></div> -->
                                     <p><?= $this->session->flashdata('message'); ?></p>
                                     <thead>
-                                        <tr>
+                                        <tr> 
                                             <th>No Bagging</th>
                                             <th>Created At</th>
                                             <th>Created By</th>
@@ -64,7 +64,7 @@
                                         <?php foreach ($bagging->result_array() as $bagging1) { ?>
 
                                             <tr>
-                                                <td><?= $bagging1['id_bagging'] ?></td>
+                                                <td><?= $bagging1['id_bagging'] ?> <br> <?= $bagging1['no_smu'] ?></td>
                                                 <td><?= date('d-m-Y H:i:s', strtotime($bagging1['created_at'])) ?></td>
                                                 <td><?= getNamaUser($bagging1['created_by']) ?></td>
                                                 <td><?= getStatusBaggingOutbond($bagging1['id_bagging']) ?></td>

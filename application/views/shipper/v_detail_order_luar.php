@@ -43,7 +43,7 @@
 											<td><b>:<?= $p['koli'] ?></b> </td>
 										</tr>
 										<tr>
-											<td>Wight</td>
+											<td>Weight</td>
 											<td><b>:<?= $p['kg'] ?></b> Kg</td>
 											<td>Commodity</td>
 											<td><b>:<?= $p['commodity'] ?></b> </td>
@@ -64,435 +64,404 @@
 									</table>
 								</div>
 								<!-- KALO BUKAN INCOMING -->
-								<?php if ($p['is_incoming'] == 0) {
-									// var_dump($p['is_incoming']);
-									// die;
-									if ($p['service'] == 'Same Day Service') {
-								?>
-										<div class="col-md-4">
-											<!-- kalo sales ordernya sudah di pickup -->
-											<?php if ($p['status'] == 2) {
-											?>
-												<h4 class="title">Order Finished</h4>
-												<!-- kalo sales order nya belum di pickup -->
-											<?php } elseif ($p['status'] == 0) {
-											?>
-												<a href="#" class="btn font-weight-bolder text-light mb-4" data-toggle="modal" data-target="#modal-lg" style="background-color: #9c223b;">
-													<span class="svg-icon svg-icon-md">
-														<i class="fa fa-user text-light"></i>
-														<!--end::Svg Icon-->
-													</span>Asign Driver PU</a>
-												<div class="flash-data" data-flashdata="<?= $this->session->flashdata('message'); ?>"></div>
-												
-
-												
-												<div class="d-flex align-items-center mb-10">
-													<?php if ($p['pickup_by'] == null) {
-													?>
-														<h4 class="title">No driver selected</h4>
-													<?php	} else {
-													?>
-														<!--begin::Symbol-->
-														<div class="symbol symbol-40 symbol-light-success mr-5">
-															<span class="symbol-label">
-																<img src="<?= base_url('assets/back/metronic/') ?>media/avatars/009-boy-4.svg" class="h-75 align-self-end" alt="">
-															</span>
-														</div>
-														<!--end::Symbol-->
-														<!--begin::Text-->
-														
-														<div class="d-flex flex-column flex-grow-1 font-weight-bold">
-															<a href="#" class="text-dark text-hover-primary mb-1 font-size-lg"><?= getNamaUser($p['pickup_by']) ?></a>
-															<span class="text-muted">Driver</span>
-														</div>
-														<!--end::Text-->
-													<?php	} ?>
-
-												</div>
-
-
-											<?php } elseif ($p['status'] == 5) {
-												echo "<h4 class='title'>Order Canceled</h4> <br> <p>Reason : $p[alasan_cancel]</p> ";
-											} else {
-											?>
-												<h4 class="title">Order Finished</h4>
-											<?php	} ?>
-										</div>
-										<!-- selain one night service -->
-									<?php	} else {
-									?>
-										<div class="col-md-4">
-											<!-- kalo sales ordernya sudah di pickup -->
-											<?php if ($p['status'] == 2) {
-											?>
-												<h4 class="title">Order Finished</h4>
-												<!-- kalo sales order nya belum di pickup -->
-											<?php } elseif ($p['status'] == 0) {
-											?>
-												<a href="#" class="btn font-weight-bolder text-light mb-4" data-toggle="modal" data-target="#modal-lg" style="background-color: #9c223b;">
-													<span class="svg-icon svg-icon-md">
-														<i class="fa fa-user text-light"></i>
-														<!--end::Svg Icon-->
-													</span>Asign Driver PU</a>
-												<div class="flash-data" data-flashdata="<?= $this->session->flashdata('message'); ?>"></div>
-												<?php $tracking = $this->db->order_by('id_tracking', 'asc')->get_where('tbl_tracking_real', ['id_so' => $p['id_so']])->row_array();
-
-												?>
-												<div class="d-flex align-items-center mb-10">
-													<?php if ($p['pickup_by'] == null) {
-													?>
-														<h4 class="title">No driver selected</h4>
-													<?php	} else {
-													?>
-														<!--begin::Symbol-->
-														<div class="symbol symbol-40 symbol-light-success mr-5">
-															<span class="symbol-label">
-																<img src="<?= base_url('assets/back/metronic/') ?>media/avatars/009-boy-4.svg" class="h-75 align-self-end" alt="">
-															</span>
-														</div>
-														<!--end::Symbol-->
-														<!--begin::Text-->
-													
-														<div class="d-flex flex-column flex-grow-1 font-weight-bold">
-															<a href="#" class="text-dark text-hover-primary mb-1 font-size-lg"><?= getNamaUser($p['pickup_by'])  ?></a>
-															<span class="text-muted">Driver</span>
-														</div>
-														<!--end::Text-->
-													<?php	} ?>
-
-												</div>
-											<?php } elseif ($p['status'] == 5) {
-												echo "<h4 class='title'>Order Canceled</h4> <br> <p>Reason : $p[alasan_cancel]</p> ";
-											} else {
-											?>
-												<h4 class="title">Order Finished</h4>
-											<?php	} ?>
-										</div>
-
-
-									<?php	}
-									?>
-
-									<!-- KALO INCOMING -->
-								<?php	} else {
-								?>
-
+								<?php if ($p['is_ptp'] == 1) { ?>
 									<div class="col-md-4">
-										<h4 class="title">Incoming Order</h4>
-									</div>
 
-								<?php } ?>
+										<a href="<?= base_url('shipper/SalesOrder/createResiPtp/'.$p['id_so']) ?>" class="btn font-weight-bolder text-light mb-4" style="background-color: #9c223b;">Create Resi PTP</a>
 
-
-
-							</div>
-							<!-- /.card-body -->
-
-							<div class="card-body" style="overflow: auto;">
-								<table id="myTable" class="table table-bordered">
-									<h3 class="title font-weight-bold">List Shipment</h3>
-									<div class="col-md-12 mt-4">
-										<a href="<?= base_url('shipper/order/printAll/' . $p['id_so']) ?>" target="blank" class="btn mr-2 text-light" style="background-color: #9c223b;">
-											<i class="fas fa-print text-light"> </i>
-											Print All
-										</a>
-										<a href="<?= base_url('shipper/salesOrder/completeTtd/' . $p['id_so']) ?>" class="btn mr-2 text-light mt-1" style="background-color: #9c223b;">
-											<i class="fas fa-print text-light"> </i>
-											Complete TTD & POP
-										</a>
-
-									</div>
-									<p><?= $this->session->flashdata('message'); ?></p>
-									<thead>
-										<tr>
-											<th style="width: 10%;">Shipment ID</th>
-											<th style="width: 15%;">Shipper</th>
-											<th>Destination</th>
-											<th style="width: 15%;">Consignee</th>
-											<!-- <th style="width: 20%;">Image</th> -->
-											<!-- <th>Signature</th> -->
-											<th>Last Status</th>
-											<th style="width: 15%;">Driver</th>
-											<th>Action</th>
-										</tr>
-									</thead>
-									<tbody>
-										<?php foreach ($shipment2 as $shp) {
-											$dimensionSebelum = $this->db->get_where('tbl_dimension',array('shipment_id' => $shp['shipment_id']))->row_array();
-											$get_last_status = $this->db->limit(1)->order_by('id_tracking', 'desc')->get_where('tbl_tracking_real', ['shipment_id' => $shp['shipment_id']])->row_array();
-											// var_dump($get_last_status);
+									<?php  } else { ?>
+										<?php if ($p['is_incoming'] == 0) {
+											// var_dump($p['is_incoming']);
 											// die;
+											if ($p['service'] == 'Same Day Service') {
 										?>
-											<tr>
-												<td><a href="<?= base_url('shipper/order/print/' . $shp['shipment_id']) ?>"> <?= $shp['shipment_id'] ?></a><br>
-													<?= $shp['service_name'] ?> </td>
-												<td><?= $shp['shipper'] ?><br> <?= $shp['tree_shipper'] ?>-<?= $shp['tree_consignee'] ?>/<?= $shp['koli'] ?>C</td>
-												<td><?= $shp['destination'] ?>, <?= $shp['city_consigne'] ?> <?= $shp['state_consigne'] ?></td>
-												<td><?= $shp['consigne'] ?></td>
-												<td style="color: green;"><?= $get_last_status['status'] ?> <?= $get_last_status['note'] ?>. <?= longdate_indo($get_last_status['created_at']), ' ' . $get_last_status['time'] ?>
-													<br>
-													<?php if ($get_last_status['flag'] == 11 || $get_last_status['flag'] == 5 || $get_last_status['flag'] == 8) {
+												<div class="col-md-4">
+													<!-- kalo sales ordernya sudah di pickup -->
+													<?php if ($p['status'] == 2) {
 													?>
-														<button class="btn font-weight-bolder text-light modalPod" data-toggle="modal"  data-target="#modal-pod" data-shipment_id="<?= $shp['shipment_id'] ?>" style="background-color: #9c223b;">
+														<h4 class="title">Order Finished</h4>
+														<!-- kalo sales order nya belum di pickup -->
+													<?php } elseif ($p['status'] == 0) {
+													?>
+														<a href="#" class="btn font-weight-bolder text-light mb-4" data-toggle="modal" data-target="#modal-lg" style="background-color: #9c223b;">
 															<span class="svg-icon svg-icon-md">
-															</span>View POD</button>
-													<?php	} ?>
+																<i class="fa fa-user text-light"></i>
+																<!--end::Svg Icon-->
+															</span>Asign Driver PU</a>
+														<div class="flash-data" data-flashdata="<?= $this->session->flashdata('message'); ?>"></div>
 
-												</td>
-												<!-- kalo dia bukan incoming -->
-												<?php if ($p['is_incoming'] == 0) {
-												?>
 
-													<td>
-														
-														<!-- ini jabodetabek -->
-														<?php if ($shp['is_jabodetabek'] == 1) {
-														?>
-															<!-- kalo sales ordernya sudah di pickup -->
-															<!-- kalo shipmentnya telah tiba di hub benhil -->
-															<?php if ($get_last_status['flag'] == 5 || $get_last_status['flag'] == 6) {
+
+														<div class="d-flex align-items-center mb-10">
+															<?php if ($p['pickup_by'] == null) {
 															?>
-
-																<button href="#" class="btn btn-sm text-light modalDelivery" data-toggle="modal" data-shipment_id="<?= $shp['shipment_id'] ?>" data-target="#modal-lg-dl" style="background-color: #9c223b;">
-																	Assign Driver DL
-																</button>
-																<?php $tracking_real = $this->db->limit(1)->order_by('id_tracking', 'DESC')->get_where('tbl_tracking_real', ['shipment_id' => $shp['shipment_id'], 'flag' => 6])->row_array();
-																$order = $this->db->limit(1)->order_by('id_tracking', 'DESC')->get_where('tbl_tracking_real', ['shipment_id' => $shp['shipment_id']])->row_array();
-																// var_dump($tracking_real);
-																// die;
-																?>
-																<div class="d-flex align-items-center">
-																	<?php if ($tracking_real == null) {
-																	?>
-
-																		<p class="title">No driver</p>
-
-																	<?php	} else {
-																	?>
-																		<!--begin::Symbol-->
-																		<div class="symbol symbol-40 symbol-light-success">
-																			<span class="symbol-label">
-																				<img src="<?= base_url('assets/back/metronic/') ?>media/avatars/009-boy-4.svg" class="h-75 align-self-end" alt="">
-																			</span>
-																		</div>
-																		<!--end::Symbol-->
-																		<!--begin::Text-->
-																		<?php $driver = $this->db->get_where('tb_user', ['id_user' => $tracking_real['id_user']])->row_array(); ?>
-																		<div class="d-flex flex-column flex-grow-1 font-weight-bold">
-																			<a href="#" class="text-dark text-hover-primary mb-1 font-size-lg"><?= $driver['nama_user'] ?></a>
-																			<span class="text-muted">Driver</span>
-																		</div>
-																		<!--end::Text-->
-																	<?php	} ?>
-
-																</div>
-																<!-- kalo sales order nya belum di pickup -->
-															<?php } elseif ($get_last_status['flag'] == 1) {
-															?>
-																<a href="#" class="btn font-weight-bolder text-light" data-toggle="modal" data-target="#modal-lg" style="background-color: #9c223b;">
-																	Asign Driver PU
-																</a>
-																<?php $tracking = $this->db->order_by('id_tracking', 'asc')->get_where('tbl_tracking_real', ['id_so' => $p['id_so']])->row_array();
-
-																?>
-																<div class="d-flex align-items-center">
-																	<?php if ($tracking['id_user'] == null) {
-																	?>
-																		<h4 class="title">No driver selected</h4>
-																	<?php	} else {
-																	?>
-																		<!--begin::Symbol-->
-																		<div class="symbol symbol-40 symbol-light-success">
-																			<span class="symbol-label">
-																				<img src="<?= base_url('assets/back/metronic/') ?>media/avatars/009-boy-4.svg" class="h-75 align-self-end" alt="">
-																			</span>
-																		</div>
-																		<!--end::Symbol-->
-																		<!--begin::Text-->
-																		<?php $driver = $this->db->get_where('tb_user', ['id_user' => $tracking['id_user']])->row_array(); ?>
-																		<div class="d-flex flex-column flex-grow-1 font-weight-bold">
-																			<a href="#" class="text-dark text-hover-primary mb-1 font-size-lg"><?= $driver['nama_user'] ?></a>
-																			<span class="text-muted">Driver</span>
-																		</div>
-																		<!--end::Text-->
-																	<?php	} ?>
-
-																</div>
-
-
-															<?php } else {
-															?>
-																<h4 class="title">Your Task Has Finished</h4>
-															<?php	} ?>
-
-															<!-- KALO BUKAN JABODETABEK -->
-														<?php	} else {
-														?>
-															<!-- kalo sales ordernya sudah di pickup -->
-															<!-- kalo shipmentnya telah tiba di hub benhil -->
-															<?php if ($get_last_status['flag'] == 5 || $get_last_status['flag'] == 6) {
-															?>
-																<button class="btn text-light modalDeliveryLuar" data-toggle="modal" data-target="#modal-lg-dl-luar" data-shipment_id="<?= $shp['shipment_id'] ?>" style="background-color: #9c223b;">
-																	Scan Out
-																</button>
-																<?php $tracking_real = $this->db->limit(1)->order_by('id_tracking', 'DESC')->get_where('tbl_tracking_real', ['shipment_id' => $shp['shipment_id'], 'flag' => 6])->row_array();
-																$order = $this->db->limit(1)->order_by('id_tracking', 'DESC')->get_where('tbl_tracking_real', ['shipment_id' => $shp['shipment_id']])->row_array();
-																// var_dump($tracking_real);
-																// die;
-																?>
-																<div class="d-flex align-items-center">
-																	<?php if ($tracking_real == null) {
-																	?>
-
-																		<h4 class="title">No driver</h4>
-
-																	<?php	} else {
-																	?>
-																		<!--begin::Symbol-->
-																		<div class="symbol symbol-40 symbol-light-success">
-																			<span class="symbol-label">
-																				<img src="<?= base_url('assets/back/metronic/') ?>media/avatars/009-boy-4.svg" class="h-75 align-self-end" alt="">
-																			</span>
-																		</div>
-																		<!--end::Symbol-->
-																		<!--begin::Text-->
-																		<?php $driver = $this->db->get_where('tb_user', ['id_user' => $tracking_real['id_user']])->row_array(); ?>
-																		<div class="d-flex flex-column flex-grow-1 font-weight-bold">
-																			<a href="#" class="text-dark text-hover-primary mb-1 font-size-lg"><?= $driver['nama_user'] ?></a>
-																			<span class="text-muted">Driver</span>
-																		</div>
-																		<!--end::Text-->
-																	<?php	} ?>
-
-																</div>
-																<!-- kalo sales order nya belum di pickup -->
-															<?php } elseif ($get_last_status['flag'] == 1) {
-															?>
-																<a href="#" class="btn font-weight-bolder text-light" data-toggle="modal" data-target="#modal-lg" style="background-color: #9c223b;">
-																	Asign Driver PU</a>
-																<?php $tracking = $this->db->order_by('id_tracking', 'asc')->get_where('tbl_tracking_real', ['id_so' => $p['id_so']])->row_array();
-
-																?>
-																<div class="d-flex align-items-center">
-																	<?php if ($tracking['id_user'] == null) {
-																	?>
-																		<h4 class="title">No driver</h4>
-																	<?php	} else {
-																	?>
-																		<!--begin::Symbol-->
-																		<div class="symbol symbol-40 symbol-light-success">
-																			<span class="symbol-label">
-																				<img src="<?= base_url('assets/back/metronic/') ?>media/avatars/009-boy-4.svg" class="h-75 align-self-end" alt="">
-																			</span>
-																		</div>
-																		<!--end::Symbol-->
-																		<!--begin::Text-->
-																		<?php $driver = $this->db->get_where('tb_user', ['id_user' => $tracking['id_user']])->row_array(); ?>
-																		<div class="d-flex flex-column flex-grow-1 font-weight-bold">
-																			<a href="#" class="text-dark text-hover-primary mb-1 font-size-lg"><?= $driver['nama_user'] ?></a>
-																			<span class="text-muted">Driver</span>
-																		</div>
-																		<!--end::Text-->
-																	<?php	} ?>
-
-																</div>
-
-
-															<?php } else {
-															?>
-																<h4 class="title">Your Task Has Finished</h4>
-															<?php	} ?>
-
-
-															<?php	}?>
-																
-
-													</td>
-													<!-- kalo incoming -->
-													<?php	} else {
-													// cek apakah barang langsung dikirim atau dibawa dlu ke hub
-
-													// kalo dia delivery
-													if ($shp['is_delivery'] == 1) {
-													?>
-														<td>
-															
-															<?php $tracking_real = $this->db->limit(1)->order_by('id_tracking', 'DESC')->get_where('tbl_tracking_real', ['shipment_id' => $shp['shipment_id'], 'flag' => 9])->row_array();
-															?>
-															<?php if ($tracking_real == NULL) {
-															?>
-																<button href="#" class="btn btn-sm text-light mb-4 modalDriverIncomingLangsung" data-toggle="modal" data-target="#modal-driver-incoming-langsung" data-shipment="<?= $shp['shipment_id'] ?>" style="background-color: #9c223b;">
-																	Asign Driver DL
-																</button>
-
-																<div class="d-flex align-items-center">
-																	<?php if ($tracking_real == null) {
-																	?>
-
-																		<p class="title">No driver</p>
-
-																	<?php	} else {
-																	?>
-																		<!--begin::Symbol-->
-																		<div class="symbol symbol-40 symbol-light-success">
-																			<span class="symbol-label">
-																				<img src="<?= base_url('assets/back/metronic/') ?>media/avatars/009-boy-4.svg" class="h-75 align-self-end" alt="">
-																			</span>
-																		</div>
-																		<!--end::Symbol-->
-																		<!--begin::Text-->
-																		<?php $driver = $this->db->get_where('tb_user', ['id_user' => $tracking_real['id_user']])->row_array(); ?>
-																		<div class="d-flex flex-column flex-grow-1 font-weight-bold">
-																			<a href="#" class="text-dark text-hover-primary mb-1 font-size-lg"><?= $driver['nama_user'] ?></a>
-																			<span class="text-muted">Driver</span>
-																		</div>
-																		<!--end::Text-->
-																	<?php	} ?>
-
-																</div>
+																<h4 class="title">No driver selected</h4>
 															<?php	} else {
 															?>
-																<button href="#" class="btn btn-sm text-light mb-4 modalDriverIncomingLangsung" data-toggle="modal" data-target="#modal-driver-incoming-langsung<?= $shp['shipment_id'] ?>" style="background-color: #9c223b;">
-																	Asign Driver DL
-																</button>
-																<div class="symbol symbol-40 symbol-light-success">
+																<!--begin::Symbol-->
+																<div class="symbol symbol-40 symbol-light-success mr-5">
 																	<span class="symbol-label">
 																		<img src="<?= base_url('assets/back/metronic/') ?>media/avatars/009-boy-4.svg" class="h-75 align-self-end" alt="">
 																	</span>
 																</div>
 																<!--end::Symbol-->
 																<!--begin::Text-->
-																<?php $driver = $this->db->get_where('tb_user', ['id_user' => $tracking_real['id_user']])->row_array(); ?>
+
 																<div class="d-flex flex-column flex-grow-1 font-weight-bold">
-																	<a href="#" class="text-dark text-hover-primary mb-1 font-size-lg"><?= $driver['nama_user'] ?></a>
+																	<a href="#" class="text-dark text-hover-primary mb-1 font-size-lg"><?= getNamaUser($p['pickup_by']) ?></a>
 																	<span class="text-muted">Driver</span>
 																</div>
+																<!--end::Text-->
+															<?php	} ?>
 
-															<?php	} 
-															?>
-														</td>
-													<?php } else {
+														</div>
+
+
+													<?php } elseif ($p['status'] == 5) {
+														echo "<h4 class='title'>Order Canceled</h4> <br> <p>Reason : $p[alasan_cancel]</p> ";
+													} else {
 													?>
+														<h4 class="title">Order Finished</h4>
+													<?php	} ?>
+												</div>
+												<!-- selain one night service -->
+											<?php	} else {
+											?>
+												<div class="col-md-4">
+													<!-- kalo sales ordernya sudah di pickup -->
+													<?php if ($p['status'] == 2) {
+													?>
+														<h4 class="title">Order Finished</h4>
+														<!-- kalo sales order nya belum di pickup -->
+													<?php } elseif ($p['status'] == 0) {
+													?>
+														<a href="#" class="btn font-weight-bolder text-light mb-4" data-toggle="modal" data-target="#modal-lg" style="background-color: #9c223b;">
+															<span class="svg-icon svg-icon-md">
+																<i class="fa fa-user text-light"></i>
+																<!--end::Svg Icon-->
+															</span>Asign Driver PU</a>
+														<div class="flash-data" data-flashdata="<?= $this->session->flashdata('message'); ?>"></div>
+														<?php $tracking = $this->db->order_by('id_tracking', 'asc')->get_where('tbl_tracking_real', ['id_so' => $p['id_so']])->row_array();
 
-														<td>
-														
-															<?php $tracking_real = $this->db->limit(1)->order_by('id_tracking', 'DESC')->get_where('tbl_tracking_real', ['shipment_id' => $shp['shipment_id']])->row_array();
+														?>
+														<div class="d-flex align-items-center mb-10">
+															<?php if ($p['pickup_by'] == null) {
 															?>
-															<?php if ($tracking_real['flag'] == 10) {
+																<h4 class="title">No driver selected</h4>
+															<?php	} else {
 															?>
-																<button class="btn btn-sm text-light mb-4 modalDriverIncoming" data-toggle="modal" data-target="#modal-driver-incoming" data-shipment="<?= $shp['shipment_id'] ?>" style="background-color: #9c223b;">
-																	Asign Driver DL
-																</button>
+																<!--begin::Symbol-->
+																<div class="symbol symbol-40 symbol-light-success mr-5">
+																	<span class="symbol-label">
+																		<img src="<?= base_url('assets/back/metronic/') ?>media/avatars/009-boy-4.svg" class="h-75 align-self-end" alt="">
+																	</span>
+																</div>
+																<!--end::Symbol-->
+																<!--begin::Text-->
 
-																<div class="d-flex align-items-center">
-																	<?php if ($tracking_real == null) {
+																<div class="d-flex flex-column flex-grow-1 font-weight-bold">
+																	<a href="#" class="text-dark text-hover-primary mb-1 font-size-lg"><?= getNamaUser($p['pickup_by'])  ?></a>
+																	<span class="text-muted">Driver</span>
+																</div>
+																<!--end::Text-->
+															<?php	} ?>
+
+														</div>
+													<?php } elseif ($p['status'] == 5) {
+														echo "<h4 class='title'>Order Canceled</h4> <br> <p>Reason : $p[alasan_cancel]</p> ";
+													} else {
+													?>
+														<h4 class="title">Order Finished</h4>
+													<?php	} ?>
+												</div>
+
+
+											<?php	}
+											?>
+
+											<!-- KALO INCOMING -->
+										<?php	} else {
+										?>
+
+											<div class="col-md-4">
+												<h4 class="title">Incoming Order</h4>
+											</div>
+
+									<?php }
+									} ?>
+
+
+
+									</div>
+									<!-- /.card-body -->
+
+									<div class="card-body" style="overflow: auto;">
+										<table id="myTable" class="table table-bordered">
+											<h3 class="title font-weight-bold">List Shipment</h3>
+											<div class="col-md-12 mt-4">
+												<a href="<?= base_url('shipper/order/printAll/' . $p['id_so']) ?>" target="blank" class="btn mr-2 text-light" style="background-color: #9c223b;">
+													<i class="fas fa-print text-light"> </i>
+													Print All
+												</a>
+												<a href="<?= base_url('shipper/salesOrder/completeTtd/' . $p['id_so']) ?>" class="btn mr-2 text-light mt-1" style="background-color: #9c223b;">
+													<i class="fas fa-print text-light"> </i>
+													Complete TTD & POP
+												</a>
+
+											</div>
+											<p><?= $this->session->flashdata('message'); ?></p>
+											<thead>
+												<tr>
+													<th style="width: 10%;">Shipment ID</th>
+													<th style="width: 15%;">Shipper</th>
+													<th>Destination</th>
+													<th style="width: 15%;">Consignee</th>
+													<!-- <th style="width: 20%;">Image</th> -->
+													<!-- <th>Signature</th> -->
+													<th>Last Status</th>
+													<th style="width: 15%;">Driver</th>
+													<th>Action</th>
+												</tr>
+											</thead>
+											<tbody>
+												<?php foreach ($shipment2 as $shp) {
+													$dimensionSebelum = $this->db->get_where('tbl_dimension', array('shipment_id' => $shp['shipment_id']))->row_array();
+													$get_last_status = $this->db->limit(1)->order_by('id_tracking', 'desc')->get_where('tbl_tracking_real', ['shipment_id' => $shp['shipment_id']])->row_array();
+													// var_dump($get_last_status);
+													// die;
+												?>
+													<tr>
+														<td><a href="<?= base_url('shipper/order/print/' . $shp['shipment_id']) ?>"> <?= $shp['shipment_id'] ?></a><br>
+															<?= $shp['service_name'] ?> </td>
+														<td><?= $shp['shipper'] ?><br> <?= $shp['tree_shipper'] ?>-<?= $shp['tree_consignee'] ?>/<?= $shp['koli'] ?>C</td>
+														<td><?= $shp['destination'] ?>, <?= $shp['city_consigne'] ?> <?= $shp['state_consigne'] ?></td>
+														<td><?= $shp['consigne'] ?></td>
+														<td style="color: green;"><?= $get_last_status['status'] ?> <?= $get_last_status['note'] ?>. <?= longdate_indo($get_last_status['created_at']), ' ' . $get_last_status['time'] ?>
+															<br>
+															<?php if ($get_last_status['flag'] == 11 || $get_last_status['flag'] == 5 || $get_last_status['flag'] == 8) {
+															?>
+																<button class="btn font-weight-bolder text-light modalPod" data-toggle="modal" data-target="#modal-pod" data-shipment_id="<?= $shp['shipment_id'] ?>" style="background-color: #9c223b;">
+																	<span class="svg-icon svg-icon-md">
+																	</span>View POD</button>
+															<?php	} ?>
+
+														</td>
+														<!-- kalo dia bukan incoming -->
+														<?php if ($p['is_incoming'] == 0) {
+														?>
+
+															<td>
+
+																<!-- ini jabodetabek -->
+																<?php if ($shp['is_jabodetabek'] == 1) {
+																?>
+																	<!-- kalo sales ordernya sudah di pickup -->
+																	<!-- kalo shipmentnya telah tiba di hub benhil -->
+																	<?php if ($get_last_status['flag'] == 5 || $get_last_status['flag'] == 6) {
 																	?>
 
-																		<p class="title">No driver</p>
+																		<button href="#" class="btn btn-sm text-light modalDelivery" data-toggle="modal" data-shipment_id="<?= $shp['shipment_id'] ?>" data-target="#modal-lg-dl" style="background-color: #9c223b;">
+																			Assign Driver DL
+																		</button>
+																		<?php $tracking_real = $this->db->limit(1)->order_by('id_tracking', 'DESC')->get_where('tbl_tracking_real', ['shipment_id' => $shp['shipment_id'], 'flag' => 6])->row_array();
+																		$order = $this->db->limit(1)->order_by('id_tracking', 'DESC')->get_where('tbl_tracking_real', ['shipment_id' => $shp['shipment_id']])->row_array();
+																		// var_dump($tracking_real);
+																		// die;
+																		?>
+																		<div class="d-flex align-items-center">
+																			<?php if ($tracking_real == null) {
+																			?>
 
+																				<p class="title">No driver</p>
+
+																			<?php	} else {
+																			?>
+																				<!--begin::Symbol-->
+																				<div class="symbol symbol-40 symbol-light-success">
+																					<span class="symbol-label">
+																						<img src="<?= base_url('assets/back/metronic/') ?>media/avatars/009-boy-4.svg" class="h-75 align-self-end" alt="">
+																					</span>
+																				</div>
+																				<!--end::Symbol-->
+																				<!--begin::Text-->
+																				<?php $driver = $this->db->get_where('tb_user', ['id_user' => $tracking_real['id_user']])->row_array(); ?>
+																				<div class="d-flex flex-column flex-grow-1 font-weight-bold">
+																					<a href="#" class="text-dark text-hover-primary mb-1 font-size-lg"><?= $driver['nama_user'] ?></a>
+																					<span class="text-muted">Driver</span>
+																				</div>
+																				<!--end::Text-->
+																			<?php	} ?>
+
+																		</div>
+																		<!-- kalo sales order nya belum di pickup -->
+																	<?php } elseif ($get_last_status['flag'] == 1) {
+																	?>
+																		<a href="#" class="btn font-weight-bolder text-light" data-toggle="modal" data-target="#modal-lg" style="background-color: #9c223b;">
+																			Asign Driver PU
+																		</a>
+																		<?php $tracking = $this->db->order_by('id_tracking', 'asc')->get_where('tbl_tracking_real', ['id_so' => $p['id_so']])->row_array();
+
+																		?>
+																		<div class="d-flex align-items-center">
+																			<?php if ($tracking['id_user'] == null) {
+																			?>
+																				<h4 class="title">No driver selected</h4>
+																			<?php	} else {
+																			?>
+																				<!--begin::Symbol-->
+																				<div class="symbol symbol-40 symbol-light-success">
+																					<span class="symbol-label">
+																						<img src="<?= base_url('assets/back/metronic/') ?>media/avatars/009-boy-4.svg" class="h-75 align-self-end" alt="">
+																					</span>
+																				</div>
+																				<!--end::Symbol-->
+																				<!--begin::Text-->
+																				<?php $driver = $this->db->get_where('tb_user', ['id_user' => $tracking['id_user']])->row_array(); ?>
+																				<div class="d-flex flex-column flex-grow-1 font-weight-bold">
+																					<a href="#" class="text-dark text-hover-primary mb-1 font-size-lg"><?= $driver['nama_user'] ?></a>
+																					<span class="text-muted">Driver</span>
+																				</div>
+																				<!--end::Text-->
+																			<?php	} ?>
+
+																		</div>
+
+
+																	<?php } else {
+																	?>
+																		<h4 class="title">Your Task Has Finished</h4>
+																	<?php	} ?>
+
+																	<!-- KALO BUKAN JABODETABEK -->
+																<?php	} else {
+																?>
+																	<!-- kalo sales ordernya sudah di pickup -->
+																	<!-- kalo shipmentnya telah tiba di hub benhil -->
+																	<?php if ($get_last_status['flag'] == 5 || $get_last_status['flag'] == 6) {
+																	?>
+																		<button class="btn text-light modalDeliveryLuar" data-toggle="modal" data-target="#modal-lg-dl-luar" data-shipment_id="<?= $shp['shipment_id'] ?>" style="background-color: #9c223b;">
+																			Scan Out
+																		</button>
+																		<?php $tracking_real = $this->db->limit(1)->order_by('id_tracking', 'DESC')->get_where('tbl_tracking_real', ['shipment_id' => $shp['shipment_id'], 'flag' => 6])->row_array();
+																		$order = $this->db->limit(1)->order_by('id_tracking', 'DESC')->get_where('tbl_tracking_real', ['shipment_id' => $shp['shipment_id']])->row_array();
+																		// var_dump($tracking_real);
+																		// die;
+																		?>
+																		<div class="d-flex align-items-center">
+																			<?php if ($tracking_real == null) {
+																			?>
+
+																				<h4 class="title">No driver</h4>
+
+																			<?php	} else {
+																			?>
+																				<!--begin::Symbol-->
+																				<div class="symbol symbol-40 symbol-light-success">
+																					<span class="symbol-label">
+																						<img src="<?= base_url('assets/back/metronic/') ?>media/avatars/009-boy-4.svg" class="h-75 align-self-end" alt="">
+																					</span>
+																				</div>
+																				<!--end::Symbol-->
+																				<!--begin::Text-->
+																				<?php $driver = $this->db->get_where('tb_user', ['id_user' => $tracking_real['id_user']])->row_array(); ?>
+																				<div class="d-flex flex-column flex-grow-1 font-weight-bold">
+																					<a href="#" class="text-dark text-hover-primary mb-1 font-size-lg"><?= $driver['nama_user'] ?></a>
+																					<span class="text-muted">Driver</span>
+																				</div>
+																				<!--end::Text-->
+																			<?php	} ?>
+
+																		</div>
+																		<!-- kalo sales order nya belum di pickup -->
+																	<?php } elseif ($get_last_status['flag'] == 1) {
+																	?>
+																		<a href="#" class="btn font-weight-bolder text-light" data-toggle="modal" data-target="#modal-lg" style="background-color: #9c223b;">
+																			Asign Driver PU</a>
+																		<?php $tracking = $this->db->order_by('id_tracking', 'asc')->get_where('tbl_tracking_real', ['id_so' => $p['id_so']])->row_array();
+
+																		?>
+																		<div class="d-flex align-items-center">
+																			<?php if ($tracking['id_user'] == null) {
+																			?>
+																				<h4 class="title">No driver</h4>
+																			<?php	} else {
+																			?>
+																				<!--begin::Symbol-->
+																				<div class="symbol symbol-40 symbol-light-success">
+																					<span class="symbol-label">
+																						<img src="<?= base_url('assets/back/metronic/') ?>media/avatars/009-boy-4.svg" class="h-75 align-self-end" alt="">
+																					</span>
+																				</div>
+																				<!--end::Symbol-->
+																				<!--begin::Text-->
+																				<?php $driver = $this->db->get_where('tb_user', ['id_user' => $tracking['id_user']])->row_array(); ?>
+																				<div class="d-flex flex-column flex-grow-1 font-weight-bold">
+																					<a href="#" class="text-dark text-hover-primary mb-1 font-size-lg"><?= $driver['nama_user'] ?></a>
+																					<span class="text-muted">Driver</span>
+																				</div>
+																				<!--end::Text-->
+																			<?php	} ?>
+
+																		</div>
+
+
+																	<?php } else {
+																	?>
+																		<h4 class="title">Your Task Has Finished</h4>
+																	<?php	} ?>
+
+
+																<?php	} ?>
+
+
+															</td>
+															<!-- kalo incoming -->
+															<?php	} else {
+															// cek apakah barang langsung dikirim atau dibawa dlu ke hub
+
+															// kalo dia delivery
+															if ($shp['is_delivery'] == 1) {
+															?>
+																<td>
+
+																	<?php $tracking_real = $this->db->limit(1)->order_by('id_tracking', 'DESC')->get_where('tbl_tracking_real', ['shipment_id' => $shp['shipment_id'], 'flag' => 9])->row_array();
+																	?>
+																	<?php if ($tracking_real == NULL) {
+																	?>
+																		<button href="#" class="btn btn-sm text-light mb-4 modalDriverIncomingLangsung" data-toggle="modal" data-target="#modal-driver-incoming-langsung" data-shipment="<?= $shp['shipment_id'] ?>" style="background-color: #9c223b;">
+																			Asign Driver DL
+																		</button>
+
+																		<div class="d-flex align-items-center">
+																			<?php if ($tracking_real == null) {
+																			?>
+
+																				<p class="title">No driver</p>
+
+																			<?php	} else {
+																			?>
+																				<!--begin::Symbol-->
+																				<div class="symbol symbol-40 symbol-light-success">
+																					<span class="symbol-label">
+																						<img src="<?= base_url('assets/back/metronic/') ?>media/avatars/009-boy-4.svg" class="h-75 align-self-end" alt="">
+																					</span>
+																				</div>
+																				<!--end::Symbol-->
+																				<!--begin::Text-->
+																				<?php $driver = $this->db->get_where('tb_user', ['id_user' => $tracking_real['id_user']])->row_array(); ?>
+																				<div class="d-flex flex-column flex-grow-1 font-weight-bold">
+																					<a href="#" class="text-dark text-hover-primary mb-1 font-size-lg"><?= $driver['nama_user'] ?></a>
+																					<span class="text-muted">Driver</span>
+																				</div>
+																				<!--end::Text-->
+																			<?php	} ?>
+
+																		</div>
 																	<?php	} else {
 																	?>
-																		<!--begin::Symbol-->
+																		<button href="#" class="btn btn-sm text-light mb-4 modalDriverIncomingLangsung" data-toggle="modal" data-target="#modal-driver-incoming-langsung<?= $shp['shipment_id'] ?>" style="background-color: #9c223b;">
+																			Asign Driver DL
+																		</button>
 																		<div class="symbol symbol-40 symbol-light-success">
 																			<span class="symbol-label">
 																				<img src="<?= base_url('assets/back/metronic/') ?>media/avatars/009-boy-4.svg" class="h-75 align-self-end" alt="">
@@ -505,87 +474,125 @@
 																			<a href="#" class="text-dark text-hover-primary mb-1 font-size-lg"><?= $driver['nama_user'] ?></a>
 																			<span class="text-muted">Driver</span>
 																		</div>
-																		<!--end::Text-->
+
+																	<?php	}
+																	?>
+																</td>
+															<?php } else {
+															?>
+
+																<td>
+
+																	<?php $tracking_real = $this->db->limit(1)->order_by('id_tracking', 'DESC')->get_where('tbl_tracking_real', ['shipment_id' => $shp['shipment_id']])->row_array();
+																	?>
+																	<?php if ($tracking_real['flag'] == 10) {
+																	?>
+																		<button class="btn btn-sm text-light mb-4 modalDriverIncoming" data-toggle="modal" data-target="#modal-driver-incoming" data-shipment="<?= $shp['shipment_id'] ?>" style="background-color: #9c223b;">
+																			Asign Driver DL
+																		</button>
+
+																		<div class="d-flex align-items-center">
+																			<?php if ($tracking_real == null) {
+																			?>
+
+																				<p class="title">No driver</p>
+
+																			<?php	} else {
+																			?>
+																				<!--begin::Symbol-->
+																				<div class="symbol symbol-40 symbol-light-success">
+																					<span class="symbol-label">
+																						<img src="<?= base_url('assets/back/metronic/') ?>media/avatars/009-boy-4.svg" class="h-75 align-self-end" alt="">
+																					</span>
+																				</div>
+																				<!--end::Symbol-->
+																				<!--begin::Text-->
+																				<?php $driver = $this->db->get_where('tb_user', ['id_user' => $tracking_real['id_user']])->row_array(); ?>
+																				<div class="d-flex flex-column flex-grow-1 font-weight-bold">
+																					<a href="#" class="text-dark text-hover-primary mb-1 font-size-lg"><?= $driver['nama_user'] ?></a>
+																					<span class="text-muted">Driver</span>
+																				</div>
+																				<!--end::Text-->
+																			<?php	} ?>
+
+																		</div>
+
+																	<?php	} else {
+																	?>
+																		<h4 class="title">-</h4>
+
 																	<?php	} ?>
 
-																</div>
 
-															<?php	} else {
+																</td>
+															<?php	}
 															?>
-																<h4 class="title">-</h4>
 
-															<?php	}?>
-																
+														<?php } ?>
 
-														</td>
-													<?php	}
-													?>
+														<td>
+															<!-- kalo dia bukan incoming -->
+															<?php if ($p['is_incoming'] == 0) {
+															?>
+																<?php if ($get_last_status['flag'] >= 8  && $get_last_status['flag'] <= 11) {
+																?>
+																	<a href="<?= base_url('shipper/salesOrder/weight/' . $shp['shipment_id']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Weight</a>
+																	<a href="<?= base_url('shipper/salesOrder/edit/' . $shp['id'] . '/' . $shp['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Edit</a>
+																	<a href="<?= base_url('shipper/order/detail/' . $shp['id'] . '/' . $shp['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Detail</a>
+																<?php } else {
+																?>
+																	<a href="<?= base_url('shipper/salesOrder/weight/' . $shp['shipment_id']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Weight</a>
+																	<a href="<?= base_url('shipper/salesOrder/edit/' . $shp['id'] . '/' . $shp['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Edit</a>
+																	<a href="<?= base_url('shipper/order/detail/' . $shp['id'] . '/' . $shp['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Detail</a>
+																<?php	} ?>
+																<?php	} else {
 
-												<?php } ?>
-
-												<td>
-													<!-- kalo dia bukan incoming -->
-													<?php if ($p['is_incoming'] == 0) {
-													?>
-														<?php if ($get_last_status['flag'] >= 8  && $get_last_status['flag'] <= 11) {
-														?>
-															<a href="<?= base_url('shipper/salesOrder/weight/' . $shp['shipment_id']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Weight</a>
-															<a href="<?= base_url('shipper/salesOrder/edit/' . $shp['id'] . '/' . $shp['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Edit</a>
-															<a href="<?= base_url('shipper/order/detail/' . $shp['id'] . '/' . $shp['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Detail</a>
-														<?php } else {
-														?>
-															<a href="<?= base_url('shipper/salesOrder/weight/' . $shp['shipment_id']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Weight</a>
-															<a href="<?= base_url('shipper/salesOrder/edit/' . $shp['id'] . '/' . $shp['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Edit</a>
-															<a href="<?= base_url('shipper/order/detail/' . $shp['id'] . '/' . $shp['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Detail</a>
-														<?php	} ?>
-														<?php	} else {
-
-														if ($get_last_status['flag'] >= 6  && $get_last_status['flag'] <= 7) {
-														?>
-															<span class="badge badge-secondary mb-1">Menunggu scan in/out HUB</span>
-															<!-- <a href="<?= base_url('shipper/order/edit/' . $shp['id'] . '/' . $shp['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Edit</a> -->
-															<a href="<?= base_url('shipper/order/detail/' . $shp['id'] . '/' . $shp['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Detail</a>
-														<?php	} elseif ($get_last_status['flag'] == 11) {
-														?>
-															<!-- <a href="#" class="btn btn-sm text-light mb-1" data-toggle="modal" data-target="#modal-lg-dl-incoming<?= $shp['shipment_id'] ?>" style="background-color: #9c223b;">
+																if ($get_last_status['flag'] >= 6  && $get_last_status['flag'] <= 7) {
+																?>
+																	<span class="badge badge-secondary mb-1">Menunggu scan in/out HUB</span>
+																	<!-- <a href="<?= base_url('shipper/order/edit/' . $shp['id'] . '/' . $shp['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Edit</a> -->
+																	<a href="<?= base_url('shipper/order/detail/' . $shp['id'] . '/' . $shp['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Detail</a>
+																<?php	} elseif ($get_last_status['flag'] == 11) {
+																?>
+																	<!-- <a href="#" class="btn btn-sm text-light mb-1" data-toggle="modal" data-target="#modal-lg-dl-incoming<?= $shp['shipment_id'] ?>" style="background-color: #9c223b;">
 															<span class="svg-icon svg-icon-md">
 															</span>Update Status</a>
 														<a href="<?= base_url('shipper/order/edit/' . $shp['id'] . '/' . $shp['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Edit</a> -->
-															<a href="<?= base_url('shipper/order/detail/' . $shp['id'] . '/' . $shp['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Detail</a>
+																	<a href="<?= base_url('shipper/order/detail/' . $shp['id'] . '/' . $shp['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Detail</a>
 
-														<?php	} elseif ($get_last_status['flag'] == 9) {
-														?>
-															<!-- <a href="<?= base_url('shipper/order/edit/' . $shp['id'] . '/' . $shp['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Edit</a> -->
-															<a href="<?= base_url('shipper/order/detail/' . $shp['id'] . '/' . $shp['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Detail</a>
+																<?php	} elseif ($get_last_status['flag'] == 9) {
+																?>
+																	<!-- <a href="<?= base_url('shipper/order/edit/' . $shp['id'] . '/' . $shp['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Edit</a> -->
+																	<a href="<?= base_url('shipper/order/detail/' . $shp['id'] . '/' . $shp['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Detail</a>
 
-														<?php	} else {
-														?>
-															<a href="<?= base_url('shipper/order/detail/' . $shp['id'] . '/' . $shp['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Detail</a>
+																<?php	} else {
+																?>
+																	<a href="<?= base_url('shipper/order/detail/' . $shp['id'] . '/' . $shp['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Detail</a>
 
-														<?php	}
-														?>
+																<?php	}
+																?>
 
-													<?php	} ?>
-												</td>
-											</tr>
+															<?php	} ?>
+														</td>
+													</tr>
 
-										<?php } ?>
-									</tbody>
+												<?php } ?>
+											</tbody>
 
 
-								</table>
+										</table>
+									</div>
 							</div>
+
+
+							<!-- /.card -->
 						</div>
 
-
-						<!-- /.card -->
 					</div>
+					<!-- /.row -->
 
 				</div>
-				<!-- /.row -->
-
-			</div>
-			<!--/. container-fluid -->
+				<!--/. container-fluid -->
 	</section>
 	<!-- /.content -->
 
@@ -1007,7 +1014,7 @@
 					},
 					success: function(response) {
 						// Menampilkan data ke dalam modal
-						
+
 						var content = '<div class="card-body">' +
 							'<div class="row">' +
 							'POD ' + response.shipment_id +
@@ -1019,10 +1026,10 @@
 
 							'</div>' +
 							'</div>';
-							
+
 						$('#modal-content-pod').html(content);
 						$('#selectField').select2();
-						
+
 
 					},
 					error: function() {

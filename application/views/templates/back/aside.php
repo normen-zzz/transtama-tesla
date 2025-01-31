@@ -236,7 +236,7 @@
 						</span></i>Sales Order</span>
 				</a>
 			</li>
-		
+
 			<li class="menu-item menu-item-submenu menu-item-rel" data-menu-toggle="click" aria-haspopup="true">
 				<a href="javascript:;" class="menu-link menu-toggle">
 					<span class="menu-text">
@@ -503,7 +503,7 @@
 
 	</ul>
 	<!-- jika sales -->
-<?php } elseif ($role == 4 && $jabatan != 12) {
+<?php } elseif ($role == 4 || $role == 8 && $jabatan != 12) {
 ?>
 	<ul class="menu-nav">
 		<li class="menu-item menu-item" aria-haspopup="true">
@@ -581,7 +581,7 @@
 					</span></i>Account Payable</span>
 			</a>
 		</li>
-		
+
 		<li class="menu-item menu-item" aria-haspopup="true">
 			<a href="<?= base_url('Drive') ?>" class="menu-link">
 				<span class="menu-text"><span class="svg-icon svg-icon-danger svg-icon mr-2">

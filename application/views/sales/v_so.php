@@ -11,6 +11,12 @@
 								<span class="text-muted font-weight-bold font-size-sm mt-1">Your Request Information</span>
 							</div>
 							<div class="card-toolbar">
+								<?php if ($this->session->userdata('id_role') == 8) { ?>
+									<button type="button" class="btn mr-2 text-light" data-toggle="modal" style="background-color: #9c223b;" data-target="#modalAddPtp">
+										Add PTP Request
+									</button>
+								<?php } ?>
+
 								<a onclick='$("#modalLoading").modal("show");' href="<?= base_url('sales/salesOrder/add') ?>" class="btn mr-2 text-light" style="background-color: #9c223b;">
 									<i class="fas fa-plus-circle text-light"> </i>
 									Add Request Pickup
@@ -104,7 +110,7 @@
 															if ($s['status_approve'] == 0) {
 															?>
 																<a onclick='$("#modalLoading").modal("show");' href="<?= base_url('sales/salesOrder/detail/' . $s['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Detail</a>
-																<a  href="<?= base_url('sales/salesOrder/approve/' . $s['id_so']) ?>" onclick="return confirm('Are You Sure ?')" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Approve</a>
+																<a href="<?= base_url('sales/salesOrder/approve/' . $s['id_so']) ?>" onclick="return confirm('Are You Sure ?')" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Approve</a>
 															<?php	} else {
 															?>
 																<a onclick='$("#modalLoading").modal("show");' href="<?= base_url('sales/salesOrder/detail/' . $s['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Detail</a>
@@ -162,3 +168,193 @@
 		<!--/. container-fluid -->
 	</section>
 	<!-- /.content -->
+
+	<!-- modal add ptp  -->
+	<div class="modal fade" id="modalAddPtp" tabindex="-1" role="dialog" aria-labelledby="modalAddPtp" aria-hidden="true">
+		<div class="modal-dialog modal-lg" role="document">
+			<div class="modal-content">
+				<form action="<?= base_url('sales/salesOrder/addPtpRequest') ?>" method="post">
+					<div class="modal-header">
+						<h5 class="modal-title" id="modalAddPtp">Add PTP Request</h5>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<i aria-hidden="true" class="ki ki-close"></i>
+						</button>
+					</div>
+
+					<div class="modal-body">
+						<div class="form-group row">
+							<label class="col-form-label col-lg-3 col-sm-12">Shipper</label>
+							<div class="col-lg-9 col-md-9 col-sm-12">
+								<select class="form-control shipperPtp" name="shipper" id="shipperPtp" required>
+									<option value="">Select Shipper</option>
+									<?php foreach ($shipperPtp->result_array() as $s) {
+									?>
+										<option value="<?= $s['id_customer_ptp'] ?>"><?= $s['nama_customer'] ?></option>
+									<?php	} ?>
+								</select>
+							</div>
+						</div>
+						<div id="alamatShipperPtp">
+							<div class="form-group row">
+								<label class="col-form-label col-lg-3 col-sm-12">Address</label>
+								<div class="col-lg-9 col-md-9 col-sm-12">
+									<input type="text" class="form-control" name="alamat" id="alamat" disabled>
+								</div>
+							</div>
+						</div>
+						<!-- consignee  -->
+						<div class="form-group row">
+							<label class="col-form-label col-lg-3 col-sm-12">Consignee</label>
+							<div class="col-lg-9 col-md-9 col-sm-12">
+								<input type="text" class="form-control" name="consignee" required>
+							</div>
+						</div>
+						
+						<div class="form-group row">
+							<label class="col-form-label col-lg-3 col-sm-12">PU. Date</label>
+							<div class="col-lg-9 col-md-9 col-sm-12">
+								<input type="datetime-local" name="tgl_pickup" id="tgl_pickup" class="form-control" required>
+							</div>
+						</div>
+
+						
+
+
+						<div class="form-group row">
+							<label class="col-form-label col-lg-3 col-sm-12">Destination</label>
+							<div class="col-lg-9 col-md-9 col-sm-12">
+								<select name="destination" id="destination" class="form-control" required>
+									<option value="">Select Destination</option>
+									<?php foreach ($destination->result_array() as $d) {
+									?>
+										<option value="<?= $d['id_city_ptp'] ?>"><?= $d['name'] ?></option>
+									<?php	} ?>
+								</select>
+							</div>
+						</div>
+						<!-- commodity  -->
+						<div class="form-group row">
+							<label class="col-form-label col-lg-3 col-sm-12">Commodity</label>
+							<div class="col-lg-9 col-md-9 col-sm-12">
+								<input type="text" class="form-control" name="commodity" required>
+							</div>
+						</div>
+
+						<!-- koli  -->
+						<div class="form-group row">
+							<label class="col-form-label col-lg-3 col-sm-12">Koli</label>
+							<div class="col-lg-9 col-md-9 col-sm-12">
+								<input type="number" class="form-control" name="koli" value="0" required>
+							</div>
+						</div>
+
+						<div class="form-group row">
+							<label class="col-form-label col-lg-3 col-sm-12">Note</label>
+							<div class="col-lg-9 col-md-9 col-sm-12">
+								<textarea class="form-control" name="note"></textarea>
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-light-primary font-weight-bold" data-dismiss="modal">Close</button>
+						<button type="button" class="btn btn-primary font-weight-bold" id="submitAddPtp">Submit</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+
+
+	<script>
+		$(document).on('change', '#shipperPtp', function() {
+			var id = $(this).val();
+			if (id == '') {
+				$('#alamat').val('');
+				return false;
+			} else {
+				$.ajax({
+					url: '<?= base_url('sales/salesOrder/getAlamatShipperPtp') ?>',
+					type: 'post',
+					data: {
+						id: id
+					},
+					success: function(data) {
+						data = JSON.parse(data);
+						$('#alamat').val(data.address + ', ' + data.city + ', ' + data.state);
+					}
+				});
+			}
+
+		});
+	</script>
+
+	<script>
+		// submitAddPtp
+		$('#submitAddPtp').on('click', function() {
+
+			// check val shipper not null 
+			if ($('#shipperPtp').val() == '') {
+				Swal.fire({
+					icon: 'error',
+					title: 'Oops...',
+					text: 'Shipper Cannot Be Empty !',
+				})
+				return false;
+			}
+			// pu date 
+			if ($('#tgl_pickup').val() == '') {
+				Swal.fire({
+					icon: 'error',
+					title: 'Oops...',
+					text: 'Pickup Date Cannot Be Empty !',
+				})
+				return false;
+			}
+			// destination
+			if ($('#destination').val() == '') {
+				Swal.fire({
+					icon: 'error',
+					title: 'Oops...',
+					text: 'Destination Cannot Be Empty !',
+				})
+				return false;
+			}
+			// commodity
+			if ($('input[name="commodity"]').val() == '') {
+				Swal.fire({
+					icon: 'error',
+					title: 'Oops...',
+					text: 'Commodity Cannot Be Empty !',
+				})
+				return false;
+			}
+
+			// swal for confirm
+			Swal.fire({
+				title: 'Are you sure?',
+				text: "You want to add this PTP Request?",
+				icon: 'warning',
+				showCancelButton: true,
+				confirmButtonColor: '#3085d6',
+				cancelButtonColor: '#d33',
+				confirmButtonText: 'Yes, add it!'
+			}).then((result) => {
+				if (result.isConfirmed) {
+					// swal loading 
+					Swal.fire({
+						title: 'Please Wait !',
+						html: 'Loading...',
+						timerProgressBar: true,
+						didOpen: () => {
+							Swal.showLoading()
+						},
+						showConfirmButton: false,
+						allowOutsideClick: false
+
+					})
+					$('form').submit();
+				}
+			})
+		});
+	</script>
