@@ -2044,10 +2044,10 @@ class SalesOrder extends CI_Controller
             $pesan = "Hallo Cs dan Ops, ada pickup dari *" . $shipper['nama_customer'] . "* $pesanDestination $pesanPickUp *PORT TO PORT SERVICE* tanggal *" . date('Y-m-d', strtotime($this->input->post('tgl_pickup'))) . "* jam *" . date('H:i:s', strtotime($this->input->post('tgl_pickup'))) . "* dengan jenis barang " . $this->input->post('commodity') . ". Catatan : " . $this->input->post('note') . ". *Sales : $sales*";
             // kirim wa
             $this->wa->pickup('+6285697780467', "$pesan"); //Nomor Norman IT
-            // $this->wa->pickup('+6281293753199', "$pesan"); //Nomor Bu Lili CS
-            // $this->wa->pickup('+6285894438583', "$pesan"); //Mba Yunita  CS
-            // $this->wa->pickup('+6281212603705', "$pesan"); //Mas Ali OPS
-            // $this->wa->pickup('+6281398433940', "$pesan"); //Sarwan OPS
+            $this->wa->pickup('+6281293753199', "$pesan"); //Nomor Bu Lili CS
+            $this->wa->pickup('+6285894438583', "$pesan"); //Mba Yunita  CS
+            $this->wa->pickup('+6281212603705', "$pesan"); //Mas Ali OPS
+            $this->wa->pickup('+6281398433940', "$pesan"); //Sarwan OPS
 
 
 
