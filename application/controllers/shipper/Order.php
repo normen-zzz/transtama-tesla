@@ -128,10 +128,6 @@ class Order extends CI_Controller
         $data['title'] = 'Add Order';
         $data['id_so'] = $id_so;
        
-        $data['city'] = $this->db->get('tb_city')->result_array();
-        $data['province'] = $this->db->get('tb_province')->result_array();
-        $data['service'] = $this->db->get('tb_service_type')->result_array();
-        $data['customer'] = $this->db->get('tb_customer')->result_array();
         $this->backend->display('shipper/v_order_add_bulk', $data);
     }
     public function special($id_so, $id_tracking)
