@@ -12,7 +12,7 @@
 								<span class="text-muted font-weight-bold font-size-sm mt-1">Order ID :<b> <?= $p['order_id'] ?></b></span>
 							</div>
 							<div class="card-toolbar">
-								<a onclick='$("#modalLoading").modal("show");' href="<?= base_url('shipper/order/view/' . $id_so . '/' . $id_tracking) ?>" class="btn mr-2 text-light" style="background-color: #9c223b;">
+								<a onclick='$("#modalLoading").modal("show");' href="<?= base_url('shipper/order/view/' . $id_so ) ?>" class="btn mr-2 text-light" style="background-color: #9c223b;">
 									<i class="fas fa-chevron-circle-left text-light"> </i>
 									Back
 								</a>
@@ -84,7 +84,7 @@
 
 														<input type="text" class="form-control" hidden name="id" value="<?= $p['id'] ?>">
 														<input type="text" class="form-control" hidden name="id_so" value="<?= $p['id_so'] ?>">
-														<input type="text" class="form-control" hidden name="id_tracking" value="<?= $id_tracking ?>">
+														
 
 
 														<div class="col-md-4">
@@ -160,10 +160,12 @@
 																<input type="number" class="form-control" required name="koli" value="<?= $p['koli'] ?>">
 															</div>
 														</div>
-															<?php $get_do = $this->db->get_where('tbl_no_do', ['shipment_id' => $p['shipment_id']])->result_array(); ?>
+															<?php $get_do = $this->db->get_where('tbl_no_do', ['shipment_id' => $p['shipment_id']]); ?>
 														<?php
+														if ($get_do) {
+															
 														$no = 1;
-														foreach ($get_do as $do) {
+														foreach ($get_do->result_array() as $do) {
 														?>
 															<div class="col-md-4">
 																<div class="form-group">
@@ -171,17 +173,19 @@
 																	<input type="text" class="form-control" name="note_cs[]" value="<?= $do['no_do'] ?>">
 																	<input type="text" class="form-control" hidden name="id_do[]" value="<?= $do['id_berat'] ?>">
 																</div>
+																
 															</div>
-														<?php $no++;
-														}
-
-														?>
-														<div class="col-md-4">
+															<div class="col-md-4">
 															<div class="form-group">
 																<label for="exampleInputEmail1">No. SO/PO</label><small> Use (,) if more than 1</small>
 																<input type="text" class="form-control" name="no_so" value="<?= $do['no_so'] ?>">
 															</div>
 														</div>
+														<?php $no++;
+														}}
+
+														?>
+														
 														
 														<div class="col-md-3">
 															<div class="form-group">

@@ -6,7 +6,7 @@ class PengajuanModel extends CI_Model
 
      public function order($id = NULL)
     {
-        $this->db->select('a.pu_moda,a.id,a.shipment_id,a.order_id,a.shipper,a.id_so,a.destination,a.is_weight_print,a.consigne,a.koli,a.sender,a.berat_js,a.tree_shipper,a.tree_consignee,a.flight_at,a.state_shipper,a.city_shipper,a.service_type,a.pu_commodity,a.no_stp,a.signature,a.state_consigne,a.city_consigne,a.no_smu,a.image,a.note_shipment, b.nama_user');
+        $this->db->select('a.pu_moda,a.id,a.shipment_id,a.order_id,a.shipper,a.id_so,a.destination,a.is_weight_print,a.consigne,a.koli,a.sender,a.berat_js,a.tree_shipper,a.tree_consignee,a.flight_at,a.state_shipper,a.city_shipper,a.service_type,a.pu_commodity,a.no_stp,a.signature,a.state_consigne,a.city_consigne,a.no_smu,a.image,a.note_shipment, b.nama_user,a.note_driver');
         $this->db->from('tbl_shp_order a');
         $this->db->join('tb_user b', 'a.id_user=b.id_user');
         if ($id == NULL) {
@@ -83,8 +83,8 @@ class PengajuanModel extends CI_Model
     {
         $this->db->select('a.pu_moda,a.shipment_id,a.mark_shipper,a.koli,a.shipper,a.tree_shipper,a.consigne,a.created_at,a.note_cs,a.tree_consignee,a.id,a.id_so,a.destination,a.city_consigne,a.state_consigne,a.is_jabodetabek,c.pickup_by, b.service_name');
         $this->db->from('tbl_shp_order a');
-        $this->db->join('tb_service_type b', 'a.service_type=b.code');
-        $this->db->join('tbl_so c', 'a.id_so=c.id_so');
+        $this->db->join('tb_service_type b', 'a.service_type=b.code','left');
+        $this->db->join('tbl_so c', 'a.id_so=c.id_so' ,'left'); 
         $this->db->where('a.id_so', $id);
         $this->db->where('a.shipment_id !=', NULL);
         $this->db->where('a.deleted', 0);
