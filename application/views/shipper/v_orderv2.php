@@ -15,8 +15,12 @@
 									<i class="fas fa-plus-circle text-light"> </i>
 									Single Order
 								</a>
+								<a onclick='$("#modalLoading").modal("show");' href="<?= base_url('shipper/order/bulk/' . $id_so ) ?>" class="btn mr-2 text-light" style="background-color: #9c223b;">
+									<i class="fas fa-plus-circle text-light"> </i>
+									Bulk Order
+								</a>
 
-								
+
 
 							</div>
 						</div>
@@ -32,7 +36,7 @@
 										<i class="fas fa-print text-light"> </i>
 										Complete TTD & POP
 									</a>
-									
+
 
 								</div>
 								<!-- <div class="flash-data" data-flashdata="<?= $this->session->flashdata('message'); ?>"></div> -->
