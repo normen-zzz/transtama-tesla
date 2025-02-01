@@ -96,6 +96,8 @@ class Backoffice extends CI_Controller
 							redirect('dispatcher/scan');
 						} elseif ($user['id_role'] == 6) {
 							redirect('finance/ap');
+						} elseif ($user['id_role'] == 8) {
+							redirect('sales/SalesOrder');
 						} else {
 							redirect('dispatcher/salesOrder');
 						}
