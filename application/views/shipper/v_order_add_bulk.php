@@ -29,13 +29,13 @@
 													<label class="col-form-label text-lg-right font-weight-bold">Upload File</label>
 													<input type="file" id="input-file-now" name="upload_file" class="dropify" />
 													<input type="text" name="id_so" value="<?= $id_so ?>" hidden>
-													<input type="text" name="id_tracking" value="<?= $id_tracking ?>">
+													
 												</div>
 												<!--begin: Wizard Actions-->
 												<div class="d-flex justify-content-between border-top mt-5 pt-10">
 
 													<button type="submit" class="btn mr-2 text-light" style="background-color: #9c223b;">Submit</button>
-													<a href="<?= base_url('shipper/order/view/' . $id_so.'/'.$id_tracking) ?>" class="btn mr-2 text-light" style="background-color: #9c223b;">
+													<a href="<?= base_url('shipper/order/view/' . $id_so) ?>" class="btn mr-2 text-light" style="background-color: #9c223b;">
 														<i class="fas fa-chevron-circle-left text-light"> </i>
 														Back
 													</a>
