@@ -100,10 +100,10 @@ class Order extends CI_Controller
         $data['customer'] = $this->db->get('tb_customer')->result_array();
         $data['moda'] = $this->db->get('tbl_moda')->result_array();
         $data['so'] = $this->db->get_where('tbl_so', ['id_so' => $id_so])->row_array();
-        $dataDo = $this->db->get_where('do_requestpickup',['id_so' => $id_so]);
+        $dataDo = $this->db->get_where('do_requestpickup', ['id_so' => $id_so]);
         if ($dataDo) {
             $data['do'] = $dataDo;
-        } else{
+        } else {
             $data['do'] = NULL;
         }
         $this->backend->display('shipper/v_order_add', $data);
@@ -127,7 +127,7 @@ class Order extends CI_Controller
     {
         $data['title'] = 'Add Order';
         $data['id_so'] = $id_so;
-       
+
         $this->backend->display('shipper/v_order_add_bulk', $data);
     }
     public function special($id_so, $id_tracking)
@@ -483,203 +483,185 @@ class Order extends CI_Controller
     }
     public function import()
     {
-        $file_mimes = array(
-            'text/x-comma-separated-values', 'text/comma-separated-values', 'application/octet-stream',
-            'application/vnd.ms-excel', 'application/x-csv', 'text/x-csv', 'text/csv', 'application/csv',
-            'application/excel', 'application/vnd.msexcel', 'text/plain',
-            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-        );
-        if (isset($_FILES['upload_file']['name']) && in_array($_FILES['upload_file']['type'], $file_mimes)) {
-            $arr_file = explode('.', $_FILES['upload_file']['name']);
-            $extension = end($arr_file);
-            if ('csv' == $extension) {
-                $reader = new \PhpOffice\PhpSpreadsheet\Reader\Csv();
-            } else {
-                $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
-            }
-            $spreadsheet = $reader->load($_FILES['upload_file']['tmp_name']);
-            $sheetData = $spreadsheet->getActiveSheet()->toArray();
-            $deadline_sales = date('Y-m-d');
-
-            $queue = 0;
-            foreach ($sheetData as $rowdata) {
-                if ($queue == 0) {
-                    $queue += 1;
+        $this->db->trans_start();
+        try {
+            $file_mimes = array(
+                'text/x-comma-separated-values', 'text/comma-separated-values', 'application/octet-stream',
+                'application/vnd.ms-excel', 'application/x-csv', 'text/x-csv', 'text/csv', 'application/csv',
+                'application/excel', 'application/vnd.msexcel', 'text/plain',
+                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+            );
+            if (isset($_FILES['upload_file']['name']) && in_array($_FILES['upload_file']['type'], $file_mimes)) {
+                $arr_file = explode('.', $_FILES['upload_file']['name']);
+                $extension = end($arr_file);
+                if ('csv' == $extension) {
+                    $reader = new \PhpOffice\PhpSpreadsheet\Reader\Csv();
                 } else {
-                    $date = date('Y-m-d');
-                    $pickup_start = date('Y-m-d', strtotime('+1 days', strtotime($date)));
+                    $reader = new \PhpOffice\PhpSpreadsheet\Reader\Xlsx();
+                }
+                $spreadsheet = $reader->load($_FILES['upload_file']['tmp_name']);
+                $sheetData = $spreadsheet->getActiveSheet()->toArray();
+                $deadline_sales = date('Y-m-d');
 
-                    $koli = $rowdata[8];
-                    $img = $this->input->post('ttd');
-                    $img = str_replace('data:image/png;base64,', '', $img);
-                    $service_type = $this->input->post('service_type');
-                    $date = date('Y-m-d');
-                    $tahun = date("y");
-                    $bulan = date("m");
-                    $tgl = date("d");
-                    // var_dump($tgl);
-                    // die;
-
-                    $sql = $this->db->query("SELECT no_resi as shipment_id FROM tbl_no_resi  ORDER BY id_no_resi DESC LIMIT 1")->row_array();
-                    // var_dump($sql);
-                    // die;
-                    if ($sql == NULL) {
-                        $noUrut = 1;
-                        $shipment_id  = "$noUrut";
+                $queue = 0;
+                foreach ($sheetData as $rowdata) {
+                    if ($queue == 0) {
+                        $queue += 1;
                     } else {
-                        $last_shipment_id = $sql['shipment_id'];
-                        $no = $last_shipment_id + 1;
-                        $shipment_id =  ltrim($no, '0');
-                    }
-                    // input no shipment
-                    $this->db->insert('tbl_no_resi', ['no_resi' => $shipment_id, 'created_by' => $this->session->userdata('id_user')]);
+                        $date = date('Y-m-d');
+                        $pickup_start = date('Y-m-d', strtotime('+1 days', strtotime($date)));
 
-                    // kode referensi so
-                    $sql = $this->db->query("SELECT max(so_id) as kode FROM tbl_shp_order")->row_array();
-                    $no = $sql['kode'];
-                    // SO - 0 0 0 0 0 0 0 0 9;
-                    $potongSO = ltrim($no, 'SO-');
-                    $potong = ltrim($potongSO, '0');
-                    $noUrut = $potong + 1;
-                    // $kode =  sprintf("%09s", $noUrut);
-                    $kode  = "SO-$noUrut";
+                        $koli = $rowdata[8];
+                        $img = $this->input->post('ttd');
+                        $img = str_replace('data:image/png;base64,', '', $img);
+                        $service_type = $this->input->post('service_type');
+                        $date = date('Y-m-d');
+                        $tahun = date("y");
+                        $bulan = date("m");
+                        $tgl = date("d");
+                        // var_dump($tgl);
+                        // die;
 
-                    $img = $this->input->post('ttd');
-                    $img = str_replace('data:image/png;base64,', '', $img);
-                    $get_pickup = $this->db->limit(1)->order_by('id', 'DESC')->get_where('tbl_shp_order', ['id_so' => $this->input->post('id_so')])->row_array();
-
-
-                    // kode referensi so
-                    $sql = $this->db->query("SELECT max(so_id) as kode FROM tbl_shp_order")->row_array();
-                    $no = $sql['kode'];
-                    // SO - 0 0 0 0 0 0 0 0 9;
-                    $potongSO = ltrim($no, 'SO-');
-                    $potong = ltrim($potongSO, '0');
-                    $noUrut = $potong + 1;
-                    // $kode =  sprintf("%09s", $noUrut);
-                    $kode  = "SO-$noUrut";
-
-                    $img = $this->input->post('ttd');
-                    $img = str_replace('data:image/png;base64,', '', $img);
-                    $city_shipper = $rowdata[2];
-                    $city_consigne = $rowdata[6];
-
-                    $get_pickup = $this->db->limit(1)->order_by('id', 'DESC')->get_where('tbl_shp_order', ['id_so' => $this->input->post('id_so')])->row_array();
-
-                    $data = array(
-                        'shipper' => strtoupper($rowdata[0]),
-                        'state_shipper' => $rowdata[1],
-                        'city_shipper' => $rowdata[2],
-                        'destination' => $rowdata[3],
-                        'consigne' => strtoupper($rowdata[4]),
-                        'state_consigne' => $rowdata[5],
-                        'origin' => $this->input->post('origin'),
-                        'city_consigne' => $rowdata[6],
-                        'service_type' =>  $rowdata[7],
-                        'koli' => $rowdata[8],
-                        'sender' => $rowdata[9],
-                        'note_cs' => '-',
-                        'id_user' => $this->session->userdata('id_user'),
-                        'signature' => $img,
-                        'so_id' => $kode,
-                        'tree_shipper' => $this->getTreeLetterCode($city_shipper),
-                        'tree_consignee' => $this->getTreeLetterCode($city_consigne),
-                        'shipment_id' => $shipment_id,
-                        'is_jabodetabek' =>  2,
-                        'date_new' => date('Y-m-d'),
-                        'id_so' => $this->input->post('id_so'),
-                        'tgl_pickup' => $get_pickup['tgl_pickup'],
-                        'pu_moda' => $get_pickup['pu_moda'],
-                        'pu_poin' => $get_pickup['pu_poin'],
-                        'time' => $get_pickup['time'],
-                        'pu_commodity' => $get_pickup['pu_commodity'],
-                        'pu_service' => $get_pickup['pu_service'],
-                        'pu_note' => $get_pickup['pu_note'],
-                        // 'city_shipper' => $get_pickup['city_shipper'],
-                        'payment' => $get_pickup['payment'],
-                        'packing_type' => $get_pickup['packing_type'],
-                        'is_incoming' => $get_pickup['is_incoming'],
-
-                    );
-                    // cek order berdasarkan id_so
-                    $get_last_order = $this->db->limit(1)->order_by('id', 'desc')->get_where('tbl_shp_order', ['id_so' => $this->input->post('id_so')])->row_array();
-                    // var_dump($get_last_order);
-                    // die;
-                    // kalo shipment id nya null, maka update tbl nya
-                    if ($get_last_order['so_id'] == NULL) {
-                        // echo 'kosong';
-                        $update =  $this->db->update('tbl_shp_order', $data, ['id_so' => $this->input->post('id_so')]);
-                        if ($update) {
-                            $this->barcode($shipment_id);
-                            $this->qrcode($shipment_id);
-                            $data = array(
-                                'shipment_id' => $shipment_id,
-                                'status' => 'Shipment Telah Dipickup Dari Shipper',
-                                'id_so' => $this->input->post('id_so'),
-                                'created_at' => date('Y-m-d'),
-                                'id_user' => $this->session->userdata('id_user'),
-                                'pic_task' => $this->input->post('sender'),
-                                'time' => date('H:i:s'),
-                                'flag' => 3,
-                                'status_eksekusi' => 0,
-                            );
-                            $this->db->insert('tbl_tracking_real', $data);
-                            $data = array(
-                                'status' => 2,
-                                'deadline_sales_so' => $deadline_sales
-                            );
-                            $this->db->update('tbl_so', $data, ['id_so' => $this->input->post('id_so')]);
-                            $data = array(
-                                'status_eksekusi' => 1,
-                            );
-                            $this->db->update('tbl_tracking_real', $data, ['id_tracking' => $this->input->post('id_tracking')]);
-                            $data = array(
-                                'shipment_id' => $shipment_id,
-                            );
-                            $this->db->update('tbl_tracking_real', $data, ['id_so' => $this->input->post('id_so')]);
+                        $sql = $this->db->query("SELECT no_resi as shipment_id FROM tbl_no_resi  ORDER BY id_no_resi DESC LIMIT 1")->row_array();
+                        // var_dump($sql);
+                        // die;
+                        if ($sql == NULL) {
+                            $noUrut = 1;
+                            $shipment_id  = "$noUrut";
                         } else {
+                            $last_shipment_id = $sql['shipment_id'];
+                            $no = $last_shipment_id + 1;
+                            $shipment_id =  ltrim($no, '0');
                         }
-                    } else {
-                        // kalo shipment id nya ada, maka insert tbl nya 
-                        $insert =  $this->db->insert('tbl_shp_order', $data);
-                        if ($insert) {
-                            $this->barcode($shipment_id);
-                            $this->qrcode($shipment_id);
-                            $get_tracking = $this->db->limit(4)->order_by('id_tracking', 'ASC')->get_where('tbl_tracking_real', ['id_so' => $this->input->post('id_so')])->result_array();
-                            foreach ($get_tracking as $track) {
+                        // input no shipment
+                        $insertnoresi = $this->db->insert('tbl_no_resi', ['no_resi' => $shipment_id, 'created_by' => $this->session->userdata('id_user')]);
+                        if (!$insertnoresi) {
+                            throw new Exception('Error Insert No Resi');
+                        }
+
+                        // kode referensi so
+                        $sql = $this->db->query("SELECT max(so_id) as kode FROM tbl_shp_order")->row_array();
+                        $no = $sql['kode'];
+                        // SO - 0 0 0 0 0 0 0 0 9;
+                        $potongSO = ltrim($no, 'SO-');
+                        $potong = ltrim($potongSO, '0');
+                        $noUrut = $potong + 1;
+                        // $kode =  sprintf("%09s", $noUrut);
+                        $kode  = "SO-$noUrut";
+
+                        $img = $this->input->post('ttd');
+                        $img = str_replace('data:image/png;base64,', '', $img);
+                        $get_pickup = $this->db->limit(1)->order_by('id', 'DESC')->get_where('tbl_shp_order', ['id_so' => $this->input->post('id_so')])->row_array();
+
+
+                        // kode referensi so
+                        $sql = $this->db->query("SELECT max(so_id) as kode FROM tbl_shp_order")->row_array();
+                        $no = $sql['kode'];
+                        // SO - 0 0 0 0 0 0 0 0 9;
+                        $potongSO = ltrim($no, 'SO-');
+                        $potong = ltrim($potongSO, '0');
+                        $noUrut = $potong + 1;
+                        // $kode =  sprintf("%09s", $noUrut);
+                        $kode  = "SO-$noUrut";
+
+                        $img = $this->input->post('ttd');
+                        $img = str_replace('data:image/png;base64,', '', $img);
+                        $city_shipper = $rowdata[2];
+                        $city_consigne = $rowdata[6];
+
+                        $get_pickup = $this->db->limit(1)->order_by('id', 'DESC')->get_where('tbl_shp_order', ['id_so' => $this->input->post('id_so')])->row_array();
+                        $so = $this->db->get_where('tbl_so', ['id_so' => $this->input->post('id_so')])->row_array();
+
+                        $data = array(
+                            'shipper' => strtoupper($rowdata[0]),
+                            'state_shipper' => $rowdata[1],
+                            'city_shipper' => $rowdata[2],
+                            'destination' => $rowdata[3],
+                            'consigne' => strtoupper($rowdata[4]),
+                            'state_consigne' => $rowdata[5],
+                            'origin' => $this->input->post('origin'),
+                            'city_consigne' => $rowdata[6],
+                            'service_type' =>  $rowdata[7],
+                            'koli' => $rowdata[8],
+                            'sender' => $rowdata[9],
+                            'note_cs' => '-',
+                            'id_user' => $this->session->userdata('id_user'),
+                            'signature' => $img,
+                            'so_id' => $kode,
+                            'tree_shipper' => $this->getTreeLetterCode($city_shipper),
+                            'tree_consignee' => $this->getTreeLetterCode($city_consigne),
+                            'shipment_id' => $shipment_id,
+                            'is_jabodetabek' =>  2,
+                            'date_new' => date('Y-m-d'),
+                            'id_so' => $this->input->post('id_so'),
+                            'tgl_pickup' => $so['tgl_pickup'],
+                            'pu_moda' => $so['pu_moda'],
+                            'pu_poin' => $so['pu_poin'],
+                            'time' => $so['time'],
+                            'pu_commodity' => $so['commodity'],
+                            'pu_service' => $so['service'],
+                            'pu_note' => $so['note'],
+                            // 'city_shipper' => $get_pickup['city_shipper'],
+                            'payment' => $so['payment'],
+                            'packing_type' => $so['packing'],
+                            'is_incoming' => $so['is_incoming'],
+
+                        );
+                       
+                        // var_dump($get_last_order);
+                        // die;
+                        // kalo shipment id nya null, maka update tbl nya
+                       
+                            // kalo shipment id nya ada, maka insert tbl nya 
+                            $insert =  $this->db->insert('tbl_shp_order', $data);
+                            if ($insert) {
+                                $this->barcode($shipment_id);
+                                $this->qrcode($shipment_id);
+                                $get_tracking = $this->db->limit(4)->order_by('id_tracking', 'ASC')->get_where('tbl_tracking_real', ['id_so' => $this->input->post('id_so')])->result_array();
+                                foreach ($get_tracking as $track) {
+                                    $data = array(
+                                        'shipment_id' => $shipment_id,
+                                        'status' => $track['status'],
+                                        'id_so' => $this->input->post('id_so'),
+                                        'created_at' => $track['created_at'],
+                                        'note' => $track['note'],
+                                        'bukti' => $track['bukti'],
+                                        'id_user' => $track['id_user'],
+                                        'update_at' => $track['update_at'],
+                                        'pic_task' => $track['pic_task'],
+                                        'time' => $track['time'],
+                                        'flag' => $track['flag'],
+                                        'status_eksekusi' => $track['status_eksekusi'],
+                                    );
+                                    $this->db->insert('tbl_tracking_real', $data);
+                                }
+
                                 $data = array(
-                                    'shipment_id' => $shipment_id,
-                                    'status' => $track['status'],
-                                    'id_so' => $this->input->post('id_so'),
-                                    'created_at' => $track['created_at'],
-                                    'note' => $track['note'],
-                                    'bukti' => $track['bukti'],
-                                    'id_user' => $track['id_user'],
-                                    'update_at' => $track['update_at'],
-                                    'pic_task' => $track['pic_task'],
-                                    'time' => $track['time'],
-                                    'flag' => $track['flag'],
-                                    'status_eksekusi' => $track['status_eksekusi'],
+                                    'status' => 2,
+                                    'deadline_sales_so' => $deadline_sales
                                 );
-                                $this->db->insert('tbl_tracking_real', $data);
+                                $this->db->update('tbl_so', $data, ['id_so' => $this->input->post('id_so')]);
+                            } else {
+                                throw new Exception('Failed Insert to tbl shp order');
                             }
-
-                            $data = array(
-                                'status' => 2,
-                                'deadline_sales_so' => $deadline_sales
-                            );
-                            $this->db->update('tbl_so', $data, ['id_so' => $this->input->post('id_so')]);
-                        } else {
-                        }
+                        
                     }
                 }
+                $this->db->trans_complete();
+                if ($this->db->trans_status() === FALSE) {
+                    throw new Exception('Transaction failed');
+                } else {
+                    $this->session->set_flashdata('message', '<div class="alert
+                    alert-success" role="alert">Success</div>');
+                    redirect('shipper/order/view/' . $this->input->post('id_so') . '/' . $this->input->post('id_tracking'));
+                }
+            } else {
+                throw new Exception('File not valid');
             }
+        } catch (Exception $e) {
+            $this->db->trans_rollback();
             $this->session->set_flashdata('message', '<div class="alert
-                        alert-success" role="alert">Success</div>');
-            redirect('shipper/order/view/' . $this->input->post('id_so') . '/' . $this->input->post('id_tracking'));
-        } else {
-            $this->session->set_flashdata('message', '<div class="alert
-                    alert-danger" role="alert">Silahkan Upload File</div>');
+                        alert-danger" role="alert">' . $e->getMessage() . '</div>');
             redirect('shipper/order/bulk/' . $this->input->post('id_so') . '/' . $this->input->post('id_tracking'));
         }
     }
@@ -939,7 +921,7 @@ class Order extends CI_Controller
                 'so_id' => $kode,
                 'tgl_pickup' => date('Y-m-d'),
                 'pu_moda' => $this->input->post('moda'),
-                
+
             );
 
             // var_dump($data);
