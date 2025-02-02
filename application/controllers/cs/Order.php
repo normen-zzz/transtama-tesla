@@ -317,172 +317,73 @@ class Order extends CI_Controller
     {
 
         if ($bulan != null && $tahun != null) {
-            $data['title'] = "Laporan Order Dari Bulan $bulan-$tahun ";
+            $data['title'] = "Laporan Order Dari Bulan $bulan-$tahun";
             $order = $this->pengajuan->getLaporanTransaksiFilter($bulan, $tahun)->result_array();
         } else {
             $data['title'] = "Laporan Order Keseluruhan";
             $order = $this->pengajuan->getLaporan()->result_array();
         }
-
+        
+        // Optimasi Query untuk no_do dan no_so dalam satu query
+        $shipment_ids = array_column($order, 'shipment_id');
+        if (!empty($shipment_ids)) {
+            $shipment_data = $this->db->select('shipment_id, GROUP_CONCAT(no_do SEPARATOR "/") as no_do, GROUP_CONCAT(no_so SEPARATOR "/") as no_so')
+                                      ->from('tbl_no_do')
+                                      ->where_in('shipment_id', $shipment_ids)
+                                      ->group_by('shipment_id')
+                                      ->get()
+                                      ->result_array();
+            $shipment_map = array_column($shipment_data, null, 'shipment_id');
+        }
+        
+        // Buat Spreadsheet
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
-        $sheet->setCellValue('A1', 'NO');
-        $sheet->setCellValue('B1', 'DATE');
-        $sheet->setCellValue('C1', 'SHIPMENT ID');
-        $sheet->setCellValue('D1', 'NO DO/DN');
-        $sheet->setCellValue('E1', 'NO SO/PO');
-        $sheet->setCellValue('F1', 'STP');
-        $sheet->setCellValue('G1', 'CUSTOMER');
-        $sheet->setCellValue('H1', 'CONSIGNEE');
-        $sheet->setCellValue('I1', 'DEST');
-        $sheet->setCellValue('J1', 'SERVICE');
-        $sheet->setCellValue('K1', 'COMM');
-        $sheet->setCellValue('L1', 'COLLY');
-        $sheet->setCellValue('M1', 'WEIGHT');
-        $sheet->setCellValue('N1', 'SPECIAL WEIGHT');
-        $sheet->setCellValue('O1', 'PETUGAS PICKUP');
-        $sheet->setCellValue('P1', 'NO FLIGHT');
-        $sheet->setCellValue('Q1', 'NO SMU');
-        $sheet->setCellValue('R1', 'TANGGAL DITERIMA');
-        $sheet->setCellValue('S1', 'STATUS DELIVERY');
-        $sheet->setCellValue('T1', 'LEADTIME');
-        $sheet->setCellValue('U1', 'REALISASI LEADTIME');
-        $sheet->setCellValue('V1', 'STATUS POD');
-        $sheet->setCellValue('W1', 'LEADTIME KPI SCORE');
-        $sheet->setCellValue('X1', 'REALISASI LEADTIME AGEN DAERAH');
-        $sheet->setCellValue('Y1', 'KPI LEADTIME AGEN DAERAH');
-        $sheet->setCellValue('Z1', 'TANGGAL PENGISIAN NAMA PENERIMA');
-        $sheet->setCellValue('AA1', 'REALISASI LEADTIME INPUT NAMA PENERIMA');
-        $sheet->setCellValue('AB1', 'KPI LEADTIME INPUT NAMA PENERIMA');
-        $sheet->setCellValue('AC1', 'KASUS');
-        $sheet->setCellValue('AD1', 'MILESTONE DIBUAT');
-
-
+        $headers = ['NO', 'DATE', 'SHIPMENT ID', 'NO DO/DN', 'NO SO/PO', 'STP', 'CUSTOMER', 'CONSIGNEE', 'DEST', 'SERVICE',
+                    'COMM', 'COLLY', 'WEIGHT', 'SPECIAL WEIGHT', 'PETUGAS PICKUP', 'NO FLIGHT', 'NO SMU', 'TANGGAL DITERIMA',
+                    'STATUS DELIVERY', 'LEADTIME', 'REALISASI LEADTIME', 'STATUS POD', 'LEADTIME KPI SCORE', 
+                    'REALISASI LEADTIME AGEN DAERAH', 'KPI LEADTIME AGEN DAERAH', 'TANGGAL PENGISIAN NAMA PENERIMA', 
+                    'REALISASI LEADTIME INPUT NAMA PENERIMA', 'KPI LEADTIME INPUT NAMA PENERIMA', 'KASUS', 'MILESTONE DIBUAT'];
+        
+        $sheet->fromArray([$headers], null, 'A1');
+        
+        // Isi Data
+        $dataRows = [];
         $no = 1;
-        $x = 2;
         foreach ($order as $row) {
-            $get_do = $this->db->select('no_do,no_so, berat, koli')->get_where('tbl_no_do', ['shipment_id' => $row['shipment_id']])->result_array();
-            $jumlah = $this->db->select('no_do')->get_where('tbl_no_do', ['shipment_id' => $row['shipment_id']])->num_rows();
-            $no_do = '';
-            $no_so = '';
-            $tracking = $this->pengajuan->getLastTracking($row['shipment_id'])->row_array();
-            if ($get_do) {
-                $i = 1;
-                foreach ($get_do as $d) {
-                    $no_do = ($i == $jumlah) ? $d['no_do'] : $d['no_do'] . '/';
-                    $i++;
-                }
-            } else {
-                $no_do =  $row['note_cs'];
-            }
-
-            // no so
-            if ($get_do) {
-                $i = 1;
-                foreach ($get_do as $d) {
-                    $no_so =  ($i == $jumlah) ? $d['no_so'] : $d['no_so'] . '/';
-                    $i++;
-                }
-            } else {
-                $no_so =  $row['no_so'];
-            }
-            $diterima = new DateTime($row['tgl_diterima']);
-            $pickup = new DateTime($row['tgl_pickup']);
-            $pod = '';
-            if ($row['status_pod'] == 0) {
-                $pod = 'Pending';
-            } elseif ($row['status_pod'] == 1) {
-                $pod = 'Dikirim';
-            } elseif ($row['status_pod'] == 2) {
-                $pod = 'Diterima';
-            }
-
-
+            $shipment_id = $row['shipment_id'];
+            $no_do = isset($shipment_map[$shipment_id]) ? $shipment_map[$shipment_id]['no_do'] : $row['note_cs'];
+            $no_so = isset($shipment_map[$shipment_id]) ? $shipment_map[$shipment_id]['no_so'] : $row['no_so'];
+        
+            $diterima = new DateTime($row['tgl_diterima'] ?? 'now');
+            $pickup = new DateTime($row['tgl_pickup'] ?? 'now');
             $leadtime = $diterima->diff($pickup)->d;
-			$mark = ' ('.$row["mark_shipper"].')';
-
-            $sheet->setCellValue('A' . $x, $no)->getColumnDimension('A')
-                ->setAutoSize(true);
-            $sheet->setCellValue('B' . $x, $row['tgl_pickup'])->getColumnDimension('B')
-                ->setAutoSize(true);
-            $sheet->setCellValue('C' . $x, $row['shipment_id'])->getColumnDimension('C')
-                ->setAutoSize(true);
-            $sheet->setCellValue('D' . $x, $no_do)->getColumnDimension('D')
-                ->setAutoSize(true);
-            $sheet->setCellValue('E' . $x, $no_so)->getColumnDimension('E')
-                ->setAutoSize(true);
-            $sheet->setCellValue('F' . $x, $row['no_stp'])->getColumnDimension('F')
-                ->setAutoSize(true);
-             $sheet->setCellValue('G' . $x, $row['shipper'].$mark)->getColumnDimension('G')
-                ->setAutoSize(true);
-            $sheet->setCellValue('H' . $x, $row['consigne'])->getColumnDimension('H')
-                ->setAutoSize(true);
-            $sheet->setCellValue('I' . $x, $row['tree_consignee'])->getColumnDimension('I')
-                ->setAutoSize(true);
-            $sheet->setCellValue('J' . $x, $row['service_name'])->getColumnDimension('J')
-                ->setAutoSize(true);
-            $sheet->setCellValue('K' . $x, $row['pu_commodity'])->getColumnDimension('K')
-                ->setAutoSize(true);
-            $sheet->setCellValue('L' . $x, $row['koli'])->getColumnDimension('L')
-                ->setAutoSize(true);
-            $sheet->setCellValue('M' . $x, $row['berat_js'])->getColumnDimension('M')
-                ->setAutoSize(true);
-            $sheet->setCellValue('N' . $x, $row['berat_msr'])->getColumnDimension('N')
-                ->setAutoSize(true);
-            $sheet->setCellValue('O' . $x, $row['nama_user'])->getColumnDimension('O')
-                ->setAutoSize(true);
-            $sheet->setCellValue('P' . $x, $row['no_flight'])->getColumnDimension('P')
-                ->setAutoSize(true);
-            $sheet->setCellValue('Q' . $x, $row['no_smu'])->getColumnDimension('Q')
-                ->setAutoSize(true);
-           if ($row['tgl_diterima'] != NULL) {
-                $sheet->setCellValue('R' . $x, $row['tgl_diterima'])->getColumnDimension('R')
-                    ->setAutoSize(true);
-            } else {
-                // jika status mengandung kata paket telah diterima
-                if (strpos($tracking['status'], 'Diterima') !== false) {
-                    $sheet->setCellValue('R' . $x, $tracking['created_at'])->getColumnDimension('R')
-                        ->setAutoSize(true);
-                } else {
-                    $sheet->setCellValue('R' . $x, '')->getColumnDimension('R')
-                        ->setAutoSize(true);
-                }
-            }
-            $sheet->setCellValue('S' . $x, $tracking['status'])->getColumnDimension('S')
-                ->setAutoSize(true);
-            $sheet->setCellValue('T' . $x, $leadtime)->getColumnDimension('T')
-                ->setAutoSize(true);
-            $sheet->setCellValue('U' . $x, '')->getColumnDimension('U')
-                ->setAutoSize(true);
-            $sheet->setCellValue('V' . $x, $pod)->getColumnDimension('V')
-                ->setAutoSize(true);
-            $sheet->setCellValue('W' . $x, '')->getColumnDimension('W')
-                ->setAutoSize(true);
-            $sheet->setCellValue('X' . $x, '')->getColumnDimension('X')
-                ->setAutoSize(true);
-            $sheet->setCellValue('Y' . $x, '')->getColumnDimension('Y')
-                ->setAutoSize(true);
-            $sheet->setCellValue('Z' . $x, '')->getColumnDimension('Z')
-                ->setAutoSize(true);
-            $sheet->setCellValue('AA' . $x, '')->getColumnDimension('AA')
-                ->setAutoSize(true);
-            $sheet->setCellValue('AB' . $x, '')->getColumnDimension('AB')
-                ->setAutoSize(true);
-            $sheet->setCellValue('AC' . $x, '')->getColumnDimension('AC')
-                ->setAutoSize(true);
-            $sheet->setCellValue('AD' . $x, $tracking['update_at'])->getColumnDimension('AD')
-                ->setAutoSize(true);
-            $x++;
-            $no++;
+        
+            $pod_status = ['Pending', 'Dikirim', 'Diterima'];
+            $pod = $pod_status[$row['status_pod']] ?? 'Unknown';
+        
+            $mark = ' (' . $row["mark_shipper"] . ')';
+        
+            $dataRows[] = [
+                $no++, $row['tgl_pickup'], $shipment_id, $no_do, $no_so, $row['no_stp'],
+                $row['shipper'] . $mark, $row['consigne'], $row['tree_consignee'], 
+                $row['service_name'], $row['pu_commodity'], $row['koli'], $row['berat_js'], 
+                $row['berat_msr'], $row['nama_user'], $row['no_flight'], $row['no_smu'], 
+                $row['tgl_diterima'], $row['status_pod'], $leadtime, '', $pod, '', '', '', '', '', '', '', $row['update_at']
+            ];
         }
-        $filename = $data['title'];
-
+        
+        // Masukkan data ke Excel
+        $sheet->fromArray($dataRows, null, 'A2');
+        
+        // Set Header dan Simpan File
         header('Content-Type: application/vnd.ms-excel');
-        header('Content-Disposition: attachment;filename="' . $filename . '.xlsx"');
+        header('Content-Disposition: attachment;filename="' . $data['title'] . '.xlsx"');
         header('Cache-Control: max-age=0');
         $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
         $writer->save('php://output');
         exit;
+        
     }
     public function ExportexcelVoid($bulan = null, $tahun = null)
     {

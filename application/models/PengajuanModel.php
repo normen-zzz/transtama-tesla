@@ -182,19 +182,25 @@ class PengajuanModel extends CI_Model
         }
     }
     public function getLaporanTransaksiFilter($bulan, $tahun)
-    {
-        // $where = array('a.shipment_id' != NULL, 'YEAR(a.tgl_pickup)' => $tahun, 'MONTH(a.tgl_pickup)' => $bulan);
-        $where = array('YEAR(a.tgl_pickup)' => $tahun, 'MONTH(a.tgl_pickup)' => $bulan, 'a.deleted' => 0);
-        $this->db->select('a.*, b.nama_user, c.service_name, c.prefix');
-        $this->db->from('tbl_shp_order a');
-        $this->db->join('tb_user b', 'a.id_user=b.id_user');
-        $this->db->join('tb_service_type c', 'a.service_type=c.code');
-        $this->db->where($where);
-        // $this->db->or_where('a.s')
-        $this->db->order_by('a.tgl_pickup', 'ASC');
-        $query = $this->db->get();
-        return $query;
-    }
+{
+    $this->db->select('a.shipment_id, a.tgl_pickup, a.no_stp, 
+                       a.shipper, a.consigne, a.tree_consignee, 
+                       a.pu_commodity, a.koli, a.berat_js, a.berat_msr, 
+                       a.no_flight, a.no_smu, a.tgl_diterima, a.status_pod, 
+                       a.mark_shipper, a.update_at, 
+                       b.nama_user, c.service_name, c.prefix,a.note_cs,a.no_so');
+    $this->db->from('tbl_shp_order a');
+    $this->db->join('tb_user b', 'a.id_user = b.id_user', 'left');
+    $this->db->join('tb_service_type c', 'a.service_type = c.code', 'left');
+    $this->db->where([
+        'YEAR(a.tgl_pickup)' => $tahun,
+        'MONTH(a.tgl_pickup)' => $bulan,
+        'a.deleted' => 0
+    ]);
+    $this->db->order_by('a.tgl_pickup', 'ASC');
+    return $this->db->get();
+}
+
     public function getLaporanTransaksiVoidFilter($bulan, $tahun)
     {
         // $where = array('a.shipment_id' != NULL, 'YEAR(a.tgl_pickup)' => $tahun, 'MONTH(a.tgl_pickup)' => $bulan);
