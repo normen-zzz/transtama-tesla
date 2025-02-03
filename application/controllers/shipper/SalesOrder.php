@@ -25,17 +25,19 @@ class SalesOrder extends CI_Controller
         cek_role();
     }
 
-    public function index()
-    {
+    public function index() {
         $akses = $this->session->userdata('akses');
+        $user_id = $this->session->userdata('id_user');
+    
+        
+    
         if ($akses == 1) {
             $data['title'] = 'Sales Order';
             $this->backend->display('shipper/v_so', $data);
         } else {
-            $result = $this->db->query('SELECT * FROM tbl_so WHERE status_pickup <= 3 AND is_incoming = 0 AND alasan_cancel IS NULL AND pickup_by = ' . $this->session->userdata("id_user"))->result_array();
-            $data['shipments'] = $result;
-            $data['delivery'] = $this->db->query('SELECT shipment_id,shipper,koli,weight,consigne,destination,city_consigne,pu_commodity,pu_service,pu_note,delivery_status FROM tbl_shp_order WHERE is_jabodetabek = 1 AND deleted = 0 AND delivery_by=' . $this->session->userdata('id_user') . ' AND tgl_diterima IS NULL ');
-            $data['users'] = $this->db->get_where('tb_user', ['id_role' => 2])->result_array();
+            $data['shipments'] = $this->order->get_shipments($user_id);
+            $data['delivery'] = $this->order->get_deliveries($user_id);
+            $data['users'] = $this->order->get_users();
             $data['title'] = 'My Shipment';
             $this->backend->display('shipper/v_shipmentv2', $data);
         }

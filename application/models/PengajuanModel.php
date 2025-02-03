@@ -3,6 +3,58 @@ defined('BASEPATH') or exit('No direct script access allowed');
 
 class PengajuanModel extends CI_Model
 {
+    public function get_shipments($user_id) {
+        $this->db->select('*');
+        $this->db->from('tbl_so');
+        $this->db->where('status_pickup <=', 3);
+        $this->db->where('is_incoming', 0);
+        $this->db->where('alasan_cancel IS NULL');
+        $this->db->where('pickup_by', $user_id);
+        return $this->db->get()->result_array();
+    }
+
+    public function get_deliveries($user_id) {
+        $this->db->select('shipment_id, shipper, koli, weight, consigne, destination, city_consigne, pu_commodity, pu_service, pu_note, delivery_status');
+        $this->db->from('tbl_shp_order');
+        $this->db->where('is_jabodetabek', 1);
+        $this->db->where('deleted', 0);
+        $this->db->where('delivery_by', $user_id);
+        $this->db->where('tgl_diterima IS NULL');
+        return $this->db->get();
+    }
+
+    public function get_users() {
+        return $this->db->get_where('tb_user', ['id_role' => 2])->result_array();
+    }
+
+    public function get_shipment_on_so_charter($id_so) {
+        $this->db->select('a.shipment_id, a.tgl_diterima');
+        $this->db->from('tbl_shp_order AS a');
+        $this->db->join('tb_service_type AS b', 'a.service_type = b.code');
+        $this->db->where('a.id_so', $id_so);
+        $this->db->where_in('b.prefix', ['CHA', 'SDS']);
+        $this->db->where('a.is_jabodetabek', 1);
+        return $this->db->get();
+    }
+
+    public function get_shipment_on_so_charter_luar($id_so) {
+        $this->db->select('a.shipment_id, a.tgl_diterima');
+        $this->db->from('tbl_shp_order AS a');
+        $this->db->join('tb_service_type AS b', 'a.service_type = b.code');
+        $this->db->where('a.id_so', $id_so);
+        $this->db->where_in('b.prefix', ['CHA', 'SDS']);
+        $this->db->where('a.is_jabodetabek', 2);
+        return $this->db->get();
+    }
+
+    public function get_shipment_on_so_reguler($id_so) {
+        $this->db->select('a.shipment_id');
+        $this->db->from('tbl_shp_order AS a');
+        $this->db->join('tb_service_type AS b', 'a.service_type = b.code');
+        $this->db->where('a.id_so', $id_so);
+        $this->db->where_in('b.prefix', ['REG', 'AIR']);
+        return $this->db->get();
+    }
 
      public function order($id = NULL)
     {
