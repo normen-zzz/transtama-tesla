@@ -238,6 +238,82 @@ class M_Datatables extends CI_Model
     return json_encode($callback); // Convert array $callback ke json
   }
 
+  function get_tables_query2($query, $cari, $where, $iswhere)
+  {
+    $search = $_POST['search']['value'] ?? '';
+    $limit = intval($_POST['length'] ?? 10);
+    $start = intval($_POST['start'] ?? 0);
+
+    // Build WHERE clause
+    $whereClause = '';
+    if ($where != null) {
+      $setWhere = array();
+      foreach ($where as $key => $value) {
+        $setWhere[] = "$key = '" . $this->db->escape_str($value) . "'";
+      }
+      $whereClause = implode(' AND ', $setWhere);
+    }
+
+    if (!empty($iswhere)) {
+      $whereClause = $whereClause ? "$whereClause AND $iswhere" : $iswhere;
+    }
+
+    // Build search clause
+    $searchClause = '';
+    if (!empty($search)) {
+      $searchConditions = array();
+      foreach ($cari as $column) {
+        $searchConditions[] = "$column LIKE '%" . $this->db->escape_str($search) . "%'";
+      }
+      $searchClause = implode(' OR ', $searchConditions);
+    }
+
+    // Build ORDER BY clause
+    $orderField = $_POST['columns'][$_POST['order'][0]['column']]['data'] ?? 'a.shipment_id';
+    $orderDirection = $_POST['order'][0]['dir'] ?? 'ASC';
+    $orderClause = " ORDER BY $orderField $orderDirection";
+
+    // Build final query
+    $finalQuery = $query;
+    if ($whereClause) {
+      $finalQuery .= " WHERE $whereClause";
+    }
+    if ($searchClause) {
+      $finalQuery .= $whereClause ? " AND ($searchClause)" : " WHERE ($searchClause)";
+    }
+    $finalQuery .= $orderClause . " LIMIT $limit OFFSET $start";
+
+    // Execute query
+    $sql_data = $this->db->query($finalQuery);
+    $data = $sql_data->result_array();
+
+    // Count total records
+    $countQuery = $query;
+    if ($whereClause) {
+      $countQuery .= " WHERE $whereClause";
+    }
+    $sql_count = $this->db->query($countQuery)->num_rows();
+
+    // Count filtered records
+    $filterQuery = $query;
+    if ($whereClause) {
+      $filterQuery .= " WHERE $whereClause";
+    }
+    if ($searchClause) {
+      $filterQuery .= $whereClause ? " AND ($searchClause)" : " WHERE ($searchClause)";
+    }
+    $sql_filter_count = $this->db->query($filterQuery)->num_rows();
+
+    $callback = array(
+      'draw' => intval($_POST['draw'] ?? 1),
+      'recordsTotal' => $sql_count,
+      'recordsFiltered' => $sql_filter_count,
+      'data' => $data
+    );
+    return json_encode($callback);
+  }
+
+
   function get_tables_query_csrf($query, $cari, $where, $csrf_name, $csrf_hash)
   {
     // Ambil data yang di ketik user pada textbox pencarian
