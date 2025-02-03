@@ -84,7 +84,7 @@
 														<div class="col-md-4">
 															<div class="form-group">
 																<label for="exampleInputEmail1">Destination State <span class="text-danger">*</span></label>
-																<select name="state_consigne" class="form-control">
+																<select name="state_consigne" id="destinationState" class="form-control">
 																	<?php foreach ($province as $f) {
 																	?>
 																		<option value="<?= $f['name'] ?>" <?php if ($f['name'] == set_value('state_consigne')) {
@@ -377,3 +377,11 @@
 			});
 		});
 	</script>
+
+<script>
+	$(document).ready(function() {
+	// select using select2
+	$('select').select2();
+		
+	});
+</script>
