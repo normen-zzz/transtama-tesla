@@ -51,7 +51,12 @@
 
 														<div class="form-group">
 																<label for="exampleInputEmail1">Mark Shipper</label>
-																<input type="text" class="form-control" id="mark_shipper" name="mark_shipper" value="<?= $p['mark_shipper'] ?>">
+																<?php if ($p['mark_shipper'] == NULL || $p['mark_shipper'] == '') { ?>
+																	<input type="text" class="form-control" id="mark_shipper" name="mark_shipper" value="">
+																<?php }else{ ?>
+																	<input type="text" class="form-control" id="mark_shipper" name="mark_shipper" value="<?= $p['mark_shipper'] ?>">
+																<?php } ?>
+																
 															</div>
 
 														<div class="col-md-4">

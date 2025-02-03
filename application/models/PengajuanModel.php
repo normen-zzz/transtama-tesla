@@ -6,7 +6,7 @@ class PengajuanModel extends CI_Model
 
      public function order($id = NULL)
     {
-        $this->db->select('a.pu_moda,a.id,a.shipment_id,a.order_id,a.shipper,a.id_so,a.destination,a.is_weight_print,a.consigne,a.koli,a.sender,a.berat_js,a.tree_shipper,a.tree_consignee,a.flight_at,a.state_shipper,a.city_shipper,a.service_type,a.pu_commodity,a.no_stp,a.signature,a.state_consigne,a.city_consigne,a.no_smu,a.image,a.note_shipment, b.nama_user,a.note_driver');
+        $this->db->select('a.pu_moda,a.id,a.shipment_id,a.order_id,a.shipper,a.id_so,a.destination,a.is_weight_print,a.consigne,a.koli,a.sender,a.berat_js,a.tree_shipper,a.tree_consignee,a.flight_at,a.state_shipper,a.city_shipper,a.service_type,a.pu_commodity,a.no_stp,a.signature,a.state_consigne,a.city_consigne,a.no_smu,a.image,a.note_shipment, b.nama_user,a.note_driver,a.mark_shipper,a.note_cs');
         $this->db->from('tbl_shp_order a');
         $this->db->join('tb_user b', 'a.id_user=b.id_user');
         if ($id == NULL) {
@@ -90,6 +90,7 @@ class PengajuanModel extends CI_Model
         $this->db->where('a.deleted', 0);
         return $this->db->get();
     }
+    
 	public function orderBySoSales($id)
     {
         $this->db->select('a.shipment_id,a.pu_moda,a.shipper,a.tree_shipper,a.consigne,a.created_at,a.note_cs,a.tree_consignee,a.id,a.id_so,a.destination,a.city_consigne,a.state_consigne,a.is_jabodetabek,a.freight_kg,a.special_freight,a.packing,a.insurance,a.surcharge,a.disc,a.cn,a.specialcn,a.others,a.pic_invoice,a.so_note,a.status_so, b.service_name');

@@ -1144,13 +1144,7 @@ class SalesOrder extends CI_Controller
         $data['p'] = $this->db->get_where('tbl_so', ['id_so' => $id])->row_array();
         $data['users'] = $this->db->get_where('tb_user', ['id_role' => 2])->result_array();
         $data['shipment2'] =  $this->order->orderBySo($id)->result_array();
-        $id_jabatan = $this->session->userdata('id_jabatan');
-        // kali dia manager atau pic jobsheet
-        // if ($id_jabatan == 9 || $id_jabatan == 2) {
-        //     $this->backend->display('cs/v_detail_order_luar_all', $data);
-        // } else {
-        //     $this->backend->display('cs/v_detail_order_luar', $data);
-        // }
+       
         $this->backend->display('cs/v_detail_order_luar', $data);
     }
     public function approve($id_so)
