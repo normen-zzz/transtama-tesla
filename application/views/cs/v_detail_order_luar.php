@@ -157,9 +157,9 @@
 												<br>
 												<?php if ($get_last_status['flag'] == 12 || $get_last_status['flag'] == 6) {
 												?>
-													<a href="#" class="btn font-weight-bolder text-light" data-toggle="modal" data-target="#modal-pod<?= $shp['shipment_id'] ?>" style="background-color: #9c223b;">
+													<!-- <a href="#" class="btn font-weight-bolder text-light modalPod" data-toggle="modal" data-target="#modal-pod" style="background-color: #9c223b;" data-shipment_id="<?= $shp['shipment_id'] ?>">
 														<span class="svg-icon svg-icon-md">
-														</span>View POD</a>
+														</span>View POD</a> -->
 												<?php	} ?>
 
 											</td>
@@ -186,7 +186,7 @@
 													?>
 														<?php if ($get_last_status['flag'] >= 8 && $get_last_status['flag'] <= 11) {
 														?>
-															<a href="#" class="btn btn-sm text-light mb-1" data-toggle="modal" data-target="#modal-lg-dl-luar<?= $shp['shipment_id'] ?>" style="background-color: #9c223b;">
+															<a href="#" class="btn btn-sm text-light mb-1 modalDlLuar" data-toggle="modal" data-target="#modal-lg-dl-luar" style="background-color: #9c223b;" data-shipment_id="<?= $shp['shipment_id'] ?>" data-id_so="<?= $shp['id_so'] ?>">
 																<span class="svg-icon svg-icon-md">
 																</span>Update Status</a>
 															<a onclick='$("#modalLoading").modal("show");' href="<?= base_url('cs/order/edit/' . $shp['id'] . '/' . $shp['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Edit</a>
@@ -217,7 +217,7 @@
 
 													<?php	} else {
 													?>
-														<a href="#" class="btn btn-sm text-light mb-1" data-toggle="modal" data-target="#modal-lg-dl-incoming<?= $shp['shipment_id'] ?>" style="background-color: #9c223b;">
+														<a href="#" class="btn btn-sm text-light mb-1 modalDlIncoming" data-toggle="modal" data-target="#modal-lg-dl-incoming" style="background-color: #9c223b;" data-shipment_id="<?= $shp['shipment_id'] ?>" data-id_so="<?= $shp['id_so'] ?>" data-service="<?= $shp['service_name'] ?>">
 															<span class="svg-icon svg-icon-md">
 															</span>Update Status</a>
 														<a onclick='$("#modalLoading").modal("show");' href="<?= base_url('cs/order/edit/' . $shp['id'] . '/' . $shp['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Edit</a>
@@ -251,9 +251,8 @@
 	</section>
 	<!-- /.content -->
 
-	<?php foreach ($shipment2 as $shp) {
-	?>
-		<div class="modal fade" id="modal-lg-dl-luar<?= $shp['shipment_id'] ?>">
+	
+		<div class="modal fade" id="modal-lg-dl-luar">
 			<div class="modal-dialog modal-lg">
 				<div class="modal-content">
 					<div class="modal-header">
@@ -267,8 +266,8 @@
 						<form action="<?= base_url('cs/salesOrder/updateShipment') ?>" method="POST" enctype="multipart/form-data">
 							<div class="card-body">
 								<div class="row">
-									<input type="text" name="id_so" class="form-control" hidden value="<?= $p['id_so'] ?>">
-									<input type="text" name="shipment_id" class="form-control" hidden value="<?= $shp['shipment_id'] ?>">
+									<input type="text" name="id_so" class="form-control" hidden>
+									<input type="text" name="shipment_id" class="form-control" hidden >
 									<div class="col-md-6">
 										<label for="status">Choose Status : </label>
 										<select name="status" class="form-control">
@@ -325,11 +324,10 @@
 			<!-- /.modal-dialog -->
 		</div>
 
-	<?php } ?>
+	
 
-	<?php foreach ($shipment2 as $shp) {
-	?>
-		<div class="modal fade" id="modal-pod<?= $shp['shipment_id'] ?>">
+	
+		<div class="modal fade" id="modal-pod">
 			<div class="modal-dialog modal-lg">
 				<div class="modal-content">
 					<div class="modal-header">
@@ -340,6 +338,11 @@
 						</button>
 					</div>
 					<div class="modal-body">
+						<div id="pod">
+
+						</div>
+
+						
 						<form action="<?= base_url('cs/salesOrder/updateShipment') ?>" method="POST" enctype="multipart/form-data">
 							<div class="card-body">
 								<div class="row">
@@ -370,11 +373,10 @@
 			</div>
 			<!-- /.modal-dialog -->
 		</div>
-	<?php } ?>
+	
 
-	<?php foreach ($shipment2 as $shp) {
-	?>
-		<div class="modal fade" id="modal-lg-dl-incoming<?= $shp['shipment_id'] ?>">
+	
+		<div class="modal fade" id="modal-lg-dl-incoming">
 			<div class="modal-dialog modal-lg">
 				<div class="modal-content">
 					<div class="modal-header">
@@ -388,9 +390,9 @@
 						<form action="<?= base_url('cs/salesOrder/updateShipmentIncoming') ?>" method="POST" enctype="multipart/form-data">
 							<div class="card-body">
 								<div class="row">
-									<input type="text" name="id_so" class="form-control" hidden value="<?= $p['id_so'] ?>">
-									<input type="text" name="shipment_id" class="form-control" hidden value="<?= $shp['shipment_id'] ?>">
-									<input type="text" name="service" class="form-control" hidden value="<?= $shp['service_name'] ?>">
+									<input type="text" name="id_so" class="form-control" hidden >
+									<input type="text" name="shipment_id" class="form-control" hidden >
+									<input type="text" name="service" class="form-control" hidden >
 									<div class="col-md-6">
 										<label for="status">Choose Status : </label>
 										<select name="status" class="form-control">
@@ -445,7 +447,7 @@
 			<!-- /.modal-dialog -->
 		</div>
 
-	<?php } ?>
+	
 
 	<!-- modalBulkOrder -->
 	<div class="modal fade" id="modalBulkOrder" tabindex="-1" role="dialog" aria-labelledby="modalBulkOrderLabel" aria-hidden="true">
@@ -510,6 +512,29 @@
 						
 					}
 				});
+			});
+		});
+	</script>
+
+	<script>
+		$(document).ready(function() {
+			$('.modalDlLuar').click(function() {
+				var shipment_id = $(this).data('shipment_id');
+				$('[name="shipment_id"]').val(shipment_id);
+				// id_so 
+				var id_so = $(this).data('id_so');
+				$('[name="id_so"]').val(id_so);
+			});
+			
+			$('.modalDlIncoming').click(function() {
+				var shipment_id = $(this).data('shipment_id');
+				$('[name="shipment_id"]').val(shipment_id);
+				// id_so
+				var id_so = $(this).data('id_so');
+				$('[name="id_so"]').val(id_so);
+				// service
+				var service = $(this).data('service');
+				$('[name="service"]').val(service);
 			});
 		});
 	</script>
