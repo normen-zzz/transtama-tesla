@@ -195,17 +195,17 @@ class Outbond extends CI_Controller
         }
     }
     public function listDataOutbond()
-    {
-        $search = array('a.shipment_id');
-        $query  = "SELECT a.shipment_id,a.shipper,a.consigne, IFNULL(a.bagging, 0) AS bagging ,a.is_jabodetabek,IFNULL(a.delivery_status,0) AS delivery_status,IFNULL(a.delivery_by,0) AS delivery_by,a.service_type,b.service_name,IFNULL(c.nama_user,0) AS nama_user FROM tbl_shp_order AS a LEFT JOIN tb_service_type AS b ON a.service_type = b.code LEFT JOIN tb_user AS c ON a.delivery_by = c.id_user LEFT JOIN bagging AS d ON a.bagging = d.id_bagging";
-        // $query  = "SELECT a.shipment_id AS resi,a.shipper,a.consigne,a.bagging,a.is_jabodetabek,a.delivery_status,a.delivery_by,a.service_type,b.service_name,c.nama_user FROM tbl_shp_order AS a";
-        $where  = array('a.outbond_status' => 1,'a.deleted' => 0);
-        // $isWhere = null;
-       
-        $isWhere = null;
-        // $isWhere = 'artikel.deleted_at IS NULL';
-        // jika memakai IS NULL pada where sql
-        header('Content-Type: application/json');
-        echo $this->M_Datatables->get_tables_query($query, $search, $where, $isWhere);
-    }
+{
+    $search = array('a.shipment_id');
+    $query  = "SELECT a.shipment_id, a.shipper, a.consigne, IFNULL(a.bagging, 0) AS bagging, a.is_jabodetabek, IFNULL(a.delivery_status, 0) AS delivery_status, IFNULL(a.delivery_by, 0) AS delivery_by, a.service_type, b.service_name, IFNULL(c.nama_user, 0) AS nama_user 
+               FROM tbl_shp_order AS a 
+               LEFT JOIN tb_service_type AS b ON a.service_type = b.code 
+               LEFT JOIN tb_user AS c ON a.delivery_by = c.id_user 
+               LEFT JOIN bagging AS d ON a.bagging = d.id_bagging";
+    $where  = array('a.outbond_status' => 1, 'a.deleted' => 0);
+    $isWhere = null;
+
+    header('Content-Type: application/json');
+    echo $this->M_Datatables->get_tables_query2($query, $search, $where, $isWhere);
+}
 }
