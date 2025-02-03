@@ -62,7 +62,7 @@
 														<div class="col-md-4">
 															<div class="form-group">
 																<label for="exampleInputEmail1">Shipper</label>
-																<select name="shipper_id" class="form-control" id="shipper_id">
+																<select name="shipper_id" class="form-control select2" id="shipper_id">
 																	<option value="choose">Choose Shipper</option>
 																	<?php foreach ($customer as $f) {
 																	?>
@@ -97,7 +97,7 @@
 														<div class="col-md-4">
 															<div class="form-group">
 																<label for="exampleInputEmail1">Destination State</label>
-																<select name="state_consigne" class="form-control">
+																<select name="state_consigne" class="form-control select2">
 																	<?php foreach ($province as $f) {
 																	?>
 																		<option value="<?= $f['name'] ?>" <?php if ($f['name'] == set_value('state_consigne')) {
@@ -110,7 +110,7 @@
 														<div class="col-md-4">
 															<div class="form-group">
 																<label for="exampleInputEmail1">Destination City</label>
-																<select name="city_consigne" class="form-control">
+																<select name="city_consigne" class="form-control select2">
 																	<?php foreach ($city as $c) {
 																	?>
 																		<option value="<?= $c['city_name'] ?>" <?php if ($c['city_name'] == set_value('city_consigne')) {
@@ -130,7 +130,7 @@
 														<div class="col-md-4">
 															<div class="form-group">
 																<label for="exampleInputEmail1">Service Type</label>
-																<select name="service_type" class="form-control">
+																<select name="service_type" class="form-control select2">
 																	<?php foreach ($service as $s) {
 																	?>
 																		<option value="<?= $s['code'] ?>" <?php if ($s['code'] == set_value('service_type')) {
@@ -271,3 +271,13 @@
 		<!-- /.modal-dialog -->
 	</div>
 	<!-- /.modal -->
+
+	<script>
+		$(document).ready(function() {
+			// .select2
+			$('.select2').select2({
+				placeholder: "Choose Shipper",
+				allowClear: true
+			});
+		});
+	</script>

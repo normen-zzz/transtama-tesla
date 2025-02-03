@@ -534,24 +534,24 @@ class SalesOrder extends CI_Controller
 
     public function processAdd()
     {
-        $this->form_validation->set_rules('consigne', 'consigne', 'required');
-        $this->form_validation->set_rules('mark_shipper', 'mark_shipper', 'required');
-        $this->form_validation->set_rules('state_consigne', 'State_consigne', 'required');
-        $this->form_validation->set_rules('destination', 'Destination', 'required');
-        $this->form_validation->set_rules('service_type', 'Service_type', 'required');
-        $this->form_validation->set_rules('ttd', 'Ttd', 'required');
-        $this->form_validation->set_rules('city_consigne', 'City_consigne', 'required');
-        $this->form_validation->set_rules('state_consigne', 'State_consigne', 'required');
-        $this->form_validation->set_rules('koli', 'Koli', 'required');
-        $this->form_validation->set_rules('state_shipper2', 'State_shipper2', 'required');
-        $this->form_validation->set_rules('city_shipper2', 'City_shipper2', 'required');
-        $this->form_validation->set_rules('shipper2', 'Shipper2', 'required');
-        $this->form_validation->set_rules('shipper_id', 'Shipper_id', 'required');
-        $this->form_validation->set_rules('origin_destination', 'Origin_destination', 'required');
-        $this->form_validation->set_rules('id_so', 'Id_so', 'required');
-        $this->form_validation->set_rules('is_jabodetabek', 'Is_jabodetabek', 'required');
+        $this->form_validation->set_rules('consigne', 'consigne', 'required', ['required' => 'Consigne Harus Diisi']);
+       
+        $this->form_validation->set_rules('state_consigne', 'State_consigne', 'required', ['required' => 'State Consigne Harus Diisi']);
+        $this->form_validation->set_rules('destination', 'Destination', 'required', ['required' => 'Destination Harus Diisi']);
+        $this->form_validation->set_rules('service_type', 'Service_type', 'required', ['required' => 'Service Type Harus Diisi']);
+        $this->form_validation->set_rules('ttd', 'Ttd', 'required', ['required' => 'Ttd Harus Diisi']);
+        $this->form_validation->set_rules('city_consigne', 'City_consigne', 'required', ['required' => 'City Consigne Harus Diisi']);
+        $this->form_validation->set_rules('state_consigne', 'State_consigne', 'required', ['required' => 'State Consigne Harus Diisi']);
+        $this->form_validation->set_rules('koli', 'Koli', 'required', ['required' => 'Koli Harus Diisi']);
+        $this->form_validation->set_rules('state_shipper2', 'State_shipper2', 'required', ['required' => 'State Shipper Harus Diisi']);
+        $this->form_validation->set_rules('city_shipper2', 'City_shipper2', 'required', ['required' => 'City Shipper Harus Diisi']);
+        $this->form_validation->set_rules('shipper2', 'Shipper2', 'required', ['required' => 'Shipper Harus Diisi']);
+        $this->form_validation->set_rules('shipper_id', 'Shipper_id', 'required', ['required' => 'Shipper Id Harus Diisi']);
+        $this->form_validation->set_rules('origin_destination', 'Origin_destination', 'required', ['required' => 'Origin Destination Harus Diisi']);
+        $this->form_validation->set_rules('id_so', 'Id_so', 'required', ['required' => 'Id So Harus Diisi']);
+        $this->form_validation->set_rules('is_jabodetabek', 'Is_jabodetabek', 'required', ['required' => 'Is Jabodetabek Harus Diisi']);
         if ($this->form_validation->run() == FALSE) {
-            $this->session->set_flashdata('message', 'Failed');
+            $this->session->set_flashdata('message', '<div class="alert alert-danger alert-dismissible fade show" role="alert">Gagal Menambahkan Order</div>');
             $this->detail($this->input->post('id_so'));
         } else {
             $img = $this->input->post('ttd');
