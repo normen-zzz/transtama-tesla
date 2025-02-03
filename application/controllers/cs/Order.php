@@ -354,6 +354,18 @@ class Order extends CI_Controller
             $shipment_id = $row['shipment_id'];
             $no_do = isset($shipment_map[$shipment_id]) ? $shipment_map[$shipment_id]['no_do'] : $row['note_cs'];
             $no_so = isset($shipment_map[$shipment_id]) ? $shipment_map[$shipment_id]['no_so'] : $row['no_so'];
+            $tracking = $this->pengajuan->getLastTracking($row['shipment_id'])->row_array();
+
+            if ($row['tgl_diterima'] == NULL) {
+                if (strpos($tracking['status'], 'Diterima') !== false) {
+                    $row['tgl_diterima'] = $tracking['created_at'];
+                } else {
+                    $row['tgl_diterima'] = '';
+                }
+            } else{
+                $row['tgl_diterima'] = $row['tgl_diterima'];
+            }
+
         
             $diterima = new DateTime($row['tgl_diterima'] ?? 'now');
             $pickup = new DateTime($row['tgl_pickup'] ?? 'now');
@@ -369,7 +381,7 @@ class Order extends CI_Controller
                 $row['shipper'] . $mark, $row['consigne'], $row['tree_consignee'], 
                 $row['service_name'], $row['pu_commodity'], $row['koli'], $row['berat_js'], 
                 $row['berat_msr'], $row['nama_user'], $row['no_flight'], $row['no_smu'], 
-                $row['tgl_diterima'], $row['status_pod'], $leadtime, '', $pod, '', '', '', '', '', '', '', $row['update_at']
+                $row['tgl_diterima'], $tracking['status'], $leadtime, '', $pod, '', '', '', '', '', '', '', $row['update_at']
             ];
         }
         
