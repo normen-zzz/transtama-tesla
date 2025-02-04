@@ -367,21 +367,30 @@ class Order extends CI_Controller
             }
 
         
-            $diterima = new DateTime($row['tgl_diterima'] ?? 'now');
-            $pickup = new DateTime($row['tgl_pickup'] ?? 'now');
-            $leadtime = $diterima->diff($pickup)->d;
-        
+            if ($row['tgl_diterima'] == NULL || $row['tgl_diterima'] == '') {
+                $leadtime = 0;
+            } else{
+                $diterima = strtotime($row['tgl_diterima']);
+                $pickup = strtotime($row['tgl_pickup']);
+                $leadtime = round(abs($diterima - $pickup) / 60 / 60 / 24);
+                if ($leadtime == 0) {
+                    $leadtime = '0';
+                }
+            
+            }
+            
             $pod_status = ['Pending', 'Dikirim', 'Diterima'];
             $pod = $pod_status[$row['status_pod']] ?? 'Unknown';
         
             $mark = ' (' . $row["mark_shipper"] . ')';
+            
         
             $dataRows[] = [
                 $no++, $row['tgl_pickup'], $shipment_id, $no_do, $no_so, $row['no_stp'],
                 $row['shipper'] . $mark, $row['consigne'], $row['tree_consignee'], 
                 $row['service_name'], $row['pu_commodity'], $row['koli'], $row['berat_js'], 
                 $row['berat_msr'], $row['nama_user'], $row['no_flight'], $row['no_smu'], 
-                $row['tgl_diterima'], $tracking['status'], $leadtime, '', $pod, '', '', '', '', '', '', '', $tracking['update_at']
+                $row['tgl_diterima'], $tracking['status'], '', $leadtime, $pod, '', '', '', '', '', '', '', $tracking['update_at']
             ];
         }
         
