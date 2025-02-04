@@ -381,7 +381,7 @@ class Order extends CI_Controller
                 $row['shipper'] . $mark, $row['consigne'], $row['tree_consignee'], 
                 $row['service_name'], $row['pu_commodity'], $row['koli'], $row['berat_js'], 
                 $row['berat_msr'], $row['nama_user'], $row['no_flight'], $row['no_smu'], 
-                $row['tgl_diterima'], $tracking['status'], $leadtime, '', $pod, '', '', '', '', '', '', '', $row['update_at']
+                $row['tgl_diterima'], $tracking['status'], $leadtime, '', $pod, '', '', '', '', '', '', '', $tracking['update_at']
             ];
         }
         
