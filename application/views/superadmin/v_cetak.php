@@ -143,11 +143,9 @@
                     <td style="border-bottom: 1px;border-top: 1px solid black;font-size: 8px;">
                         DO Number :
                         <?php
-
-
                         if ($get_do) {
                             $i = 1;
-                            foreach ($get_do as $d) {
+                            foreach ($get_do->result_array() as $d) {
                         ?>
                                 <?= ($i == $get_do->num_rows()) ? $d['no_do'] : $d['no_do'] . '/'  ?>
                             <?php $i++;
