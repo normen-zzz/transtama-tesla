@@ -20,7 +20,22 @@
                                 <!--end::Svg Icon-->
                             </span>Add</a>
                         <!--end::Button-->
+
+                        <!-- BUTTON MODALL  -->
+                        <button type="button" class="btn text-light" data-toggle="modal" data-target="#EditTreeCodeBulky" style="background-color: #9c223b;">
+                            <i class="fa fa-plus text-light"></i>
+                            <!--end::Svg Icon-->
+                            Edit Tree Code Bulky
+                        </button>
+                        <!--end::Button-->
+                        <button type="button" class="btn text-light" data-toggle="modal" data-target="#editLeadBulky" style="background-color: #9c223b;">
+                            <i class="fa fa-plus text-light"></i>
+                            <!--end::Svg Icon-->
+                            Edit Lead Bulky
+                        </button>
                     </div>
+
+
                 </div>
                 <div class="card-body">
                     <!--begin: Datatable-->
@@ -31,6 +46,8 @@
                             <tr>
                                 <th>Name Of City</th>
                                 <th>Tree Code</th>
+                                <th>Lead (MIN)</th>
+                                <th>Lead (MAX)</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
@@ -40,6 +57,8 @@
 
                                     <td><?= $p['city_name'] ?></td>
                                     <td><?= $p['tree_code'] ?></td>
+                                    <td><?= $p['lead_min'] ?></td>
+                                    <td><?= $p['lead_max'] ?></td>
                                     <td>
                                         <div class="btn-group">
                                             <button type="button" class="btn btn-tool dropdown-toggle" data-toggle="dropdown">
@@ -90,7 +109,7 @@
                                 </div>
 
                             </div>
-							 <div class="col-md-6">
+                            <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="exampleInputEmail1">Tree Code</label>
                                     <input type="text" class="form-control" required name="tree_code">
@@ -166,3 +185,137 @@
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </div><!-- /.modal -->
+
+<!-- EditTreeCodeBulky -->
+<div class="modal fade" id="EditTreeCodeBulky" tabindex="-1" role="dialog" aria-labelledby="EditTreeCodeBulky" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Edit Tree Code Bulky</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="<?= base_url('superadmin/city/editTreeCodeBulky') ?>" method="POST" id="formEditTreeCodeBulky" enctype="multipart/form-data">
+                <div class="modal-body">
+
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group row">
+                                    <label for="exampleInputEmail1">Tree Code file</label>
+                                    <input type="file" class="form-control" required name="file">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="modal-footer justify-content-between">
+
+                    <button type="button" class="btn btn-primary" id="buttonEditTreeCodeBulky">Submit</button>
+                </div>
+            </form>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+
+<!-- editLeadBulky -->
+<div class="modal fade" id="editLeadBulky" tabindex="-1" role="dialog" aria-labelledby="editLeadBulky" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Edit Lead Bulky</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="<?= base_url('superadmin/city/editLeadBulky') ?>" method="POST" id="formEditLeadBulky" enctype="multipart/form-data">
+                <div class="modal-body ">
+
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group row">
+                                    <label for="exampleInputEmail1">Lead Min</label>
+                                    <input type="file" class="form-control" required name="file">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-between">
+
+                    <button type="button" class="btn btn-primary" id="buttonEditLeadBulky">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+
+<script>
+    //   buttonEditTreeCodeBulky
+    $(document).on('click', '#buttonEditTreeCodeBulky', function() {
+        //    form submit 
+        // swal confirm 
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You want to edit Tree Code Bulky",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $('#formEditTreeCodeBulky').submit();
+                // swal loading 
+                Swal.fire({
+                    title: 'Please Wait',
+                    html: 'Loading...',
+                    timerProgressBar: true,
+                    didOpen: () => {
+                        Swal.showLoading()
+                    },
+                    showConfirmButton: false,
+                    allowOutsideClick: false
+                })
+            }
+        })
+    });
+
+    //   buttonEditLeadBulky
+    $(document).on('click', '#buttonEditLeadBulky', function() {
+        //    form submit 
+        // swal confirm 
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "You want to edit Lead Bulky",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $('#formEditLeadBulky').submit();
+                // swal loading 
+                Swal.fire({
+                    title: 'Please Wait',
+                    html: 'Loading...',
+                    timerProgressBar: true,
+                    didOpen: () => {
+                        Swal.showLoading()
+                    },
+                    showConfirmButton: false,
+                    allowOutsideClick: false
+                })
+            }
+        })
+    });
+</script>
