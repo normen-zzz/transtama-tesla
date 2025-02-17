@@ -20,7 +20,7 @@ class Scan extends CI_Controller
         $data['bagging'] = $this->db->query('SELECT * FROM BAGGING AS a LEFT JOIN tbl_shp_order AS b ON a.id_bagging = b.bagging  WHERE a.is_deleted = 0 AND a.status_bagging = 3 AND (b.service_type = "f4e0915b-7487-4fae-a04c-c3363d959742" 
          OR b.service_type = "3c8b5fdd11cb10506705c16773204f8a" OR b.service_type = "0d71d936-dcc4-4f66-b77c-5ab4f062a766")  ');
         $this->backend->display('dispatcher/v_shipment', $data);
-        // $this->load->view('dispatcher/v_shipment', $data);
+       
     }
     public function history()
     {
