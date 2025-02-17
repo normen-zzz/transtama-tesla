@@ -73,7 +73,7 @@ class Alertcs extends CI_Controller
             }
             
         }
-        $pesan = "Halo CS, Ada Resi yang sudah melewati lead time, berikut resi yang terlampir $listResi <br><br> Silahkan di cek kembali dan Update tanggal diterimanya. Terima Kasih";
+        $pesan = "Halo CS, Ada Resi yang sudah melewati lead time, berikut resi yang terlampir $listResi ";
         $this->wa->pickup('+6285697780467', "$pesan");
 
 
