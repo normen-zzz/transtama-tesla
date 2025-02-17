@@ -60,23 +60,36 @@ class Alertcs extends CI_Controller
     // alertLeadTime 
     public function alertLeadTime()
     {
-        $resi = $this->db->query("SELECT a.shipment_id,a.shipper,a.city_consigne,a.tgl_pickup,b.lead_min,b.lead_max  FROM tbl_shp_order a JOIN tb_city b on a.city_consigne = b.city_name WHERE a.deleted = 0 AND a.tgl_diterima IS NULL AND b.lead_min != 0 AND b.lead_max != 0 AND YEAR(a.tgl_pickup) >= 2025");
-        $listResi = '';
-        foreach ($resi->result_array() as $resi1) {
-            $tgl_pickup = date('Y-m-d', strtotime($resi1['tgl_pickup']));
-            $tgl_sekarang = date('Y-m-d');
+        $this->db->trans_start();
+        try {
+            $resi = $this->db->query("SELECT a.shipment_id,a.shipper,a.city_consigne,a.tgl_pickup,b.lead_min,b.lead_max  FROM tbl_shp_order a JOIN tb_city b on a.city_consigne = b.city_name WHERE a.deleted = 0 AND a.tgl_diterima IS NULL AND b.lead_min != 0 AND b.lead_max != 0 AND YEAR(a.tgl_pickup) >= 2025");
+            $listResi = '';
+            foreach ($resi->result_array() as $resi1) {
+                $tgl_pickup = date('Y-m-d', strtotime($resi1['tgl_pickup']));
+                $tgl_sekarang = date('Y-m-d');
 
-            // JARAK DARI TANGGAL SEKARANG KE TANGGAL PICKUP 
-            $jarak = (strtotime($tgl_sekarang) - strtotime($tgl_pickup)) / (60 * 60 * 24);
-            if ($jarak >= $resi1['lead_max']) {
-                $listResi .= '\r\n\r\n' . $resi1['shipment_id'] . ' Customer ' . $resi1['shipper'] . ' Tujuan ' . $resi1['city_consigne'] . ' Pickup tanggal ' . date('d-m-Y',strtotime($resi1['tgl_pickup'])) .' Max Pengiriman : ' . $resi1['lead_max'].' Hari, Waktu yang telah dilewati : ' . $jarak . ' Hari';
+                // JARAK DARI TANGGAL SEKARANG KE TANGGAL PICKUP 
+                $jarak = (strtotime($tgl_sekarang) - strtotime($tgl_pickup)) / (60 * 60 * 24);
+                if ($jarak >= $resi1['lead_max']) {
+                    $listResi .= '\r\n\r\n' . $resi1['shipment_id'] . ' Customer ' . $resi1['shipper'] . ' Tujuan ' . $resi1['city_consigne'] . ' Pickup tanggal ' . date('d-m-Y', strtotime($resi1['tgl_pickup'])) . ' Max Pengiriman : ' . $resi1['lead_max'] . ' Hari, Waktu yang telah dilewati : ' . $jarak . ' Hari';
+                }
             }
-            
+            $pesan = "Halo CS, Ada Resi yang sudah melewati lead time, berikut resi yang terlampir $listResi ";
+            $wa = $this->wa->pickup('+6285697780467', "$pesan");
+            if ($wa) {
+                var_dump('Berhasil');
+            } else{
+                throw new Exception('Gagal KIRIM WA');
+            }
+            $this->db->trans_complete();
+			if ($this->db->trans_status() === FALSE) {
+				throw new Exception('Transaction failed');
+			} else {
+                var_dump('Berhasil');
+            }
+        } catch (Exception $e) {
+            $this->db->trans_rollback();
+            var_dump($e->getMessage());
         }
-        $pesan = "Halo CS, Ada Resi yang sudah melewati lead time, berikut resi yang terlampir $listResi ";
-        $this->wa->pickup('+6285697780467', "$pesan");
-
-
-
     }
 }
