@@ -79,7 +79,7 @@ class Alertcs extends CI_Controller
             if ($wa) {
                 var_dump('Berhasil');
             } else{
-                throw new Exception('Gagal KIRIM WA');
+                throw new Exception($wa);
             }
             $this->db->trans_complete();
 			if ($this->db->trans_status() === FALSE) {
