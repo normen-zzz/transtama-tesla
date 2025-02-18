@@ -75,7 +75,7 @@ class Alertcs extends CI_Controller
                     // $listResi .= $resi1['shipment_id'] . ',';
                 }
             }
-            $pesan = "Halo CS, Ada Resi yang sudah melewati lead time, berikut resi yang terlampir $listResi Silahkan di cek dan update tanggal diterima, Terima kasih  ";
+            $pesan = "Halo CS, Ada Resi yang sudah melewati lead time, berikut resi yang terlampir $listResi <br><br> Silahkan di cek dan update tanggal diterima, Terima kasih  ";
             $wa = $this->wa->pickup('+6285697780467', "$pesan");
             if ($wa) {
                 var_dump('Berhasil');
