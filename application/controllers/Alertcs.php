@@ -59,40 +59,59 @@ class Alertcs extends CI_Controller
 
     // alertLeadTime 
     public function alertLeadTime()
-    {
-        $this->db->trans_start();
-        try {
-            $resi = $this->db->query("SELECT a.shipment_id,a.shipper,a.city_consigne,a.tgl_pickup,b.lead_min,b.lead_max  FROM tbl_shp_order a JOIN tb_city b on a.city_consigne = b.city_name WHERE a.deleted = 0 AND a.tgl_diterima IS NULL AND b.lead_min != 0 AND b.lead_max != 0 AND YEAR(a.tgl_pickup) >= 2025 ORDER BY RAND() LIMIT 10");
-            $listResi = '';
-            foreach ($resi->result_array() as $resi1) {
-                $tgl_pickup = date('Y-m-d', strtotime($resi1['tgl_pickup']));
-                $tgl_sekarang = date('Y-m-d');
+{
+    $this->db->trans_start();
+    try {
+        $resi = $this->db->query("
+            SELECT a.shipment_id, a.shipper, a.city_consigne, a.tgl_pickup, b.lead_min, b.lead_max  
+            FROM tbl_shp_order a 
+            JOIN tb_city b ON a.city_consigne = b.city_name 
+            WHERE a.deleted = 0 
+            AND a.tgl_diterima IS NULL 
+            AND b.lead_min != 0 
+            AND b.lead_max != 0 
+            AND YEAR(a.tgl_pickup) >= 2025 
+            ORDER BY RAND()
+        ");
 
-                // JARAK DARI TANGGAL SEKARANG KE TANGGAL PICKUP 
-                $jarak = (strtotime($tgl_sekarang) - strtotime($tgl_pickup)) / (60 * 60 * 24);
-                if ($jarak >= $resi1['lead_max']) {
-                    $listResi .= '\r\n\r\n Resi: ' . $resi1['shipment_id'] . ' Customer ' . $resi1['shipper'] . ' Tujuan ' . $resi1['city_consigne'] . ' Pickup tanggal ' . date('d-m-Y', strtotime($resi1['tgl_pickup'])) . ' Max Pengiriman : ' . $resi1['lead_max'] . ' Hari, Waktu yang telah dilewati : ' . $jarak . ' Hari';
-                    // $listResi .= $resi1['shipment_id'] . ',';
-                }
+        $dataResi = [];
+        foreach ($resi->result_array() as $resi1) {
+            $tgl_pickup = date('Y-m-d', strtotime($resi1['tgl_pickup']));
+            $tgl_sekarang = date('Y-m-d');
+
+            // Hitung selisih hari antara tanggal sekarang dan pickup
+            $jarak = (strtotime($tgl_sekarang) - strtotime($tgl_pickup)) / (60 * 60 * 24);
+            
+            if ($jarak >= $resi1['lead_max']) {
+                $dataResi[] = "Resi: {$resi1['shipment_id']} Customer: {$resi1['shipper']} Tujuan: {$resi1['city_consigne']} Pickup: " . date('d-m-Y', strtotime($resi1['tgl_pickup'])) . " Max Pengiriman: {$resi1['lead_max']} Hari, Telah lewat: {$jarak} Hari";
             }
-            $pesan = "Halo CS, Ada Resi yang sudah melewati lead time, berikut resi yang terlampir $listResi <br><br> Silahkan di cek dan update tanggal diterima, Terima kasih  ";
-            $wa = $this->wa->pickup('+6285697780467', "$pesan");
-            if ($wa) {
-                var_dump('Berhasil');
-            } else {
-                throw new Exception('gagal kirim wa');
-            }
-            $this->db->trans_complete();
-            if ($this->db->trans_status() === FALSE) {
-                throw new Exception('Transaction failed');
-            } else {
-                var_dump('Berhasil');
-            }
-        } catch (Exception $e) {
-            $this->db->trans_rollback();
-            var_dump($e->getMessage());
         }
+
+        // Pisahkan data menjadi beberapa batch dengan 10 data per batch
+        $chunks = array_chunk($dataResi, 10);
+        
+        foreach ($chunks as $batch) {
+            $listResi = implode("\r\n\r\n", $batch);
+            $pesan = "Halo CS, Ada Resi yang sudah melewati lead time:\r\n\r\n$listResi\r\n\r\nSilahkan dicek dan update tanggal diterima. Terima kasih.";
+            
+            $wa = $this->wa->pickup('+6285697780467', $pesan);
+            if (!$wa) {
+                throw new Exception('Gagal kirim WA');
+            }
+        }
+
+        $this->db->trans_complete();
+        if ($this->db->trans_status() === FALSE) {
+            throw new Exception('Transaction failed');
+        } else {
+            var_dump('Berhasil');
+        }
+    } catch (Exception $e) {
+        $this->db->trans_rollback();
+        var_dump($e->getMessage());
     }
+}
+
 
 
     public function updateAllTanggalDiterima()
