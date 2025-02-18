@@ -93,10 +93,10 @@ class Alertcs extends CI_Controller
             // Daftar nomor WhatsApp yang akan menerima pesan
             $nomorWA = [
                 '+6285697780467', //nomor norman
-                // '+6285894438583',  //yunita cs
-                // '+6281293753199',  //bu lili
-                // '+6285777396665', // amel cs
-                // '+6285313841061', //irvan cs
+                '+6285894438583',  //yunita cs
+                '+6281293753199',  //bu lili
+                '+6285777396665', // amel cs
+                '+6285313841061', //irvan cs
             ];
 
             // Looping untuk setiap batch
