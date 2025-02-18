@@ -100,7 +100,7 @@ class Alertcs extends CI_Controller
 
         $this->db->trans_start();
         try {
-            $resi = $this->db->query("SELECT a.shipment_id,a.shipper,a.city_consigne,a.tgl_pickup FROM tbl_shp_order a  WHERE a.deleted = 0 AND a.tgl_diterima IS NULL AND YEAR(a.tgl_pickup) >= 2025 ORDER BY RAND() LIMIT 50");
+            $resi = $this->db->query("SELECT a.shipment_id,a.shipper,a.city_consigne,a.tgl_pickup FROM tbl_shp_order a  WHERE a.deleted = 0 AND a.tgl_diterima IS NULL AND YEAR(a.tgl_pickup) >= 2025 ORDER BY RAND()");
 
             foreach ($resi->result_array() as $resi1) {
                 $lastStatus = $this->db->query("SELECT status,created_at FROM tbl_tracking_real WHERE shipment_id = '" . $resi1['shipment_id'] . "' ORDER BY id_tracking DESC LIMIT 1");
