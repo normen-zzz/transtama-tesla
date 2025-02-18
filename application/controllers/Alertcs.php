@@ -62,7 +62,7 @@ class Alertcs extends CI_Controller
     {
         $this->db->trans_start();
         try {
-            $resi = $this->db->query("SELECT a.shipment_id,a.shipper,a.city_consigne,a.tgl_pickup,b.lead_min,b.lead_max  FROM tbl_shp_order a JOIN tb_city b on a.city_consigne = b.city_name WHERE a.deleted = 0 AND a.tgl_diterima IS NULL AND b.lead_min != 0 AND b.lead_max != 0 AND YEAR(a.tgl_pickup) >= 2025");
+            $resi = $this->db->query("SELECT a.shipment_id,a.shipper,a.city_consigne,a.tgl_pickup,b.lead_min,b.lead_max  FROM tbl_shp_order a JOIN tb_city b on a.city_consigne = b.city_name WHERE a.deleted = 0 AND a.tgl_diterima IS NULL AND b.lead_min != 0 AND b.lead_max != 0 AND YEAR(a.tgl_pickup) >= 2025 ORDER BY RAND() LIMIT 20");
             $listResi = '';
             foreach ($resi->result_array() as $resi1) {
                 $tgl_pickup = date('Y-m-d', strtotime($resi1['tgl_pickup']));
@@ -71,7 +71,8 @@ class Alertcs extends CI_Controller
                 // JARAK DARI TANGGAL SEKARANG KE TANGGAL PICKUP 
                 $jarak = (strtotime($tgl_sekarang) - strtotime($tgl_pickup)) / (60 * 60 * 24);
                 if ($jarak >= $resi1['lead_max']) {
-                    $listResi .= '\r\n\r\n' . $resi1['shipment_id'] . ' Customer ' . $resi1['shipper'] . ' Tujuan ' . $resi1['city_consigne'] . ' Pickup tanggal ' . date('d-m-Y', strtotime($resi1['tgl_pickup'])) . ' Max Pengiriman : ' . $resi1['lead_max'] . ' Hari, Waktu yang telah dilewati : ' . $jarak . ' Hari';
+                    // $listResi .= '\r\n\r\n' . $resi1['shipment_id'] . ' Customer ' . $resi1['shipper'] . ' Tujuan ' . $resi1['city_consigne'] . ' Pickup tanggal ' . date('d-m-Y', strtotime($resi1['tgl_pickup'])) . ' Max Pengiriman : ' . $resi1['lead_max'] . ' Hari, Waktu yang telah dilewati : ' . $jarak . ' Hari';
+                    $listResi .= $resi1['shipment_id'] . ',';
                 }
             }
             $pesan = "Halo CS, Ada Resi yang sudah melewati lead time, berikut resi yang terlampir $listResi ";
