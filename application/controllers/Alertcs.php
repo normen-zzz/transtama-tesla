@@ -62,7 +62,7 @@ class Alertcs extends CI_Controller
     {
         $this->db->trans_start();
         try {
-            $resi = $this->db->query("SELECT a.shipment_id,a.shipper,a.city_consigne,a.tgl_pickup,b.lead_min,b.lead_max  FROM tbl_shp_order a JOIN tb_city b on a.city_consigne = b.city_name WHERE a.deleted = 0 AND a.tgl_diterima IS NULL AND b.lead_min != 0 AND b.lead_max != 0 AND YEAR(a.tgl_pickup) >= 2025 ORDER BY RAND() LIMIT 20");
+            $resi = $this->db->query("SELECT a.shipment_id,a.shipper,a.city_consigne,a.tgl_pickup,b.lead_min,b.lead_max  FROM tbl_shp_order a JOIN tb_city b on a.city_consigne = b.city_name WHERE a.deleted = 0 AND a.tgl_diterima IS NULL AND b.lead_min != 0 AND b.lead_max != 0 AND YEAR(a.tgl_pickup) >= 2025 ORDER BY RAND() LIMIT 10");
             $listResi = '';
             foreach ($resi->result_array() as $resi1) {
                 $tgl_pickup = date('Y-m-d', strtotime($resi1['tgl_pickup']));
