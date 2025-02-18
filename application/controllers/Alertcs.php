@@ -91,8 +91,8 @@ class Alertcs extends CI_Controller
         $chunks = array_chunk($dataResi, 10);
         
         foreach ($chunks as $batch) {
-            $listResi = implode("\r\n\r\n", $batch);
-            $pesan = "Halo CS, Ada Resi yang sudah melewati lead time:\r\n\r\n$listResi\r\n\r\nSilahkan dicek dan update tanggal diterima. Terima kasih.";
+            $listResi = implode("<br><br>", $batch);
+            $pesan = "Halo CS, Ada Resi yang sudah melewati lead time:<br><br> $listResi <br><br> Silahkan dicek dan update tanggal diterima. Terima kasih.";
             
             $wa = $this->wa->pickup('+6285697780467', $pesan);
             if (!$wa) {
