@@ -71,7 +71,7 @@ class Alertcs extends CI_Controller
                 // JARAK DARI TANGGAL SEKARANG KE TANGGAL PICKUP 
                 $jarak = (strtotime($tgl_sekarang) - strtotime($tgl_pickup)) / (60 * 60 * 24);
                 if ($jarak >= $resi1['lead_max']) {
-                    $listResi .= '\r\n\r\n ' . $resi1['shipment_id'] . ' Customer ' . $resi1['shipper'] . ' Tujuan ' . $resi1['city_consigne'] . ' Pickup tanggal ' . date('d-m-Y', strtotime($resi1['tgl_pickup'])) . ' Max Pengiriman : ' . $resi1['lead_max'] . ' Hari, Waktu yang telah dilewati : ' . $jarak . ' Hari';
+                    $listResi .= '\r\n\r\n Resi: ' . $resi1['shipment_id'] . ' Customer ' . $resi1['shipper'] . ' Tujuan ' . $resi1['city_consigne'] . ' Pickup tanggal ' . date('d-m-Y', strtotime($resi1['tgl_pickup'])) . ' Max Pengiriman : ' . $resi1['lead_max'] . ' Hari, Waktu yang telah dilewati : ' . $jarak . ' Hari';
                     // $listResi .= $resi1['shipment_id'] . ',';
                 }
             }
