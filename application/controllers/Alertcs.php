@@ -80,7 +80,7 @@ class Alertcs extends CI_Controller
                 $tgl_sekarang = date('Y-m-d');
 
                 // Hitung selisih hari antara tanggal sekarang dan pickup
-                $jarak = (strtotime($tgl_sekarang) - strtotime($tgl_pickup)) / (60 * 60 * 24);
+                $jarak = (strtotime($tgl_sekarang) - strtotime($tgl_pickup)) / (60 * 60 * 24) - $resi1['lead_max'];
 
                 if ($jarak >= $resi1['lead_max']) {
                     $dataResi[] = "Resi: {$resi1['shipment_id']} | Customer: {$resi1['shipper']} | Tujuan: {$resi1['city_consigne']} | Pickup: " . date('d-m-Y', strtotime($resi1['tgl_pickup'])) . " | Max Pengiriman: {$resi1['lead_max']} Hari | Telah lewat: {$jarak} Hari";
