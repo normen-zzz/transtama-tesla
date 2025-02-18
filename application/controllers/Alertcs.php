@@ -79,13 +79,49 @@ class Alertcs extends CI_Controller
             $wa = $this->wa->pickup('+6285697780467', "$pesan");
             if ($wa) {
                 var_dump('Berhasil');
-            } else{
+            } else {
                 throw new Exception('gagal kirim wa');
             }
             $this->db->trans_complete();
-			if ($this->db->trans_status() === FALSE) {
-				throw new Exception('Transaction failed');
-			} else {
+            if ($this->db->trans_status() === FALSE) {
+                throw new Exception('Transaction failed');
+            } else {
+                var_dump('Berhasil');
+            }
+        } catch (Exception $e) {
+            $this->db->trans_rollback();
+            var_dump($e->getMessage());
+        }
+    }
+
+
+    public function updateAllTanggalDiterima()
+    {
+
+        $this->db->trans_start();
+        try {
+            $resi = $this->db->query("SELECT a.shipment_id,a.shipper,a.city_consigne,a.tgl_pickup FROM tbl_shp_order a  WHERE a.deleted = 0 AND a.tgl_diterima IS NULL AND YEAR(a.tgl_pickup) >= 2025 ORDER BY RAND() LIMIT 20");
+
+            foreach ($resi->result_array() as $resi1) {
+                $lastStatus = $this->db->query("SELECT status,created_at FROM tbl_tracking_real WHERE shipment_id = '" . $resi1['shipment_id'] . "' ORDER BY id_tracking DESC LIMIT 1");
+
+                // jika status mengandung kata Paket Telah Diterima Oleh atau Shipment Telah Diterima Oleh 
+                if ($lastStatus->num_rows() != 0) {
+                    $status = $lastStatus->row_array();
+                    if (strpos($status['status'], 'Paket Telah Diterima Oleh') !== false || strpos($status['status'], 'Shipment Telah Diterima Oleh') !== false) {
+                        $update = $this->db->update('tbl_shp_order', ['tgl_diterima' => $status['created_at']], ['shipment_id' => $resi1['shipment_id']]);
+                        if ($update) {
+                            var_dump('Berhasil');
+                        } else {
+                            throw new Exception('Gagal update');
+                        }
+                    }
+                }
+            }
+            $this->db->trans_complete();
+            if ($this->db->trans_status() === FALSE) {
+                throw new Exception('Transaction failed');
+            } else {
                 var_dump('Berhasil');
             }
         } catch (Exception $e) {

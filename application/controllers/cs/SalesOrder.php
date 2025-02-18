@@ -222,7 +222,7 @@ class SalesOrder extends CI_Controller
         $data = array_merge($data, $ktp);
 
         $this->db->insert('tbl_tracking_real', $data);
-        if ($status == "Shipment Telah Diterima Oleh") {
+        if ($status == "Shipment Telah Diterima Oleh" || $status == "Paket Telah Diterima Oleh") {
             // update tgl diterima
             $data = array(
                 'tgl_diterima' => $this->input->post('date')
