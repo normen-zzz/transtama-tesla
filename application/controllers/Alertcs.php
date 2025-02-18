@@ -100,24 +100,41 @@ class Alertcs extends CI_Controller
 
         $this->db->trans_start();
         try {
-            $resi = $this->db->query("SELECT a.shipment_id,a.shipper,a.city_consigne,a.tgl_pickup FROM tbl_shp_order a  WHERE a.deleted = 0 AND a.tgl_diterima IS NULL AND YEAR(a.tgl_pickup) >= 2025 ORDER BY RAND() LIMIT 50");
+            // Query untuk mengambil shipment_id yang belum diterima dan status tracking terakhir
+            $resi = $this->db->query("SELECT a.shipment_id, a.shipper, a.city_consigne, a.tgl_pickup, t.status, t.created_at 
+FROM tbl_shp_order a 
+LEFT JOIN (
+    SELECT shipment_id, status, created_at
+    FROM tbl_tracking_real 
+    WHERE status LIKE '%Paket Telah Diterima Oleh%' OR status LIKE '%Shipment Telah Diterima Oleh%'
+    ORDER BY id_tracking DESC
+) t ON a.shipment_id = t.shipment_id
+WHERE a.deleted = 0 
+AND a.tgl_diterima IS NULL 
+AND YEAR(a.tgl_pickup) >= 2025 
+AND t.status IS NOT NULL
+ORDER BY RAND() 
+LIMIT 50
+");
 
-            foreach ($resi->result_array() as $resi1) {
-                $lastStatus = $this->db->query("SELECT status,created_at FROM tbl_tracking_real WHERE shipment_id = '" . $resi1['shipment_id'] . "' ORDER BY id_tracking DESC LIMIT 1");
-
-                // jika status mengandung kata Paket Telah Diterima Oleh atau Shipment Telah Diterima Oleh 
-                if ($lastStatus->num_rows() != 0) {
-                    $status = $lastStatus->row_array();
-                    if (strpos($status['status'], 'Paket Telah Diterima Oleh') !== false || strpos($status['status'], 'Shipment Telah Diterima Oleh') !== false) {
-                        $update = $this->db->update('tbl_shp_order', ['tgl_diterima' => $status['created_at']], ['shipment_id' => $resi1['shipment_id']]);
-                        if ($update) {
-                            var_dump('Berhasil');
-                        } else {
-                            throw new Exception('Gagal update');
-                        }
-                    }
+            // Cek apakah ada data untuk diperbarui
+            if ($resi->num_rows() > 0) {
+                $dataUpdate = [];
+                foreach ($resi->result_array() as $resi1) {
+                    $dataUpdate[] = [
+                        'shipment_id' => $resi1['shipment_id'],
+                        'tgl_diterima' => $resi1['created_at']
+                    ];
                 }
+
+                // Batch update
+                $this->db->update_batch('tbl_shp_order', $dataUpdate, 'shipment_id');
+
+                echo "Berhasil update " . count($dataUpdate) . " data.";
+            } else {
+                echo "Tidak ada data yang perlu diperbarui.";
             }
+
             $this->db->trans_complete();
             if ($this->db->trans_status() === FALSE) {
                 throw new Exception('Transaction failed');
