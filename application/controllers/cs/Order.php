@@ -304,44 +304,60 @@ class Order extends CI_Controller
     {
         $bulan = $this->input->post('bulan');
         $tahun = $this->input->post('tahun');
+        $order = $this->pengajuan->getLaporanTransaksiFilter1($bulan, $tahun,);
+        $jumlahData = $order->num_rows();
+
+        // Initialize the batch array
+        $batch = [];
+
+        // Define the size of each batch
+        $batchSize = 400;
+
+        // Calculate the number of batches needed
+        $numBatches = ceil($jumlahData / $batchSize);
+
+        // Iterate through the records and create range strings for each batch
+        for ($i = 0; $i < $numBatches; $i++) {
+            $start = $i * $batchSize + 1; // Start index (1-based)
+            $end = min($start + $batchSize - 1, $jumlahData); // End index (1-based)
+            $batch[] = "$start/$end";
+        }
+
+        // Prepare the data array
         $data['bulan'] = $bulan;
         $data['tahun'] = $tahun;
         $data['title'] = "Laporan Order Tahun $tahun Bulan $bulan";
-        $data['order'] = $this->pengajuan->getLaporanTransaksiFilter($bulan, $tahun)->result_array();
+        $data['order'] = $order->result_array();
+        $data['batch'] = $batch; // Add the batch data to the data array
+
+        // Display the view with the data
         $this->backend->display('cs/v_report_filter', $data);
     }
 
-    public function Exportexcel($bulan = null, $tahun = null)
-{
-    if ($bulan != null && $tahun != null) {
-        $data['title'] = "Laporan Order Dari Bulan $bulan-$tahun";
-        $order = $this->pengajuan->getLaporanTransaksiFilter($bulan, $tahun)->result_array();
-    } else {
-        $data['title'] = "Laporan Order Keseluruhan";
-        $order = $this->pengajuan->getLaporan()->result_array();
-    }
 
-    // Optimasi Query untuk no_do dan no_so dalam satu query
-    $shipment_ids = array_column($order, 'shipment_id');
-    if (!empty($shipment_ids)) {
-        $shipment_data = $this->db->select('shipment_id, GROUP_CONCAT(no_do SEPARATOR "/") as no_do, GROUP_CONCAT(no_so SEPARATOR "/") as no_so')
-            ->from('tbl_no_do')
-            ->where_in('shipment_id', $shipment_ids)
-            ->group_by('shipment_id')
-            ->get()
-            ->result_array();
-        $shipment_map = array_column($shipment_data, null, 'shipment_id');
-    }
 
-    // Define batch size
-    $batchSize = 799;
-    $totalRows = count($order);
-    $totalBatches = ceil($totalRows / $batchSize);
+    public function Exportexcel($bulan = null, $tahun = null, $start = null, $end = null)
+    {
 
-    // Process each batch sequentially
-    for ($batch = 0; $batch < $totalBatches; $batch++) {
-        $start = $batch * $batchSize;
-        $batchData = array_slice($order, $start, $batchSize);
+        if ($bulan != null && $tahun != null) {
+            $data['title'] = "Laporan Order Dari Bulan $bulan-$tahun";
+            $order = $this->pengajuan->getLaporanTransaksiFilter($bulan, $tahun, $start, $end)->result_array();
+        } else {
+            $data['title'] = "Laporan Order Keseluruhan";
+            $order = $this->pengajuan->getLaporan()->result_array();
+        }
+
+        // Optimasi Query untuk no_do dan no_so dalam satu query
+        $shipment_ids = array_column($order, 'shipment_id');
+        if (!empty($shipment_ids)) {
+            $shipment_data = $this->db->select('shipment_id, GROUP_CONCAT(no_do SEPARATOR "/") as no_do, GROUP_CONCAT(no_so SEPARATOR "/") as no_so')
+                ->from('tbl_no_do')
+                ->where_in('shipment_id', $shipment_ids)
+                ->group_by('shipment_id')
+                ->get()
+                ->result_array();
+            $shipment_map = array_column($shipment_data, null, 'shipment_id');
+        }
 
         // Buat Spreadsheet
         $spreadsheet = new Spreadsheet();
@@ -358,8 +374,8 @@ class Order extends CI_Controller
 
         // Isi Data
         $dataRows = [];
-        $no = $start + 1;
-        foreach ($batchData as $row) {
+        $no = 1;
+        foreach ($order as $row) {
             $shipment_id = $row['shipment_id'];
             $no_do = isset($shipment_map[$shipment_id]) ? $shipment_map[$shipment_id]['no_do'] : $row['note_cs'];
             $no_so = isset($shipment_map[$shipment_id]) ? $shipment_map[$shipment_id]['no_so'] : $row['no_so'];
@@ -379,6 +395,7 @@ class Order extends CI_Controller
                 $row['tgl_diterima'] = $row['tgl_diterima'];
             }
 
+
             if ($row['tgl_diterima'] == NULL || $row['tgl_diterima'] == '') {
                 $leadtime = 0;
             } else {
@@ -394,6 +411,7 @@ class Order extends CI_Controller
             $pod = $pod_status[$row['status_pod']] ?? 'Unknown';
 
             $mark = ' (' . $row["mark_shipper"] . ')';
+
 
             if ($tracking) {
                 $dataRows[] = [
@@ -419,14 +437,12 @@ class Order extends CI_Controller
 
         // Set Header dan Simpan File
         header('Content-Type: application/vnd.ms-excel');
-        header('Content-Disposition: attachment;filename="' . $data['title'] . ' - Batch ' . ($batch + 1) . '.xlsx"');
+        header('Content-Disposition: attachment;filename="' . $data['title'] . '.xlsx"');
         header('Cache-Control: max-age=0');
         $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
         $writer->save('php://output');
-        exit; // Terminate after sending the first batch
+        exit;
     }
-}
-
     public function ExportexcelVoid($bulan = null, $tahun = null)
     {
 
