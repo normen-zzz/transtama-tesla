@@ -53,7 +53,19 @@
 								<!-- <button class="btn btn-icon waves-effect waves-light btn-success mb-4" data-toggle="modal" data-target="#addBukti"> <i class="fas fa-plus"></i> Lakukan Pembayaran Sample </button> -->
 
 								<div class="row">
-									<a target="blank" href="<?= base_url('cs/order/exportexcel/' . $bulan . '/' . $tahun) ?>" class="btn btn-sm btn-danger mb-3 ml-2">Export Laporan Excell</a>
+
+									<?php if (!empty($batch)) :
+										$noBatch = 1;
+										?>
+
+										<?php foreach ($batch as $range) : ?>
+											<a target="blank" href="<?= base_url('cs/order/exportexcel/' . $bulan . '/' . $tahun.'/'.$range) ?>" class="btn btn-sm btn-danger mb-3 ml-2">Export Laporan Excell Batch <?= $noBatch ?></a>
+										<?php $noBatch++; endforeach; ?>
+
+									<?php else : ?>
+										<p>Tidak ada data untuk ditampilkan.</p>
+									<?php endif; ?>
+									
 									<a target="blank" href="<?= base_url('cs/order/exportexcelVoid/' . $bulan . '/' . $tahun) ?>" class="btn btn-sm btn-primary mb-3 ml-2">Export Void</a>
 
 								</div>
@@ -74,7 +86,7 @@
 										<th style="width: 15%;">Consignee</th>
 										<th style="width: 15%;">Driver</th>
 										<th style="width: 10%;">Shipment ID</th>
-										
+
 									</tr>
 								</thead>
 								<tbody>
@@ -88,7 +100,7 @@
 											<td><?= $p['consigne'] ?></td>
 											<td><?= $p['nama_user'] ?></td>
 											<td> <a href="<?= base_url('cs/order/print/' . $p['shipment_id']) ?>"><?= $p['shipment_id'] ?> </a> </td>
-											
+
 
 										</tr>
 									<?php } ?>
