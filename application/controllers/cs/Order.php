@@ -32,7 +32,7 @@ class Order extends CI_Controller
         $data['order'] = $this->db->order_by('id', 'DESC')->get('tbl_shp_order')->result_array();
         $this->backend->display('cs/v_order', $data);
     }
-	
+
 
     public function detail($id, $id_so)
     {
@@ -49,8 +49,8 @@ class Order extends CI_Controller
         $data['province'] = $this->db->get('tb_province')->result_array();
         $data['service'] = $this->db->get('tb_service_type')->result_array();
         $data['p'] = $this->order->order($id)->row_array();
-		 $data['invoice'] = $this->db->query('SELECT status FROM tbl_invoice WHERE shipment_id = ' . $id . '')->row_array();
-		  $data['dimension'] = $this->db->get_where('tbl_dimension',array('shipment_id' => $data['p']['shipment_id']))->result_array();
+        $data['invoice'] = $this->db->query('SELECT status FROM tbl_invoice WHERE shipment_id = ' . $id . '')->row_array();
+        $data['dimension'] = $this->db->get_where('tbl_dimension', array('shipment_id' => $data['p']['shipment_id']))->result_array();
         $this->backend->display('cs/v_edit_order', $data);
     }
     public function editOrder($id, $id_so)
@@ -64,7 +64,7 @@ class Order extends CI_Controller
         $this->backend->display('cs/v_edit_order_dua', $data);
     }
 
-     function view_data_query()
+    function view_data_query()
     {
         $query  = "SELECT a.tgl_pickup,a.shipper,a.consigne,a.shipment_id,a.created_at,a.id_so,a.id, b.nama_user FROM tbl_shp_order a JOIN tb_user b ON a.id_user=b.id_user";
         $search = array('shipment_id', 'shipper');
@@ -77,20 +77,19 @@ class Order extends CI_Controller
         header('Content-Type: application/json');
         echo $this->M_Datatables->get_tables_query($query, $search, $where, $isWhere);
     }
-	public function deleteDo($id_do)
+    public function deleteDo($id_do)
     {
         $do = $this->db->get_where('tbl_no_do', ['id_berat' => $id_do])->row_array();
         $shipment = $this->db->query('SELECT berat_js,koli FROM tbl_shp_order WHERE shipment_id = ' . $do['shipment_id'] . ' ')->row_array();
-        $updateshipment = $this->db->update('tbl_shp_order', array('berat_js' =>(int)$shipment['berat_js'] - (int)$do['berat'],'koli' => (int)$shipment['koli'] - (int)$do['koli']),array('shipment_id' => $do['shipment_id']));
-         
+        $updateshipment = $this->db->update('tbl_shp_order', array('berat_js' => (int)$shipment['berat_js'] - (int)$do['berat'], 'koli' => (int)$shipment['koli'] - (int)$do['koli']), array('shipment_id' => $do['shipment_id']));
+
         if ($updateshipment) {
-            $delete = $this->db->delete('tbl_no_do',array('id_berat' => $id_do));
+            $delete = $this->db->delete('tbl_no_do', array('id_berat' => $id_do));
             if ($delete) {
                 $this->session->set_flashdata('message', '<div class="alert
                 alert-success" role="alert">Success</div>');
-            redirect($_SERVER['HTTP_REFERER']);
+                redirect($_SERVER['HTTP_REFERER']);
             }
-
         }
     }
     public function processEdit()
@@ -133,7 +132,7 @@ class Order extends CI_Controller
             'sender' => $this->input->post('sender'),
             'service_type' => $this->input->post('service_type'),
             'tree_shipper' => $this->input->post('tree_shipper'),
-            'tree_consignee' => $this->input->post('tree_consignee'), 
+            'tree_consignee' => $this->input->post('tree_consignee'),
             'koli' => $total_koli,
             'note_cs' => $no_do,
             // 'no_so' => $this->input->post('no_so'),
@@ -157,7 +156,7 @@ class Order extends CI_Controller
             'sender' => $this->input->post('sender'),
             'service_type' => $this->input->post('service_type'),
             'tree_shipper' => $this->input->post('tree_shipper'),
-            'tree_consignee' => $this->input->post('tree_consignee'), 
+            'tree_consignee' => $this->input->post('tree_consignee'),
             'koli' => $total_koli,
             'note_cs' => $no_do,
             // 'no_so' => $this->input->post('no_so'),
@@ -169,13 +168,13 @@ class Order extends CI_Controller
             'edited_at' => date('Y-m-d H:i:s'),
             'edited_by' => $this->session->userdata('id_user')
         );
-        
+
         if ($shipment['updatesistem_at'] == NULL) {
             $data['updatesistem_at'] = date('Y-m-d H:i:s');
         }
 
         $update =  $this->db->update('tbl_shp_order', $data, ['id' => $this->input->post('id')]);
-        $this->db->insert('tbl_shp_order_edit',$dataEdit);
+        $this->db->insert('tbl_shp_order_edit', $dataEdit);
         if ($update) {
             $this->session->set_flashdata('message', '<div class="alert
                 alert-success" role="alert">Success</div>');
@@ -185,7 +184,6 @@ class Order extends CI_Controller
                 alert-danger" role="alert">Failed</div>');
             redirect('cs/order/edit/' . $this->input->post('id') . '/' . $this->input->post('id_so'));
         }
-        
     }
 
     // buat orang selanjutnya yang lanjutin ni codingan, sumpah sy nyerah kalo benerin bugnya sendirian semua wkwkwkkw #norman
@@ -263,7 +261,7 @@ class Order extends CI_Controller
         $mpdf->WriteHTML($data);
         $mpdf->Output();
     }
-   public function printAll($id)
+    public function printAll($id)
     {
         $mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => [74, 105]]);
 
@@ -323,30 +321,32 @@ class Order extends CI_Controller
             $data['title'] = "Laporan Order Keseluruhan";
             $order = $this->pengajuan->getLaporan()->result_array();
         }
-        
+
         // Optimasi Query untuk no_do dan no_so dalam satu query
         $shipment_ids = array_column($order, 'shipment_id');
         if (!empty($shipment_ids)) {
             $shipment_data = $this->db->select('shipment_id, GROUP_CONCAT(no_do SEPARATOR "/") as no_do, GROUP_CONCAT(no_so SEPARATOR "/") as no_so')
-                                      ->from('tbl_no_do')
-                                      ->where_in('shipment_id', $shipment_ids)
-                                      ->group_by('shipment_id')
-                                      ->get()
-                                      ->result_array();
+                ->from('tbl_no_do')
+                ->where_in('shipment_id', $shipment_ids)
+                ->group_by('shipment_id')
+                ->get()
+                ->result_array();
             $shipment_map = array_column($shipment_data, null, 'shipment_id');
         }
-        
+
         // Buat Spreadsheet
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
-        $headers = ['NO', 'DATE', 'SHIPMENT ID', 'NO DO/DN', 'NO SO/PO', 'STP', 'CUSTOMER', 'CONSIGNEE', 'DEST', 'SERVICE',
-                    'COMM', 'COLLY', 'WEIGHT', 'SPECIAL WEIGHT', 'PETUGAS PICKUP', 'NO FLIGHT', 'NO SMU', 'TANGGAL DITERIMA',
-                    'STATUS DELIVERY', 'LEADTIME', 'REALISASI LEADTIME', 'STATUS POD', 'LEADTIME KPI SCORE', 
-                    'REALISASI LEADTIME AGEN DAERAH', 'KPI LEADTIME AGEN DAERAH', 'TANGGAL PENGISIAN NAMA PENERIMA', 
-                    'REALISASI LEADTIME INPUT NAMA PENERIMA', 'KPI LEADTIME INPUT NAMA PENERIMA', 'KASUS', 'MILESTONE DIBUAT'];
-        
+        $headers = [
+            'NO', 'DATE', 'SHIPMENT ID', 'NO DO/DN', 'NO SO/PO', 'STP', 'CUSTOMER', 'CONSIGNEE', 'DEST', 'SERVICE',
+            'COMM', 'COLLY', 'WEIGHT', 'SPECIAL WEIGHT', 'PETUGAS PICKUP', 'NO FLIGHT', 'NO SMU', 'TANGGAL DITERIMA',
+            'STATUS DELIVERY', 'LEADTIME', 'REALISASI LEADTIME', 'STATUS POD', 'LEADTIME KPI SCORE',
+            'REALISASI LEADTIME AGEN DAERAH', 'KPI LEADTIME AGEN DAERAH', 'TANGGAL PENGISIAN NAMA PENERIMA',
+            'REALISASI LEADTIME INPUT NAMA PENERIMA', 'KPI LEADTIME INPUT NAMA PENERIMA', 'KASUS', 'MILESTONE DIBUAT'
+        ];
+
         $sheet->fromArray([$headers], null, 'A1');
-        
+
         // Isi Data
         $dataRows = [];
         $no = 1;
@@ -357,46 +357,60 @@ class Order extends CI_Controller
             $tracking = $this->pengajuan->getLastTracking($row['shipment_id'])->row_array();
 
             if ($row['tgl_diterima'] == NULL) {
-                if (strpos($tracking['status'], 'Diterima') !== false) {
-                    $row['tgl_diterima'] = $tracking['created_at'];
-                } else {
+                if ($tracking) {
+                    if (strpos($tracking['status'], 'Diterima') !== false) {
+                        $row['tgl_diterima'] = $tracking['created_at'];
+                    } else {
+                        $row['tgl_diterima'] = '';
+                    }
+                } else{
                     $row['tgl_diterima'] = '';
                 }
-            } else{
+            } else {
                 $row['tgl_diterima'] = $row['tgl_diterima'];
             }
 
-        
+
             if ($row['tgl_diterima'] == NULL || $row['tgl_diterima'] == '') {
                 $leadtime = 0;
-            } else{
+            } else {
                 $diterima = strtotime($row['tgl_diterima']);
                 $pickup = strtotime($row['tgl_pickup']);
                 $leadtime = round(abs($diterima - $pickup) / 60 / 60 / 24);
                 if ($leadtime == 0) {
                     $leadtime = '0';
                 }
-            
             }
-            
+
             $pod_status = ['Pending', 'Dikirim', 'Diterima'];
             $pod = $pod_status[$row['status_pod']] ?? 'Unknown';
-        
+
             $mark = ' (' . $row["mark_shipper"] . ')';
+
+
+            if ($tracking) {
+                $dataRows[] = [
+                    $no++, $row['tgl_pickup'], $shipment_id, $no_do, $no_so, $row['no_stp'],
+                    $row['shipper'] . $mark, $row['consigne'], $row['tree_consignee'],
+                    $row['service_name'], $row['pu_commodity'], $row['koli'], $row['berat_js'],
+                    $row['berat_msr'], $row['nama_user'], $row['no_flight'], $row['no_smu'],
+                    $row['tgl_diterima'], $tracking['status'], '', $leadtime, $pod, '', '', '', '', '', '', '', $tracking['update_at']
+                ];
+            } else{
+                $dataRows[] = [
+                    $no++, $row['tgl_pickup'], $shipment_id, $no_do, $no_so, $row['no_stp'],
+                    $row['shipper'] . $mark, $row['consigne'], $row['tree_consignee'],
+                    $row['service_name'], $row['pu_commodity'], $row['koli'], $row['berat_js'],
+                    $row['berat_msr'], $row['nama_user'], $row['no_flight'], $row['no_smu'],
+                    $row['tgl_diterima'],'', '', $leadtime, $pod, '', '', '', '', '', '', '', ''
+                ];
+            }
             
-        
-            $dataRows[] = [
-                $no++, $row['tgl_pickup'], $shipment_id, $no_do, $no_so, $row['no_stp'],
-                $row['shipper'] . $mark, $row['consigne'], $row['tree_consignee'], 
-                $row['service_name'], $row['pu_commodity'], $row['koli'], $row['berat_js'], 
-                $row['berat_msr'], $row['nama_user'], $row['no_flight'], $row['no_smu'], 
-                $row['tgl_diterima'], $tracking['status'], '', $leadtime, $pod, '', '', '', '', '', '', '', $tracking['update_at']
-            ];
         }
-        
+
         // Masukkan data ke Excel
         $sheet->fromArray($dataRows, null, 'A2');
-        
+
         // Set Header dan Simpan File
         header('Content-Type: application/vnd.ms-excel');
         header('Content-Disposition: attachment;filename="' . $data['title'] . '.xlsx"');
@@ -404,7 +418,6 @@ class Order extends CI_Controller
         $writer = IOFactory::createWriter($spreadsheet, 'Xlsx');
         $writer->save('php://output');
         exit;
-        
     }
     public function ExportexcelVoid($bulan = null, $tahun = null)
     {
