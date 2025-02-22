@@ -380,10 +380,12 @@ class Order extends CI_Controller
             $no_do = isset($shipment_map[$shipment_id]) ? $shipment_map[$shipment_id]['no_do'] : $row['note_cs'];
             $no_so = isset($shipment_map[$shipment_id]) ? $shipment_map[$shipment_id]['no_so'] : $row['no_so'];
             $tracking = $this->pengajuan->getLastTracking($row['shipment_id']);
+            if($tracking){
+                $tracking = $tracking->row_array();
+            }
 
             if ($row['tgl_diterima'] == NULL) {
                 if ($tracking) {
-                $tracking = $tracking->row_array();
                     if (strpos($tracking['status'], 'Diterima') !== false) {
                         $row['tgl_diterima'] = $tracking['created_at'];
                     } else {
@@ -418,7 +420,6 @@ class Order extends CI_Controller
 
 
             if ($tracking) {
-                $tracking = $tracking->row_array();
                 $dataRows[] = [
                     $no++, $row['tgl_pickup'], $shipment_id, $no_do, $no_so, $row['no_stp'],
                     $row['shipper'] . $mark, $row['consigne'], $row['tree_consignee'],
