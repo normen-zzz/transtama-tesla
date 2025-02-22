@@ -412,6 +412,9 @@ class Order extends CI_Controller
 
             $mark = ' (' . $row["mark_shipper"] . ')';
 
+            // make sure $row consigne tidak ada simbol 
+            $row['consigne'] = preg_replace('/[^A-Za-z0-9\-]/', ' ', $row['consigne']);
+
 
             if ($tracking) {
                 $dataRows[] = [
