@@ -304,31 +304,13 @@ class Order extends CI_Controller
     {
         $bulan = $this->input->post('bulan');
         $tahun = $this->input->post('tahun');
-        $order = $this->pengajuan->getLaporanTransaksiFilter1($bulan, $tahun,);
-        $jumlahData = $order->num_rows();
-
-        // Initialize the batch array
-        $batch = [];
-
-        // Define the size of each batch
-        $batchSize = 400;
-
-        // Calculate the number of batches needed
-        $numBatches = ceil($jumlahData / $batchSize);
-
-        // Iterate through the records and create range strings for each batch
-        for ($i = 0; $i < $numBatches; $i++) {
-            $start = $i * $batchSize + 1; // Start index (1-based)
-            $end = min($start + $batchSize - 1, $jumlahData); // End index (1-based)
-            $batch[] = "$start/$end";
-        }
-
-        // Prepare the data array
+        $order = $this->pengajuan->getLaporanTransaksiFilter1($bulan, $tahun);
+        
         $data['bulan'] = $bulan;
         $data['tahun'] = $tahun;
         $data['title'] = "Laporan Order Tahun $tahun Bulan $bulan";
         $data['order'] = $order->result_array();
-        $data['batch'] = $batch; // Add the batch data to the data array
+      
 
         // Display the view with the data
         $this->backend->display('cs/v_report_filter', $data);
@@ -336,19 +318,22 @@ class Order extends CI_Controller
 
 
 
-    public function Exportexcel($bulan = null, $tahun = null, $start = null, $end = null)
+    public function Exportexcel($bulan = null, $tahun = null)
     {
-
-        if ($bulan != null && $tahun != null) {
+        // Ambil data laporan berdasarkan filter
+        if ($bulan && $tahun) {
             $data['title'] = "Laporan Order Dari Bulan $bulan-$tahun";
-            $order = $this->pengajuan->getLaporanTransaksiFilter($bulan, $tahun, $start, $end)->result_array();
+            $order = $this->pengajuan->getLaporanTransaksiFilter($bulan, $tahun)->result_array();
         } else {
             $data['title'] = "Laporan Order Keseluruhan";
             $order = $this->pengajuan->getLaporan()->result_array();
         }
 
-        // Optimasi Query untuk no_do dan no_so dalam satu query
+        // Ambil semua shipment_id dalam satu array
         $shipment_ids = array_column($order, 'shipment_id');
+
+        // Optimasi query untuk no_do dan no_so dalam satu query
+        $shipment_map = [];
         if (!empty($shipment_ids)) {
             $shipment_data = $this->db->select('shipment_id, GROUP_CONCAT(no_do SEPARATOR "/") as no_do, GROUP_CONCAT(no_so SEPARATOR "/") as no_so')
                 ->from('tbl_no_do')
@@ -356,12 +341,18 @@ class Order extends CI_Controller
                 ->group_by('shipment_id')
                 ->get()
                 ->result_array();
+
             $shipment_map = array_column($shipment_data, null, 'shipment_id');
         }
+
+        // Ambil semua tracking dalam satu query
+        $tracking_map = $this->pengajuan->getAllLastTracking($shipment_ids);
 
         // Buat Spreadsheet
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
+
+        // Header
         $headers = [
             'NO', 'DATE', 'SHIPMENT ID', 'NO DO/DN', 'NO SO/PO', 'STP', 'CUSTOMER', 'CONSIGNEE', 'DEST', 'SERVICE',
             'COMM', 'COLLY', 'WEIGHT', 'SPECIAL WEIGHT', 'PETUGAS PICKUP', 'NO FLIGHT', 'NO SMU', 'TANGGAL DITERIMA',
@@ -369,7 +360,6 @@ class Order extends CI_Controller
             'REALISASI LEADTIME AGEN DAERAH', 'KPI LEADTIME AGEN DAERAH', 'TANGGAL PENGISIAN NAMA PENERIMA',
             'REALISASI LEADTIME INPUT NAMA PENERIMA', 'KPI LEADTIME INPUT NAMA PENERIMA', 'KASUS', 'MILESTONE DIBUAT'
         ];
-
         $sheet->fromArray([$headers], null, 'A1');
 
         // Isi Data
@@ -377,65 +367,42 @@ class Order extends CI_Controller
         $no = 1;
         foreach ($order as $row) {
             $shipment_id = $row['shipment_id'];
-            $no_do = isset($shipment_map[$shipment_id]) ? $shipment_map[$shipment_id]['no_do'] : $row['note_cs'];
-            $no_so = isset($shipment_map[$shipment_id]) ? $shipment_map[$shipment_id]['no_so'] : $row['no_so'];
-            $tracking = $this->pengajuan->getLastTracking($row['shipment_id']);
-            if($tracking){
-                $tracking = $tracking->row_array();
+
+            // Optimasi pengambilan no_do dan no_so
+            $no_do = $shipment_map[$shipment_id]['no_do'] ?? $row['note_cs'];
+            $no_so = $shipment_map[$shipment_id]['no_so'] ?? $row['no_so'];
+
+            // Ambil tracking dari hasil query sebelumnya
+            $tracking_data = $tracking_map[$shipment_id] ?? [];
+            $tracking_status = $tracking_data['status'] ?? '';
+            $tracking_date = $tracking_data['created_at'] ?? '';
+            $tracking_update = $tracking_data['update_at'] ?? '';
+
+            // Optimasi tanggal diterima
+            if (empty($row['tgl_diterima']) && strpos($tracking_status, 'Diterima') !== false) {
+                $row['tgl_diterima'] = $tracking_date;
             }
 
-            if ($row['tgl_diterima'] == NULL) {
-                if ($tracking) {
-                    if (strpos($tracking['status'], 'Diterima') !== false) {
-                        $row['tgl_diterima'] = $tracking['created_at'];
-                    } else {
-                        $row['tgl_diterima'] = '';
-                    }
-                } else {
-                    $row['tgl_diterima'] = '';
-                }
-            } else {
-                $row['tgl_diterima'] = $row['tgl_diterima'];
-            }
+            // Hitung leadtime
+            $leadtime = empty($row['tgl_diterima']) ? 0 : round(abs(strtotime($row['tgl_diterima']) - strtotime($row['tgl_pickup'])) / 86400);
 
-
-            if ($row['tgl_diterima'] == NULL || $row['tgl_diterima'] == '') {
-                $leadtime = 0;
-            } else {
-                $diterima = strtotime($row['tgl_diterima']);
-                $pickup = strtotime($row['tgl_pickup']);
-                $leadtime = round(abs($diterima - $pickup) / 60 / 60 / 24);
-                if ($leadtime == 0) {
-                    $leadtime = '0';
-                }
-            }
-
+            // Status POD
             $pod_status = ['Pending', 'Dikirim', 'Diterima'];
             $pod = $pod_status[$row['status_pod']] ?? 'Unknown';
 
-            $mark = ' (' . $row["mark_shipper"] . ')';
-
-            // make sure $row consigne tidak ada simbol 
+            // Format consigne agar tidak ada simbol
             $row['consigne'] = preg_replace('/[^A-Za-z0-9\-]/', ' ', $row['consigne']);
 
+            // Mark shipper jika ada
+            $mark = !empty($row["mark_shipper"]) ? ' (' . $row["mark_shipper"] . ')' : '';
 
-            if ($tracking) {
-                $dataRows[] = [
-                    $no++, $row['tgl_pickup'], $shipment_id, $no_do, $no_so, $row['no_stp'],
-                    $row['shipper'] . $mark, $row['consigne'], $row['tree_consignee'],
-                    $row['service_name'], $row['pu_commodity'], $row['koli'], $row['berat_js'],
-                    $row['berat_msr'], $row['nama_user'], $row['no_flight'], $row['no_smu'],
-                    $row['tgl_diterima'], $tracking['status'], '', $leadtime, $pod, '', '', '', '', '', '', '', $tracking['update_at']
-                ];
-            } else {
-                $dataRows[] = [
-                    $no++, $row['tgl_pickup'], $shipment_id, $no_do, $no_so, $row['no_stp'],
-                    $row['shipper'] . $mark, $row['consigne'], $row['tree_consignee'],
-                    $row['service_name'], $row['pu_commodity'], $row['koli'], $row['berat_js'],
-                    $row['berat_msr'], $row['nama_user'], $row['no_flight'], $row['no_smu'],
-                    $row['tgl_diterima'], '', '', $leadtime, $pod, '', '', '', '', '', '', '', ''
-                ];
-            }
+            $dataRows[] = [
+                $no++, $row['tgl_pickup'], $shipment_id, $no_do, $no_so, $row['no_stp'],
+                $row['shipper'] . $mark, $row['consigne'], $row['tree_consignee'],
+                $row['service_name'], $row['pu_commodity'], $row['koli'], $row['berat_js'],
+                $row['berat_msr'], $row['nama_user'], $row['no_flight'], $row['no_smu'],
+                $row['tgl_diterima'], $tracking_status, '', $leadtime, $pod, '', '', '', '', '', '', '', $tracking_update
+            ];
         }
 
         // Masukkan data ke Excel

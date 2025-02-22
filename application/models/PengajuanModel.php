@@ -94,6 +94,30 @@ class PengajuanModel extends CI_Model
         $query = $this->db->get();
         return $query;
     }
+
+    public function getAllLastTracking($shipment_ids)
+    {
+        if (empty($shipment_ids)) return [];
+
+        $result = $this->db->select('shipment_id, status, created_at, update_at')
+            ->from('tbl_tracking_real')
+            ->where_in('shipment_id', $shipment_ids)
+            ->order_by('id_tracking', 'DESC')
+            ->get()
+            ->result_array();
+
+        // Buat mapping agar lebih cepat diakses
+        $tracking_map = [];
+        foreach ($result as $row) {
+            if (!isset($tracking_map[$row['shipment_id']])) {
+                $tracking_map[$row['shipment_id']] = $row;
+            }
+        }
+
+        return $tracking_map;
+    }
+    
+
     public function getLastTrackingOutbond($shipmnent_id)
     {
         $this->db->select('*');
@@ -258,7 +282,7 @@ class PengajuanModel extends CI_Model
         $this->db->order_by('a.tgl_pickup', 'ASC');
         return $this->db->get();
     }
-    public function getLaporanTransaksiFilter($bulan, $tahun, $start, $end)
+    public function getLaporanTransaksiFilter($bulan, $tahun)
     {
         $this->db->select('a.shipment_id, a.tgl_pickup, a.no_stp, 
                        a.shipper, a.consigne, a.tree_consignee, 
@@ -276,7 +300,6 @@ class PengajuanModel extends CI_Model
         ]);
         $this->db->order_by('a.tgl_pickup', 'ASC');
         // limit 
-        $this->db->limit($end, $start - 1);
         return $this->db->get();
     }
 

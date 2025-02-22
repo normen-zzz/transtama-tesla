@@ -54,17 +54,7 @@
 
 								<div class="row">
 
-									<?php if (!empty($batch)) :
-										$noBatch = 1;
-										?>
-
-										<?php foreach ($batch as $range) : ?>
-											<a target="blank" href="<?= base_url('cs/order/exportexcel/' . $bulan . '/' . $tahun.'/'.$range) ?>" class="btn btn-sm btn-danger mb-3 ml-2">Export Laporan Excell Batch <?= $noBatch ?></a>
-										<?php $noBatch++; endforeach; ?>
-
-									<?php else : ?>
-										<p>Tidak ada data untuk ditampilkan.</p>
-									<?php endif; ?>
+								<a target="blank" href="<?= base_url('cs/order/exportexcel/' . $bulan . '/' . $tahun) ?>" class="btn btn-sm btn-danger mb-3 ml-2">Export Laporan Excell</a>
 									
 									<a target="blank" href="<?= base_url('cs/order/exportexcelVoid/' . $bulan . '/' . $tahun) ?>" class="btn btn-sm btn-primary mb-3 ml-2">Export Void</a>
 
