@@ -182,6 +182,28 @@ class PengajuanModel extends CI_Model
         $this->db->where('a.deleted', 0);
         return $this->db->get();
     }
+    // dataRevisiSo
+    public function dataRevisiSo($id)
+    {
+        $this->db->select('a.*,b.shipment_id as resi,b.id,b.id_so');
+        $this->db->from('tbl_revisi_so a');
+        $this->db->join('tbl_shp_order b', 'a.shipment_id=b.id');
+        $this->db->where('a.shipment_id', $id);
+        $this->db->where('b.deleted', 0);
+        return $this->db->get();
+    }
+
+    // dataShipment
+    public function dataShipment($id)
+    {
+        $this->db->select('a.shipment_id,a.pu_moda,a.shipper,a.tree_shipper,a.consigne,a.created_at,a.note_cs,a.tree_consignee,a.id,a.id_so,a.destination,a.city_consigne,a.state_consigne,a.is_jabodetabek,a.freight_kg,a.special_freight,a.packing,a.insurance,a.surcharge,a.disc,a.cn,a.specialcn,a.others,a.pic_invoice,a.so_note,a.status_so, b.service_name');
+        $this->db->from('tbl_shp_order a');
+        $this->db->join('tb_service_type b', 'a.service_type=b.code', 'left');
+        $this->db->join('tbl_so c', 'a.id_so=c.id_so', 'left');
+        $this->db->where('a.id', $id);
+        $this->db->where('a.deleted', 0);
+        return $this->db->get();
+    }
     public function orderBySoAdmin($id)
     {
         $this->db->select('a.*, b.service_name');
