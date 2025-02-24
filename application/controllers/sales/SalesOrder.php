@@ -1121,7 +1121,7 @@ class SalesOrder extends CI_Controller
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
         $sheet->setCellValue('A1', 'ID(JANGAN DIUBAH)');
-        $sheet->setCellValue('B1', 'Shipment ID');
+        $sheet->setCellValue('B1', 'Shipment ID (JANGAN DIUBAH)');
         $sheet->setCellValue('C1', 'Shipper');
         $sheet->setCellValue('D1', 'Consignee');
         $sheet->setCellValue('E1', 'Freight/Kg');
