@@ -1085,6 +1085,21 @@ class SalesOrder extends CI_Controller
 
         $this->backend->display('sales/v_detail_order', $data);
     }
+    // getDataShipment
+    public function getDataShipment()
+    {
+        $id = $this->input->post('id');
+        $data = $this->order->dataShipment($id)->row_array();
+        echo json_encode($data);
+    }
+
+    // getDataRevisiSo
+    public function getDataRevisiSo()
+    {
+        $id = $this->input->post('id');
+        $data = $this->order->dataRevisiSo($id)->row_array();
+        echo json_encode($data);
+    }
     public function cancel($id)
     {
         $data['title'] = 'Cancel Sales Order';
