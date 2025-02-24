@@ -13,7 +13,10 @@
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700" />
 	<!--end::Fonts-->
 	<!--begin::Page Vendors Styles(used by this page)-->
-
+	<meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Tesla Smartwork">
+    <link rel="apple-touch-icon" href="https://tesla-smartwork.transtama.com/uploads/icon512.png">
 	<link rel="manifest" href="<?= base_url('assets/manifest.json') ?>">
 
 
