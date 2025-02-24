@@ -14,6 +14,14 @@
 	<!--end::Fonts-->
 	<!--begin::Page Vendors Styles(used by this page)-->
 
+	<!-- buat safari  -->
+	<!-- Meta Tags untuk Add to Home Screen -->
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="default">
+	<meta name="apple-mobile-web-app-title" content="Tesla Smartwork">
+	<link rel="apple-touch-icon" href="<?= base_url('uploads/') ?>icon512.png">
+
+
 	<link href="<?= base_url('assets/back/metronic/') ?>plugins/custom/fullcalendar/fullcalendar.bundle.css" rel="stylesheet" type="text/css" />
 	<link href="<?= base_url('assets/back/metronic/') ?>plugins/custom/datatables/datatables.bundle.css" rel="stylesheet" type="text/css" />
 	<!--begin::Global Theme Styles(used by all pages)-->
@@ -26,7 +34,7 @@
 	<link href="<?= base_url('assets/back/metronic/') ?>css/pages/wizard/wizard-3.css" rel="stylesheet" type="text/css" />
 	<link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/css/datepicker.css" rel="stylesheet" type="text/css" />
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.form/4.3.0/jquery.form.min.js" integrity="sha384-qlmct0AOBiA2VPZkMY3+2WqkHtIQ9lSdAsAn5RUJD/3vA5MKDgSGcdmIv4ycVxyn" crossorigin="anonymous"></script>
-		<script src="https://code.jquery.com/jquery-3.7.0.js" integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM=" crossorigin="anonymous"></script>
+	<script src="https://code.jquery.com/jquery-3.7.0.js" integrity="sha256-JlqSTELeR4TLqP0OG9dxM7yDPqX1ox/HfgiSLBj8+kM=" crossorigin="anonymous"></script>
 
 
 	<!-- scan -->
@@ -43,7 +51,7 @@
 	<link rel="stylesheet" href="<?= base_url('assets/back/metronic/') ?>plugins/custom/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css">
 
 	<link type="text/css" href="<?= base_url('assets/back/metronic/') ?>css/jquery.signature.css" rel="stylesheet">
-	
+
 
 	<link rel="shortcut icon" href="<?= base_url('uploads/') ?>icon512.png" />
 	<style>
@@ -97,8 +105,8 @@
 
 
 	<?php $this->load->view('templates/back/navbar'); ?>
-		
-	
+
+
 	<?= $_content; ?>
 	<?php $this->load->view('templates/back/footer'); ?>
 
@@ -543,7 +551,7 @@
 
 
 
-	
+
 
 	<script type="text/javascript">
 		function confirm_delete() {
@@ -673,7 +681,7 @@
 		}
 	</script>
 
-		<script>
+	<script>
 		var tabel = null;
 		$(document).ready(function() {
 			tabel = $('#mytablereport').DataTable({
@@ -1381,7 +1389,7 @@
 	</script>
 
 
-	
+
 
 
 
@@ -2049,7 +2057,7 @@
 
 		});
 	</script>
-	
+
 	<script>
 		$('button[type="submit"]').on('click', function() {
 			var button = $(this);
