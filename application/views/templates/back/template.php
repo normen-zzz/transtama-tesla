@@ -14,12 +14,8 @@
 	<!--end::Fonts-->
 	<!--begin::Page Vendors Styles(used by this page)-->
 
-	<!-- buat safari  -->
-	<!-- Meta Tags untuk Add to Home Screen -->
-	<meta name="apple-mobile-web-app-capable" content="yes">
-	<meta name="apple-mobile-web-app-status-bar-style" content="default">
-	<meta name="apple-mobile-web-app-title" content="Tesla Smartwork">
-	<link rel="apple-touch-icon" href="<?= base_url('uploads/') ?>icon512.png">
+	<link rel="manifest" href="<?= base_url('assets/manifest.json') ?>">
+
 
 
 	<link href="<?= base_url('assets/back/metronic/') ?>plugins/custom/fullcalendar/fullcalendar.bundle.css" rel="stylesheet" type="text/css" />
