@@ -24,6 +24,13 @@
 	<!--begin::Layout Themes(used by all pages)-->
 	<!--end::Layout Themes-->
 	<link rel="shortcut icon" href="<?= base_url('uploads/') ?>tlx.jpeg" />
+
+	<meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Tesla Smartwork">
+    <link rel="apple-touch-icon" href="https://tesla-smartwork.transtama.com/uploads/icon512.png">
+	<link rel="manifest" href="<?= base_url('assets/manifest.json') ?>">
+
 </head>
 <!--end::Head-->
 <!--begin::Body-->
