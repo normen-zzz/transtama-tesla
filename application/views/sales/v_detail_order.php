@@ -935,7 +935,7 @@
 						<span aria-hidden="true">&times;</span>
 					</button>
 				</div>
-				<form action="<?= base_url('sales/salesOrder/import') ?>" method="POST" enctype="multipart/form-data">
+				<form action="<?= base_url('sales/salesOrder/import2') ?>" method="POST" enctype="multipart/form-data">
 					<div class="modal-body">
 						<div class="form-group">
 							<label class="col-form-label text-lg-right font-weight-bold">Upload File</label>

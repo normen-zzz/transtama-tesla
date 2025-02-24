@@ -3,9 +3,12 @@ defined('BASEPATH') or exit('No direct script access allowed');
 date_default_timezone_set('Asia/Jakarta');
 setlocale(LC_TIME, "id_ID.UTF8");
 
+
+
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\Reader\Csv;
-use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
+use PhpOffice\PhpSpreadsheet\Reader\Xlsx as ReaderXlsx;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
 class SalesOrder extends CI_Controller
@@ -1117,59 +1120,67 @@ class SalesOrder extends CI_Controller
         $shipments = $this->db->get_where('tbl_shp_order', ['id_so' => $id_so])->result_array();
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
-        $sheet->setCellValue('A1', 'Shipment ID');
-        $sheet->setCellValue('B1', 'Shipper');
-        $sheet->setCellValue('C1', 'Consignee');
-        $sheet->setCellValue('D1', 'Freight/Kg');
-        $sheet->setCellValue('E1', 'Special Freight/Kg');
-        $sheet->setCellValue('F1', 'Packing');
-        $sheet->setCellValue('G1', 'Insurance');
-        $sheet->setCellValue('H1', 'Surcharge');
-        $sheet->setCellValue('I1', 'Discount');
-        $sheet->setCellValue('J1', 'Commision (%) ex. 10');
-        $sheet->setCellValue('K1', 'Special Commision');
-        $sheet->setCellValue('L1', 'Others');
-        $sheet->setCellValue('M1', 'Note');
-        $sheet->setCellValue('N1', 'PIC Invoice');
-        $sheet->setCellValue('O1', 'City');
-        $sheet->setCellValue('P1', 'Weight');
-        $sheet->setCellValue('Q1', 'Pickup Poin');
+        $sheet->setCellValue('A1', 'ID(JANGAN DIUBAH)');
+        $sheet->setCellValue('B1', 'Shipment ID');
+        $sheet->setCellValue('C1', 'Shipper');
+        $sheet->setCellValue('D1', 'Consignee');
+        $sheet->setCellValue('E1', 'Freight/Kg');
+        $sheet->setCellValue('F1', 'Special Freight/Kg');
+        $sheet->setCellValue('G1', 'Packing');
+        $sheet->setCellValue('H1', 'Insurance');
+        $sheet->setCellValue('I1', 'Surcharge');
+        $sheet->setCellValue('J1', 'Discount');
+        $sheet->setCellValue('K1', 'Commision (%) ex. 10');
+        $sheet->setCellValue('L1', 'Special Commision');
+        $sheet->setCellValue('M1', 'Others');
+        $sheet->setCellValue('N1', 'Note');
+        $sheet->setCellValue('O1', 'PIC Invoice');
+        $sheet->setCellValue('P1', 'City');
+        $sheet->setCellValue('Q1', 'Weight');
+        $sheet->setCellValue('R1', 'Pickup Poin');
+       
+
 
         $no = 1;
         $x = 2;
         foreach ($shipments as $row) {
-            $sheet->setCellValue('A' . $x, $row['shipment_id'])->getColumnDimension('A')
+            $sheet->setCellValue('A' . $x, $row['id'])->getColumnDimension('A')
                 ->setAutoSize(true);
-            $sheet->setCellValue('B' . $x, $row['shipper'])->getColumnDimension('B')
+            $sheet->setCellValue('B' . $x, $row['shipment_id'])->getColumnDimension('B')
                 ->setAutoSize(true);
-            $sheet->setCellValue('C' . $x, $row['consigne'])->getColumnDimension('C')
+            $sheet->setCellValue('C' . $x, $row['shipper'])->getColumnDimension('C')
                 ->setAutoSize(true);
-            $sheet->setCellValue('D' . $x, $row['freight_kg'])->getColumnDimension('D')
+            $sheet->setCellValue('D' . $x, $row['consigne'])->getColumnDimension('D')
                 ->setAutoSize(true);
-            $sheet->setCellValue('E' . $x, $row['special_freight'])->getColumnDimension('E')
+            $sheet->setCellValue('E' . $x, $row['freight_kg'])->getColumnDimension('E')
                 ->setAutoSize(true);
-            $sheet->setCellValue('F' . $x, $row['packing'])->getColumnDimension('F')
+            $sheet->setCellValue('F' . $x, $row['special_freight'])->getColumnDimension('F')
                 ->setAutoSize(true);
-            $sheet->setCellValue('G' . $x, $row['insurance'])->getColumnDimension('G')
+            $sheet->setCellValue('G' . $x, $row['packing'])->getColumnDimension('G')
                 ->setAutoSize(true);
-            $sheet->setCellValue('H' . $x, $row['surcharge'])->getColumnDimension('H')
+            $sheet->setCellValue('H' . $x, $row['insurance'])->getColumnDimension('H')
                 ->setAutoSize(true);
-            $sheet->setCellValue('I' . $x, $row['disc'])->getColumnDimension('I')
+            $sheet->setCellValue('I' . $x, $row['surcharge'])->getColumnDimension('I')
                 ->setAutoSize(true);
-            $sheet->setCellValue('J' . $x, $row['cn'] * 100)->getColumnDimension('J')
+            $sheet->setCellValue('J' . $x, $row['disc'])->getColumnDimension('J')
                 ->setAutoSize(true);
-            $sheet->setCellValue('K' . $x, $row['specialcn'] * 100)->getColumnDimension('J')
+            $sheet->setCellValue('K' . $x, $row['cn'] * 100)->getColumnDimension('K')
                 ->setAutoSize(true);
-            $sheet->setCellValue('L' . $x, $row['others'])->getColumnDimension('K')
+            $sheet->setCellValue('L' . $x, $row['specialcn'] * 100)->getColumnDimension('L')
                 ->setAutoSize(true);
-            $sheet->setCellValue('M' . $x, $row['so_note']);
-            $sheet->setCellValue('N' . $x, $row['pic_invoice'])->getColumnDimension('M')
+            $sheet->setCellValue('M' . $x, $row['others'])->getColumnDimension('M')
                 ->setAutoSize(true);
-            $sheet->setCellValue('O' . $x, $row['city_consigne'])->getColumnDimension('N')
+            $sheet->setCellValue('N' . $x, $row['so_note']) ->getColumnDimension('N')
                 ->setAutoSize(true);
-            $sheet->setCellValue('P' . $x, $row['berat_js']);
-            $sheet->setCellValue('Q' . $x, $detail['pu_poin'])->getColumnDimension('P')
+            $sheet->setCellValue('O' . $x, $row['pic_invoice'])->getColumnDimension('O')
                 ->setAutoSize(true);
+            $sheet->setCellValue('P' . $x, $row['city_consigne'])->getColumnDimension('P')
+                ->setAutoSize(true);
+            $sheet->setCellValue('Q' . $x, $row['berat_js'])->getColumnDimension('Q')
+                ->setAutoSize(true);
+            $sheet->setCellValue('R' . $x, $detail['pu_poin'])->getColumnDimension('R')
+                ->setAutoSize(true);
+           
             $x++;
         }
         $filename = "sales order $detail[shipper]";
@@ -1182,6 +1193,103 @@ class SalesOrder extends CI_Controller
         $writer->save('php://output');
         exit;
     }
+    public function import2()
+    {
+        // from file excel 
+        $this->db->trans_start();
+        try {
+            $file = $_FILES['upload_file']['name'];
+            $ext = pathinfo($file, PATHINFO_EXTENSION);
+            if ($ext == 'csv') {
+                $reader = new Csv();
+            } else {
+                $reader = new ReaderXlsx();
+            }
+            $reader->setReadDataOnly(true);
+            $spreadsheet = $reader->load($_FILES['upload_file']['tmp_name']);
+            $sheetData = $spreadsheet->getActiveSheet()->toArray();
+
+
+
+            foreach ($sheetData as $key => $value) {
+                if ($key > 0) {
+                    $shipment_id = $value[1];
+                    $id = $value[0];
+                    $freight_kg = $value[4];
+                    $packing = $value[6];
+                    $special_freight = $value[5];
+                    $insurance = $value[7];
+                    $surcharge = $value[8];
+                    $disc = $value[9] / 100;
+                    $cn = $value[10] / 100;
+                    $specialcn = $value[11];
+                    $others = $value[12];
+                    $so_note = $value[13];
+                    $pic_invoice = $value[14];
+                    $deadline_pic_js = date('Y-m-d', strtotime('+2 days', strtotime(date('Y-m-d'))));
+
+                    $data = array(
+                        'freight_kg' => $freight_kg,
+                        'packing' => $packing,
+                        'special_freight' => $special_freight,
+                        'insurance' => $insurance,
+                        'surcharge' => $surcharge,
+                        'disc' => $disc,
+                        'cn' => $cn,
+                        'specialcn' => $specialcn,
+                        'others' => $others,
+                        'so_note' => $so_note,
+                        'pic_invoice' => $pic_invoice,
+                        'status_so' => 1,
+                        'deadline_pic_js' => $deadline_pic_js,
+                    );
+                    $updateHarga = $this->db->update('tbl_shp_order', $data, ['id' => $id]);
+                    if ($updateHarga) {
+                        $dataLock = array(
+                            'lock' => 1,
+                            'status_approve' => 1,
+                            'submitso_at' => date('Y-m-d H:i:s')
+                        );
+                        $updateDataLock = $this->db->update('tbl_so', $dataLock, ['id_so' => $this->input->post('id_so')]);
+                        if ($updateDataLock) {
+                            $data = array(
+                                'id_so' => $this->input->post('id_so'),
+                                'approve_manager' => $this->session->userdata('id_user'),
+                                'created_at_manager' => date('Y-m-d H:i:s'),
+                            );
+                            $insertApproveSo = $this->db->insert('tbl_approve_so', $data);
+                            if (!$insertApproveSo) {
+                                throw new Exception('Gagal insert approve so');
+                            }
+                        } else {
+                            throw new Exception('Gagal update data lock');
+                        }
+                    } else {
+                        throw new Exception('Gagal update harga');
+                    }
+                }
+            }
+            $this->db->trans_complete();
+            if ($this->db->trans_status() === FALSE) {
+                throw new Exception('Transaction failed');
+            } else {
+                $response = array('status' => 'success', 'message' => 'Berhasil diupdate');
+            }
+        } catch (Exception $e) {
+            $this->db->trans_rollback();
+            $response = array('status' => 'error', 'message' => $e->getMessage());
+        }
+
+        if ($response['status'] == 'success') {
+            $this->session->set_flashdata('message', 'Berhasil diupdate');
+            redirect('sales/salesOrder/detail/' . $this->input->post('id_so'));
+        } else {
+            $this->session->set_flashdata('message', $response['message']);
+            redirect('sales/salesOrder/detail/' . $this->input->post('id_so'));
+        }
+    }
+
+
 
     public function import()
     {
