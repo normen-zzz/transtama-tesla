@@ -1,7 +1,17 @@
 	<?php
-	$getTanggalPickup = $this->db->select_max('created_at')->get_where('tbl_tracking_real', array('id_so' => $p['id_so'], 'flag' => 4))->row_array();
-	$getWaktuPickup = $this->db->select_max('time')->get_where('tbl_tracking_real', array('id_so' => $p['id_so'], 'flag' => 4))->row_array();
-	$WaktuPickup = date('H:i:s', strtotime($getWaktuPickup['time']));
+	$getTanggalPickup = $this->db
+    ->select('created_at, time')
+    ->where('id_so', $p['id_so'])
+    ->where('flag', 4)
+    ->order_by('id_tracking', 'DESC')
+    ->limit(1)
+    ->get('tbl_tracking_real');
+	if ($getTanggalPickup->num_rows() > 0) {
+		$getTanggalPickup = $getTanggalPickup->row_array();
+		$WaktuPickup = date('H:i:s', strtotime($getTanggalPickup['time']));
+	}
+	
+	
 
 
 	?>
@@ -356,7 +366,7 @@
 											</thead>
 											<tbody>
 												<?php foreach ($shipment2 as $shp) {
-													$get_last_status = $this->db->limit(1)->order_by('id_tracking', 'desc')->get_where('tbl_tracking_real', ['shipment_id' => $shp['shipment_id']])->row_array();
+													
 												?>
 													<tr>
 														<td><a href="<?= base_url('sales/salesOrder/print/' . $shp['shipment_id']) ?>"> <?= $shp['shipment_id'] ?></a><br><?php if ($shp['service_name'] == 'Charter Service') {
@@ -366,35 +376,7 @@
 																																											} ?> </td>
 														<td><?= $shp['shipper'] ?></td>
 														<td><?= $shp['consigne'] ?>/ <br> <?= ucwords($shp['destination']) . '. ' . '<br>'  . '<b>' . ucwords(strtolower($shp['city_consigne'])) . '</b>' . ', ' . '<b>' . ucwords(strtolower($shp['state_consigne'])) . '</b>'  ?></td>
-														<!-- <td><?= $shp['city_consigne'] ?>, <?= $shp['state_consigne'] ?></td> -->
-
-														<!-- <?php if ($shp['service_name'] == 'Same Day Service') {
-																?>
-														<td style="color: green;"><?= $get_last_status['status'] ?> <br> <?= longdate_indo($get_last_status['created_at']), ' ' . $get_last_status['time'] ?>
-															<br>
-															<?php if ($get_last_status['flag'] == 5) {
-															?>
-																<a href="#" class="btn font-weight-bolder text-light" data-toggle="modal" data-target="#modal-pod<?= $shp['shipment_id'] ?>" style="background-color: #9c223b;">
-																	<span class="svg-icon svg-icon-md">
-																	</span>View POD</a>
-															<?php	} ?>
-															
-
-														</td>
-													<?php } else {
-													?>
-														<td style="color: green;"><?= $get_last_status['status'] ?> <br> <?= longdate_indo($get_last_status['created_at']), ' ' . $get_last_status['time'] ?>
-															<br>
-															<?php if ($get_last_status['flag'] == 11 || $get_last_status['flag'] == 5 || $get_last_status['flag'] == 7) {
-															?>
-																<a href="#" class="btn font-weight-bolder text-light" data-toggle="modal" data-target="#modal-pod<?= $shp['shipment_id'] ?>" style="background-color: #9c223b;">
-																	<span class="svg-icon svg-icon-md">
-																	</span>View POD</a>
-															<?php	} ?>
-
-														</td>
-
-													<?php	} ?> -->
+														
 														<td>
 															<input type="text" name="freight[]" value="<?= $shp['freight_kg'] ?>" required class="form-control" <?php if ($shp['status_so'] >= 1) {
 																																								?> disabled <?php } ?>>
@@ -486,7 +468,7 @@
 																<?php  } else {
 																if ($get_request_revisi) {
 																	if ($get_request_revisi['status'] == 1) {
-																		$cek_so_baru = $this->db->get_where('tbl_revisi_so', ['shipment_id' => $shp['id']])->row_array();
+																		
 																		if ($cek_so_baru) {
 																?>
 																			<a href="<?= base_url('sales/salesOrder/tracking/' . $shp['id'] . '/' . $shp['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Detail</a>
