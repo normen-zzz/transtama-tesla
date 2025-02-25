@@ -743,6 +743,7 @@ class SalesOrder extends CI_Controller
         $data['users'] = $this->db->get_where('tb_user', ['id_role' => 2])->result_array();
         $data['shipment'] = array('shipment_id' => $id);
         $data['dimension'] = $this->db->get_where('tbl_dimension', array('shipment_id' => $id))->result_array();
+        $data['do'] = $this->db->get_where('tbl_no_do', array('shipment_id' => $id));
         $this->backend->display('shipper/v_weight', $data);
     }
 

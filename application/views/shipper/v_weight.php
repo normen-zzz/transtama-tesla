@@ -57,8 +57,7 @@
 
 								<input type="text" name="shipment_id" value="<?= $shipment['shipment_id'] ?>" hidden id="shipment_id">
 
-								<?php $do = $this->db->get_where('tbl_no_do', array('shipment_id' => $shipment['shipment_id']))->result_array();
-								?>
+								
 								<table class="table table-bordered text-center" id="tableDimension">
 									<thead>
 										<tr>
@@ -68,7 +67,7 @@
 											<th>Lebar (CM)</th>
 											<th>Tinggi (CM)</th>
 											<th>Berat Aktual (KG)</th>
-											<?php if ($do != NULL) { ?>
+											<?php if ($do->num_rows() != 0) { ?>
 												<th>No DO</th>
 											<?php } ?>
 										</tr>
@@ -88,11 +87,11 @@
 											</td>
 											<td><input required class="form-control form-control-sm" type="number" name="tinggi[]" id="tinggi"></td>
 											<td><input required class="form-control form-control-sm" type="number" name="berat[]" id="berat"></td>
-											<?php if ($do != NULL) { ?>
+											<?php if ($do->num_rows() != 0) { ?>
 												<td>
 													<select class="form-control" style="width: 200px;" name="no_do[]" id="no_do">
-														<?php foreach ($do as $do) { ?>
-															<option value="<?= $do['no_do'] ?>"><?= $do['no_do'] ?></option>
+														<?php foreach ($do->result_array() as $do1) { ?>
+															<option value="<?= $do1['no_do'] ?>"><?= $do1['no_do'] ?></option>
 														<?php } ?>
 													</select>
 												</td>
@@ -237,8 +236,7 @@
 
 						<input type="text" name="shipment_id" value="<?= $shipment['shipment_id'] ?>" hidden id="shipment_id">
 
-						<?php $do = $this->db->get_where('tbl_no_do', array('shipment_id' => $shipment['shipment_id']))->result_array();
-						?>
+						
 						<table class="table table-bordered text-center" id="tableDimensionModal">
 							<thead>
 								<tr>
@@ -248,7 +246,7 @@
 									<th>Lebar (CM)</th>
 									<th>Tinggi (CM)</th>
 									<th>Berat Aktual (KG)</th>
-									<?php if ($do != NULL) { ?>
+									<?php if ($do->num_rows() != 0) { ?>
 										<th>No DO</th>
 									<?php } ?>
 								</tr>
@@ -271,8 +269,8 @@
 									<?php if ($do != NULL) { ?>
 										<td>
 											<select class="form-control" style="width: 200px;" name="no_do[]" id="no_do">
-												<?php foreach ($do as $do) { ?>
-													<option value="<?= $do['no_do'] ?>"><?= $do['no_do'] ?></option>
+												<?php foreach ($do->result_array() as $do2) { ?>
+													<option value="<?= $do2['no_do'] ?>"><?= $do2['no_do'] ?></option>
 												<?php } ?>
 											</select>
 										</td>
@@ -358,8 +356,7 @@
 
 
 
-<?php $do1 = $this->db->get_where('tbl_no_do', array('shipment_id' => $shipment['shipment_id']))->result_array();
-?>
+
 
 <script>
 	$(document).ready(function() {
@@ -382,8 +379,8 @@
 
 		function getDoSelectOptions() {
 			var select = $("<select>").attr("name", "no_do[]").addClass("form-control selectField");
-			<?php foreach ($do1 as $do2) : ?>
-				var option = $("<option>").attr("value", "<?php echo $do2['no_do']; ?>").text("<?php echo $do2['no_do']; ?>");
+			<?php foreach ($do->result_array() as $do3) : ?>
+				var option = $("<option>").attr("value", "<?php echo $do3['no_do']; ?>").text("<?php echo $do3['no_do']; ?>");
 
 				select.append(option);
 
@@ -414,8 +411,8 @@
 
 		function getDoSelectOptions() {
 			var select = $("<select>").attr("name", "no_do[]").addClass("form-control selectField");
-			<?php foreach ($do1 as $do2) : ?>
-				var option = $("<option>").attr("value", "<?php echo $do2['no_do']; ?>").text("<?php echo $do2['no_do']; ?>");
+			<?php foreach ($do->result_array() as $do4) : ?>
+				var option = $("<option>").attr("value", "<?php echo $do4['no_do']; ?>").text("<?php echo $do4['no_do']; ?>");
 
 				select.append(option);
 
