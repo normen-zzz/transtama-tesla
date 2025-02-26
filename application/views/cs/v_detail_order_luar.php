@@ -136,18 +136,13 @@
 										<th style="width: 15%;">Consignee</th>
 										<!-- <th style="width: 20%;">Image</th> -->
 										<!-- <th>Signature</th> -->
-										<th>Last Status</th>
+										
 										<th>Action</th>
 									</tr>
 								</thead>
 								<tbody>
 									<?php foreach ($shipment2 as $shp) {
-										$get_last_status = $this->db->limit(1)->order_by('id_tracking', 'desc')->get_where('tbl_tracking_real', ['shipment_id' => $shp['shipment_id']]);
-										if ($get_last_status->num_rows() > 0) {
-											$get_last_status = $get_last_status->row_array();
-										} else {
-											$get_last_status = NULL;
-										}
+										
 										// var_dump($get_last_status);
 										// die;
 									?>
@@ -158,85 +153,14 @@
 											<td><?= $shp['shipper'] . ' (' . $shp['mark_shipper'] . ') ' ?> <br> No. DO: <?= $shp['note_cs'] ?></td>
 											<td><?= $shp['destination'] ?>, <?= $shp['city_consigne'] ?> <?= $shp['state_consigne'] ?></td>
 											<td><?= $shp['consigne'] ?></td>
-											<?php if ($get_last_status != NULL) { ?>
-												<td style="color: green;"><?= $get_last_status['status'] ?> <br> <?= longdate_indo($get_last_status['created_at']), ' ' . $get_last_status['time'] ?>
 
 
-												</td>
-												<td>
-													<!-- kalo dia bukan incoming -->
-													<?php if ($p['is_incoming'] == 0) {
-														// apakah dia jabodetabek
-														if ($shp['is_jabodetabek'] == 1) {
-													?>
-															<?php if ($get_last_status['flag'] >= 8  && $get_last_status['flag'] <= 11) {
-															?>
-																<!-- <a href="#" class="btn btn-sm text-light mb-1" data-toggle="modal" data-target="#modal-lg-dl-luar<?= $shp['shipment_id'] ?>" style="background-color: #9c223b;">
-																	<span class="svg-icon svg-icon-md">
-																	</span>Update Status</a> -->
-																<a onclick='$("#modalLoading").modal("show");' href="<?= base_url('cs/order/edit/' . $shp['id'] . '/' . $shp['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Edit</a>
-																<a onclick='$("#modalLoading").modal("show");' href="<?= base_url('cs/order/detail/' . $shp['id'] . '/' . $shp['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Detail</a>
-															<?php } else {
-															?>
-																<a onclick='$("#modalLoading").modal("show");' href="<?= base_url('cs/order/edit/' . $shp['id'] . '/' . $shp['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Edit</a>
-																<a onclick='$("#modalLoading").modal("show");' href="<?= base_url('cs/order/detail/' . $shp['id'] . '/' . $shp['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Detail</a>
-															<?php	} ?>
-															<!-- kalo bukan jabodetabek -->
-														<?php	} else {
-														?>
-															<?php if ($get_last_status['flag'] >= 8 && $get_last_status['flag'] <= 11) {
-															?>
-																<a href="#" class="btn btn-sm text-light mb-1 modalDlLuar" data-toggle="modal" data-target="#modal-lg-dl-luar" style="background-color: #9c223b;" data-shipment_id="<?= $shp['shipment_id'] ?>" data-id_so="<?= $shp['id_so'] ?>">
-																	<span class="svg-icon svg-icon-md">
-																	</span>Update Status</a>
-																<a onclick='$("#modalLoading").modal("show");' href="<?= base_url('cs/order/edit/' . $shp['id'] . '/' . $shp['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Edit</a>
-																<a onclick='$("#modalLoading").modal("show");' href="<?= base_url('cs/order/detail/' . $shp['id'] . '/' . $shp['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Detail</a>
-															<?php } else {
-															?>
-																<a onclick='$("#modalLoading").modal("show");' href="<?= base_url('cs/order/edit/' . $shp['id'] . '/' . $shp['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Edit</a>
-																<a onclick='$("#modalLoading").modal("show");' href="<?= base_url('cs/order/detail/' . $shp['id'] . '/' . $shp['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Detail</a>
-															<?php	} ?>
+											
+											<td><a onclick='$("#modalLoading").modal("show");' href="<?= base_url('cs/order/edit/' . $shp['id'] . '/' . $shp['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Edit</a>
+												<a onclick='$("#modalLoading").modal("show");' href="<?= base_url('cs/order/detail/' . $shp['id'] . '/' . $shp['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Detail</a>
+											</td>
 
-														<?php	}
-														?>
-														<?php	} else {
 
-														if ($get_last_status['flag'] >= 6  && $get_last_status['flag'] <= 8) {
-														?>
-															<span class="badge badge-secondary mb-1">Menunggu scan in/out HUB</span>
-															<a onclick='$("#modalLoading").modal("show");' href="<?= base_url('cs/order/edit/' . $shp['id'] . '/' . $shp['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Edit</a>
-															<a onclick='$("#modalLoading").modal("show");' href="<?= base_url('cs/order/detail/' . $shp['id'] . '/' . $shp['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Detail</a>
-														<?php	} elseif ($get_last_status['flag'] == 12) {
-														?>
-															<!-- <a href="#" class="btn btn-sm text-light mb-1" data-toggle="modal" data-target="#modal-lg-dl-incoming<?= $shp['shipment_id'] ?>" style="background-color: #9c223b;">
-																<span class="svg-icon svg-icon-md">
-																</span>Update Status</a>
-															<a href="<?= base_url('cs/order/edit/' . $shp['id'] . '/' . $shp['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Edit</a> -->
-															<a onclick='$("#modalLoading").modal("show");' href="<?= base_url('cs/order/edit/' . $shp['id'] . '/' . $shp['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Edit</a>
-															<a onclick='$("#modalLoading").modal("show");' href="<?= base_url('cs/order/detail/' . $shp['id'] . '/' . $shp['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Detail</a>
-
-														<?php	} else {
-														?>
-															<a href="#" class="btn btn-sm text-light mb-1 modalDlIncoming" data-toggle="modal" data-target="#modal-lg-dl-incoming" style="background-color: #9c223b;" data-shipment_id="<?= $shp['shipment_id'] ?>" data-id_so="<?= $shp['id_so'] ?>" data-service="<?= $shp['service_name'] ?>">
-																<span class="svg-icon svg-icon-md">
-																</span>Update Status</a>
-															<a onclick='$("#modalLoading").modal("show");' href="<?= base_url('cs/order/edit/' . $shp['id'] . '/' . $shp['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Edit</a>
-															<a onclick='$("#modalLoading").modal("show");' href="<?= base_url('cs/order/detail/' . $shp['id'] . '/' . $shp['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Detail</a>
-
-														<?php	}
-														?>
-
-													<?php
-													} ?>
-												</td>
-											<?php } else { ?>
-
-												<td></td>
-												<td><a onclick='$("#modalLoading").modal("show");' href="<?= base_url('cs/order/edit/' . $shp['id'] . '/' . $shp['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Edit</a>
-													<a onclick='$("#modalLoading").modal("show");' href="<?= base_url('cs/order/detail/' . $shp['id'] . '/' . $shp['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Detail</a>
-												</td>
-
-											<?php } ?>
 
 										</tr>
 
