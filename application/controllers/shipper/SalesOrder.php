@@ -28,9 +28,6 @@ class SalesOrder extends CI_Controller
     public function index() {
         $akses = $this->session->userdata('akses');
         $user_id = $this->session->userdata('id_user');
-    
-        
-    
         if ($akses == 1) {
             $data['title'] = 'Sales Order';
             $this->backend->display('shipper/v_so', $data);
