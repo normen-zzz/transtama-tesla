@@ -98,8 +98,8 @@
 											</button>
 
 
-											
-											 
+
+
 											<!-- <a href="<?= base_url('cs/salesOrder/bulk/' . $p['id_so']) ?>" class="btn mr-2 text-light" style="background-color: #9c223b;">
 												<i class="fas fa-plus-circle text-light"> </i>
 												Bulk Order
@@ -142,7 +142,12 @@
 								</thead>
 								<tbody>
 									<?php foreach ($shipment2 as $shp) {
-										$get_last_status = $this->db->limit(1)->order_by('id_tracking', 'desc')->get_where('tbl_tracking_real', ['shipment_id' => $shp['shipment_id']])->row_array();
+										$get_last_status = $this->db->limit(1)->order_by('id_tracking', 'desc')->get_where('tbl_tracking_real', ['shipment_id' => $shp['shipment_id']]);
+										if ($get_last_status->num_rows() > 0) {
+											$get_last_status = $get_last_status->row_array();
+										} else {
+											$get_last_status = NULL;
+										}
 										// var_dump($get_last_status);
 										// die;
 									?>
@@ -153,81 +158,86 @@
 											<td><?= $shp['shipper'] . ' (' . $shp['mark_shipper'] . ') ' ?> <br> No. DO: <?= $shp['note_cs'] ?></td>
 											<td><?= $shp['destination'] ?>, <?= $shp['city_consigne'] ?> <?= $shp['state_consigne'] ?></td>
 											<td><?= $shp['consigne'] ?></td>
-											<td style="color: green;"><?= $get_last_status['status'] ?> <br> <?= longdate_indo($get_last_status['created_at']), ' ' . $get_last_status['time'] ?>
-												<br>
-												<?php if ($get_last_status['flag'] == 12 || $get_last_status['flag'] == 6) {
-												?>
-													<!-- <a href="#" class="btn font-weight-bolder text-light modalPod" data-toggle="modal" data-target="#modal-pod" style="background-color: #9c223b;" data-shipment_id="<?= $shp['shipment_id'] ?>">
-														<span class="svg-icon svg-icon-md">
-														</span>View POD</a> -->
-												<?php	} ?>
+											<?php if ($get_last_status != NULL) { ?>
+												<td style="color: green;"><?= $get_last_status['status'] ?> <br> <?= longdate_indo($get_last_status['created_at']), ' ' . $get_last_status['time'] ?>
 
-											</td>
-											<td>
-												<!-- kalo dia bukan incoming -->
-												<?php if ($p['is_incoming'] == 0) {
-													// apakah dia jabodetabek
-													if ($shp['is_jabodetabek'] == 1) {
-												?>
-														<?php if ($get_last_status['flag'] >= 8  && $get_last_status['flag'] <= 11) {
-														?>
-															<!-- <a href="#" class="btn btn-sm text-light mb-1" data-toggle="modal" data-target="#modal-lg-dl-luar<?= $shp['shipment_id'] ?>" style="background-color: #9c223b;">
-																<span class="svg-icon svg-icon-md">
-																</span>Update Status</a> -->
-															<a onclick='$("#modalLoading").modal("show");' href="<?= base_url('cs/order/edit/' . $shp['id'] . '/' . $shp['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Edit</a>
-															<a onclick='$("#modalLoading").modal("show");' href="<?= base_url('cs/order/detail/' . $shp['id'] . '/' . $shp['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Detail</a>
-														<?php } else {
-														?>
-															<a onclick='$("#modalLoading").modal("show");' href="<?= base_url('cs/order/edit/' . $shp['id'] . '/' . $shp['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Edit</a>
-															<a onclick='$("#modalLoading").modal("show");' href="<?= base_url('cs/order/detail/' . $shp['id'] . '/' . $shp['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Detail</a>
-														<?php	} ?>
-														<!-- kalo bukan jabodetabek -->
-													<?php	} else {
+
+												</td>
+												<td>
+													<!-- kalo dia bukan incoming -->
+													<?php if ($p['is_incoming'] == 0) {
+														// apakah dia jabodetabek
+														if ($shp['is_jabodetabek'] == 1) {
 													?>
-														<?php if ($get_last_status['flag'] >= 8 && $get_last_status['flag'] <= 11) {
+															<?php if ($get_last_status['flag'] >= 8  && $get_last_status['flag'] <= 11) {
+															?>
+																<!-- <a href="#" class="btn btn-sm text-light mb-1" data-toggle="modal" data-target="#modal-lg-dl-luar<?= $shp['shipment_id'] ?>" style="background-color: #9c223b;">
+																	<span class="svg-icon svg-icon-md">
+																	</span>Update Status</a> -->
+																<a onclick='$("#modalLoading").modal("show");' href="<?= base_url('cs/order/edit/' . $shp['id'] . '/' . $shp['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Edit</a>
+																<a onclick='$("#modalLoading").modal("show");' href="<?= base_url('cs/order/detail/' . $shp['id'] . '/' . $shp['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Detail</a>
+															<?php } else {
+															?>
+																<a onclick='$("#modalLoading").modal("show");' href="<?= base_url('cs/order/edit/' . $shp['id'] . '/' . $shp['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Edit</a>
+																<a onclick='$("#modalLoading").modal("show");' href="<?= base_url('cs/order/detail/' . $shp['id'] . '/' . $shp['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Detail</a>
+															<?php	} ?>
+															<!-- kalo bukan jabodetabek -->
+														<?php	} else {
 														?>
-															<a href="#" class="btn btn-sm text-light mb-1 modalDlLuar" data-toggle="modal" data-target="#modal-lg-dl-luar" style="background-color: #9c223b;" data-shipment_id="<?= $shp['shipment_id'] ?>" data-id_so="<?= $shp['id_so'] ?>">
+															<?php if ($get_last_status['flag'] >= 8 && $get_last_status['flag'] <= 11) {
+															?>
+																<a href="#" class="btn btn-sm text-light mb-1 modalDlLuar" data-toggle="modal" data-target="#modal-lg-dl-luar" style="background-color: #9c223b;" data-shipment_id="<?= $shp['shipment_id'] ?>" data-id_so="<?= $shp['id_so'] ?>">
+																	<span class="svg-icon svg-icon-md">
+																	</span>Update Status</a>
+																<a onclick='$("#modalLoading").modal("show");' href="<?= base_url('cs/order/edit/' . $shp['id'] . '/' . $shp['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Edit</a>
+																<a onclick='$("#modalLoading").modal("show");' href="<?= base_url('cs/order/detail/' . $shp['id'] . '/' . $shp['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Detail</a>
+															<?php } else {
+															?>
+																<a onclick='$("#modalLoading").modal("show");' href="<?= base_url('cs/order/edit/' . $shp['id'] . '/' . $shp['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Edit</a>
+																<a onclick='$("#modalLoading").modal("show");' href="<?= base_url('cs/order/detail/' . $shp['id'] . '/' . $shp['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Detail</a>
+															<?php	} ?>
+
+														<?php	}
+														?>
+														<?php	} else {
+
+														if ($get_last_status['flag'] >= 6  && $get_last_status['flag'] <= 8) {
+														?>
+															<span class="badge badge-secondary mb-1">Menunggu scan in/out HUB</span>
+															<a onclick='$("#modalLoading").modal("show");' href="<?= base_url('cs/order/edit/' . $shp['id'] . '/' . $shp['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Edit</a>
+															<a onclick='$("#modalLoading").modal("show");' href="<?= base_url('cs/order/detail/' . $shp['id'] . '/' . $shp['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Detail</a>
+														<?php	} elseif ($get_last_status['flag'] == 12) {
+														?>
+															<!-- <a href="#" class="btn btn-sm text-light mb-1" data-toggle="modal" data-target="#modal-lg-dl-incoming<?= $shp['shipment_id'] ?>" style="background-color: #9c223b;">
+																<span class="svg-icon svg-icon-md">
+																</span>Update Status</a>
+															<a href="<?= base_url('cs/order/edit/' . $shp['id'] . '/' . $shp['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Edit</a> -->
+															<a onclick='$("#modalLoading").modal("show");' href="<?= base_url('cs/order/edit/' . $shp['id'] . '/' . $shp['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Edit</a>
+															<a onclick='$("#modalLoading").modal("show");' href="<?= base_url('cs/order/detail/' . $shp['id'] . '/' . $shp['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Detail</a>
+
+														<?php	} else {
+														?>
+															<a href="#" class="btn btn-sm text-light mb-1 modalDlIncoming" data-toggle="modal" data-target="#modal-lg-dl-incoming" style="background-color: #9c223b;" data-shipment_id="<?= $shp['shipment_id'] ?>" data-id_so="<?= $shp['id_so'] ?>" data-service="<?= $shp['service_name'] ?>">
 																<span class="svg-icon svg-icon-md">
 																</span>Update Status</a>
 															<a onclick='$("#modalLoading").modal("show");' href="<?= base_url('cs/order/edit/' . $shp['id'] . '/' . $shp['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Edit</a>
 															<a onclick='$("#modalLoading").modal("show");' href="<?= base_url('cs/order/detail/' . $shp['id'] . '/' . $shp['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Detail</a>
-														<?php } else {
+
+														<?php	}
 														?>
-															<a onclick='$("#modalLoading").modal("show");' href="<?= base_url('cs/order/edit/' . $shp['id'] . '/' . $shp['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Edit</a>
-															<a onclick='$("#modalLoading").modal("show");' href="<?= base_url('cs/order/detail/' . $shp['id'] . '/' . $shp['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Detail</a>
-														<?php	} ?>
 
-													<?php	}
-													?>
-													<?php	} else {
+													<?php
+													} ?>
+												</td>
+											<?php } else { ?>
 
-													if ($get_last_status['flag'] >= 6  && $get_last_status['flag'] <= 8) {
-													?>
-														<span class="badge badge-secondary mb-1">Menunggu scan in/out HUB</span>
-														<a onclick='$("#modalLoading").modal("show");' href="<?= base_url('cs/order/edit/' . $shp['id'] . '/' . $shp['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Edit</a>
-														<a onclick='$("#modalLoading").modal("show");' href="<?= base_url('cs/order/detail/' . $shp['id'] . '/' . $shp['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Detail</a>
-													<?php	} elseif ($get_last_status['flag'] == 12) {
-													?>
-														<!-- <a href="#" class="btn btn-sm text-light mb-1" data-toggle="modal" data-target="#modal-lg-dl-incoming<?= $shp['shipment_id'] ?>" style="background-color: #9c223b;">
-															<span class="svg-icon svg-icon-md">
-															</span>Update Status</a>
-														<a href="<?= base_url('cs/order/edit/' . $shp['id'] . '/' . $shp['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Edit</a> -->
-														<a onclick='$("#modalLoading").modal("show");' href="<?= base_url('cs/order/edit/' . $shp['id'] . '/' . $shp['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Edit</a>
-														<a onclick='$("#modalLoading").modal("show");' href="<?= base_url('cs/order/detail/' . $shp['id'] . '/' . $shp['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Detail</a>
+												<td></td>
+												<td><a onclick='$("#modalLoading").modal("show");' href="<?= base_url('cs/order/edit/' . $shp['id'] . '/' . $shp['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Edit</a>
+													<a onclick='$("#modalLoading").modal("show");' href="<?= base_url('cs/order/detail/' . $shp['id'] . '/' . $shp['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Detail</a>
+												</td>
 
-													<?php	} else {
-													?>
-														<a href="#" class="btn btn-sm text-light mb-1 modalDlIncoming" data-toggle="modal" data-target="#modal-lg-dl-incoming" style="background-color: #9c223b;" data-shipment_id="<?= $shp['shipment_id'] ?>" data-id_so="<?= $shp['id_so'] ?>" data-service="<?= $shp['service_name'] ?>">
-															<span class="svg-icon svg-icon-md">
-															</span>Update Status</a>
-														<a onclick='$("#modalLoading").modal("show");' href="<?= base_url('cs/order/edit/' . $shp['id'] . '/' . $shp['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Edit</a>
-														<a onclick='$("#modalLoading").modal("show");' href="<?= base_url('cs/order/detail/' . $shp['id'] . '/' . $shp['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Detail</a>
+											<?php } ?>
 
-													<?php	}
-													?>
-
-												<?php	} ?>
-											</td>
 										</tr>
 
 									<?php } ?>
@@ -251,203 +261,203 @@
 	</section>
 	<!-- /.content -->
 
-	
-		<div class="modal fade" id="modal-lg-dl-luar">
-			<div class="modal-dialog modal-lg">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h4 class="modal-title">Update Status Shipment <b><?= $shp['shipment_id'] ?></b> </h4>
 
-						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-							<span aria-hidden="true">&times;</span>
-						</button>
-					</div>
-					<div class="modal-body">
-						<form action="<?= base_url('cs/salesOrder/updateShipment') ?>" method="POST" enctype="multipart/form-data">
-							<div class="card-body">
-								<div class="row">
-									<input type="text" name="id_so" class="form-control" hidden>
-									<input type="text" name="shipment_id" class="form-control" hidden >
-									<div class="col-md-6">
-										<label for="status">Choose Status : </label>
-										<select name="status" class="form-control">
-											<option value="Shipment Telah Tiba Di Hub">Shipment Telah Tiba Di Hub Tujuan</option>
-											<option value="Shipment Keluar Di Hub Tujuan">Shipment Keluar Di Hub Tujuan</option>
-											<option value="Shipment Dalam Proses Delivery">Shipment Dalam Proses Delivery</option>
-											<option value="Shipment Telah Diterima Oleh">Shipment Telah Diterima</option>
-										</select>
+	<div class="modal fade" id="modal-lg-dl-luar">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title">Update Status Shipment <b><?= $shp['shipment_id'] ?></b> </h4>
 
-									</div>
-									<div class="col-md-6">
-										<div class="form-group">
-											<label for="exampleInputPassword1">Note :<span style="color: red;">Soekarno Hatta or, Cengkareng, or consigne nama</span> </label>
-											<input type="text" class="form-control" name="note">
-										</div>
-
-									</div>
-									<div class="col-md-4">
-										<div class="form-group">
-											<label for="exampleInputEmail1">Date<span style="color: red;">*</span></label>
-											<input type="date" class="form-control" id="tgl_pickup" required name="date">
-										</div>
-									</div>
-									<div class="col-md-2">
-										<div class="form-group">
-											<label for="exampleInputEmail1">Time<span style="color: red;">*</span></label>
-											<input type="time" class="form-control" required name="time">
-										</div>
-									</div>
-
-									<div class="col-md-4">
-										<div class="form-group">
-											<label for="exampleInputEmail1">POD</label>
-											<!-- <input type="file" class="form-control" name="ktp"> -->
-											<input type="file" class="form-control" name="ktp[]" accept="image/*" capture multiple>
-										</div>
-
-									</div>
-
-
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<form action="<?= base_url('cs/salesOrder/updateShipment') ?>" method="POST" enctype="multipart/form-data">
+						<div class="card-body">
+							<div class="row">
+								<input type="text" name="id_so" class="form-control" hidden>
+								<input type="text" name="shipment_id" class="form-control" hidden>
+								<div class="col-md-6">
+									<label for="status">Choose Status : </label>
+									<select name="status" class="form-control">
+										<option value="Shipment Telah Tiba Di Hub">Shipment Telah Tiba Di Hub Tujuan</option>
+										<option value="Shipment Keluar Di Hub Tujuan">Shipment Keluar Di Hub Tujuan</option>
+										<option value="Shipment Dalam Proses Delivery">Shipment Dalam Proses Delivery</option>
+										<option value="Shipment Telah Diterima Oleh">Shipment Telah Diterima</option>
+									</select>
 
 								</div>
+								<div class="col-md-6">
+									<div class="form-group">
+										<label for="exampleInputPassword1">Note :<span style="color: red;">Soekarno Hatta or, Cengkareng, or consigne nama</span> </label>
+										<input type="text" class="form-control" name="note">
+									</div>
+
+								</div>
+								<div class="col-md-4">
+									<div class="form-group">
+										<label for="exampleInputEmail1">Date<span style="color: red;">*</span></label>
+										<input type="date" class="form-control" id="tgl_pickup" required name="date">
+									</div>
+								</div>
+								<div class="col-md-2">
+									<div class="form-group">
+										<label for="exampleInputEmail1">Time<span style="color: red;">*</span></label>
+										<input type="time" class="form-control" required name="time">
+									</div>
+								</div>
+
+								<div class="col-md-4">
+									<div class="form-group">
+										<label for="exampleInputEmail1">POD</label>
+										<!-- <input type="file" class="form-control" name="ktp"> -->
+										<input type="file" class="form-control" name="ktp[]" accept="image/*" capture multiple>
+									</div>
+
+								</div>
+
+
+
 							</div>
-							<!-- /.card-body -->
-					</div>
-					<div class="modal-footer justify-content-between">
-						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-						<button type="submit" class="btn btn-primary">Submit</button>
-					</div>
-					</form>
-				</div>
-				<!-- /.modal-content -->
-			</div>
-			<!-- /.modal-dialog -->
-		</div>
-
-	
-
-	
-		<div class="modal fade" id="modal-pod">
-			<div class="modal-dialog modal-lg">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h4 class="modal-title">POD</h4>
-
-						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-							<span aria-hidden="true">&times;</span>
-						</button>
-					</div>
-					<div class="modal-body">
-						<div id="pod">
-
 						</div>
+						<!-- /.card-body -->
+				</div>
+				<div class="modal-footer justify-content-between">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					<button type="submit" class="btn btn-primary">Submit</button>
+				</div>
+				</form>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal-dialog -->
+	</div>
 
-						
-						<form action="<?= base_url('cs/salesOrder/updateShipment') ?>" method="POST" enctype="multipart/form-data">
-							<div class="card-body">
-								<div class="row">
-									<?php
-									$get_last_status = $this->db->limit(1)->order_by('id_tracking', 'desc')->get_where('tbl_tracking_real', ['shipment_id' => $shp['shipment_id']])->row_array();
-									?>
-									<?php $files = explode('+', $get_last_status['bukti']);
-									$no = 1;
-									foreach ($files as $file) {
-									?>
-										<div class="col-md-6">
-											<b>Image <?= $no ?> :</b> <img src="<?= base_url('uploads/berkas/') . $file ?>" height="100" width="200"> <br>
-											<?php $no++; ?>
-										</div>
-									<?php	} ?>
+
+
+
+	<div class="modal fade" id="modal-pod">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title">POD</h4>
+
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<div id="pod">
+
+					</div>
+
+
+					<form action="<?= base_url('cs/salesOrder/updateShipment') ?>" method="POST" enctype="multipart/form-data">
+						<div class="card-body">
+							<div class="row">
+								<?php
+								$get_last_status = $this->db->limit(1)->order_by('id_tracking', 'desc')->get_where('tbl_tracking_real', ['shipment_id' => $shp['shipment_id']])->row_array();
+								?>
+								<?php $files = explode('+', $get_last_status['bukti']);
+								$no = 1;
+								foreach ($files as $file) {
+								?>
+									<div class="col-md-6">
+										<b>Image <?= $no ?> :</b> <img src="<?= base_url('uploads/berkas/') . $file ?>" height="100" width="200"> <br>
+										<?php $no++; ?>
+									</div>
+								<?php	} ?>
+
+							</div>
+						</div>
+						<!-- /.card-body -->
+				</div>
+				<div class="modal-footer justify-content-between">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					<!-- <button type="submit" class="btn btn-primary">Submit</button> -->
+				</div>
+				</form>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal-dialog -->
+	</div>
+
+
+
+	<div class="modal fade" id="modal-lg-dl-incoming">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title">Update Status Shipment <b><?= $shp['shipment_id'] ?></b> </h4>
+
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<form action="<?= base_url('cs/salesOrder/updateShipmentIncoming') ?>" method="POST" enctype="multipart/form-data">
+						<div class="card-body">
+							<div class="row">
+								<input type="text" name="id_so" class="form-control" hidden>
+								<input type="text" name="shipment_id" class="form-control" hidden>
+								<input type="text" name="service" class="form-control" hidden>
+								<div class="col-md-6">
+									<label for="status">Choose Status : </label>
+									<select name="status" class="form-control">
+										<option value="Shipment Telah Tiba Di Hub">Shipment Telah Tiba Di Hub</option>
+										<option value="Shipment Keluar Di Hub">Shipment Keluar Di Hub</option>
+										<!-- <option value="Shipment Telah Diterima Oleh">Shipment Telah Diterima</option> -->
+									</select>
 
 								</div>
-							</div>
-							<!-- /.card-body -->
-					</div>
-					<div class="modal-footer justify-content-between">
-						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-						<!-- <button type="submit" class="btn btn-primary">Submit</button> -->
-					</div>
-					</form>
-				</div>
-				<!-- /.modal-content -->
-			</div>
-			<!-- /.modal-dialog -->
-		</div>
-	
-
-	
-		<div class="modal fade" id="modal-lg-dl-incoming">
-			<div class="modal-dialog modal-lg">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h4 class="modal-title">Update Status Shipment <b><?= $shp['shipment_id'] ?></b> </h4>
-
-						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-							<span aria-hidden="true">&times;</span>
-						</button>
-					</div>
-					<div class="modal-body">
-						<form action="<?= base_url('cs/salesOrder/updateShipmentIncoming') ?>" method="POST" enctype="multipart/form-data">
-							<div class="card-body">
-								<div class="row">
-									<input type="text" name="id_so" class="form-control" hidden >
-									<input type="text" name="shipment_id" class="form-control" hidden >
-									<input type="text" name="service" class="form-control" hidden >
-									<div class="col-md-6">
-										<label for="status">Choose Status : </label>
-										<select name="status" class="form-control">
-											<option value="Shipment Telah Tiba Di Hub">Shipment Telah Tiba Di Hub</option>
-											<option value="Shipment Keluar Di Hub">Shipment Keluar Di Hub</option>
-											<!-- <option value="Shipment Telah Diterima Oleh">Shipment Telah Diterima</option> -->
-										</select>
-
+								<div class="col-md-6">
+									<div class="form-group">
+										<label for="exampleInputPassword1">Note :<span style="color: red;">Soekarno Hatta or, Cengkareng, or consigne nama</span> </label>
+										<input type="text" class="form-control" name="note">
 									</div>
-									<div class="col-md-6">
-										<div class="form-group">
-											<label for="exampleInputPassword1">Note :<span style="color: red;">Soekarno Hatta or, Cengkareng, or consigne nama</span> </label>
-											<input type="text" class="form-control" name="note">
-										</div>
+								</div>
+								<div class="col-md-4">
+									<div class="form-group">
+										<label for="exampleInputEmail1">Date<span style="color: red;">*</span></label>
+										<input type="date" class="form-control" id="tgl_pickup" required name="date">
 									</div>
-									<div class="col-md-4">
-										<div class="form-group">
-											<label for="exampleInputEmail1">Date<span style="color: red;">*</span></label>
-											<input type="date" class="form-control" id="tgl_pickup" required name="date">
-										</div>
+								</div>
+								<div class="col-md-2">
+									<div class="form-group">
+										<label for="exampleInputEmail1">Time<span style="color: red;">*</span></label>
+										<input type="time" class="form-control" required name="time">
 									</div>
-									<div class="col-md-2">
-										<div class="form-group">
-											<label for="exampleInputEmail1">Time<span style="color: red;">*</span></label>
-											<input type="time" class="form-control" required name="time">
-										</div>
+								</div>
+
+								<div class="col-md-4">
+									<div class="form-group">
+										<label for="exampleInputEmail1">POD</label>
+										<!-- <input type="file" class="form-control" name="ktp"> -->
+										<input type="file" class="form-control" name="ktp[]" accept="image/*" capture multiple>
 									</div>
-
-									<div class="col-md-4">
-										<div class="form-group">
-											<label for="exampleInputEmail1">POD</label>
-											<!-- <input type="file" class="form-control" name="ktp"> -->
-											<input type="file" class="form-control" name="ktp[]" accept="image/*" capture multiple>
-										</div>
-
-									</div>
-
-
 
 								</div>
-							</div>
-							<!-- /.card-body -->
-					</div>
-					<div class="modal-footer justify-content-between">
-						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-						<button type="submit" class="btn btn-primary">Submit</button>
-					</div>
-					</form>
-				</div>
-				<!-- /.modal-content -->
-			</div>
-			<!-- /.modal-dialog -->
-		</div>
 
-	
+
+
+							</div>
+						</div>
+						<!-- /.card-body -->
+				</div>
+				<div class="modal-footer justify-content-between">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					<button type="submit" class="btn btn-primary">Submit</button>
+				</div>
+				</form>
+			</div>
+			<!-- /.modal-content -->
+		</div>
+		<!-- /.modal-dialog -->
+	</div>
+
+
 
 	<!-- modalBulkOrder -->
 	<div class="modal fade" id="modalBulkOrder" tabindex="-1" role="dialog" aria-labelledby="modalBulkOrderLabel" aria-hidden="true">
@@ -477,12 +487,12 @@
 
 	<script>
 		$(document).ready(function() {
-			
+
 
 			$('#bulkInput').submit(function(e) {
 				e.preventDefault();
 				$.ajax({
-					url: '<?= base_url('cs/salesOrder/processAddImport/'.$p['id_so']) ?>',
+					url: '<?= base_url('cs/salesOrder/processAddImport/' . $p['id_so']) ?>',
 					type: 'POST',
 					data: new FormData(this),
 					processData: false,
@@ -500,7 +510,7 @@
 								location.reload();
 							});
 						} else {
-							
+
 							Swal.fire({
 								icon: 'error',
 								title: 'Failed',
@@ -509,7 +519,7 @@
 								location.reload();
 							});
 						}
-						
+
 					}
 				});
 			});
@@ -525,7 +535,7 @@
 				var id_so = $(this).data('id_so');
 				$('[name="id_so"]').val(id_so);
 			});
-			
+
 			$('.modalDlIncoming').click(function() {
 				var shipment_id = $(this).data('shipment_id');
 				$('[name="shipment_id"]').val(shipment_id);
