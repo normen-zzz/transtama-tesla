@@ -214,7 +214,7 @@
 												Add Shipment
 											</a>
 
-											<?php $shipmentOnSoReguler =  $this->db->query('SELECT a.shipment_id  FROM tbl_shp_order AS a INNER JOIN tb_service_type AS b ON a.service_type = b.code WHERE a.id_so = ' . $shipment['id_so'] . ' AND (b.prefix = "REG" OR b.prefix = "AIR")') ?>
+											<?php $shipmentOnSoReguler =  $this->db->query('SELECT a.shipment_id  FROM tbl_shp_order AS a INNER JOIN tb_service_type AS b ON a.service_type = b.code WHERE a.id_so = ' . $shipment['id_so'] . ' AND (b.prefix = "REG" OR b.prefix = "AIR" OR b.prefix = "ONS")') ?>
 
 											<?php if ($shipmentOnSoReguler->num_rows() != 0 || $shipmentOnSoCharter->num_rows() != 0 || $shipmentOnSoCharterLuar->num_rows() != 0 ) { ?>
 
