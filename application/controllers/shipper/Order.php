@@ -1591,6 +1591,15 @@ class Order extends CI_Controller
         $params['savename'] = FCPATH . "uploads/qrcode/" . $id . '.png';
         $this->ciqrcode->generate($params);
     }
+
+    public function generate_qrcode($id) {
+        $this->load->library('ciqrcode');
+        header('Content-Type: image/png');
+        $params['data'] = $id;
+        $params['level'] = 'H';
+        $params['size'] = 4;
+    
+    }
     public function downloadSpecial($id_so)
     {
         $detail = $this->db->get_where('tbl_so', ['id_so' => $id_so])->row_array();
