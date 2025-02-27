@@ -1555,11 +1555,13 @@ class Order extends CI_Controller
         $mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => [74, 105]]);
 
         $where = array('id_so' => $id);
-        $this->db->select('a.berat_js,a.shipment_id,a.id_so,a.shipper,a.tree_shipper,a.tree_consignee,a.consigne,a.destination,a.city_consigne,a.state_consigne,a.city_shipper,a.koli,a.is_weight_print,a.state_shipper,a.signature,a.created_at,a.sender,a.tgl_pickup, b.service_name, b.prefix');
+        $this->db->select('a.berat_js,a.shipment_id,a.id_so,a.shipper,a.tree_shipper,a.tree_consignee,a.consigne,a.destination,a.city_consigne,a.state_consigne,a.city_shipper,a.koli,a.is_weight_print,a.state_shipper,a.signature,a.created_at,a.sender,a.tgl_pickup, b.service_name, b.prefix,group_concat(c.no_do) as no_do');
         $this->db->from('tbl_shp_order a');
         $this->db->join('tb_service_type b', 'a.service_type=b.code');
+        $this->db->join('tbl_no_do c', 'a.shipment_id= c.shipment_id', 'left');
         $this->db->where('a.id_so', $id);
         $this->db->where('a.deleted', 0);
+        $this->db->group_by('a.shipment_id');
         $data['orders'] = $this->db->get()->result_array();
         $data = $this->load->view('shipper/v_cetak_all', $data, TRUE);
         $mpdf->WriteHTML($data);

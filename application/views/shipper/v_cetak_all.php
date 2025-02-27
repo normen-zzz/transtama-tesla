@@ -1,4 +1,5 @@
 <?php $is_generate = $this->db->get_where('tbl_so', array('id_so' => $orders[0]['id_so']))->row_array(); ?>
+
 <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700&display=swap" rel="stylesheet" type="text/css">
 <style>
     @page {
@@ -54,16 +55,23 @@
         position: fixed;
         top: 520px;
     }
-	
-	.smallCell
-{
-    height: 50px;
-}
+
+    .smallCell {
+        height: 50px;
+    }
 
     p {
         font-size: 16px;
     }
+
+    .libre-barcode-ean13-text-regular {
+        font-family: "Libre Barcode EAN13 Text", serif;
+        font-weight: 400;
+        font-style: normal;
+    }
 </style>
+
+<script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
 
 <body style="font-family:'Open Sans',sans-serif; margin:-5px; margin-top:20px;" onload="window.print()">
     <?php foreach ($orders as $order) { ?>
@@ -87,12 +95,14 @@
                 <table border="0" style="margin:2px;">
                     <tr>
                         <td style="width: 65%;">
-                            <img src="<?= base_url('uploads/barcode/') . $order['shipment_id'] ?>.jpg" width="150" height="53" style="margin-top: 2px; margin-left:2px;">
+                            <!-- <img src="<?= base_url('uploads/barcode/') . $order['shipment_id'] ?>.jpg" width="150" height="53" style="margin-top: 2px; margin-left:2px;"> -->
+                            <img src="https://barcode.orcascan.com/?type=code128&data=<?= $order['shipment_id'] ?>" width="150" height="55" >
+                            
                             <!-- <img src="<?= base_url('uploads/barcode/') . $order['shipment_id'] ?>-<?= $koli_ke ?>-<?= $koli ?>.jpg" width="100%" height="50"> -->
                             <i><b> <?= $order['shipment_id'] ?></b> </i>
                         </td>
                         <td>
-                            <img src="<?= base_url('uploads/qrcode/') . $order['shipment_id'] ?>.png" width="73" height="60" style="margin-top: -13px; margin-left:8px;">
+                            <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=<?= $order['shipment_id'] ?>" width="73" height="60" style="margin-top: 2px; margin-left:2px;">
                         </td>
 
                     </tr>
@@ -119,16 +129,16 @@
             </table>
             <table style="width:100%; border-top:1px solid black;">
                 <tr>
-				
+
                     <td class="smallCell" style="font-size: 8px; text-align:left">
-					
-					
-     <b>Consignee : <?php if ($order['consigne'] != NULL) {
-                                                                                    ?></b> <?= ucwords(strtolower($order['consigne'])) . '<br>' . ucwords($order['destination']) . '. ' . '<br>'  . '<b>' . ucwords(strtolower($order['city_consigne'])) . '</b>' . ', ' . '<b>' . ucwords(strtolower($order['state_consigne'])) . '</b>'  ?>
+
+
+                        <b>Consignee : <?php if ($order['consigne'] != NULL) {
+                                        ?></b> <?= ucwords(strtolower($order['consigne'])) . '<br>' . ucwords($order['destination']) . '. ' . '<br>'  . '<b>' . ucwords(strtolower($order['city_consigne'])) . '</b>' . ', ' . '<b>' . ucwords(strtolower($order['state_consigne'])) . '</b>'  ?>
                         <b>Indonesia</b> <?php } ?>
-						
-					
-					
+
+
+
                     </td>
                 </tr>
 
@@ -137,23 +147,7 @@
             <table>
                 <tr>
                     <td style="border-bottom: 1px solid black;border-top: 1px solid black;font-size: 10px;">
-                        DO Number :
-                        <?php
-                        $get_do = $this->db->select('no_do')->get_where('tbl_no_do', ['shipment_id' => $order['shipment_id']])->result_array();
-                        $jumlah = $this->db->select('no_do')->get_where('tbl_no_do', ['shipment_id' => $order['shipment_id']])->num_rows();
-                        if ($get_do) {
-                            $i = 1;
-                            foreach ($get_do as $d) {
-                        ?>
-                                <?= ($i == $jumlah) ? $d['no_do'] : $d['no_do'] . '/'  ?>
-                            <?php $i++;
-                            }
-                        } else {
-                            ?>
-                            <?= $order['note_cs'] ?>
-                        <?php   }
-
-                        ?>
+                        DO Number : <?= $order['no_do'] ?>
                     </td>
                 </tr>
             </table>
