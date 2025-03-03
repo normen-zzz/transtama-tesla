@@ -137,7 +137,7 @@
         </table>
         <?php
         $get_do = $this->db->select('no_do')->get_where('tbl_no_do', ['shipment_id' => $order['shipment_id']]);
-        if ($get_do->num_rows() > 1) { ?>
+        if ($get_do->num_rows() >= 1) { ?>
             <table>
                 <tr>
                     <td style="border-bottom: 1px;border-top: 1px solid black;font-size: 8px;">
