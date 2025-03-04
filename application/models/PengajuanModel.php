@@ -206,7 +206,7 @@ class PengajuanModel extends CI_Model
     }
     public function orderBySoAdmin($id)
     {
-        $this->db->select('a.*, b.service_name');
+        $this->db->select('b.service_name,a.shipment_id,a.pu_moda,a.shipper,a.tree_shipper,a.consigne,a.created_at,a.note_cs,a.tree_consignee,a.id,a.id_so,a.destination,a.city_consigne,a.state_consigne,a.is_jabodetabek,a.deleted,a.reason_delete');
         $this->db->from('tbl_shp_order a');
         $this->db->join('tb_service_type b', 'a.service_type=b.code');
         $this->db->where('a.id_so', $id);
