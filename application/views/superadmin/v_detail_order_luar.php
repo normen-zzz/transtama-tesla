@@ -119,16 +119,14 @@
 										<th>Destination</th>
 										<th style="width: 15%;">Consignee</th>
 										<th style="width: 20%;">Status Delete</th>
-										<!-- <th>Signature</th> -->
-										<th>Last Status</th>
+										
+									
 										<th>Action</th>
 									</tr>
 								</thead>
 								<tbody>
 									<?php foreach ($shipment2 as $shp) {
-										$get_last_status = $this->db->limit(1)->order_by('id_tracking', 'desc')->get_where('tbl_tracking_real', ['shipment_id' => $shp['shipment_id']])->row_array();
-										// var_dump($get_last_status);
-										// die;
+									
 									?>
 										<tr>
 											<td><a href="<?= base_url('superadmin/salesOrder/print/' . $shp['shipment_id']) ?>"> <?= $shp['shipment_id'] ?></a></td>
@@ -140,23 +138,16 @@
 												} else {
 													echo 'Shipment Delete <br> Reason: ' . $shp['reason_delete'];
 												} ?></td>
-											<td style="color: green;"><?= $get_last_status['status'] ?> <br> <?= longdate_indo($get_last_status['created_at']), ' ' . $get_last_status['time'] ?>
-												<br>
-												<?php if ($get_last_status['flag'] == 11 || $get_last_status['flag'] == 5) {
-												?>
-													<a href="#" class="btn font-weight-bolder text-light" data-toggle="modal" data-target="#modal-pod<?= $shp['shipment_id'] ?>" style="background-color: #9c223b;">
-														<span class="svg-icon svg-icon-md">
-														</span>View POD</a>
-												<?php	} ?>
+											
+												
 
 											</td>
 											<td>
 
 												<a href="<?= base_url('superadmin/order/detail/' . $shp['id'] . '/' . $shp['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Detail</a>
-												<a href="#" class="btn font-weight-bolder text-light" data-toggle="modal" data-target="#modal-delete<?= $shp['shipment_id'] ?>" style="background-color: #9c223b;">
-													<span class="svg-icon svg-icon-md">
-													</span>Delete</a>
-												<!-- <a href="<?= base_url('superadmin/order/delete/' . $shp['id'] . '/' . $shp['id_so']) ?>" onclick="return confirm('Are Your Sure ?')" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Delete</a> -->
+												<a href="#" class="btn font-weight-bolder text-light modalDeleteResi" data-toggle="modal" data-target="#modal-delete"  style="background-color: #9c223b;" data-shipment_id="<?= $shp['shipment_id'] ?>" data-id_so="<?= $shp['id_so'] ?>" data-id_order="<?= $shp['id'] ?>">Delete</a>
+													
+												
 
 											</td>
 										</tr>
@@ -189,13 +180,12 @@
 	
 
 
-	<?php foreach ($shipment2 as $shp) {
-	?>
-		<div class="modal fade" id="modal-delete<?= $shp['shipment_id'] ?>">
+	
+		<div class="modal fade" id="modal-delete">
 			<div class="modal-dialog modal-lg">
 				<div class="modal-content">
 					<div class="modal-header">
-						<h4 class="modal-title">Delete <b><?= $shp['shipment_id'] ?></b> </h4>
+						<h4 class="modal-title" id="deleteText"></h4>
 
 						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 							<span aria-hidden="true">&times;</span>
@@ -205,8 +195,8 @@
 						<form action="<?= base_url('superadmin/order/delete') ?>" method="POST" enctype="multipart/form-data">
 							<div class="card-body">
 								<div class="row">
-									<input type="text" name="id_so" class="form-control" hidden value="<?= $p['id_so'] ?>">
-									<input type="text" name="id_order" class="form-control" hidden value="<?= $shp['id'] ?>">
+									<input type="text" name="id_so" class="form-control" id="formIdSo" hidden value="<?= $p['id_so'] ?>">
+									<input type="text" name="id_order" class="form-control" id="formIdOrder" hidden value="<?= $shp['id'] ?>">
 
 									<div class="col-md-12">
 										<div class="form-group">
@@ -230,4 +220,18 @@
 			<!-- /.modal-dialog -->
 		</div>
 
-	<?php } ?>
+		<script>
+
+			// modalDeleteResi 
+			$('.modalDeleteResi').on('click', function() {
+				const shipment_id = $(this).data('shipment_id');
+				const id_so = $(this).data('id_so');
+				const id_order = $(this).data('id_order');
+				$('#formIdSo').val(id_so);
+				$('#formIdOrder').val(id_order);
+				$('#deleteText').html('<b>Delete Shipment ID : ' + shipment_id + '</b>');
+			});
+
+		</script>
+
+	
