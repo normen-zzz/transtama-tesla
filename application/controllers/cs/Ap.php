@@ -224,12 +224,12 @@ class Ap extends CI_Controller
 						$pesansm = "Hallo, ada pengajuan Ap Oleh *$nama_user* No. *$no_ap* Dengan Tujuan *$purpose* Tanggal *$date*. Silahkan approve melalui link berikut : $linksm . Terima Kasih";
 						// no pak sam
 						$this->wa->pickup('+6281808008082', "$pesansm");
-						
+
 						//Norman
 						$this->wa->pickup('+6285697780467', "$pesansm");
 					} else {
 						$this->wa->pickup('+6281293753199', "$pesan");
-						
+
 						//Norman
 						$this->wa->pickup('+6285697780467', "$pesan");
 					}
@@ -364,7 +364,7 @@ class Ap extends CI_Controller
 			$pesan = "Hallo, ada pengajuan Ap No. *$no_ap* Dengan Tujuan *$purpose* Tanggal *$date*. Silahkan approve melalui link berikut : $link . Terima Kasih";
 			// no pak sam
 			$this->wa->pickup('+6281808008082', "$pesan");
-			
+
 			//Norman
 			$this->wa->pickup('+6285697780467', "$pesan");
 			$this->session->set_flashdata('message', 'Success Approve');
@@ -387,8 +387,9 @@ class Ap extends CI_Controller
 			redirect('cs/customer');
 		}
 	}
-	public function voidAp($no_ap) {
-		$void = $this->db->update('tbl_pengeluaran',array('status' => 6),array('no_pengeluaran' => $no_ap));
+	public function voidAp($no_ap)
+	{
+		$void = $this->db->update('tbl_pengeluaran', array('status' => 6), array('no_pengeluaran' => $no_ap));
 		if ($void) {
 			$this->session->set_flashdata('message', 'Void AP');
 			redirect('cs/ap');
@@ -398,7 +399,8 @@ class Ap extends CI_Controller
 		}
 	}
 
-	public function takeBackAp($no_ap) {
+	public function takeBackAp($no_ap)
+	{
 		if ($this->session->userdata('id_atasan') == NULL) {
 			$update = array(
 				'approve_by_sm' => NULL,
@@ -410,20 +412,20 @@ class Ap extends CI_Controller
 				'approve_mgr_finance' => NULL,
 				'created_mgr_finance' => NULL
 			);
-			$takeback = $this->db->update('tbl_approve_pengeluaran',$update,array('no_pengeluaran' => $no_ap));
-			$updatestatus = $this->db->update('tbl_pengeluaran',array('status' => 2),array('no_pengeluaran' => $no_ap));
-		}else{
-			$takeback = $this->db->delete('tbl_approve_pengeluaran',array('no_pengeluaran' => $no_ap));
-			$updatestatus = $this->db->update('tbl_pengeluaran',array('status' => 0),array('no_pengeluaran' => $no_ap));
+			$takeback = $this->db->update('tbl_approve_pengeluaran', $update, array('no_pengeluaran' => $no_ap));
+			$updatestatus = $this->db->update('tbl_pengeluaran', array('status' => 2), array('no_pengeluaran' => $no_ap));
+		} else {
+			$takeback = $this->db->delete('tbl_approve_pengeluaran', array('no_pengeluaran' => $no_ap));
+			$updatestatus = $this->db->update('tbl_pengeluaran', array('status' => 0), array('no_pengeluaran' => $no_ap));
 		}
-		
+
 		if ($takeback && $updatestatus) {
-			
+
 			$this->session->set_flashdata('message', 'Success');
-			redirect('cs/ap/detail/'.$no_ap);
+			redirect('cs/ap/detail/' . $no_ap);
 		} else {
 			$this->session->set_flashdata('message', 'Failed');
-			redirect('cs/ap/detail/'.$no_ap);
+			redirect('cs/ap/detail/' . $no_ap);
 		}
 	}
 	public function edit()
