@@ -443,7 +443,7 @@
 																	<?php	} else {
 																	?>
 
-																		<a href="<?= base_url('sales/salesOrder/tracking/' . $shp['id'] . '/' . $shp['id_so']) ?>" class="btn btn-sm mb-1 text-light addNewSo" data-toggle="modal" data-target="#modal-lg" data-id="<?= $shp['id'] ?>" style="background-color: #9c223b;">Add New SO</a>
+																		<a href="<?= base_url('sales/salesOrder/tracking/' . $shp['id'] . '/' . $shp['id_so']) ?>" class="btn btn-sm mb-1 text-light addNewSo" data-toggle="modal" data-target="#modalAddNewSo" data-id="<?= $shp['id'] ?>" style="background-color: #9c223b;">Add New SO</a>
 																		<a href="<?= base_url('sales/salesOrder/tracking/' . $shp['id'] . '/' . $shp['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Detail</a>
 
 																	<?php }
