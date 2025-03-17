@@ -2101,7 +2101,7 @@ class SalesOrder extends CI_Controller
         $id_atasan = $this->db->get_where('tb_user', ['id_user' => $this->session->userdata('id_user')])->row_array();
         $data = array(
             'tgl_pickup' => date('Y-m-d', strtotime($this->input->post('tgl_pickup'))),
-            'shipper' => strtoupper($shipper['nama_customer']),
+            'shipper' => strtoupper($shipper['nama_customer'].' ( VIA'.$this->input->post('via').')'),
             'pu_moda' => 'Granmax',
             'pu_poin' => strtoupper('BANDARA CGK'),
             'destination' => strtoupper($destination['name']),

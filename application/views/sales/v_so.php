@@ -210,6 +210,19 @@
 							</div>
 						</div>
 						
+						<!-- via  -->
+						<div class="form-group row">
+							<label class="col-form-label col-lg-3 col-sm-12">Via</label>
+							<div class="col-lg-9 col-md-9 col-sm-12">
+								<select name="via" id="via" class="form-control" required>
+									<option value="">Select Via</option>
+									<option value="GARUDA">GARUDA</option>
+									<option value="PELITA">PELITA</option>
+									<option value="CITILINK">CITILINK</option>
+								</select>
+							</div>
+						</div>
+						
 						<div class="form-group row">
 							<label class="col-form-label col-lg-3 col-sm-12">PU. Date</label>
 							<div class="col-lg-9 col-md-9 col-sm-12">
