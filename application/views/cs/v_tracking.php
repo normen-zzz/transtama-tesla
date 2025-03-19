@@ -449,10 +449,11 @@
 					$html += '<td><button type="button" class="btn btn-danger btn-sm deleteTracking" data-id_tracking="' + value.id_tracking + '">Delete</button></td>';
 					$html += '</tr>';
 				});
-				// swal close
-				Swal.close();
+				
 
 				$('#dataTracking').html($html);
+				// swal close
+				Swal.close();
 
 			},
 			error: function() {
