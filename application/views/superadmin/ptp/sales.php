@@ -43,6 +43,7 @@
                                         <th>disc</th>
                                         <th>cn</th>
                                         <th>special_cn</th>
+                                        <th>admin</th>
                                         <th>Action</th>
 
 
@@ -66,8 +67,9 @@
                                                 <td><?php echo $key1['disc']; ?></td>
                                                 <td><?php echo $key1['cn']; ?></td>
                                                 <td><?php echo $key1['special_cn']; ?></td>
+                                                <td><?= $key1['admin'] ?></td>
                                                 <td>
-                                                    <button type="button" class="btn btn-primary editSell" data-toggle="modal" data-target="#modalEditSell" data-id="<?php echo $key1['id_sell_ptp']; ?>" data-city="<?php echo $key1['id_city_ptp']; ?>" data-airlines="<?php echo $key1['id_airlines']; ?>" data-freight_kg="<?php echo $key1['freight_kg']; ?>" data-special_freight="<?php echo $key1['special_freight']; ?>" data-packing="<?php echo $key1['packing']; ?>" data-others="<?php echo $key1['others']; ?>" data-surcharge="<?php echo $key1['surcharge']; ?>" data-insurance="<?php echo $key1['insurance']; ?>" data-disc="<?php echo $key1['disc']; ?>" data-cn="<?php echo $key1['cn']; ?>" data-special_cn="<?php echo $key1['special_cn']; ?>">Edit</button>
+                                                    <button type="button" class="btn btn-primary editSell" data-toggle="modal" data-target="#modalEditSell" data-id="<?php echo $key1['id_sell_ptp']; ?>" data-city="<?php echo $key1['id_city_ptp']; ?>" data-airlines="<?php echo $key1['id_airlines']; ?>" data-freight_kg="<?php echo $key1['freight_kg']; ?>" data-special_freight="<?php echo $key1['special_freight']; ?>" data-packing="<?php echo $key1['packing']; ?>" data-others="<?php echo $key1['others']; ?>" data-surcharge="<?php echo $key1['surcharge']; ?>" data-insurance="<?php echo $key1['insurance']; ?>" data-disc="<?php echo $key1['disc']; ?>" data-cn="<?php echo $key1['cn']; ?>" data-special_cn="<?php echo $key1['special_cn']; ?>" data-admin="<?php echo $key1['admin']; ?>">Edit</button>
                                                     <button type="button" class="btn btn-danger deleteSell" data-id="<?php echo $key1['id_sell_ptp']; ?>">Delete</button>
                                             </tr>
                                     <?php }
@@ -159,6 +161,10 @@
                         <label>Special CN</label>
                         <input type="text" name="special_cn" id="special_cn" class="form-control" placeholder="Special CN" value="0">
                     </div>
+                    <div class="form-group">
+                        <label>Special CN</label>
+                        <input type="text" name="admin" id="admin" class="form-control" placeholder="Admin" value="0">
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-primary">Add Sell</button>
@@ -238,6 +244,10 @@
                         <label>Special CN</label>
                         <input type="text" name="special_cn" id="special_cnEdit" class="form-control" placeholder="Special CN">
                     </div>
+                    <div class="form-group">
+                        <label>Special CN</label>
+                        <input type="text" name="admin" id="adminEdit" class="form-control" placeholder="Admin">
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-primary">Edit Sell</button>
@@ -273,6 +283,7 @@
             var disc = $('#disc').val();
             var cn = $('#cn').val();
             var special_cn = $('#special_cn').val();
+            var admin = $('#admin').val();
 
             $.ajax({
                 url: "<?php echo base_url('superadmin/ptp/addSellPtp'); ?>",
@@ -289,7 +300,8 @@
                     insurance: insurance,
                     disc: disc,
                     cn: cn,
-                    special_cn: special_cn
+                    special_cn: special_cn,
+                    admin: admin
                 },
                 success: function(response) {
                     response = JSON.parse(response);
@@ -355,6 +367,7 @@
         var disc = $(this).data('disc');
         var cn = $(this).data('cn');
         var special_cn = $(this).data('special_cn');
+        var admin = $(this).data('admin');
         $('#id_sell').val(id_sell);
         $('#id_cityEdit').val(id_city);
         $('#id_airlinesEdit').val(id_airlines);
@@ -367,6 +380,8 @@
         $('#discEdit').val(disc);
         $('#cnEdit').val(cn);
         $('#special_cnEdit').val(special_cn);
+        $('#adminEdit').val(admin);
+        
     });
 </script>
 
@@ -387,6 +402,7 @@
             var disc = $('#discEdit').val();
             var cn = $('#cnEdit').val();
             var special_cn = $('#special_cnEdit').val();
+            var admin = $('#adminEdit').val();
             Swal.fire({
                 title: 'Loading',
                 onBeforeOpen: () => {
@@ -410,7 +426,8 @@
                     insurance: insurance,
                     disc: disc,
                     cn: cn,
-                    special_cn: special_cn
+                    special_cn: special_cn,
+                    admin: admin
                 },
                 success: function(response) {
                     response = JSON.parse(response);

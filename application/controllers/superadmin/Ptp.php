@@ -749,6 +749,7 @@ class Ptp extends CI_Controller
                 'disc' => $this->input->post('disc'),
                 'cn' => $this->input->post('cn'),
                 'special_cn' => $this->input->post('special_cn'),
+                'admin' => $this->input->post('admin'),
                 'is_deleted' => 0
             ];
             $insert = $this->db->insert('sell_ptp', $data);
@@ -799,6 +800,7 @@ class Ptp extends CI_Controller
                 'disc' => $this->input->post('disc'),
                 'cn' => $this->input->post('cn'),
                 'special_cn' => $this->input->post('special_cn'),
+                'admin' => $this->input->post('admin'),
                 'is_deleted' => 0
             ];
             $update = $this->db->update('sell_ptp', $data, ['id_sell_ptp' => $id_sell_ptp]);
