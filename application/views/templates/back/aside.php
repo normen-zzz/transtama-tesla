@@ -120,6 +120,61 @@
 				</ul>
 			</div>
 		</li>
+
+		<li class="menu-item menu-item-submenu menu-item-rel" data-menu-toggle="click" aria-haspopup="true">
+			<a href="javascript:;" class="menu-link menu-toggle">
+				<span class="menu-text">
+					<span class="menu-text"> <i class="fa fa-plane mr-2 text-danger"></i>PTP</span>
+					<!--end::Svg Icon-->
+					<span class="menu-desc"></span>
+					<i class="menu-arrow"></i>
+
+			</a>
+			<div class="menu-submenu menu-submenu-classic menu-submenu-left">
+				<ul class="menu-subnav">
+				<li class="menu-item" aria-haspopup="true">
+						<a href="<?= base_url('superadmin/Ptp/customer') ?>" class="menu-link">
+							<span class="menu-text"><i class="fa fa-book text-danger mr-2"></i>Customer</span>
+						</a>
+					</li>
+					<li class="menu-item" aria-haspopup="true">
+						<a href="<?= base_url('superadmin/Ptp/state') ?>" class="menu-link">
+							<span class="menu-text"><i class="fa fa-book text-danger mr-2"></i>State</span>
+						</a>
+					</li>
+					<li class="menu-item" aria-haspopup="true">
+						<a href="<?= base_url('superadmin/Ptp/city') ?>" class="menu-link">
+							<span class="menu-text"><i class="fa fa-book text-danger mr-2"></i>City</span>
+						</a>
+					</li>
+
+					<li class="menu-item" aria-haspopup="true">
+						<a href="<?= base_url('superadmin/Ptp/airlines') ?>" class="menu-link">
+							<span class="menu-text">
+								<i class="fa fa-plane text-danger mr-2"></i>Airlines</span>
+						</a>
+					</li>
+					<li class="menu-item menu-item" aria-haspopup="true">
+						<a href="<?= base_url('superadmin/Ptp/cost') ?>" class="menu-link">
+							<span class="menu-text"><span class="svg-icon svg-icon-danger svg-icon mr-2">
+									<i class="fa fa-chart text-danger mr-2">
+								</span></i>Cost</span>
+						</a>
+					</li>
+					<li class="menu-item menu-item" aria-haspopup="true">
+						<a href="<?= base_url('superadmin/Ptp/Sales') ?>" class="menu-link">
+							<span class="menu-text"><span class="svg-icon svg-icon-danger svg-icon mr-2">
+									<i class="fa fa-chart text-danger mr-2">
+								</span></i>Sales</span>
+						</a>
+					</li>
+
+
+
+
+				</ul>
+			</div>
+		</li>
 		<!-- kpi admin -->
 		<li class="menu-item menu-item-submenu menu-item-rel" data-menu-toggle="click" aria-haspopup="true">
 			<a href="javascript:;" class="menu-link menu-toggle">

@@ -67,7 +67,11 @@
 								<?php if ($p['is_ptp'] == 1) { ?>
 									<div class="col-md-4">
 
+									<?php if ($p['cancel_date'] == null) { ?>
 										<a href="<?= base_url('shipper/SalesOrder/createResiPtp/'.$p['id_so']) ?>" class="btn font-weight-bolder text-light mb-4" style="background-color: #9c223b;">Create Resi PTP</a>
+									<?php } ?>
+
+										
 
 									<?php  } else { ?>
 										<?php if ($p['is_incoming'] == 0) {

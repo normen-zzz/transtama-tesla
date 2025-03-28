@@ -1156,7 +1156,13 @@
 								return '<span class="label label-secondary label-inline font-weight-lighter" style="width: 100px;">Cancel</span>';
 
 							} else {
-								return '<span class="label label-success label-inline font-weight-lighter" style="width: 100px;">Pickuped</span>';
+								if (row.cancel_date != null) {
+									return '<span class="label label-secondary label-inline font-weight-lighter" style="width: 100px;">Cancel</span>'; // Cancel
+									
+								} else{
+									return '<span class="label label-success label-inline font-weight-lighter" style="width: 100px;">Pickuped</span>';
+								}
+								
 
 							}
 						}
