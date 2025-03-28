@@ -1610,7 +1610,7 @@ class SalesOrder extends CI_Controller
                 'specialcn' => $sell['special_cn'],
                 'berat_js' => $this->input->post('weight'),
                 'koli' => $this->input->post('koli'),
-                'admin' => 10500
+                'admin' => $sell['admin'],
             );
 
             // var_dump($data);
