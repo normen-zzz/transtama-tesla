@@ -25,7 +25,8 @@ class SalesOrder extends CI_Controller
         cek_role();
     }
 
-    public function index() {
+    public function index()
+    {
         $akses = $this->session->userdata('akses');
         $user_id = $this->session->userdata('id_user');
         if ($akses == 1) {
@@ -1526,7 +1527,7 @@ class SalesOrder extends CI_Controller
     {
         $this->db->trans_start();
         try {
-          
+
 
             $img = $this->input->post('ttd');
             $img = str_replace('data:image/png;base64,', '', $img);
@@ -1567,10 +1568,9 @@ class SalesOrder extends CI_Controller
             $img = str_replace('data:image/png;base64,', '', $img);
 
             $so = $this->db->get_where('tbl_so', ['id_so' => $this->input->post('id_so')])->row_array();
-            $shipper = $this->db->get_where('customer_ptp', ['nama_customer' => $so['shipper']])->row_array();
-            $city = $this->db->get_where('city_ptp', ['name' => $so['destination']])->row_array();
-            $state = $this->db->get_where('state_ptp', ['id_state_ptp' => $city['id_state_ptp']])->row_array();
-            $sell = $this->db->get_where('sell_ptp', ['id_city_ptp' => $city['id_city_ptp']])->row_array();
+            $shipper = $this->db->get_where('customer_ptp', ['id_customer_ptp' => $so['id_customer_ptp']])->row_array();
+            $city = $this->db->get_where('city_ptp', ['id_city_ptp' => $so['id_city_ptp']])->row_array();
+            $sell = $this->db->query('SELECT * FROM sell_ptp WHERE id_city_ptp = "' . $so['id_city_ptp'] . '" AND id_airlines = "' . $so['id_airlines'] . '"')->row_array();
 
             $data = array(
                 'shipper' => strtoupper($shipper['nama_customer']),
@@ -1673,7 +1673,7 @@ class SalesOrder extends CI_Controller
                     );
                     $this->db->update('tbl_no_do', $data, ['shipment_id' => $shipment_id]);
                 }
-                
+
                 $this->barcode($shipment_id);
                 $this->qrcode($shipment_id);
                 $dataTracking1 = array(
@@ -1782,36 +1782,54 @@ class SalesOrder extends CI_Controller
                 );
                 $this->db->update('tbl_so', $data, ['id_so' => $this->input->post('id_so')]);
 
-                $cost = $this->db->get_where('cost_ptp', ['id_city_ptp' => $city['id_city_ptp']])->row_array();
-
-                //add Cost
-                $data = array(
-                    'shipment_id' => $idshipment,
-                    'flight_msu2' => $cost['flight_smu'],
-                    'ra2' => $cost['ra'],
-                    'packing2' => $cost['packing'],
-                    'refund2' => $cost['refund'],
-                    'insurance2' => $cost['insurance'],
-                    'surcharge2' => $cost['surcharge'],
-                    'hand_cgk2' => $cost['hand_cgk'],
-                    'hand_pickup2' => $cost['hand_pickup'],
-                    'hd_daerah2' => $cost['hd_daerah'],
-                    'pph2' => $cost['pph'],
-                    'sdm2' => $cost['sdm'],
-                    'others2' => $cost['others'],
-                    'note_mgr_cs' => 'PTP',
-                );
-                $insert = $this->db->insert('tbl_modal', $data);
-
-                
+                $cost = $this->db->get_where('cost_ptp', ['id_city_ptp' => $so['id_city_ptp'], 'id_airlines' => $so['id_airlines']]);
+                if ($cost->num_rows() > 0) {
+                    $cost = $cost->row_array();
+                    //add Cost
+                    $data = array(
+                        'shipment_id' => $idshipment,
+                        'flight_msu2' => $cost['flight_smu'],
+                        'ra2' => $cost['ra'],
+                        'packing2' => $cost['packing'],
+                        'refund2' => $cost['refund'],
+                        'insurance2' => $cost['insurance'],
+                        'surcharge2' => $cost['surcharge'],
+                        'hand_cgk2' => $cost['hand_cgk'],
+                        'hand_pickup2' => $cost['hand_pickup'],
+                        'hd_daerah2' => $cost['hd_daerah'],
+                        'pph2' => $cost['pph'],
+                        'sdm2' => $cost['sdm'],
+                        'others2' => $cost['others'],
+                        'note_mgr_cs' => 'PTP',
+                    );
+                    $insert = $this->db->insert('tbl_modal', $data);
+                } else {
+                    $data = array(
+                        'shipment_id' => $idshipment,
+                        'flight_msu2' => 0,
+                        'ra2' => 0,
+                        'packing2' => 0,
+                        'refund2' => 0,
+                        'insurance2' => 0,
+                        'surcharge2' => 0,
+                        'hand_cgk2' => 0,
+                        'hand_pickup2' => 0,
+                        'hd_daerah2' => 0,
+                        'pph2' => 0,
+                        'sdm2' => 0,
+                        'others2' => 0,
+                        'note_mgr_cs' => 'PTP',
+                    );
+                    $insert = $this->db->insert('tbl_modal', $data);
+                }
                 $this->db->trans_complete();
 
                 if ($this->db->trans_status() === FALSE) {
                     throw new Exception('Transaction failed');
-                } else{
+                } else {
                     $this->session->set_flashdata('message', '<div class="alert
                     alert-success" role="alert">Success</div>');
-                redirect('shipper/salesorder/detail/' . $this->input->post('id_so'));
+                    redirect('shipper/salesorder/detail/' . $this->input->post('id_so'));
                 }
             } else {
                 throw new Exception('Gagal Menambahkan Resi');

@@ -216,9 +216,9 @@
 							<div class="col-lg-9 col-md-9 col-sm-12">
 								<select name="via" id="via" class="form-control" required>
 									<option value="">Select Via</option>
-									<option value="GARUDA">GARUDA</option>
-									<option value="PELITA">PELITA</option>
-									<option value="CITILINK">CITILINK</option>
+									<?php foreach ($via->result_array() as $destination1) {?>
+										<option value="<?= $destination1['id_airlines'] ?>"><?= $destination1['name_airlines'] ?></option>
+									<?php } ?>
 								</select>
 							</div>
 						</div>
@@ -238,10 +238,7 @@
 							<div class="col-lg-9 col-md-9 col-sm-12">
 								<select name="destination" id="destination" class="form-control" required>
 									<option value="">Select Destination</option>
-									<?php foreach ($destination->result_array() as $d) {
-									?>
-										<option value="<?= $d['id_city_ptp'] ?>"><?= $d['name'] ?></option>
-									<?php	} ?>
+									
 								</select>
 							</div>
 						</div>
@@ -369,5 +366,32 @@
 					$('form').submit();
 				}
 			})
+		});
+	</script>
+
+	<script>
+		// destination
+		$(document).on('change', '#via', function() {
+			var id_airlines = $(this).val();
+			var html = '';
+			if (id_airlines == '') {
+				$('#destination').html('<option value="">Select Destination</option>');
+				return false;
+			} else {
+				$.ajax({
+					url: '<?= base_url('sales/salesOrder/getDestinationPtp') ?>',
+					type: 'post',
+					data: {
+						id_airlines: id_airlines
+					},
+					success: function(data) {
+						data = JSON.parse(data);
+						$.each(data, function(i, item) {
+							html += '<option value="' + item.id_city_ptp + '">' + item.name + '</option>';
+						});
+						$('#destination').html(html);
+					}
+				});
+			}
 		});
 	</script>

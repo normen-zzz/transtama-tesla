@@ -37,8 +37,9 @@ class SalesOrder extends CI_Controller
     {
         $id_atasan = $this->session->userdata('id_atasan');
         // kalo dia atasan sales
-        $data['shipperPtp'] = $this->db->get('customer_ptp');
-        $data['destination'] = $this->db->get('city_ptp');
+        $data['shipperPtp'] = $this->db->get_where('customer_ptp', ['is_deleted' => 0]);
+        $data['via'] = $this->db->query('SELECT a.id_airlines, c.name_airlines FROM sell_ptp a JOIN airlines_ptp c ON a.id_airlines = c.id_airlines WHERE a.is_deleted = 0 GROUP BY a.id_airlines');
+       
         if ($id_atasan == 0 || $id_atasan == NULL) {
             $this->db->select('a.*,b.nama_user');
             $this->db->from('tbl_so a');
@@ -2097,11 +2098,12 @@ class SalesOrder extends CI_Controller
 
         $shipper = $this->db->get_where('customer_ptp', ['id_customer_ptp' => $this->input->post('shipper')])->row_array();
         $destination = $this->db->get_where('city_ptp', ['id_city_ptp' => $this->input->post('destination')])->row_array();
+        $airlines = $this->db->get_where('airlines_ptp', ['id_airlines' => $this->input->post('via')])->row_array();
 
         $id_atasan = $this->db->get_where('tb_user', ['id_user' => $this->session->userdata('id_user')])->row_array();
         $data = array(
             'tgl_pickup' => date('Y-m-d', strtotime($this->input->post('tgl_pickup'))),
-            'shipper' => strtoupper($shipper['nama_customer'].' ( VIA'.$this->input->post('via').')'),
+            'shipper' => strtoupper($shipper['nama_customer'].' ( VIA '.$airlines['name_airlines'].')'),
             'pu_moda' => 'Granmax',
             'pu_poin' => strtoupper('BANDARA CGK'),
             'destination' => strtoupper($destination['name']),
@@ -2121,6 +2123,9 @@ class SalesOrder extends CI_Controller
             'id_sales' => $this->session->userdata('id_user'),
             'id_atasan_sales' => $id_atasan['id_atasan'],
             'is_ptp' => 1,
+            'id_city_ptp' => $this->input->post('destination'),
+            'id_airlines' => $this->input->post('via'),
+            'id_customer_ptp' => $this->input->post('shipper'),
         );
         $id_atasan = $this->session->userdata('id_atasan');
         // kalo dia atasan
@@ -2182,5 +2187,13 @@ class SalesOrder extends CI_Controller
                     alert-danger" role="alert">Failed</div>');
             redirect('sales/salesOrder/add');
         }
+    }
+
+    // getDestinationPtp
+    public function getDestinationPtp()
+    {
+        $id_airlines = $this->input->post('id_airlines');
+        $data = $this->db->query("SELECT a.id_city_ptp,b.name FROM sell_ptp a JOIN city_ptp b ON a.id_city_ptp=b.id_city_ptp WHERE a.id_airlines='$id_airlines' AND a.is_deleted = 0 GROUP BY a.id_city_ptp ")->result_array();
+        echo json_encode($data);
     }
 }
