@@ -221,7 +221,7 @@ LIMIT 50
              // Looping untuk setiap batch
              foreach ($chunks as $batch) {
                  $listResi = implode("<br><br>", $batch);
-                 $pesan = "Halo CS, Ada Resi yang sudah melewati lead time: <br><br> $listResi <br><br> Silahkan dicek dan update tanggal diterima. Terima kasih.";
+                 $pesan = "Halo , Berikut Resi yang sudah melewati lead time: <br><br> $listResi <br><br> Terima kasih.";
  
                  // Kirim pesan ke setiap nomor
                  foreach ($nomorWA as $no) {
