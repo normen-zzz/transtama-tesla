@@ -179,4 +179,68 @@ LIMIT 50
             var_dump($e->getMessage());
         }
     }
+     // alertLeadTime 
+     public function alertLeadTimeVema()
+     {
+         $this->db->trans_start();
+         try {
+             $resi = $this->db->query("
+             SELECT a.shipment_id, a.shipper, a.city_consigne, a.tgl_pickup, b.lead_min, b.lead_max  
+             FROM tbl_shp_order a 
+             JOIN tb_city b ON a.city_consigne = b.city_name 
+             WHERE a.deleted = 0 
+             AND a.tgl_diterima IS NULL 
+             AND b.lead_min != 0 
+             AND b.lead_max != 0 
+             AND YEAR(a.tgl_pickup) >= 2025 
+             ORDER BY RAND()
+         ");
+ 
+             $dataResi = [];
+             foreach ($resi->result_array() as $resi1) {
+                 $tgl_pickup = date('Y-m-d', strtotime($resi1['tgl_pickup']));
+                 $tgl_sekarang = date('Y-m-d');
+ 
+                 // Hitung selisih hari antara tanggal sekarang dan pickup
+                 $jarak = (strtotime($tgl_sekarang) - strtotime($tgl_pickup)) / (60 * 60 * 24) - $resi1['lead_max'];
+ 
+                 if ($jarak >= $resi1['lead_max']) {
+                     $dataResi[] = "Resi: {$resi1['shipment_id']} | Customer: {$resi1['shipper']} | Tujuan: {$resi1['city_consigne']} | Pickup: " . date('d-m-Y', strtotime($resi1['tgl_pickup'])) . " | Max Pengiriman: {$resi1['lead_max']} Hari | Telah lewat: {$jarak} Hari";
+                 }
+             }
+ 
+             // Pisahkan data menjadi beberapa batch dengan maksimal 10 resi per batch
+             $chunks = array_chunk($dataResi, 10);
+ 
+             // Daftar nomor WhatsApp yang akan menerima pesan
+             $nomorWA = [
+                 '+628111910711', //nomor vema
+               
+             ];
+ 
+             // Looping untuk setiap batch
+             foreach ($chunks as $batch) {
+                 $listResi = implode("<br><br>", $batch);
+                 $pesan = "Halo CS, Ada Resi yang sudah melewati lead time: <br><br> $listResi <br><br> Silahkan dicek dan update tanggal diterima. Terima kasih.";
+ 
+                 // Kirim pesan ke setiap nomor
+                 foreach ($nomorWA as $no) {
+                     $wa = $this->wa->pickup($no, $pesan);
+                     if (!$wa) {
+                         throw new Exception("Gagal kirim WA ke $no");
+                     }
+                 }
+             }
+ 
+             $this->db->trans_complete();
+             if ($this->db->trans_status() === FALSE) {
+                 throw new Exception('Transaction failed');
+             } else {
+                 var_dump('Berhasil');
+             }
+         } catch (Exception $e) {
+             $this->db->trans_rollback();
+             var_dump($e->getMessage());
+         }
+     }
 }
