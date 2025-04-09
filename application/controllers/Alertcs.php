@@ -215,6 +215,7 @@ LIMIT 50
              // Daftar nomor WhatsApp yang akan menerima pesan
              $nomorWA = [
                  '+628111910711', //nomor vema
+                    '+6285697780467', //nomor norman
                
              ];
  
