@@ -62,6 +62,63 @@ class Outbond extends CI_Controller
         redirect('shipper/Outbond');
     }
 
+    public function scanInBulkSo($id_so)
+    {
+        $this->db->trans_start();
+        try {
+            $shipment = $this->db->query('SELECT outbond_status,id_so FROM tbl_shp_order WHERE id_so = ' . $id_so . ' AND outbond_status IS NULL')->result_array();
+            $updateStatusOutbond = $this->db->update('tbl_shp_order', ['outbond_status' => 1], ['id_so' => $id_so]);
+            if ($updateStatusOutbond) {
+                foreach ($shipment as $item) {
+                    $dataTracking = [
+                        'status' => ucwords(strtolower("paket telah tiba di hub jakarta pusat")),
+                        'id_so' => $item['id_so'],
+                        'shipment_id' => $item['shipment_id'],
+                        'created_at' => date('Y-m-d'),
+                        'time' => date('H:i:s'),
+                        'flag' => 5,
+                        'status_eksekusi' => 1,
+                        'id_user' => $this->session->userdata('id_user'),
+                    ];
+                    $insertDataTracking = $this->db->insert('tbl_tracking_real', $dataTracking);
+                    if (!$insertDataTracking) {
+                        throw new Exception('Gagal insert tracking real');
+                    }
+                    $dataOutbond = [
+                        'shipment_id' => $item['shipment_id'],
+                        'created_at' => date('Y-m-d H:i:s'),
+                        'created_by' => $this->session->userdata('id_user'),
+                        'in_date' => date('Y-m-d H:i:s'),
+                    ];
+                    $insertDataOutbond = $this->db->insert('tbl_outbond', $dataOutbond);
+                    if (!$insertDataOutbond) {
+                        throw new Exception('Gagal insert outbond');
+                    }
+                }
+            } else {
+                throw new Exception('Gagal update status outbond');
+            }
+
+            $this->db->trans_complete();
+            if ($this->db->trans_status() === FALSE) {
+                // Transaction failed, handle the error here
+                throw new Exception('Transaction failed');
+            } else {
+                // Transaction succeeded, redirect or do something else
+                $this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">Berhasil Scan Outbond</div>');
+                redirect('shipper/Outbond');
+            }
+        } catch (Exception $e) {
+            $this->db->trans_rollback();
+            // Handle the exception, log it, or show an error message
+            // For example, you can set a flash message and redirect
+            $this->session->set_flashdata('error', 'Error: ' . $e->getMessage());
+            redirect('shipper/Outbond');
+        }
+    }
+
+
+
     public function bagging()
     {
         $data['title'] = 'Bagging';
@@ -160,7 +217,7 @@ class Outbond extends CI_Controller
                     }
                 }
                 redirect('shipper/Outbond/bagging');
-            } else{
+            } else {
                 redirect('shipper/Outbond/bagging');
             }
         }
@@ -195,17 +252,17 @@ class Outbond extends CI_Controller
         }
     }
     public function listDataOutbond()
-{
-    $search = array('a.shipment_id');
-    $query  = "SELECT a.shipment_id, a.shipper, a.consigne, IFNULL(a.bagging, 0) AS bagging, a.is_jabodetabek, IFNULL(a.delivery_status, 0) AS delivery_status, IFNULL(a.delivery_by, 0) AS delivery_by, a.service_type, b.service_name, IFNULL(c.nama_user, 0) AS nama_user 
+    {
+        $search = array('a.shipment_id');
+        $query  = "SELECT a.shipment_id, a.shipper, a.consigne, IFNULL(a.bagging, 0) AS bagging, a.is_jabodetabek, IFNULL(a.delivery_status, 0) AS delivery_status, IFNULL(a.delivery_by, 0) AS delivery_by, a.service_type, b.service_name, IFNULL(c.nama_user, 0) AS nama_user 
                FROM tbl_shp_order AS a 
                LEFT JOIN tb_service_type AS b ON a.service_type = b.code 
                LEFT JOIN tb_user AS c ON a.delivery_by = c.id_user 
                LEFT JOIN bagging AS d ON a.bagging = d.id_bagging";
-    $where  = array('a.outbond_status' => 1, 'a.deleted' => 0);
-    $isWhere = null;
+        $where  = array('a.outbond_status' => 1, 'a.deleted' => 0);
+        $isWhere = null;
 
-    header('Content-Type: application/json');
-    echo $this->M_Datatables->get_tables_query2($query, $search, $where, $isWhere);
-}
+        header('Content-Type: application/json');
+        echo $this->M_Datatables->get_tables_query2($query, $search, $where, $isWhere);
+    }
 }
