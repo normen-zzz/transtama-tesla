@@ -66,7 +66,7 @@ class Outbond extends CI_Controller
     {
         $this->db->trans_start();
         try {
-            $shipment = $this->db->query('SELECT outbond_status,id_so FROM tbl_shp_order WHERE id_so = ' . $id_so . ' AND outbond_status IS NULL')->result_array();
+            $shipment = $this->db->query('SELECT outbond_status,id_so,shipment_id FROM tbl_shp_order WHERE id_so = ' . $id_so . ' AND outbond_status IS NULL')->result_array();
             $updateStatusOutbond = $this->db->update('tbl_shp_order', ['outbond_status' => 1], ['id_so' => $id_so]);
             if ($updateStatusOutbond) {
                 foreach ($shipment as $item) {
