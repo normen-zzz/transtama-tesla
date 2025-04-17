@@ -1,14 +1,13 @@
 	<?php
-	$getTanggalPickup = $this->db
-    ->select('created_at, time')
-    ->where('id_so', $p['id_so'])
-    ->where('flag', 4)
-    ->order_by('id_tracking', 'DESC')
-    ->limit(1)
-    ->get('tbl_tracking_real');
-	if ($getTanggalPickup->num_rows() > 0) {
-		$getTanggalPickup = $getTanggalPickup->row_array();
-		$WaktuPickup = date('H:i:s', strtotime($getTanggalPickup['time']));
+
+
+	$dataPickupSo = $this->db->query('SELECT pickup_at,tgl_pickup,time FROM tbl_so WHERE id_so = "' . $p['id_so'] . '"')->row_array();
+	if ($dataPickupSo['pickup_at'] == NULL) {
+		$getTanggalPickup['created_at'] = date('Y-m-d H:i:s', strtotime($dataPickupSo['tgl_pickup'] . ' ' . $dataPickupSo['time']));
+		$WaktuPickup = date('H:i:s', strtotime($dataPickupSo['time']));
+	} else {
+		$getTanggalPickup['created_at'] = $getTanggalPickup['pickup_at'];
+		$WaktuPickup = date('H:i:s', strtotime($dataPickupSo['pickup_at']));
 	}
 	
 	
