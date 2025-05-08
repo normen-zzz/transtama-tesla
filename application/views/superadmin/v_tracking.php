@@ -25,60 +25,75 @@
 									</form>
 								</div>
 								<?php if ($tracking != NULL) { ?>
-								<div class="col-md-8">
-									<h4 class="title">Milestone AWB <?= $shipment_id ?></h4>
-									<div class="row">
-										<div class="col-md-6">Shipper : <b><?= $shipment['shipper'] ?> - <?= $shipment['tree_shipper'] ?></b> </div>
-										<div class="col-md-6">Consignee : <b><?= $shipment['consigne'] ?> - <?= $shipment['tree_consignee'] ?></b> </div>
-									</div>
-									<div class="row">
-									<?php $user = 
-									$user = $this->db->query("SELECT nama_user FROM tb_user WHERE id_user =".$shipment['id_user']."")->row_array();
-									 ?>
-									<div class="col">Driver : <b><?= $user['nama_user'] ?></b> </div>
-								</div>
-									<br>
-									<?php if ($shipment_id != NULL) {
-									?>
-										<a href="#" class="btn btn-sm text-light mb-1" data-toggle="modal" data-target="#modal-lg-dl-add<?= $shipment_id ?>" style="background-color: #9c223b;">
-											<span class="fa fa-plus">
-											</span> Add Status</a>
-
-									<?php   } ?>
-									<table class="table table-bordered">
-										<tr>
-											<td>Status</td>
-											<td>Date</td>
-											<td>Time</td>
-											<td>Flag</td>
-											<td>Status Eksekusi</td>
-											<td>Action</td>
-										</tr>
-										<tbody>
-											<?php foreach ($tracking as $t) {
+									<div class="col-md-8">
+										<h4 class="title">Milestone AWB <?= $shipment_id ?></h4>
+										<div class="row">
+											<div class="col-md-6">Shipper : <b><?= $shipment['shipper'] ?> - <?= $shipment['tree_shipper'] ?></b> </div>
+											<div class="col-md-6">Consignee : <b><?= $shipment['consigne'] ?> - <?= $shipment['tree_consignee'] ?></b> </div>
+										</div>
+										<div class="row">
+											<?php $user =
+												$user = $this->db->query("SELECT nama_user FROM tb_user WHERE id_user =" . $shipment['id_user'] . "")->row_array();
 											?>
-												<tr>
-													<td><?= $t['status'] ?></td>
-													<td><?= $t['created_at'] ?></td>
-													<td><?= $t['time'] ?></td>
-													<td><?= $t['flag'] ?></td>
-													<td><?= ($t['status_eksekusi'] == 1) ? 'Finish' : 'Pending' ?></td>
-													<td>
-														<button type="button" href="#" class="btn btn-sm text-light mb-1 modalEditTracking" data-toggle="modal" data-target="#modal-lg-dl-luar" data-id_tracking="<?=$t['id_tracking'] ?>" style="background-color: #9c223b;">
-															<span class="fa fa-edit">
-															</span> Update</button>
-														<a href="<?= base_url('superadmin/order/deleteShipmentTracking/' . $t['id_tracking'] . '/' . $t['shipment_id']) ?>" onclick="return confirm('Are you sure ?')" class="btn btn-sm text-light mb-1" style="background-color: #9c223b;">
-															<span class="fa fa-trash">
-															</span> Delete</a>
-													</td>
-												</tr>
+											<div class="col">Driver : <b><?= $user['nama_user'] ?></b> </div>
+										</div>
+										<br>
+										<?php if ($shipment_id != NULL) {
+										?>
+											<a href="#" class="btn btn-sm text-light mb-1" data-toggle="modal" data-target="#modal-lg-dl-add<?= $shipment_id ?>" style="background-color: #9c223b;">
+												<span class="fa fa-plus">
+												</span> Add Status</a>
 
-											<?php } ?>
+												<?php if ($shipment['deleted'] != 1) { ?>
+													<!-- button modal delete  -->
+											<button type="button" class="btn btn-sm text-light mb-1 modalDeleteResi" data-toggle="modal" data-target="#modalDeleteResi" style="background-color: #9c223b;" data-shipment_id="<?= $shipment_id ?>">
+												<span class="fa fa-trash">
+												</span> Delete Shipment</button>
+												<?php } else{ ?>
+													<!-- deleted by  -->
+													<div class="alert alert-danger" role="alert">
+														Shipment Deleted<br>
+														Reason : <?= $shipment['reason_delete'] ?>
+													</div>
 
-										</tbody>
-									</table>
+													<?php } ?>
+											
+
+										<?php   } ?>
+										<table class="table table-bordered">
+											<tr>
+												<td>Status</td>
+												<td>Date</td>
+												<td>Time</td>
+												<td>Flag</td>
+												<td>Status Eksekusi</td>
+												<td>Action</td>
+											</tr>
+											<tbody>
+												<?php foreach ($tracking as $t) {
+												?>
+													<tr>
+														<td><?= $t['status'] ?></td>
+														<td><?= $t['created_at'] ?></td>
+														<td><?= $t['time'] ?></td>
+														<td><?= $t['flag'] ?></td>
+														<td><?= ($t['status_eksekusi'] == 1) ? 'Finish' : 'Pending' ?></td>
+														<td>
+															<button type="button" href="#" class="btn btn-sm text-light mb-1 modalEditTracking" data-toggle="modal" data-target="#modal-lg-dl-luar" data-id_tracking="<?= $t['id_tracking'] ?>" style="background-color: #9c223b;">
+																<span class="fa fa-edit">
+																</span> Update</button>
+															<a href="<?= base_url('superadmin/order/deleteShipmentTracking/' . $t['id_tracking'] . '/' . $t['shipment_id']) ?>" onclick="return confirm('Are you sure ?')" class="btn btn-sm text-light mb-1" style="background-color: #9c223b;">
+																<span class="fa fa-trash">
+																</span> Delete</a>
+														</td>
+													</tr>
+
+												<?php } ?>
+
+											</tbody>
+										</table>
 									<?php } ?>
-								</div>
+									</div>
 							</div>
 						</div>
 						<!-- /.card-body -->
@@ -93,72 +108,105 @@
 	</section>
 	<!-- /.content -->
 	<?php if ($tracking != NULL) { ?>
-	<div class="modal fade" id="modal-lg-dl-add<?= $shipment_id ?>">
+		<div class="modal fade" id="modal-lg-dl-add<?= $shipment_id ?>">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h4 class="modal-title">Add Status Shipment <b><?= $shipment_id ?></b> </h4>
+
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<form action="<?= base_url('superadmin/order/updateShipmentTrackingAdd') ?>" method="POST" enctype="multipart/form-data">
+							<div class="card-body">
+								<div class="row">
+									<input type="text" name="id_so" class="form-control" hidden value="<?= $t['id_so'] ?>">
+									<input type="text" name="id_user" class="form-control" hidden value="<?= $t['id_user'] ?>">
+									<input type="text" name="shipment_id" class="form-control" hidden value="<?= $t['shipment_id'] ?>">
+									<div class="col-md-6">
+										<label for="status">Choose Status : </label>
+										<select name="status" class="form-control">
+											<option value="Request Pickup From Shipper">Request Pickup From Shipper</option>
+											<option value="Driver Menuju Lokasi Pickup">Driver Menuju Lokasi Pickup</option>
+											<option value="Driver Telah Sampai Di Lokasi Pickup">Driver Menuju Lokasi Pickup</option>
+											<option value="Shipment Telah Dipickup Dari Shipper">Shipment Telah Dipickup Dari Shipper</option>
+											<option value="Shipment Telah Tiba Di Hub Jakarta Pusat">Shipment Telah Tiba Di Hub Jakarta Pusat</option>
+											<option value="Shipment Keluar Dari Hub Jakarta Pusat">Shipment Keluar Dari Hub Jakarta Pusat</option>
+											<option value="Shipment Telah Tiba Di Hub CGK">Shipment Telah Tiba Di Hub CGK</option>
+											<option value="Shipment Keluar Dari Hub CGK">Shipment Keluar Dari Hub CGK</option>
+											<option value="Shipment Telah Tiba Di Hub Jakarta Utara">Shipment Telah Tiba Di Hub Jakarta Utara</option>
+											<option value="Shipment Keluar Dari Hub Jakarta Utara">Shipment Keluar Dari Hub Jakarta Utara</option>
+											<option value="Shipment Telah Tiba Di Hub">Shipment Telah Tiba Di Hub Tujuan</option>
+											<option value="Shipment Keluar Di Hub Tujuan">Shipment Keluar Di Hub Tujuan</option>
+											<option value="Shipment Dalam Proses Delivery">Shipment Dalam Proses Delivery</option>
+											<option value="Shipment Telah Diterima Oleh">Shipment Telah Diterima</option>
+										</select>
+
+									</div>
+									<div class="col-md-6">
+										<div class="form-group">
+											<label for="exampleInputPassword1">Note :<span style="color: red;">Soekarno Hatta or, Cengkareng, or consigne nama</span> </label>
+											<input type="text" class="form-control" name="note">
+										</div>
+
+									</div>
+									<div class="col-md-4">
+										<div class="form-group">
+											<label for="exampleInputEmail1">Date<span style="color: red;">*</span></label>
+											<input type="date" class="form-control" id="tgl_pickup" required name="date">
+										</div>
+									</div>
+									<div class="col-md-2">
+										<div class="form-group">
+											<label for="exampleInputEmail1">Time<span style="color: red;">*</span></label>
+											<input type="time" class="form-control" required name="time">
+										</div>
+									</div>
+
+									<div class="col-md-4">
+										<div class="form-group">
+											<label for="exampleInputEmail1">POD/POP</label>
+											<!-- <input type="file" class="form-control" name="ktp"> -->
+											<input type="file" class="form-control" name="ktp[]" accept="image/*" capture multiple>
+										</div>
+
+									</div>
+
+
+
+								</div>
+							</div>
+							<!-- /.card-body -->
+					</div>
+					<div class="modal-footer justify-content-between">
+						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+						<button type="submit" class="btn btn-primary">Submit</button>
+					</div>
+					</form>
+				</div>
+				<!-- /.modal-content -->
+			</div>
+			<!-- /.modal-dialog -->
+		</div>
+
+
+	<?php } ?>
+
+	<div class="modal fade" id="modal-lg-dl-luar">
 		<div class="modal-dialog modal-lg">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h4 class="modal-title">Add Status Shipment <b><?= $shipment_id ?></b> </h4>
-
+					<h4 class="modal-title">Update Status Shipment</b> </h4>
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 						<span aria-hidden="true">&times;</span>
 					</button>
 				</div>
 				<div class="modal-body">
-					<form action="<?= base_url('superadmin/order/updateShipmentTrackingAdd') ?>" method="POST" enctype="multipart/form-data">
+					<form action="<?= base_url('superadmin/order/updateShipmentTracking') ?>" method="POST" enctype="multipart/form-data">
 						<div class="card-body">
-							<div class="row">
-								<input type="text" name="id_so" class="form-control" hidden value="<?= $t['id_so'] ?>">
-								<input type="text" name="id_user" class="form-control" hidden value="<?= $t['id_user'] ?>">
-								<input type="text" name="shipment_id" class="form-control" hidden value="<?= $t['shipment_id'] ?>">
-								<div class="col-md-6">
-									<label for="status">Choose Status : </label>
-									<select name="status" class="form-control">
-										<option value="Request Pickup From Shipper">Request Pickup From Shipper</option>
-										<option value="Driver Menuju Lokasi Pickup">Driver Menuju Lokasi Pickup</option>
-										<option value="Driver Telah Sampai Di Lokasi Pickup">Driver Menuju Lokasi Pickup</option>
-										<option value="Shipment Telah Dipickup Dari Shipper">Shipment Telah Dipickup Dari Shipper</option>
-										<option value="Shipment Telah Tiba Di Hub Jakarta Pusat">Shipment Telah Tiba Di Hub Jakarta Pusat</option>
-										<option value="Shipment Keluar Dari Hub Jakarta Pusat">Shipment Keluar Dari Hub Jakarta Pusat</option>
-										<option value="Shipment Telah Tiba Di Hub CGK">Shipment Telah Tiba Di Hub CGK</option>
-										<option value="Shipment Keluar Dari Hub CGK">Shipment Keluar Dari Hub CGK</option>
-										<option value="Shipment Telah Tiba Di Hub Jakarta Utara">Shipment Telah Tiba Di Hub Jakarta Utara</option>
-										<option value="Shipment Keluar Dari Hub Jakarta Utara">Shipment Keluar Dari Hub Jakarta Utara</option>
-										<option value="Shipment Telah Tiba Di Hub">Shipment Telah Tiba Di Hub Tujuan</option>
-										<option value="Shipment Keluar Di Hub Tujuan">Shipment Keluar Di Hub Tujuan</option>
-										<option value="Shipment Dalam Proses Delivery">Shipment Dalam Proses Delivery</option>
-										<option value="Shipment Telah Diterima Oleh">Shipment Telah Diterima</option>
-									</select>
-
-								</div>
-								<div class="col-md-6">
-									<div class="form-group">
-										<label for="exampleInputPassword1">Note :<span style="color: red;">Soekarno Hatta or, Cengkareng, or consigne nama</span> </label>
-										<input type="text" class="form-control" name="note">
-									</div>
-
-								</div>
-								<div class="col-md-4">
-									<div class="form-group">
-										<label for="exampleInputEmail1">Date<span style="color: red;">*</span></label>
-										<input type="date" class="form-control" id="tgl_pickup" required name="date">
-									</div>
-								</div>
-								<div class="col-md-2">
-									<div class="form-group">
-										<label for="exampleInputEmail1">Time<span style="color: red;">*</span></label>
-										<input type="time" class="form-control" required name="time">
-									</div>
-								</div>
-
-								<div class="col-md-4">
-									<div class="form-group">
-										<label for="exampleInputEmail1">POD/POP</label>
-										<!-- <input type="file" class="form-control" name="ktp"> -->
-										<input type="file" class="form-control" name="ktp[]" accept="image/*" capture multiple>
-									</div>
-
-								</div>
-
+							<div class="row" id="content-tracking">
 
 
 							</div>
@@ -175,37 +223,37 @@
 		</div>
 		<!-- /.modal-dialog -->
 	</div>
-	<?php } ?>
 
-	<div class="modal fade" id="modal-lg-dl-luar">
-			<div class="modal-dialog modal-lg">
+	<!-- modalDeleteResi -->
+	<div class="modal fade" id="modalDeleteResi">
+		<div class="modal-dialog modal-sm">
+			<form id="formDeleteResi">
 				<div class="modal-content">
 					<div class="modal-header">
-						<h4 class="modal-title">Update Status Shipment</b> </h4>
+						<h4 class="modal-title">Delete Shipment <p id="no_resi"></p></h4>
 						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-							<span aria-hidden="true">&times;</span>
-						</button>
+							<span aria-hidden="true">&times;</span></button>
 					</div>
 					<div class="modal-body">
-						<form action="<?= base_url('superadmin/order/updateShipmentTracking') ?>" method="POST" enctype="multipart/form-data">
-							<div class="card-body">
-								<div class="row" id="content-tracking">
-									
-									
-								</div>
-							</div>
-							<!-- /.card-body -->
+
+						<div class="form-group">
+							<label for="exampleInputEmail1">reason + request by</label>
+							<input type="text" class="form-control" name="shipment_id" id="shipment_idDelete" hidden>
+							<textarea class="form-control" name="reason_delete" id="reason" rows="3" placeholder="Enter ..." required></textarea>
+						</div>
+
 					</div>
 					<div class="modal-footer justify-content-between">
 						<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-						<button type="submit" class="btn btn-primary">Submit</button>
+						<button type="submit" class="btn btn-primary">Delete</button>
+
 					</div>
-					</form>
 				</div>
-				<!-- /.modal-content -->
-			</div>
-			<!-- /.modal-dialog -->
+			</form>
+			<!-- /.modal-content -->
 		</div>
+		<!-- /.modal-dialog -->
+	</div>
 
 
 
@@ -230,66 +278,66 @@
 
 						var time = response.time;
 
-						var content = '<input type="text" name="id_so" class="form-control" hidden value="'+response.id_so+'">'+
-									'<input type="text" name="id_tracking" class="form-control" hidden value="'+response.id_tracking+'">'+
-									'<input type="text" name="shipment_id" class="form-control" hidden value="'+response.shipment_id+'">'+
-									'<div class="col-md-6">'+
-										'<label for="status">Status</label>'+
-										'<input type="text" name="status" class="form-control" value="'+response.status+'">'+
+						var content = '<input type="text" name="id_so" class="form-control" hidden value="' + response.id_so + '">' +
+							'<input type="text" name="id_tracking" class="form-control" hidden value="' + response.id_tracking + '">' +
+							'<input type="text" name="shipment_id" class="form-control" hidden value="' + response.shipment_id + '">' +
+							'<div class="col-md-6">' +
+							'<label for="status">Status</label>' +
+							'<input type="text" name="status" class="form-control" value="' + response.status + '">' +
 
-									'</div>'+
-									'<div class="col-md-6">'+
-										'<div class="form-group">'+
-											'<label for="exampleInputPassword1">Note :<span style="color: red;">Soekarno Hatta or, Cengkareng, or consigne nama</span> </label>'+
-											'<input type="text" class="form-control" name="note" value="'+response.note+'">'+
-										'</div>'+
+							'</div>' +
+							'<div class="col-md-6">' +
+							'<div class="form-group">' +
+							'<label for="exampleInputPassword1">Note :<span style="color: red;">Soekarno Hatta or, Cengkareng, or consigne nama</span> </label>' +
+							'<input type="text" class="form-control" name="note" value="' + response.note + '">' +
+							'</div>' +
 
-									'</div>'+
-									'<div class="col-md-4">'+
-										'<div class="form-group">'+
-											'<label for="exampleInputEmail1">Date<span style="color: red;">*</span></label>'+
-											'<input type="date" class="form-control" value="'+response.created_at+'" id="tgl_pickup" required name="date">'+
-										'</div>'+
-									'</div>'+
-									'<div class="col-md-4">'+
-										'<label for="status">Flag</label>'+
-										'<input type="text" name="flag" class="form-control" value="'+response.flag+'">'+
+							'</div>' +
+							'<div class="col-md-4">' +
+							'<div class="form-group">' +
+							'<label for="exampleInputEmail1">Date<span style="color: red;">*</span></label>' +
+							'<input type="date" class="form-control" value="' + response.created_at + '" id="tgl_pickup" required name="date">' +
+							'</div>' +
+							'</div>' +
+							'<div class="col-md-4">' +
+							'<label for="status">Flag</label>' +
+							'<input type="text" name="flag" class="form-control" value="' + response.flag + '">' +
 
-									'</div>'+
-									'<div class="col-md-4">'+
-										'<label for="status">Excecution Status</label>'+
+							'</div>' +
+							'<div class="col-md-4">' +
+							'<label for="status">Excecution Status</label>' +
 
-										'<select name="status_eksekusi" class="form-control">'+
-											'<option value="0"';
+							'<select name="status_eksekusi" class="form-control">' +
+							'<option value="0"';
 
-											if (response.status_eksekusi == 0) {
-												content += 'selected';
-											}
-											content += '>Pending</option>'+
-											'<option value="1"';
-											if (response.status_eksekusi == 1) {
-												content += 'selected';
-											}
-											content += '>Success</option>'+
-										'</select>'+
+						if (response.status_eksekusi == 0) {
+							content += 'selected';
+						}
+						content += '>Pending</option>' +
+							'<option value="1"';
+						if (response.status_eksekusi == 1) {
+							content += 'selected';
+						}
+						content += '>Success</option>' +
+							'</select>' +
 
-									'</div>'+
-									'<div class="col-md-4">'+
-										'<div class="form-group">'+
-											'<label for="exampleInputEmail1">Time<span style="color: red;">*</span></label>'+
-											
-											'<input type="time" class="form-control" required name="time" value="'+response.time+'">'+
-										'</div>'+
-									'</div>'+
+							'</div>' +
+							'<div class="col-md-4">' +
+							'<div class="form-group">' +
+							'<label for="exampleInputEmail1">Time<span style="color: red;">*</span></label>' +
 
-									'<div class="col-md-4">'+
-										'<div class="form-group">'+
-											'<label for="exampleInputEmail1">POD/POP</label>'+
-											
-											'<input type="file" class="form-control" name="ktp[]" accept="image/*" capture multiple>'+
-										'</div>'+
+							'<input type="time" class="form-control" required name="time" value="' + response.time + '">' +
+							'</div>' +
+							'</div>' +
 
-									'</div>';
+							'<div class="col-md-4">' +
+							'<div class="form-group">' +
+							'<label for="exampleInputEmail1">POD/POP</label>' +
+
+							'<input type="file" class="form-control" name="ktp[]" accept="image/*" capture multiple>' +
+							'</div>' +
+
+							'</div>';
 						$('#content-tracking').html(content);
 						$('#selectField').select2();
 
@@ -300,4 +348,97 @@
 				});
 			});
 		})
+	</script>
+
+	<script>
+		// .modalDeleteResi
+		$(document).ready(function() {
+			$('.modalDeleteResi').click(function() {
+				var shipment_id = $(this).data('shipment_id'); // Mendapatkan ID dari atribut data-id tombol yang diklik
+				$('#shipment_idDelete').val(shipment_id);
+				$('#no_resi').text(shipment_id);
+			});
+		});
+		// formDeleteResi
+		$(document).ready(function() {
+			$('#formDeleteResi').submit(function(e) {
+				e.preventDefault(); // Mencegah pengiriman form default
+
+				var formData = $(this).serialize(); // Mengambil data form
+				// swal confirm 
+				Swal.fire({
+					title: "Are you sure?",
+					text: "You won't be able to recover this shipment!",
+					icon: "warning",
+					showCancelButton: true,
+					confirmButtonColor: '#d33',
+					confirmButtonText: 'Yes, delete it!'
+				}).then((result) => {
+					if (result.isConfirmed) {
+						// swal loading 
+						Swal.fire({
+							title: "Deleting...",
+							text: "Please wait.",
+							icon: "info",
+							showConfirmButton: false,
+							allowOutsideClick: false,
+							allowEscapeKey: false,
+							didOpen: () => {
+								Swal.showLoading();
+							}
+						});
+						$.ajax({
+							url: '<?php echo base_url("superadmin/order/deleteResi"); ?>',
+							type: 'POST',
+							data: formData,
+							success: function(response) {
+								response = JSON.parse(response);
+								if (response.status === 'success') {
+									Swal.fire({
+										title: "Success",
+										text: "Shipment deleted successfully.",
+										icon: "success",
+										showConfirmButton: true
+									}).then((result) => {
+										if (result.isConfirmed) {
+											// swal loading 
+											Swal.fire({
+												title: "Redirecting...",
+												text: "Please wait.",
+												icon: "info",
+												showConfirmButton: false,
+												allowOutsideClick: false,
+												allowEscapeKey: false,
+												didOpen: () => {
+													Swal.showLoading();
+												}
+											});
+											// go to superadmin/order/tracking/shipment_id
+											window.location.href = "<?php echo base_url('superadmin/order/tracking/' . $shipment_id); ?>";
+										}
+									});
+								} else {
+									Swal.fire({
+										title: "Error",
+										text: response.message,
+										icon: "error",
+										timer: 2000,
+										showConfirmButton: false
+									});
+								}
+								// swal confirm success
+							},
+							error: function() {
+								Swal.fire({
+									title: "Error",
+									text: "Error deleting shipment.",
+									icon: "error"
+								});
+							}
+						});
+					}
+				});
+
+			});
+		});
 	</script>

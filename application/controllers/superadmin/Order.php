@@ -259,6 +259,47 @@ class Order extends CI_Controller
         }
     }
 
+    public function deleteResi()
+    {
+        $this->db->trans_start();
+        try {
+            $shipment_id = $this->input->post('shipment_id');
+
+            $data = [
+                'deleted' => 1,
+                'reason_delete' => $this->input->post('reason_delete'),
+                'status_so' => 0,
+            ];
+            $delete = $this->db->update('tbl_shp_order', $data, ['shipment_id' => $shipment_id]);
+            if ($delete) {
+               $response = [
+                'status' => 'success',
+                'message' => 'Resi berhasil dihapus',
+               ];
+            } else{
+                throw new Exception('Gagal menghapus resi');
+            }
+            $this->db->trans_complete();
+
+            if ($this->db->trans_status() === FALSE) {
+                throw new Exception('Gagal menghapus resi');
+            } else{
+              $response = [
+                'status' => 'success',
+                'message' => 'Resi berhasil dihapus',
+               ];
+            }
+
+        } catch (Exception $e) {
+           $this->db->trans_rollback();
+              $response = [
+                 'status' => 'error',
+                 'message' => $e->getMessage(),
+                ];
+        }
+        echo json_encode($response);
+    }
+
 
     function view_data_query()
     {
@@ -310,7 +351,7 @@ class Order extends CI_Controller
             $shipment_id = $this->input->post('shipment_id');
             if ($shipment_id != null) {
                 $data['tracking'] = $this->db->get_where('tbl_tracking_real', ['shipment_id' => $shipment_id])->result_array();
-                $data['shipment'] = $this->db->query("SELECT id_user,shipper,tree_shipper,consigne,tree_consignee FROM tbl_shp_order WHERE shipment_id = $shipment_id ")->row_array();
+                $data['shipment'] = $this->db->query("SELECT id_user,shipper,tree_shipper,consigne,tree_consignee,deleted,reason_delete FROM tbl_shp_order WHERE shipment_id = $shipment_id ")->row_array();
             } else{
 
                 $data['tracking'] = null;
@@ -318,7 +359,7 @@ class Order extends CI_Controller
             }
         } else{
             $data['tracking'] = $this->db->get_where('tbl_tracking_real', ['shipment_id' => $shipment_id])->result_array();
-            $data['shipment'] = $this->db->query("SELECT id_user,shipper,tree_shipper,consigne,tree_consignee FROM tbl_shp_order WHERE shipment_id = $shipment_id ")->row_array();
+            $data['shipment'] = $this->db->query("SELECT id_user,shipper,tree_shipper,consigne,tree_consignee,deleted,reason_delete FROM tbl_shp_order WHERE shipment_id = $shipment_id ")->row_array();
         }
         $data['shipment_id'] = $shipment_id;
 
