@@ -395,11 +395,12 @@ class Order extends CI_Controller
 
             // Mark shipper jika ada
             $mark = !empty($row["mark_shipper"]) ? ' (' . $row["mark_shipper"] . ')' : '';
+            $commodity = !empty($row["pu_commodity"]) ?   $row["pu_commodity"]  :  $row["commodity"] ;
 
             $dataRows[] = [
                 $no++, $row['tgl_pickup'], $shipment_id, $no_do, $no_so, $row['no_stp'],
                 $row['shipper'] . $mark, $row['consigne'], $row['tree_consignee'],
-                $row['service_name'], $row['pu_commodity'], $row['koli'], $row['berat_js'],
+                $row['service_name'], $commodity, $row['koli'], $row['berat_js'],
                 $row['berat_msr'], $row['nama_user'], $row['no_flight'], $row['no_smu'],
                 $row['tgl_diterima'], $tracking_status, '', $leadtime, $pod, '', '', '', '', '', '', '', $tracking_update
             ];
