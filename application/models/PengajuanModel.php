@@ -311,10 +311,12 @@ class PengajuanModel extends CI_Model
                        a.pu_commodity, a.koli, a.berat_js, a.berat_msr, 
                        a.no_flight, a.no_smu, a.tgl_diterima, a.status_pod, 
                        a.mark_shipper, a.update_at, 
-                       b.nama_user, c.service_name, c.prefix,a.note_cs,a.no_so');
+                       b.nama_user, c.service_name, c.prefix,a.note_cs,a.no_so,d.commodity');
         $this->db->from('tbl_shp_order a');
         $this->db->join('tb_user b', 'a.id_user = b.id_user', 'left');
         $this->db->join('tb_service_type c', 'a.service_type = c.code', 'left');
+        // join tbl_so 
+        $this->db->join('tbl_so d', 'a.id_so = d.id_so', 'left');
         $this->db->where([
             'YEAR(a.tgl_pickup)' => $tahun,
             'MONTH(a.tgl_pickup)' => $bulan,
