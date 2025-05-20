@@ -607,44 +607,43 @@ class Order extends CI_Controller
                             'is_incoming' => $so['is_incoming'],
 
                         );
-                       
+
                         // var_dump($get_last_order);
                         // die;
                         // kalo shipment id nya null, maka update tbl nya
-                       
-                            // kalo shipment id nya ada, maka insert tbl nya 
-                            $insert =  $this->db->insert('tbl_shp_order', $data);
-                            if ($insert) {
-                                $this->barcode($shipment_id);
-                                $this->qrcode($shipment_id);
-                                $get_tracking = $this->db->limit(4)->order_by('id_tracking', 'ASC')->get_where('tbl_tracking_real', ['id_so' => $this->input->post('id_so')])->result_array();
-                                foreach ($get_tracking as $track) {
-                                    $data = array(
-                                        'shipment_id' => $shipment_id,
-                                        'status' => $track['status'],
-                                        'id_so' => $this->input->post('id_so'),
-                                        'created_at' => $track['created_at'],
-                                        'note' => $track['note'],
-                                        'bukti' => $track['bukti'],
-                                        'id_user' => $track['id_user'],
-                                        'update_at' => $track['update_at'],
-                                        'pic_task' => $track['pic_task'],
-                                        'time' => $track['time'],
-                                        'flag' => $track['flag'],
-                                        'status_eksekusi' => $track['status_eksekusi'],
-                                    );
-                                    $this->db->insert('tbl_tracking_real', $data);
-                                }
 
+                        // kalo shipment id nya ada, maka insert tbl nya 
+                        $insert =  $this->db->insert('tbl_shp_order', $data);
+                        if ($insert) {
+                            $this->barcode($shipment_id);
+                            $this->qrcode($shipment_id);
+                            $get_tracking = $this->db->limit(4)->order_by('id_tracking', 'ASC')->get_where('tbl_tracking_real', ['id_so' => $this->input->post('id_so')])->result_array();
+                            foreach ($get_tracking as $track) {
                                 $data = array(
-                                    'status' => 2,
-                                    'deadline_sales_so' => $deadline_sales
+                                    'shipment_id' => $shipment_id,
+                                    'status' => $track['status'],
+                                    'id_so' => $this->input->post('id_so'),
+                                    'created_at' => $track['created_at'],
+                                    'note' => $track['note'],
+                                    'bukti' => $track['bukti'],
+                                    'id_user' => $track['id_user'],
+                                    'update_at' => $track['update_at'],
+                                    'pic_task' => $track['pic_task'],
+                                    'time' => $track['time'],
+                                    'flag' => $track['flag'],
+                                    'status_eksekusi' => $track['status_eksekusi'],
                                 );
-                                $this->db->update('tbl_so', $data, ['id_so' => $this->input->post('id_so')]);
-                            } else {
-                                throw new Exception('Failed Insert to tbl shp order');
+                                $this->db->insert('tbl_tracking_real', $data);
                             }
-                        
+
+                            $data = array(
+                                'status' => 2,
+                                'deadline_sales_so' => $deadline_sales
+                            );
+                            $this->db->update('tbl_so', $data, ['id_so' => $this->input->post('id_so')]);
+                        } else {
+                            throw new Exception('Failed Insert to tbl shp order');
+                        }
                     }
                 }
                 $this->db->trans_complete();
@@ -1550,22 +1549,89 @@ class Order extends CI_Controller
             }
         }
     }
+    // public function printAll($id)
+    // {
+    //     $mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => [74, 105]]);
+
+    //     $where = array('id_so' => $id);
+    //     $this->db->select('a.berat_js,a.shipment_id,a.id_so,a.shipper,a.tree_shipper,a.tree_consignee,a.consigne,a.destination,a.city_consigne,a.state_consigne,a.city_shipper,a.koli,a.is_weight_print,a.state_shipper,a.signature,a.created_at,a.sender,a.tgl_pickup, b.service_name, b.prefix, COALESCE(GROUP_CONCAT(c.no_do), "") AS no_do');
+    //     $this->db->from('tbl_shp_order a');
+    //     $this->db->join('tb_service_type b', 'a.service_type=b.code');
+    //     $this->db->join('tbl_no_do c', 'a.shipment_id= c.shipment_id', 'left');
+    //     $this->db->where('a.id_so', $id);
+    //     $this->db->where('a.deleted', 0);
+    //     $this->db->group_by('a.shipment_id');
+    //     $data['orders'] = $this->db->get()->result_array();
+    //     $data = $this->load->view('shipper/v_cetak_all', $data, TRUE);
+    //     $mpdf->WriteHTML($data);
+    //     $mpdf->Output();
+    // }
+
     public function printAll($id)
     {
-        $mpdf = new \Mpdf\Mpdf(['mode' => 'utf-8', 'format' => [74, 105]]);
+        // Set memory limit to handle PDF generation
+        ini_set('memory_limit', '256M');
 
-        $where = array('id_so' => $id);
-        $this->db->select('a.berat_js,a.shipment_id,a.id_so,a.shipper,a.tree_shipper,a.tree_consignee,a.consigne,a.destination,a.city_consigne,a.state_consigne,a.city_shipper,a.koli,a.is_weight_print,a.state_shipper,a.signature,a.created_at,a.sender,a.tgl_pickup, b.service_name, b.prefix, COALESCE(GROUP_CONCAT(c.no_do), "") AS no_do');
+        // Configure mPDF with optimized settings
+        $mpdf = new \Mpdf\Mpdf([
+            'mode' => 'utf-8',
+            'format' => [74, 105],
+            'margin_top' => 15,
+            'margin_left' => 5,
+            'margin_right' => 10,
+            'margin_bottom' => 5,
+            'tempDir' => sys_get_temp_dir(), // Use system temp directory
+        ]);
+
+        // Move query to model for better organization
+        $data['orders'] = $this->getShipmentData($id);
+
+        // Get type information once instead of in the view
+        $data['is_type_1'] = $this->isType1($id);
+
+        // Render view with data and pass to PDF
+        $viewOutput = $this->load->view('shipper/v_cetak_all', $data, TRUE);
+        $mpdf->WriteHTML($viewOutput);
+        $mpdf->Output();
+    }
+
+    /**
+     * Get shipment data with optimized query
+     */
+    private function getShipmentData($id)
+    {
+        $this->db->select('a.berat_js, a.shipment_id, a.id_so, a.shipper, 
+                      a.tree_shipper, a.tree_consignee, a.consigne, a.destination, 
+                      a.city_consigne, a.state_consigne, a.city_shipper, a.koli, 
+                      a.is_weight_print, a.state_shipper, a.signature, a.created_at, 
+                      a.sender, a.tgl_pickup, b.service_name, b.prefix, 
+                      COALESCE(GROUP_CONCAT(c.no_do), "") AS no_do');
         $this->db->from('tbl_shp_order a');
         $this->db->join('tb_service_type b', 'a.service_type=b.code');
         $this->db->join('tbl_no_do c', 'a.shipment_id= c.shipment_id', 'left');
         $this->db->where('a.id_so', $id);
         $this->db->where('a.deleted', 0);
         $this->db->group_by('a.shipment_id');
-        $data['orders'] = $this->db->get()->result_array();
-        $data = $this->load->view('shipper/v_cetak_all', $data, TRUE);
-        $mpdf->WriteHTML($data);
-        $mpdf->Output();
+
+        // Add index hints if your database supports it
+        // $this->db->_protect_identifiers = false;
+        // $this->db->from('tbl_shp_order a USE INDEX (idx_id_so)');
+        // $this->db->_protect_identifiers = true;
+
+        return $this->db->get()->result_array();
+    }
+
+    /**
+     * Check if order is type 1 for margin settings
+     */
+    private function isType1($id)
+    {
+        $query = $this->db->select('type')
+            ->from('tbl_so')
+            ->where('id_so', $id)
+            ->get();
+        $result = $query->row_array();
+        return isset($result['type']) && $result['type'] == 1;
     }
     public function barcode($id)
     {
@@ -1592,13 +1658,13 @@ class Order extends CI_Controller
         $this->ciqrcode->generate($params);
     }
 
-    public function generate_qrcode($id) {
+    public function generate_qrcode($id)
+    {
         $this->load->library('ciqrcode');
         header('Content-Type: image/png');
         $params['data'] = $id;
         $params['level'] = 'H';
         $params['size'] = 4;
-    
     }
     public function downloadSpecial($id_so)
     {
