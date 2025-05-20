@@ -698,6 +698,8 @@
 				"ajax": {
 					"url": "<?= base_url('cs/order/view_data_query'); ?>", // URL file untuk proses select datanya
 					"type": "POST"
+					// send data string 
+					
 				},
 				"deferRender": true,
 				"aLengthMenu": [
