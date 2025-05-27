@@ -1,16 +1,7 @@
 	<?php
 
 
-	$dataPickupSo = $this->db->query('SELECT pickup_at,tgl_pickup,time FROM tbl_so WHERE id_so = "' . $p['id_so'] . '"')->row_array();
-	if ($dataPickupSo['pickup_at'] == NULL) {
-		$getTanggalPickup['created_at'] = date('Y-m-d H:i:s', strtotime($dataPickupSo['tgl_pickup'] . ' ' . $dataPickupSo['time']));
-		$WaktuPickup = date('H:i:s', strtotime($dataPickupSo['time']));
-	} else {
-		$getTanggalPickup['created_at'] = $getTanggalPickup['pickup_at'];
-		$WaktuPickup = date('H:i:s', strtotime($dataPickupSo['pickup_at']));
-	}
-	
-	
+
 
 
 	?>
@@ -26,6 +17,9 @@
 								<h3 class="card-label font-weight-bolder text-dark">Detail Request Pickup </h3>
 								<!-- <span class="text-muted font-weight-bold font-size-sm mt-1">Shipment ID :<b> <?= $p['shipment_id'] ?></b></span>
 								<span class="text-muted font-weight-bold font-size-sm mt-1">Order ID :<b> <?= $p['order_id'] ?></b></span> -->
+								<div id="time-now">
+
+								</div>
 							</div>
 							<div class="card-toolbar">
 								<a onclick='$("#modalLoading").modal("show");' href="<?= base_url('sales/salesOrder') ?>" class="btn mr-2 text-light" style="background-color: #9c223b;">
@@ -297,50 +291,43 @@
 													<i class="fas fa-download text-light"> </i>
 													Export SO
 												</a>
-												<?php if ($p['lock'] == 0) {
-													if (deadline($p['deadline_sales_so'])) {
-												?>
-														<a href="#" class="btn mr-2 text-light" data-toggle="modal" data-target="#modal-import" style="background-color: #9c223b;">
+
+											<?php if ($this->session->userdata('id_user') == $p['id_sales']) {
+													// jika blm submit so
+													if ($p['submitso_at'] == NULL) {
+														if ($p['deadline_sales_so'] >= date('Y-m-d')) {
+															echo '<a href="#" class="btn mr-2 text-light" data-toggle="modal" data-target="#modal-import" style="background-color: #9c223b;">
 															<i class="fas fa-upload text-light"> </i>
 															Import SO
-														</a>
-														<?php } else {
-														if ($request_aktivasi) {
-															if ($request_aktivasi['status'] == 0) {
-																echo 'Wait Approve';
-															} else {
-																echo '-';
-															}
+														</a>';
 														} else {
-															$date1 = new DateTime(date('Y-m-d'));
-															$date2 = new DateTime(date('Y-m-d', strtotime($getTanggalPickup['created_at'])));
-															$interval = date_diff($date2, $date1);
-															// jika waktu pickup diatas jam 9 dan dibawah jam 12 
-															if ($WaktuPickup >= date('H:i:s', strtotime('21:00:00')) && $WaktuPickup <= date('H:i:s', strtotime('23:59:59'))) {
-																// jika tanggal sekarang dan tanggal pickup beda sehari
-																if ($interval->format('%a') == 1) {
-																	// jika jam sekarang diatas jam 12 malam dan dibawah jam 9 pagi
-																	if (date('H:i:s') >= date('H:i:s', strtotime('00:00:01')) && date('H:i:s') <= date('H:i:s', strtotime('09:00:00'))) {
-														?>
-																		<a href="#" class="btn mr-2 text-light" data-toggle="modal" data-target="#modal-import" style="background-color: #9c223b;">
-																			<i class="fas fa-upload text-light"> </i>
-																			Import SO
-																		</a>
-												<?php echo 'Karna pickup diatas jam 9 Malam, maka submit so bisa dilakukan sampai jam 9 pagi ';
-																	} else {
-																		echo  "SO Late Submit (Diatas Jam 9 Pagi)";
-																	}
+
+															if ($request_aktivasi) {
+																if ($request_aktivasi['status'] == 0) {
+																	echo 'Wait Approve';
 																} else {
-																	echo  "SO Late Submit";
 																}
 															} else {
-																echo  "SO Late Submit";
+																// cek apakah hari ini dengan hari deadline  beda sehari 
+																if (strtotime($p['deadline_sales_so']) - strtotime(date('Y-m-d')) == 86400) {
+																	// cek apakah pickup diatas jam 9 malam dan dibawah jam 12 malam	
+																	if (date('H:i:s', strtotime($p['pickup_at'])) >= date('H:i:s', strtotime('21:00:00')) && date('H:i:s', strtotime($p['pickup_at'])) <= date('H:i:s', strtotime('23:59:59'))) {
+
+																		// cek sekarang jam berapa, jika sudah dibawah jam 09 pagi 
+																		if (date('H:i:s') <= date('H:i:s', strtotime('09:00:00'))) {
+																		} else {
+																			echo "<h4>SO Late Submit (Diatas jam 9 pagi)</h4><br>";
+																		}
+																	}
+																}
 															}
 														}
 													}
-												} ?>
+												}
+											} ?>
 
-											<?php	} ?>
+
+
 											<p><?= $this->session->flashdata('message'); ?></p>
 											<thead>
 												<tr>
@@ -365,7 +352,7 @@
 											</thead>
 											<tbody>
 												<?php foreach ($shipment2 as $shp) {
-													
+
 												?>
 													<tr>
 														<td><a href="<?= base_url('sales/salesOrder/print/' . $shp['shipment_id']) ?>"> <?= $shp['shipment_id'] ?></a><br><?php if ($shp['service_name'] == 'Charter Service') {
@@ -375,7 +362,7 @@
 																																											} ?> </td>
 														<td><?= $shp['shipper'] ?></td>
 														<td><?= $shp['consigne'] ?>/ <br> <?= ucwords($shp['destination']) . '. ' . '<br>'  . '<b>' . ucwords(strtolower($shp['city_consigne'])) . '</b>' . ', ' . '<b>' . ucwords(strtolower($shp['state_consigne'])) . '</b>'  ?></td>
-														
+
 														<td>
 															<input type="text" name="freight[]" value="<?= $shp['freight_kg'] ?>" required class="form-control" <?php if ($shp['status_so'] >= 1) {
 																																								?> disabled <?php } ?>>
@@ -467,7 +454,7 @@
 																<?php  } else {
 																if ($get_request_revisi) {
 																	if ($get_request_revisi['status'] == 1) {
-																		
+
 																		if ($cek_so_baru) {
 																?>
 																			<a href="<?= base_url('sales/salesOrder/tracking/' . $shp['id'] . '/' . $shp['id_so']) ?>" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Detail</a>
@@ -508,119 +495,134 @@
 											</tbody>
 										</table>
 
+										<!-- Action buttons container with improved styling -->
+										<div class="action-buttons-container mt-3 mb-3">
+											<!-- Atasan approval section -->
+											<?php if ($this->session->userdata('id_user') == $p['id_atasan_sales']) : ?>
+												<?php if ($p['status_approve'] == 0) : ?>
 
+													<?php if ($p['submitso_at'] != NULL) : ?>
 
-										<?php
-										$id_atasan = $this->session->userdata('id_atasan');
-										// kalo dia atasan sales
-										if ($id_atasan == 0 || $id_atasan == NULL) {
-											if ($shipment2) {
-												if ($p['status_approve'] == 0) {
-										?>
-													<a href="<?= base_url('sales/salesOrder/approve/' . $p['id_so']) ?>" onclick="return confirm('Are You Sure ?')" class="btn btn-sm mb-1 text-light" style="background-color: #9c223b;">Approve</a>
-													<?php	} else {
-													if ($p['lock'] == 0) {
-													?>
-														<?php
-														if (deadline($p['deadline_sales_so'])) {
-															echo "<button type='submit' class='btn btn-success' onclick='return confirm('Are you sure ?')'>Submit SO</button>";
-														} else {
-															if ($request_aktivasi) {
-																if ($request_aktivasi['status'] == 0) {
-																	echo 'Wait Approve';
-																} else {
-																	echo '';
-																}
-															} else {
-																$date1 = new DateTime(date('Y-m-d'));
-																$date2 = new DateTime(date('Y-m-d', strtotime($getTanggalPickup['created_at'])));
-																$interval = date_diff($date2, $date1);
-																// jika waktu pickup diatas jam 9 dan dibawah jam 12 
-																if ($WaktuPickup >= date('H:i:s', strtotime('21:00:00')) && $WaktuPickup <= date('H:i:s', strtotime('23:59:59'))) {
-																	// jika tanggal sekarang dan tanggal pickup beda sehari
-																	if ($interval->format('%a') == 1) {
-																		// jika jam sekarang diatas jam 12 malam dan dibawah jam 9 pagi
-																		if (date('H:i:s') >= date('H:i:s', strtotime('00:00:01')) && date('H:i:s') <= date('H:i:s', strtotime('09:00:00'))) {
-																			echo 'Karna pickup diatas jam 9 Malam, maka submit so bisa dilakukan sampai jam 9 pagi <br>';
-																			echo "<button type='submit' class='btn btn-success' onclick='return confirm('Are you sure ?')'>Submit SO</button>";
-																		} else {
-																			echo  "<h4>SO Late Submit (Diatas jam 9 pagi)</h4>  <br> <a href=" . base_url('#') . " 'onclick='return confirm('Are You Sure ?')' class='btn btn-sm mb-1 text-light' data-toggle='modal' data-target='#modal-request' style='background-color: #9c223b;'>Request Aktivasi</a>";
-																		}
-																	} else {
-																		echo  "<h4>SO Late Submit (Lebih dari sehari) </h4> <br> <a href=" . base_url('#') . " 'onclick='return confirm('Are You Sure ?')' class='btn btn-sm mb-1 text-light' data-toggle='modal' data-target='#modal-request' style='background-color: #9c223b;'>Request Aktivasi</a>";
-																	}
-																} else {
-																	echo  "<h4>SO Late Submit </h4> <br> <a href=" . base_url('#') . " 'onclick='return confirm('Are You Sure ?')' class='btn btn-sm mb-1 text-light' data-toggle='modal' data-target='#modal-request' style='background-color: #9c223b;'>Request Aktivasi</a>";
-																}
-															}
-														}
-														?>
-													<?php	} else {
-														echo "<button type='submit' class='btn btn-success' onclick='return confirm('Are you sure ?')'>Submit SO</button>  SO Submited";
+														<button onclick="approveOrder('<?= $p['id_so'] ?>')" class="btn btn-lg btn-primary pulse-button" style="font-weight: bold; box-shadow: 0 4px 8px rgba(0,0,0,0.2); border-radius: 6px; padding: 12px 24px; transition: all 0.3s;">
+															<i class="fas fa-check-circle mr-2"></i> Approve Sales Order
+														</button>
+													<?php else : ?>
+														<div class="alert alert-warning" style="border-left: 5px solid #ffc107; font-weight: 500;">
+															<?php $yangpunyaso = $this->db->query('SELECT nama_user FROM tb_user WHERE id_user = ? ', $p['id_sales'])->row_array(); ?>
+															<i class="fas fa-exclamation-triangle mr-2"></i> Sales Order has not been submitted yet by <?= $yangpunyaso['nama_user'] ?>.
+														</div>
+													<?php endif; ?>
+												<?php endif; ?>
+											<?php endif; ?>
+
+											<!-- Sales user actions section -->
+											<?php if ($this->session->userdata('id_user') == $p['id_sales']) : ?>
+												<?php if ($p['submitso_at'] == NULL) : ?>
+													<?php if ($p['deadline_sales_so'] >= date('Y-m-d')) : ?>
+														<!-- Active submission period -->
+														<button type="submit" class="btn btn-lg btn-success pulse-button" style="font-weight: bold; box-shadow: 0 4px 8px rgba(0,0,0,0.2); border-radius: 6px; padding: 12px 24px; transition: all 0.3s;" onclick="return confirm('Are you sure you want to submit this Sales Order?')">
+															<i class="fas fa-paper-plane mr-2"></i> Submit Sales Order
+														</button>
+													<?php else : ?>
+														<!-- Past deadline section -->
+														<?php if ($request_aktivasi) : ?>
+															<?php if ($request_aktivasi['status'] == 0) : ?>
+																<div class="alert alert-warning" style="border-left: 5px solid #ffc107; font-weight: 500;">
+																	<i class="fas fa-hourglass-half"></i> Request activation is pending approval.
+																</div>
+															<?php else : ?>
+																<i class="fas fa-exclamation-triangle mr-2"></i> <strong>Activation request has been submitted but not yet processed</strong>
+																<button data-toggle="modal" data-target="#modal-request" class="btn btn-lg btn-danger" style="font-weight: bold; box-shadow: 0 4px 8px rgba(0,0,0,0.2); border-radius: 6px; padding: 12px 24px; transition: all 0.3s;">
+																	<i class="fas fa-unlock-alt mr-2"></i> Request Activation
+																</button>
+															<?php endif; ?>
+														<?php else : ?>
+															<!-- Special case for late night pickups -->
+															<?php if (strtotime($p['deadline_sales_so']) - strtotime(date('Y-m-d')) <= 86400) : ?>
+																<?php if (
+																	date('H:i:s', strtotime($p['pickup_at'])) >= date('H:i:s', strtotime('21:00:00')) &&
+																	date('H:i:s', strtotime($p['pickup_at'])) <= date('H:i:s', strtotime('23:59:59'))
+																) : ?>
+
+																	<div class="alert alert-info" style="border-left: 5px solid #17a2b8; font-weight: 500;">
+																		<i class="fas fa-clock mr-2"></i> <strong>Note:</strong> For pickups after 9 PM, SO submission is extended until 9 AM the next day.
+																	</div>
+
+																	<?php if (date('H:i:s') <= date('H:i:s', strtotime('09:00:00'))) : ?>
+																		<button type="submit" class="btn btn-lg btn-success pulse-button" style="font-weight: bold; box-shadow: 0 4px 8px rgba(0,0,0,0.2); border-radius: 6px; padding: 12px 24px; transition: all 0.3s;" onclick="return confirm('Are you sure you want to submit this Sales Order?')">
+																			<i class="fas fa-paper-plane mr-2"></i> Submit Sales Order
+																		</button>
+																	<?php else : ?>
+																		<div class="alert alert-danger" style="border-left: 5px solid #dc3545; font-weight: 500;">
+																			<i class="fas fa-exclamation-triangle mr-2"></i> <strong>SO Late Submission</strong> (After 9 AM)
+																		</div>
+																		<button type="button" data-toggle="modal" data-target="#modal-request" class="btn btn-lg btn-danger" style="font-weight: bold; box-shadow: 0 4px 8px rgba(0,0,0,0.2); border-radius: 6px; padding: 12px 24px; transition: all 0.3s;">
+																			<i class="fas fa-unlock-alt mr-2"></i> Request Activation
+																		</button>
+																	<?php endif; ?>
+																<?php else : ?>
+																	<div class="alert alert-danger" style="border-left: 5px solid #dc3545; font-weight: 500;">
+																		<i class="fas fa-exclamation-triangle mr-2"></i> <strong>SO Late Submission</strong> (Shipper pickup at <?= date('d-m-y H:i:s', strtotime($p['pickup_at'])) ?>)
+																	</div>
+																	<button type="button" data-toggle="modal" data-target="#modal-request" class="btn btn-lg btn-danger" style="font-weight: bold; box-shadow: 0 4px 8px rgba(0,0,0,0.2); border-radius: 6px; padding: 12px 24px; transition: all 0.3s;">
+																		<i class="fas fa-unlock-alt mr-2"></i> Request Activation
+																	</button>
+																<?php endif; ?>
+															<?php else : ?>
+																<div class="alert alert-danger" style="border-left: 5px solid #dc3545; font-weight: 500;">
+																	<i class="fas fa-exclamation-triangle mr-2"></i> <strong>SO Late Submission</strong> (After Deadline)
+																</div>
+																<button type="button" data-toggle="modal" data-target="#modal-request" class="btn btn-lg btn-danger" style="font-weight: bold; box-shadow: 0 4px 8px rgba(0,0,0,0.2); border-radius: 6px; padding: 12px 24px; transition: all 0.3s;">
+																	<i class="fas fa-unlock-alt mr-2"></i> Request Activation
+																</button>
+															<?php endif; ?>
+														<?php endif; ?>
+													<?php endif; ?>
+												<?php else : ?>
+													<!-- If SO has already been submitted -->
+													<div class="alert alert-info" style="border-left: 5px solid #17a2b8; font-weight: 500;">
+														<i class="fas fa-info-circle mr-2"></i> Sales Order has already been submitted. Press the submit button only if the shipper has added additional shipments after your initial submission.
+													</div>
+													<button type="submit" class="btn btn-lg btn-success pulse-button" style="font-weight: bold; box-shadow: 0 4px 8px rgba(0,0,0,0.2); border-radius: 6px; padding: 12px 24px; transition: all 0.3s;" onclick="return confirm('Are you sure you want to submit this Sales Order?')">
+														<i class="fas fa-paper-plane mr-2"></i> Submit Sales Order
+													</button>
+												<?php endif; ?>
+
+											<?php endif; ?>
+										</div>
+
+										<!-- Add this script to handle the approval confirmation -->
+										<script>
+											// Add pulse animation to important buttons
+											document.addEventListener('DOMContentLoaded', function() {
+												// Add CSS for pulse animation
+												var style = document.createElement('style');
+												style.innerHTML = `
+												.pulse-button {
+													box-shadow: 0 0 0 0 rgba(156, 34, 59, 0.7);
+													animation: pulse 2s infinite;
+												}
+												
+												@keyframes pulse {
+													0% {
+														transform: scale(0.95);
+														box-shadow: 0 0 0 0 rgba(156, 34, 59, 0.7);
 													}
-													?>
-											<?php	}
-											} else {
-												echo "-";
-											} ?>
-										<?php	} else {
-										?>
-											<?php if ($shipment2) {
-											?>
-												<!-- kalo dia belum di lock -->
-												<?php if ($p['lock'] == 0) {
-
-												?>
-													<?php
-													if (deadline($p['deadline_sales_so'])) {
-														echo "<button type='submit' class='btn btn-success' onclick='return confirm('Are you sure ?')'>Submit SO</button>";
-													} else {
-														if ($request_aktivasi) {
-															if ($request_aktivasi['status'] == 0) {
-																echo 'Wait Approve';
-															} else {
-																echo '-';
-															}
-														} else {
-															$date1 = new DateTime(date('Y-m-d'));
-															$date2 = new DateTime(date('Y-m-d', strtotime($getTanggalPickup['created_at'])));
-															$interval = date_diff($date2, $date1);
-															// jika waktu pickup diatas jam 9 dan dibawah jam 12 
-															if ($WaktuPickup >= date('H:i:s', strtotime('21:00:00')) && $WaktuPickup <= date('H:i:s', strtotime('23:59:59'))) {
-																// jika tanggal sekarang dan tanggal pickup beda sehari
-																if ($interval->format('%a') == 1) {
-																	// jika jam sekarang diatas jam 12 malam dan dibawah jam 9 pagi
-																	if (date('H:i:s') >= date('H:i:s', strtotime('00:00:01')) && date('H:i:s') <= date('H:i:s', strtotime('09:00:00'))) {
-																		echo 'Karna pickup diatas jam 9 Malam, maka submit so bisa dilakukan sampai jam 9 pagi <br>';
-																		echo "<button type='submit' class='btn btn-success' onclick='return confirm('Are you sure ?')'>Submit SO</button>";
-																	} else {
-																		echo  "<h4>SO Late Submit (Diatas jam 9 pagi)</h4>  <br> <a href=" . base_url('#') . " 'onclick='return confirm('Are You Sure ?')' class='btn btn-sm mb-1 text-light' data-toggle='modal' data-target='#modal-request' style='background-color: #9c223b;'>Request Aktivasi</a>";
-																	}
-																} else {
-																	echo  "<h4>SO Late Submit (Lebih dari sehari) </h4> <br> <a href=" . base_url('#') . " 'onclick='return confirm('Are You Sure ?')' class='btn btn-sm mb-1 text-light' data-toggle='modal' data-target='#modal-request' style='background-color: #9c223b;'>Request Aktivasi</a>";
-																}
-															} else {
-																echo  "<h4>SO Late Submit </h4> <br> <a href=" . base_url('#') . " 'onclick='return confirm('Are You Sure ?')' class='btn btn-sm mb-1 text-light' data-toggle='modal' data-target='#modal-request' style='background-color: #9c223b;'>Request Aktivasi</a>";
-															}
-														}
+													
+													70% {
+														transform: scale(1);
+														box-shadow: 0 0 0 10px rgba(156, 34, 59, 0);
 													}
-
-													?>
-
-												<?php	} else {
-													echo "<button type='submit' class='btn btn-success' onclick='return confirm('Are you sure ?')'>Submit SO</button>  SO Submited";
-												?>
-
-												<?php	} ?>
-
-											<?php } else {
-												echo 'p';
-											} ?>
-										<?php
-										}
-
-										?>
-
+													
+													100% {
+														transform: scale(0.95);
+														box-shadow: 0 0 0 0 rgba(156, 34, 59, 0);
+													}
+												}
+											`;
+												document.head.appendChild(style);
+											});
+										</script>
 									</form>
 								</div>
 							</div>
@@ -649,7 +651,7 @@
 			<div class="modal-content">
 				<div class="modal-header">
 					<h4 id="resi" class="modal-title"></h4>
-					
+
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 						<span aria-hidden="true">&times;</span>
 					</button>
@@ -751,7 +753,7 @@
 			<div class="modal-content">
 				<div class="modal-header">
 					<h4 id="resiViewRevisiSo" class="modal-title">View New Sales Order with</h4>
-					
+
 					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 						<span aria-hidden="true">&times;</span>
 					</button>
@@ -973,4 +975,34 @@
 				}
 			})
 		})
+	</script>
+
+	<script>
+		// Function to display and update the current time
+		function updateClock() {
+			var now = new Date();
+			var hours = now.getHours().toString().padStart(2, '0');
+			var minutes = now.getMinutes().toString().padStart(2, '0');
+			var seconds = now.getSeconds().toString().padStart(2, '0');
+			var day = now.getDate().toString().padStart(2, '0');
+			var month = (now.getMonth() + 1).toString().padStart(2, '0');
+			var year = now.getFullYear();
+
+			// Format: DD/MM/YYYY HH:MM:SS
+			var timeString = day + '/' + month + '/' + year + ' ' + hours + ':' + minutes + ':' + seconds;
+
+			// Update the element with the current time
+			var timeNowElement = document.getElementById('time-now');
+			if (timeNowElement) {
+				timeNowElement.innerHTML = '<span class="text-muted font-weight-bold">Current Time: <b>' + timeString + '</b></span>';
+			}
+
+			// Call this function again in 1 second
+			setTimeout(updateClock, 1000);
+		}
+
+		// Start the clock when the document is ready
+		document.addEventListener('DOMContentLoaded', function() {
+			updateClock();
+		});
 	</script>
