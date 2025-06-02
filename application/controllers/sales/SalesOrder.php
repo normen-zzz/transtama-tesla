@@ -1070,17 +1070,21 @@ class SalesOrder extends CI_Controller
     }
     public function detail($id)
     {
+          $so = $this->db->get_where('tbl_so', ['id_so' => $id])->row_array();
         $data['title'] = 'Detail Sales Order';
         $detailrequest = $this->db->get_where('detailrequest_price', ['id_so' => $id]);
         if ($detailrequest) {
             $data['detailrequest'] = $detailrequest->row_array();
         }
-        $data['p'] = $this->db->get_where('tbl_so', ['id_so' => $id])->row_array();
+        $data['p'] = $so;
         $data['request_aktivasi'] = $this->db->get_where('tbl_aktivasi_so', ['id_so' => $id])->row_array();
         $data['service'] = $this->db->get('tb_service_type')->result_array();
         $data['moda'] = $this->db->get('tbl_moda')->result_array();
         $data['packing'] = $this->db->get('tbl_packing')->result_array();
         $data['shipment2'] =  $this->order->orderBySoSales($id)->result_array();
+         if ($so['pickup_by'] != NULL) {
+            $data['driver'] = $this->db->query("SELECT nama_user FROM tb_user WHERE id_user = " . $so['pickup_by'])->row_array();
+        }
         // var_dump($data['request_aktivasi']);
         // die;
 
@@ -2195,5 +2199,27 @@ class SalesOrder extends CI_Controller
         $id_airlines = $this->input->post('id_airlines');
         $data = $this->db->query("SELECT a.id_city_ptp,b.name FROM sell_ptp a JOIN city_ptp b ON a.id_city_ptp=b.id_city_ptp WHERE a.id_airlines='$id_airlines' AND a.is_deleted = 0 GROUP BY a.id_city_ptp ")->result_array();
         echo json_encode($data);
+    } // getListVehicle
+    public function getListVehicle()
+    {
+
+        $listVehicle = $this->order->getListVehicle();
+        echo $listVehicle;
     }
+
+    public function getLocationVehicle()
+    {
+        $device_id = $this->input->post('device_id');
+        $location = $this->order->getLocationVehicle($device_id);
+        echo $location;
+    }
+
+    public function getLocation()
+    {
+        $data = $this->order->getCoordinateLocation('pt transtama logistics express jalan penjernihan 2 jakarta pusat, jakarta');
+        var_dump($data);
+        
+    }
+
+
 }
