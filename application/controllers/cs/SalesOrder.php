@@ -1315,7 +1315,7 @@ class SalesOrder extends CI_Controller
         $data['title'] = 'Detail Sales Order';
 
         $data['p'] = $this->db->query("SELECT a.*, b.nama_user as driver FROM tbl_so a
-        JOIN tb_user b ON a.pickup_by=b.id_user
+        LEFT JOIN tb_user b ON a.pickup_by=b.id_user
         WHERE a.id_so = " . $id)->row_array();
         $data['users'] = $this->db->get_where('tb_user', ['id_role' => 2])->result_array();
         $data['shipment2'] =  $this->order->orderBySo($id)->result_array();
