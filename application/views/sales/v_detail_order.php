@@ -1,10 +1,6 @@
-	<?php
 
-
-
-
-
-	?>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 	<!-- Main content -->
 	<section class="content d-flex flex-column flex-column-fluid" id="kt_content">
 		<div class="container">
@@ -31,205 +27,138 @@
 
 						<!-- /.card-header -->
 						<div class="card-body" style="overflow: auto;">
-							<?php if ($shipment2) {
-								echo '';
-							} else {
-							?>
-								<div class="wizard wizard-3" id="kt_wizard_v3" data-wizard-state="step-first" data-wizard-clickable="true">
-									<!--begin: Wizard Nav-->
 
-									<!--end: Wizard Nav-->
-									<!--begin: Wizard Body-->
-									<div class="row justify-content-center py-10 px-8 py-lg-12 px-lg-10">
-										<div class="col-xl-12 col-xxl-7">
-											<!--begin: Wizard Form-->
-											<form id="kt_form" novalidate="novalidate" action="<?= base_url('sales/salesOrder/processEditOrder') ?>" method="POST" enctype="multipart/form-data">
-												<!--begin: Wizard Step 1-->
-												<div class="pb-5" style="margin-top: -65px;">
-													<h4 class="mb-10 font-weight-bold text-dark"><b>1. Sales Order Information</b> </h4>
-													<?= $this->session->userdata('message') ?>
-													<?php echo validation_errors(); ?>
+							<div class="wizard wizard-3" id="kt_wizard_v3" data-wizard-state="step-first" data-wizard-clickable="true">
+								<div class="row justify-content-center py-5 px-8">
+									<div class="col-xl-12">
+										<div class="pb-3" style="margin-top: -25px;">
+											<h4 class="mb-3 font-weight-bold text-dark d-flex align-items-center">
+												<span class="svg-icon svg-icon-primary svg-icon-2x mr-2">
+													<i class="flaticon2-information" style="font-size: 22px; color: #9c223b;"></i>
+												</span>
+												<b>Sales Order Information</b>
+											</h4>
+											<?= $this->session->userdata('message') ?>
 
-													<!--begin::Input-->
-													<div class="row">
-														<div class="col-md-1">
-															<div class="form-group">
-																<!-- <label for="exampleInputEmail1">Is Incoming ?<span style="color: red;">*</span></label> -->
-																<div class="form-check">
-																	<input class="form-check-input" type="radio" name="is_incoming" id="flexRadioDefault1" disabled value="1" <?php if ($p['is_incoming'] == 1) {
-																																													echo 'checked';
-																																												} ?>>
-																	<label class="form-check-label" for="flexRadioDefault1">
-																		Incoming
-																	</label>
-																</div>
-																<div class="form-check">
-																	<input class="form-check-input" type="radio" name="is_incoming" id="flexRadioDefault2" disabled value="0" <?php if ($p['is_incoming'] == 0) {
-																																													echo 'checked';
-																																												} ?>>
-																	<label class="form-check-label" for="flexRadioDefault2">
-																		Outgoing
-																	</label>
-																</div>
-															</div>
-														</div>
-														<div class="col-md-3">
-															<div class="form-group">
-																<label for="exampleInputPassword1">Destination<span style="color: red;">*</span></label>
-																<textarea name="destination" class="form-control" disabled required><?php echo set_value('destination'); ?><?= $p['destination'] ?></textarea>
-															</div>
-														</div>
-														<div class="col-md-4">
-															<div class="form-group">
-																<label for="exampleInputEmail1">Shipper<span style="color: red;">*</span></label>
-																<div id="prefetch">
-																	<input type="text" class="form-control" disabled id="shipper" required name="shipper" value="<?= $p['shipper'] ?>">
-																</div>
-															</div>
-														</div>
-														<div class="col-md-4">
-															<div class="form-group">
-																<label for="exampleInputEmail1">Shipper Address</label>
-																<div id="prefetch">
-																	<input type="text" class="form-control" disabled id="shipper_address" name="shipper_address" value="<?= $p['shipper_address'] ?>">
-																</div>
-															</div>
-														</div>
-														<div class="col-md-4">
-															<div class="form-group">
-																<label for="exampleInputEmail1">Consignee</label>
-																<div id="prefetch">
-																	<input type="text" class="form-control" disabled name="consigne" value="<?= $p['consigne'] ?>">
-																</div>
-															</div>
-														</div>
-														<div class="col-md-4">
-															<div class="form-group">
-																<label for="exampleInputEmail1">Consignee Address</label>
-																<div id="prefetch">
-																	<input type="text" class="form-control" disabled name="consigne_address" value="<?= $p['consigne_address'] ?>">
-																</div>
-															</div>
-														</div>
-														<div class="col-md-4">
-															<div class="form-group">
-																<label for="exampleInputEmail1">Payment</label>
-																<div class="form-check">
-																	<input class="form-check-input" disabled name="payment" type="checkbox" value="Cash" id="flexCheckDefault" <?php if ($p['payment'] == "Cash") {
-																																													echo 'checked';
-																																												} ?>>
-																	<label class="form-check-label" for="flexCheckDefault">
-																		Cash
-																	</label>
-																</div>
-																<div class="form-check">
-																	<input class="form-check-input" disabled name="payment" type="checkbox" value="Credit" id="flexCheckChecked" <?php if ($p['payment'] == "Credit") {
-																																														echo 'checked';
-																																													} ?>>
-																	<label class="form-check-label" for="flexCheckChecked">
-																		Credit
-																	</label>
-																</div>
-															</div>
-														</div>
-													</div>
-													<hr>
-													<h4 class="mb-10 font-weight-bold text-dark"><b>2. Pickup Information</b> </small>
-														<br> <br>
-														<div class="row">
-															<div class="col-md-2">
-																<div class="form-group">
-																	<label for="exampleInputEmail1">Pickup Date<span style="color: red;">*</span></label>
-																	<input type="date" class="form-control" disabled id="tgl_pickup" required name="tgl_pickup" value="<?= $p['tgl_pickup'] ?>">
-																</div>
-															</div>
-															<div class="col-md-2">
-																<div class="form-group">
-																	<label for="exampleInputEmail1">Pickup Time<span style="color: red;">*</span></label>
-																	<input type="time" class="form-control" disabled required name="time" value="<?= $p['time'] ?>">
-																</div>
-															</div>
-															<div class="col-md-4">
-																<div class="form-group">
-																	<label for="exampleInputEmail1">Moda <span style="color: red;">*</span></label>
-																	<select name="pu_moda" class="form-control" disabled>
-																		<?php foreach ($moda as $s) {
-																		?>
-																			<option value="<?= $s['nama_moda'] ?>" <?php if ($s['nama_moda'] == $p['pu_moda']) {
-																														echo 'selected';
-																													} ?>><?= $s['nama_moda'] ?></option>
-																		<?php  } ?>
-																	</select>
-																</div>
-															</div>
-															<div class="col-md-4">
-																<div class="form-group">
-																	<label for="exampleInputEmail1">Packing</label>
-																	<select name="packing" class="form-control" disabled>
-																		<option value="NULL">None</option>
-																		<?php foreach ($packing as $s) {
-																		?>
-																			<option value="<?= $s['nama_packing'] ?>" <?php if ($s['nama_packing'] == $p['packing']) {
-																															echo 'selected';
-																														} ?>><?= $s['nama_packing'] ?></option>
-																		<?php  } ?>
-																	</select>
-																</div>
-															</div>
-
-															<div class="col-md-4">
-																<div class="form-group">
-																	<label for="exampleInputEmail1">Pickup Point<span style="color: red;">*</span></label>
-																	<input type="text" class="form-control" disabled required name="pu_poin" value="<?= $p['pu_poin'] ?>">
-																</div>
-															</div>
-															<div class="col-md-4">
-																<div class="form-group">
-																	<label for="exampleInputEmail1">Service Type <span style="color: red;">*</span></label>
-																	<select name="service" class="form-control" disabled>
-																		<?php foreach ($service as $s) {
-																		?>
-																			<option value="<?= $s['service_name'] ?>" <?php if ($s['service_name'] ==  $p['service']) {
-																															echo 'selected';
-																														} ?>><?= $s['service_name'] ?></option>
-																		<?php  } ?>
-																	</select>
-																</div>
-															</div>
-															<div class="col-md-3">
-																<div class="form-group">
-																	<label for="exampleInputEmail1">Commodity<span style="color: red;">*</span></label>
-																	<input type="text" disabled class="form-control" required name="commodity" value="<?= $p['commodity'] ?>">
-																</div>
-															</div>
-															<div class="col-md-1">
-																<div class="form-group">
-																	<label for="exampleInputEmail1">Koli</label>
-																	<input type="number" disabled class="form-control" required name="koli" value="<?= $p['koli'] ?>">
-																</div>
-															</div>
-
-															<div class="col-md-4">
-																<div class="form-group">
-																	<label for="exampleInputPassword1">Note </label>
-																	<textarea name="note" disabled class="form-control"><?= $p['note'] ?></textarea>
-																</div>
-															</div>
-
-
-														</div>
-
+											<!-- Combined Information Table -->
+											<div class="card card-custom shadow-sm mb-4">
+												<div class="card-header" style="background-color: #f8f9fa;">
+													<h5 class="card-title font-weight-bold">
+														<i class="flaticon-file-1 text-primary mr-2"></i>
+														Order & Pickup Details
+													</h5>
 												</div>
-
-												<!--end: Wizard Actions-->
-											</form>
-											<!--end: Wizard Form-->
+												<div class="card-body p-0">
+													<div class="table-responsive">
+														<table class="table table-bordered table-hover mb-0">
+															<tbody>
+																<tr>
+																	<th style="width: 15%; background-color: #f8f9fa;">
+																		<i class="flaticon2-delivery-package text-primary mr-1"></i> Order Type
+																	</th>
+																	<td style="width: 35%;">
+																		<span class="badge badge-pill <?= $p['is_incoming'] == 1 ? 'badge-info' : 'badge-warning' ?> font-weight-bold px-2 py-1">
+																			<?= $p['is_incoming'] == 1 ? ' Incoming' : ' Outgoing' ?>
+																		</span>
+																	</td>
+																	<th style="width: 15%; background-color: #f8f9fa;">
+																		<i class="flaticon2-pin mr-1"></i> Destination
+																	</th>
+																	<td style="width: 35%;">
+																		<?= $p['destination'] ?>
+																	</td>
+																</tr>
+																<tr>
+																	<th style="background-color: #f8f9fa;">
+																		<i class="flaticon2-user mr-1"></i> Shipper
+																	</th>
+																	<td><?= $p['shipper'] ?></td>
+																	<th style="background-color: #f8f9fa;">
+																		<i class="flaticon2-user mr-1"></i> Consignee
+																	</th>
+																	<td><?= $p['consigne'] ?></td>
+																</tr>
+																<tr>
+																	<th style="background-color: #f8f9fa;">
+																		<i class="flaticon2-map mr-1"></i> Shipper Address
+																	</th>
+																	<td><?= $p['shipper_address'] ?></td>
+																	<th style="background-color: #f8f9fa;">
+																		<i class="flaticon2-map mr-1"></i> Consignee Address
+																	</th>
+																	<td><?= $p['consigne_address'] ?></td>
+																</tr>
+																<tr>
+																	<th style="background-color: #f8f9fa;">
+																		<i class="flaticon-calendar-1 mr-1"></i> Pickup Date/Time
+																	</th>
+																	<td>
+																		<?= date('d F Y', strtotime($p['tgl_pickup'])) ?> - <?= date('H:i', strtotime($p['time'])) ?> WIB
+																	</td>
+																	<th style="background-color: #f8f9fa;">
+																		<i class="flaticon-truck mr-1"></i> Transportation
+																	</th>
+																	<td>
+																		<?php
+																		$moda_icons = [
+																			'Air' => 'flaticon2-plane',
+																			'Land' => 'flaticon2-truck',
+																			'Sea' => 'flaticon2-boat-ship'
+																		];
+																		$icon_class = isset($moda_icons[$p['pu_moda']]) ? $moda_icons[$p['pu_moda']] : 'flaticon2-delivery-package';
+																		?>
+																		<i class="<?= $icon_class ?>"></i> <?= $p['pu_moda'] ?> -
+																		<span class="badge badge-primary"><?= $p['service'] ?></span>
+																	</td>
+																</tr>
+																<tr>
+																	<th style="background-color: #f8f9fa;">
+																		<i class="flaticon-price-tag mr-1"></i> Payment Method
+																	</th>
+																	<td>
+																		<span class="badge badge-pill <?= $p['payment'] == 'Cash' ? 'badge-success' : 'badge-primary' ?>">
+																			<?= $p['payment'] == "Cash" ? '<i class="fas fa-money-bill-wave"></i> Cash' : '<i class="fas fa-credit-card"></i> Credit' ?>
+																		</span>
+																	</td>
+																	<th style="background-color: #f8f9fa;">
+																		<i class="flaticon2-box mr-1"></i> Commodities
+																	</th>
+																	<td>
+																		<?= $p['commodity'] ?> - <span class="badge badge-info"><?= $p['koli'] ?> Units</span>
+																		<?= ($p['packing'] != 'NULL' && !empty($p['packing'])) ? ' - Packing: ' . $p['packing'] : '' ?>
+																	</td>
+																</tr>
+																<tr>
+																	<th style="background-color: #f8f9fa;">
+																		<i class="flaticon2-pin mr-1"></i> Pickup Point
+																	</th>
+																	<td><?= $p['pu_poin'] ?></td>
+																	<th style="background-color: #f8f9fa;">
+																		<i class="flaticon2-chat-1 mr-1"></i> Note
+																	</th>
+																	<td><?= !empty($p['note']) ? $p['note'] : '<em class="text-muted">No notes provided</em>' ?></td>
+																</tr>
+																<tr>
+																	<th style="background-color: #f8f9fa;">
+																		<i class="flaticon2-truck mr-1"></i> Driver
+																	</th>
+																	<td><?= $driver['nama_user'] ?></td>
+																	<th style="background-color: #f8f9fa;">
+																		<i class="flaticon2-chat-1 mr-1"></i> Plate Number
+																	</th>
+																	<td><?= !empty($p['nopol']) ? $p['nopol'] : '<em class="text-muted">No plate number provided</em>' ?></td>
+																</tr>
+															</tbody>
+														</table>
+													</div>
+												</div>
+											</div>
 										</div>
 									</div>
-									<!--end: Wizard Body-->
 								</div>
+							</div>
 
-							<?php	} ?>
+
 
 							<?php if ($detailrequest) { ?>
 								<div class="row">
@@ -274,7 +203,32 @@
 									</table>
 								</div>
 							<?php } ?>
+
 							<div class="row">
+								<?php if ($p['device_id'] != NULL && $p['device_id'] != '-') { ?>
+									<!-- Map Container -->
+									<div class="col-md-12 mb-4">
+										<div class="card card-custom shadow-sm">
+											<div class="card-header" style="background-color: #f8f9fa;">
+												<h5 class="card-title font-weight-bold">
+													<i class="flaticon2-map-1 text-primary mr-2"></i>
+													Live Vehicle Tracking
+												</h5>
+											</div>
+											<div class="card-body p-0">
+												<style>
+													#map {
+														height: 400px;
+														width: 100%;
+														border-radius: 0 0 4px 4px;
+													}
+												</style>
+												<div id="map"></div>
+											</div>
+										</div>
+									</div>
+								<?php } ?>
+								<?php if ($p['status_pickup'] == 4) { ?>
 								<div class="col-md-12">
 									<form action="<?= base_url('sales/salesOrder/prosesSo') ?>" method="POST">
 										<table id="myTablee" class="table table-bordered" style="width: 500%;">
@@ -625,6 +579,7 @@
 										</script>
 									</form>
 								</div>
+								<?php } ?>
 							</div>
 
 						</div>
@@ -1005,4 +960,72 @@
 		document.addEventListener('DOMContentLoaded', function() {
 			updateClock();
 		});
+	</script>
+
+	
+	 
+
+	<script>
+		var map = L.map('map').setView([-6.2088, 106.8456], 10);
+		var layer = L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+			attribution: 'Transtama Logistics | © Google Maps',
+			maxZoom: 19,
+			subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
+		}).addTo(map);
+		// show marker like a car on monas 
+		// Create marker with default position
+		var marker = L.marker([-6.2088, 106.8456]).addTo(map);
+
+
+		// Change marker icon with car icon
+		var carIcon = L.icon({
+			iconUrl: 'https://www.svgheart.com/wp-content/uploads/2020/05/car-free-svg-cut-file-1.png',
+			iconSize: [32, 32],
+			iconAnchor: [16, 16],
+			popupAnchor: [0, -16]
+		});
+
+		// Apply the icon to the marker
+		marker.setIcon(carIcon);
+
+		// Function to update marker position
+		function updateMarkerPosition() {
+			$.ajax({
+				url: '<?php echo base_url("sales/SalesOrder/getLocationVehicle"); ?>',
+				type: 'POST',
+				data: {
+					device_id: <?= $p['device_id'] ?> // Get the selected vehicle ID
+				},
+				dataType: 'json',
+				success: function(response) {
+
+					if (response.Latitude && response.Longitude) {
+						// Update marker position
+						marker.setLatLng([response.Latitude, response.Longitude]);
+						// Update popup content if needed
+						if (response.Acc == true) {
+							response.Acc = 'On';
+						} else {
+							response.Acc = 'Off';
+						}
+						marker.bindPopup('<table class="popup-table" style="width:100%; border-collapse:collapse;">' +
+										'<tr><td style="padding:3px;"><strong>Status:</strong></td><td>' + response.Acc + '</td></tr>' +
+										'<tr><td style="padding:3px;"><strong>Nopol:</strong></td><td>' + response.Nopol + '</td></tr>' +
+										'<tr><td style="padding:3px;"><strong>Address:</strong></td><td>' + response.Address + '</td></tr>' +
+										'<tr><td style="padding:3px;"><strong>Last refresh:</strong></td><td>' + new Date().toLocaleTimeString() + '</td></tr>' +
+										'<tr><td colspan="2" style="padding:3px; text-align:center;"><a href="https://www.google.com/maps?q=' + response.Latitude + ',' + response.Longitude + '" target="_blank" class="btn btn-sm text-light" style="background-color: #9c223b; margin-top:5px;">Open in Google Maps</a></td></tr>' +
+										'</table>').openPopup();
+									}
+				},
+				error: function() {
+					console.log('Error fetching location data');
+				}
+			});
+		}
+
+		// Initial update
+		updateMarkerPosition();
+
+		// Set interval to update every 3 seconds
+		setInterval(updateMarkerPosition, 6000);
 	</script>

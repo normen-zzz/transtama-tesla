@@ -328,6 +328,13 @@
 						</span></i>Generate Resi</span>
 				</a>
 			</li> -->
+			<li class="menu-item menu-item" aria-haspopup="true">
+				<a href="<?= base_url('shipper/vehicle') ?>" class="menu-link">
+					<span class="menu-text"><span class="svg-icon svg-icon-danger svg-icon mr-2">
+							<i class="fa fa-car-side text-danger mr-2">
+						</span></i>Vehicle</span>
+				</a>
+			</li>
 
 
 
@@ -432,11 +439,18 @@
 								</span></i>Tracking</span>
 						</a>
 					</li>
-					<li class="menu-item menu-item" aria-haspopup="true">
+					<!-- <li class="menu-item menu-item" aria-haspopup="true">
 						<a href="<?= base_url('cs/Milestone') ?>" class="menu-link">
 							<span class="menu-text"><span class="svg-icon svg-icon-danger svg-icon mr-2">
 									<i class="fa fa-truck text-danger mr-2">
 								</span></i>Milestone</span>
+						</a>
+					</li> -->
+					<li class="menu-item menu-item" aria-haspopup="true">
+						<a href="<?= base_url('cs/Vehicle') ?>" class="menu-link">
+							<span class="menu-text"><span class="svg-icon svg-icon-danger svg-icon mr-2">
+									<i class="fa fa-truck text-danger mr-2">
+								</span></i>Vehicle</span>
 						</a>
 					</li>
 					<li class="menu-item" aria-haspopup="true">

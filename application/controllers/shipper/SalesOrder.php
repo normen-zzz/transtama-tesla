@@ -101,10 +101,25 @@ class SalesOrder extends CI_Controller
         );
         $dataSo = [
             'pickup_by' => $this->input->post('id_driver'),
+
             'status_pickup' => 1,
         ];
+        if ($this->input->post('vehicle') != null || $this->input->post('vehicle') != '-') {
+            $vehicle = $this->order->getLocationVehicle($this->input->post('vehicle'));
+            $vehicleData = json_decode($vehicle, true);
+
+            $dataSo['nopol'] = $vehicleData['Nopol'];
+
+
+            $dataSo['device_id'] = $this->input->post('vehicle');
+        } else {
+            $dataSo['nopol'] = '-';
+            $dataSo['device_id'] = '-';
+        }
+        # code...
         $update =  $this->db->update('tbl_tracking_real', $data, $where);
         $updateSo = $this->db->update('tbl_so', $dataSo, $where);
+        // var_dump($vehicle);
         if ($update && $updateSo) {
             $this->session->set_flashdata('message', 'Success');
             redirect('shipper/salesOrder/detail/' . $this->input->post('id_so'));
@@ -695,11 +710,15 @@ class SalesOrder extends CI_Controller
 
     public function detail($id)
     {
+        $so = $this->db->get_where('tbl_so', ['id_so' => $id])->row_array();
         $data['title'] = 'Detail Sales Order';
 
-        $data['p'] = $this->db->get_where('tbl_so', ['id_so' => $id])->row_array();
+        $data['p'] = $so;
         $data['users'] = $this->db->get_where('tb_user', ['id_role' => 2, 'status' => 1, 'id_atasan !=' => NULL])->result_array();
         $data['shipment2'] =  $this->order->orderBySo($id)->result_array();
+        if ($so['pickup_by'] != NULL) {
+            $data['driver'] = $this->db->query("SELECT nama_user FROM tb_user WHERE id_user = " . $so['pickup_by'])->row_array();
+        }
         $this->backend->display('shipper/v_detail_order_luar', $data);
     }
     public function getModalDetailOrder()
@@ -1865,5 +1884,20 @@ class SalesOrder extends CI_Controller
         $params['size'] = 4;
         $params['savename'] = FCPATH . "uploads/qrcode/" . $id . '.png';
         $this->ciqrcode->generate($params);
+    }
+
+    // getListVehicle
+    public function getListVehicle()
+    {
+
+        $listVehicle = $this->order->getListVehicle();
+        echo $listVehicle;
+    }
+
+    public function getLocationVehicle()
+    {
+        $device_id = $this->input->post('device_id');
+        $location = $this->order->getLocationVehicle($device_id);
+        echo $location;
     }
 }

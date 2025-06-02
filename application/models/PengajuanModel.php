@@ -13,6 +13,8 @@ class PengajuanModel extends CI_Model
         $this->db->where('pickup_by', $user_id);
         return $this->db->get()->result_array();
     }
+    
+    
 
     public function get_deliveries($user_id)
     {
@@ -116,7 +118,7 @@ class PengajuanModel extends CI_Model
 
         return $tracking_map;
     }
-    
+
 
     public function getLastTrackingOutbond($shipmnent_id)
     {
@@ -494,5 +496,72 @@ class PengajuanModel extends CI_Model
         $this->db->order_by('a.tgl_pickup', 'ASC');
         $query = $this->db->get();
         return $query;
+    }
+
+    public function getListVehicle()
+    {
+        $curl = curl_init();
+
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => 'http://server.gpsku.co.id:8082/api/device?apikey=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjMxMDU5NzMsInVzZXJfaWQiOjkzNTN9.i8JBB5ArI_PdGtZhP62M7T_npYJke9aI6SpD1Hzzh4A',
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'GET',
+        ));
+
+        $response = curl_exec($curl);
+        curl_close($curl);
+        return $response;
+    }
+
+    function getLocationVehicle($device_id)
+    {
+
+
+        $curl = curl_init();
+
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => 'http://server.gpsku.co.id:8082/api/device/' . $device_id . '?apikey=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjMxMDU5NzMsInVzZXJfaWQiOjkzNTN9.i8JBB5ArI_PdGtZhP62M7T_npYJke9aI6SpD1Hzzh4A',
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'GET',
+        ));
+
+        $response = curl_exec($curl);
+
+        curl_close($curl);
+        return $response;
+    }
+
+    public function getListVehicleAll()
+    {
+        $curl = curl_init();
+
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => 'http://server.gpsku.co.id:8082/api/device?apikey=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3NjMxMDU5NzMsInVzZXJfaWQiOjkzNTN9.i8JBB5ArI_PdGtZhP62M7T_npYJke9aI6SpD1Hzzh4A',
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'GET',
+        ));
+
+        $response = curl_exec($curl);
+        curl_close($curl);
+        $response = json_decode($response, true);
+        if (isset($response['data']) && is_array($response['data'])) {
+            return $response['data'];
+        }
+        
     }
 }

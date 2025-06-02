@@ -1,3 +1,4 @@
+	<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 	<!-- Main content -->
 	<section class="content d-flex flex-column flex-column-fluid" id="kt_content">
 		<div class="container">
@@ -67,11 +68,11 @@
 								<?php if ($p['is_ptp'] == 1) { ?>
 									<div class="col-md-4">
 
-									<?php if ($p['cancel_date'] == null) { ?>
-										<a href="<?= base_url('shipper/SalesOrder/createResiPtp/'.$p['id_so']) ?>" class="btn font-weight-bolder text-light mb-4" style="background-color: #9c223b;">Create Resi PTP</a>
-									<?php } ?>
+										<?php if ($p['cancel_date'] == null) { ?>
+											<a href="<?= base_url('shipper/SalesOrder/createResiPtp/' . $p['id_so']) ?>" class="btn font-weight-bolder text-light mb-4" style="background-color: #9c223b;">Create Resi PTP</a>
+										<?php } ?>
 
-										
+
 
 									<?php  } else { ?>
 										<?php if ($p['is_incoming'] == 0) {
@@ -115,6 +116,7 @@
 																	<a href="#" class="text-dark text-hover-primary mb-1 font-size-lg"><?= getNamaUser($p['pickup_by']) ?></a>
 																	<span class="text-muted">Driver</span>
 																</div>
+
 																<!--end::Text-->
 															<?php	} ?>
 
@@ -177,6 +179,7 @@
 													?>
 														<h4 class="title">Order Finished</h4>
 													<?php	} ?>
+													<h3><?= $p['nopol'] ?></h3>
 												</div>
 
 
@@ -196,10 +199,26 @@
 
 
 
+
+
 									</div>
 									<!-- /.card-body -->
+									 
 
 									<div class="card-body" style="overflow: auto;">
+										<?php if ($p['device_id'] != NULL && $p['device_id'] != '-') { ?>
+										hehe
+											<!-- Map Container -->
+											<style>
+												#map {
+													height: 400px;
+												}
+											</style>
+											<div id="map">
+
+											</div>
+										<?php } ?>
+
 										<table id="myTable" class="table table-bordered">
 											<h3 class="title font-weight-bold">List Shipment</h3>
 											<div class="col-md-12 mt-4">
@@ -589,6 +608,8 @@
 							</div>
 
 
+
+
 							<!-- /.card -->
 						</div>
 
@@ -617,13 +638,23 @@
 						<div class="card-body">
 							<div class="row">
 								<input type="text" name="id_so" class="form-control" hidden value="<?= $p['id_so'] ?>">
-								<div class="col-md-12">
+								<div class="col">
 									<label for="id_driver">Choose Driver : </label>
-									<select name="id_driver" class="form-control" style="width: 200px;">
+									<select name="id_driver" class="form-control" style="width: 200px;" required id="id_driver">
 										<?php foreach ($users as $u) {
 										?>
-											<option value="<?= $u['id_user'] ?>"><?= $u['nama_user'] ?></option>
+											<option <?php if ($u['id_user'] == $p['pickup_by']) echo 'selected'; ?> value="<?= $u['id_user'] ?>"><?= $u['nama_user'] ?></option>
 										<?php	} ?>
+									</select>
+
+								</div>
+								<div class="col">
+									<label for="id_driver">Choose Vehicle : </label>
+									<select name="vehicle" class="form-control" style="width: 200px;" id="vehicle" required>
+										<option value="">-- Select Vehicle --</option>
+
+
+
 									</select>
 
 								</div>
@@ -798,6 +829,7 @@
 
 
 	<!-- BUAT MODAL OPS  -->
+
 
 	<script>
 		$(document).ready(function() {
@@ -1042,4 +1074,103 @@
 				});
 			});
 		})
+	</script>
+
+	<script>
+		$(document).ready(function() {
+			// get data vehicle with ajax
+			$.ajax({
+				url: '<?php echo base_url("shipper/SalesOrder/getListVehicle"); ?>',
+				type: 'GET',
+				dataType: 'json',
+				success: function(response) {
+					// console.log(response);
+					$.each(response, function(index, vehicle) {
+						// Get PHP device_id as a variable first
+						var currentDeviceId = '<?= $p['device_id'] ?>';
+						// Append each vehicle to the select element
+						$('#vehicle').append($('<option>', {
+							value: vehicle.DeviceID,
+							text: vehicle.Nopol,
+							selected: currentDeviceId == vehicle.DeviceID
+						}));
+					});
+					$('#vehicle').append($('<option>', {
+						value: '-',
+						text: 'Others',
+						selected: '<?= $p['device_id'] ?>' === '-'
+					}));
+
+
+
+				},
+				error: function() {
+					alert('Terjadi kesalahan dalam memuat data.');
+				}
+			});
+		});
+	</script>
+
+	<script>
+		var map = L.map('map').setView([-6.2088, 106.8456], 10);
+		// show layer in jakarta 
+		var layer = L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+			attribution: 'Transtama Logistics | © Google Maps',
+			maxZoom: 19,
+			subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
+		}).addTo(map);
+		// show marker like a car on monas 
+		// Create marker with default position
+		var marker = L.marker([-6.2088, 106.8456]).addTo(map);
+
+
+		// Change marker icon with car icon
+		var carIcon = L.icon({
+			iconUrl: 'https://www.svgheart.com/wp-content/uploads/2020/05/car-free-svg-cut-file-1.png',
+			iconSize: [32, 32],
+			iconAnchor: [16, 16],
+			popupAnchor: [0, -16]
+		});
+
+		// Apply the icon to the marker
+		marker.setIcon(carIcon);
+
+		// Function to update marker position
+		function updateMarkerPosition() {
+			$.ajax({
+				url: '<?php echo base_url("shipper/SalesOrder/getLocationVehicle"); ?>',
+				type: 'POST',
+				data: {
+					device_id: <?= $p['device_id'] ?> // Get the selected vehicle ID
+				},
+				dataType: 'json',
+				success: function(response) {
+
+					if (response.Latitude && response.Longitude) {
+						// Update marker position
+						marker.setLatLng([response.Latitude, response.Longitude]);
+						// Update popup content if needed
+						if (response.Acc == true) {
+							response.Acc = 'On';
+						} else {
+							response.Acc = 'Off';
+						}
+						marker.bindPopup('<table class="popup-table" style="width:100%; border-collapse:collapse;">' +
+							'<tr><td style="padding:3px;"><strong>Status:</strong></td><td>' + response.Acc + '</td></tr>' +
+							'<tr><td style="padding:3px;"><strong>Nopol:</strong></td><td>' + response.Nopol + '</td></tr>' +
+							'<tr><td style="padding:3px;"><strong>Address:</strong></td><td>' + response.Address + '</td></tr>' +
+							'</table>').openPopup();
+					}
+				},
+				error: function() {
+					console.log('Error fetching location data');
+				}
+			});
+		}
+
+		// Initial update
+		updateMarkerPosition();
+
+		// Set interval to update every 3 seconds
+		setInterval(updateMarkerPosition, 6000);
 	</script>
