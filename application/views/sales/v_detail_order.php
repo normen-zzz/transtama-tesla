@@ -228,7 +228,7 @@
 										</div>
 									</div>
 								<?php } ?>
-								<?php if ($p['status_pickup'] > 2) { ?>
+								<?php if ($p['status_pickup'] >= 0) { ?>
 								<div class="col-md-12">
 									<form action="<?= base_url('sales/salesOrder/prosesSo') ?>" method="POST">
 										<table id="myTablee" class="table table-bordered" style="width: 500%;">
