@@ -1138,7 +1138,7 @@ class SalesOrder extends CI_Controller
     {
         $detail = $this->db->get_where('tbl_so', ['id_so' => $id_so])->row_array();
         // $shipments = $this->db->get_where('tbl_shp_order', ['id_so' => $id_so])->result_array();
-        $shipments = $this->db->query("SELECT * FROM tbl_shp_order WHERE id_so = '$id_so' AND deleted IS NULL ORDER BY id DESC")->result_array();
+        $shipments = $this->db->query("SELECT * FROM tbl_shp_order WHERE id_so = '$id_so' AND deleted = 0 ORDER BY id DESC")->result_array();
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
         $sheet->setCellValue('A1', 'ID(JANGAN DIUBAH)');
