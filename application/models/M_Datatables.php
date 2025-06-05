@@ -145,8 +145,6 @@ class M_Datatables extends CI_Model
     if ($where != null) {
       $setWhere = array();
       foreach ($where as $key => $value) {
-        // Ensure all values are treated as strings
-        $value = (string)$value;
         $setWhere[] = $key . "='" . $value . "'";
       }
       $fwhere = implode(' AND ', $setWhere);
@@ -158,7 +156,7 @@ class M_Datatables extends CI_Model
       }
       $sql_count = $sql->num_rows();
 
-      $cari = implode(" LIKE '%" . $search . "%' OR ", $cari) . " LIKE '%" . $search . "%'";
+      $cari = implode(" LIKE '%" . $search . "%' OR ", $cari) . " LIKE '" . $search . "%'";
 
       // Untuk mengambil nama field yg menjadi acuan untuk sorting
       $order_field = $_POST['order'][0]['column'];
@@ -198,7 +196,7 @@ class M_Datatables extends CI_Model
       }
       $sql_count = $sql->num_rows();
 
-      $cari = implode(" LIKE '%" . $search . "%' OR ", $cari) . " LIKE '%" . $search . "%'";
+      $cari = implode(" LIKE '%" . $search . "%' OR ", $cari) . " LIKE '" . $search . "%'";
 
       // Untuk mengambil nama field yg menjadi acuan untuk sorting
       $order_field = $_POST['order'][0]['column'];
