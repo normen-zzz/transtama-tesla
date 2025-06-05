@@ -137,6 +137,10 @@ class M_Datatables extends CI_Model
   {
     // Ambil data yang di ketik user pada textbox pencarian
     $search = htmlspecialchars($_POST['search']['value']);
+    // convert $search as string 
+    if (is_array($search)) {
+      $search = implode(' ', $search);
+    }
     // Ambil data limit per page
     $limit = preg_replace("/[^a-zA-Z0-9.]/", '', "{$_POST['length']}");
     // Ambil data start
