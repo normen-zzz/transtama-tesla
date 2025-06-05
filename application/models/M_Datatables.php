@@ -137,10 +137,6 @@ class M_Datatables extends CI_Model
   {
     // Ambil data yang di ketik user pada textbox pencarian
     $search = htmlspecialchars($_POST['search']['value']);
-    // convert $search as string 
-    if (is_array($search)) {
-      $search = implode(' ', $search);
-    }
     // Ambil data limit per page
     $limit = preg_replace("/[^a-zA-Z0-9.]/", '', "{$_POST['length']}");
     // Ambil data start
@@ -149,6 +145,8 @@ class M_Datatables extends CI_Model
     if ($where != null) {
       $setWhere = array();
       foreach ($where as $key => $value) {
+        // Ensure all values are treated as strings
+        $value = (string)$value;
         $setWhere[] = $key . "='" . $value . "'";
       }
       $fwhere = implode(' AND ', $setWhere);
