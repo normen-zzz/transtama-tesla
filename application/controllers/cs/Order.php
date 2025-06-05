@@ -67,7 +67,7 @@ class Order extends CI_Controller
     function view_data_query()
     {
         $query  = "SELECT a.tgl_pickup,a.shipper,a.consigne,a.shipment_id,a.created_at,a.id_so,a.id, b.nama_user FROM tbl_shp_order a JOIN tb_user b ON a.id_user=b.id_user";
-        $search = array('shipment_id', 'shipper');
+        $search = array('shipment_id');
         $where  = array('a.deleted' => 0);
         // $where  = array('a.id_user' => $this->session->userdata('id_user'));
 
