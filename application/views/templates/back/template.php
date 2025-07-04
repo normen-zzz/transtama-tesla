@@ -535,20 +535,77 @@
 
 	<script>
 		$(document).ready(function() {
-
-			if (navigator.geolocation) {
-				navigator.geolocation.getCurrentPosition(showPosition);
-			} else {
-				alert("Geolocation is not supported by this browser.");
+			// Function to request geolocation that can be called multiple times
+			function requestGeolocation() {
+				if (navigator.geolocation) {
+					// Show loading indicator or message
+					$('#koordinat').val("Getting coordinates...");
+					
+					var geoOptions = {
+						enableHighAccuracy: true, // Use GPS if available
+						timeout: 10000,           // Time to wait for coordinates (10 seconds)
+						maximumAge: 0             // Always get fresh location data
+					};
+					
+					// Success callback
+					function showPosition(position) {
+						var latitude = position.coords.latitude;
+						var longitude = position.coords.longitude;
+						$('#koordinat').val(latitude + ',' + longitude);
+						console.log("Coordinates obtained: " + latitude + ',' + longitude);
+						
+						// Hide permission request container if it exists
+						$("#locationPermissionRequest").hide();
+					}
+					
+					// Error callback
+					function showError(error) {
+						console.error("Geolocation error: " + error.code + " - " + error.message);
+						
+						switch(error.code) {
+							case error.PERMISSION_DENIED:
+								$('#koordinat').val("Location permission denied");
+								
+								// Create permission request UI if it doesn't exist
+								if ($("#locationPermissionRequest").length === 0) {
+									$('<div id="locationPermissionRequest" class="alert alert-warning mt-2">' +
+									  '<p>We need your location to continue. Please allow location access.</p>' +
+									  '<button id="requestLocationPermission" class="btn btn-primary">Grant Location Access</button>' +
+									  '</div>').insertAfter("#koordinat");
+									
+									// Add click handler to request permission again
+									$("#requestLocationPermission").on("click", function() {
+										requestGeolocation();
+									});
+								} else {
+									// Show the permission request if it was hidden
+									$("#locationPermissionRequest").show();
+								}
+								break;
+							case error.POSITION_UNAVAILABLE:
+								$('#koordinat').val("Location unavailable");
+								break;
+							case error.TIMEOUT:
+								$('#koordinat').val("Location request timed out");
+								// Retry after timeout
+								setTimeout(requestGeolocation, 2000);
+								break;
+							case error.UNKNOWN_ERROR:
+								$('#koordinat').val("Unknown location error");
+								break;
+						}
+					}
+					
+					// Get current position with options
+					navigator.geolocation.getCurrentPosition(showPosition, showError, geoOptions);
+				} else {
+					alert("Geolocation is not supported by this browser.");
+					$('#koordinat').val("Geolocation not supported");
+				}
 			}
 
-			function showPosition(position) {
-				var latitude = position.coords.latitude;
-				var longitude = position.coords.longitude;
-				$('#koordinat').val(position.coords.latitude + ',' + position.coords.longitude);
-			}
-
-
+			// Initial geolocation request
+			requestGeolocation();
 		});
 	</script>
 
