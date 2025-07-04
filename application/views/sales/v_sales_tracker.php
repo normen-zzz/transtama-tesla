@@ -194,8 +194,13 @@
                                 <label for="summary" class="font-weight-bold"><i class="fa fa-file-alt mr-2"></i>Meeting Summary</label>
                                 <input type="text" class="form-control" required name="summary" placeholder="Enter meeting results/summary" style="border-radius: 8px; border: 1px solid #ddd;">
                             </div>
+
+                            <div class="form-group">
+                                <label for="koordinat" class="font-weight-bold"><i class="fa fa-map-marker-alt mr-2"></i>Geo Location</label>
+                                <input type="text" class="form-control" id="koordinat" name="koordinat" readonly>
+                            </div>
                             
-                            <input type="text" class="form-control" id="koordinat" name="koordinat" hidden>
+                       
                             
                             <div class="form-group">
                                 <label for="attachment" class="font-weight-bold"><i class="fa fa-camera mr-2"></i>Meeting Photo</label>
