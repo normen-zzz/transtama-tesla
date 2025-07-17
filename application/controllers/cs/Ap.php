@@ -224,12 +224,12 @@ class Ap extends CI_Controller
 						$pesansm = "Hallo, ada pengajuan Ap Oleh *$nama_user* No. *$no_ap* Dengan Tujuan *$purpose* Tanggal *$date*. Silahkan approve melalui link berikut : $linksm . Terima Kasih";
 						// no pak sam
 						$this->wa->pickup('+6281808008082', "$pesansm");
-						
+
 						//Norman
 						$this->wa->pickup('+6285697780467', "$pesansm");
 					} else {
-						$this->wa->pickup('+6281293753199', "$pesan");
-						
+						$this->wa->pickup('+6285157763698', "$pesan");
+
 						//Norman
 						$this->wa->pickup('+6285697780467', "$pesan");
 					}
@@ -364,7 +364,7 @@ class Ap extends CI_Controller
 			$pesan = "Hallo, ada pengajuan Ap No. *$no_ap* Dengan Tujuan *$purpose* Tanggal *$date*. Silahkan approve melalui link berikut : $link . Terima Kasih";
 			// no pak sam
 			$this->wa->pickup('+6281808008082', "$pesan");
-			
+
 			//Norman
 			$this->wa->pickup('+6285697780467', "$pesan");
 			$this->session->set_flashdata('message', 'Success Approve');
@@ -387,8 +387,9 @@ class Ap extends CI_Controller
 			redirect('cs/customer');
 		}
 	}
-	public function voidAp($no_ap) {
-		$void = $this->db->update('tbl_pengeluaran',array('status' => 6),array('no_pengeluaran' => $no_ap));
+	public function voidAp($no_ap)
+	{
+		$void = $this->db->update('tbl_pengeluaran', array('status' => 6), array('no_pengeluaran' => $no_ap));
 		if ($void) {
 			$this->session->set_flashdata('message', 'Void AP');
 			redirect('cs/ap');
@@ -398,7 +399,8 @@ class Ap extends CI_Controller
 		}
 	}
 
-	public function takeBackAp($no_ap) {
+	public function takeBackAp($no_ap)
+	{
 		if ($this->session->userdata('id_atasan') == NULL) {
 			$update = array(
 				'approve_by_sm' => NULL,
@@ -410,20 +412,20 @@ class Ap extends CI_Controller
 				'approve_mgr_finance' => NULL,
 				'created_mgr_finance' => NULL
 			);
-			$takeback = $this->db->update('tbl_approve_pengeluaran',$update,array('no_pengeluaran' => $no_ap));
-			$updatestatus = $this->db->update('tbl_pengeluaran',array('status' => 2),array('no_pengeluaran' => $no_ap));
-		}else{
-			$takeback = $this->db->delete('tbl_approve_pengeluaran',array('no_pengeluaran' => $no_ap));
-			$updatestatus = $this->db->update('tbl_pengeluaran',array('status' => 0),array('no_pengeluaran' => $no_ap));
+			$takeback = $this->db->update('tbl_approve_pengeluaran', $update, array('no_pengeluaran' => $no_ap));
+			$updatestatus = $this->db->update('tbl_pengeluaran', array('status' => 2), array('no_pengeluaran' => $no_ap));
+		} else {
+			$takeback = $this->db->delete('tbl_approve_pengeluaran', array('no_pengeluaran' => $no_ap));
+			$updatestatus = $this->db->update('tbl_pengeluaran', array('status' => 0), array('no_pengeluaran' => $no_ap));
 		}
-		
+
 		if ($takeback && $updatestatus) {
-			
+
 			$this->session->set_flashdata('message', 'Success');
-			redirect('cs/ap/detail/'.$no_ap);
+			redirect('cs/ap/detail/' . $no_ap);
 		} else {
 			$this->session->set_flashdata('message', 'Failed');
-			redirect('cs/ap/detail/'.$no_ap);
+			redirect('cs/ap/detail/' . $no_ap);
 		}
 	}
 	public function edit()
@@ -518,5 +520,78 @@ class Ap extends CI_Controller
 		$ket = $this->input->post('id', TRUE);
 		$data = $this->db->get_where('tb_customer', ['id_customer' => $ket])->row_array();
 		echo json_encode($data);
+	}
+
+	// addMoreDetail
+	public function addMoreDetail()
+	{
+		$this->db->trans_start();
+		try {
+			$infoPengeluaran = $this->db->get_where('tbl_pengeluaran', ['no_pengeluaran' => $this->input->post('no_pengeluaran')])->row_array();
+			$id_kategori_pengeluaran = $this->input->post('id_kategori_pengeluaran');
+			$description = $this->input->post('description');
+			$amount_proposed = preg_replace("/[^0-9]/", "", $this->input->post('amount_proposed'));
+			$attachment = $this->input->post('attachment2');
+
+			$data = [
+				'no_pengeluaran' => $this->input->post('no_pengeluaran'),
+				'id_kategori_pengeluaran' => $id_kategori_pengeluaran,
+				'purpose' => $infoPengeluaran['purpose'],
+				'date' => date('Y-m-d'),
+				'description' => $description,
+				'amount_proposed' => $amount_proposed,
+				'id_kat_ap' => $infoPengeluaran['id_kategori_pengeluaran'],
+				'id_user' => $this->session->userdata('id_user'),
+				'id_atasan' => $this->session->userdata('id_atasan'),
+				'status' => $infoPengeluaran['status'],
+
+				'payment_mode' => $infoPengeluaran['payment_mode'],
+				'via_transfer' => $infoPengeluaran['via_transfer'],
+				'payment_date' => $infoPengeluaran['payment_date'],
+				'payment_proof' => $infoPengeluaran['payment_proof'],
+				'is_approve_sm' => $infoPengeluaran['is_approve_sm'],
+				'reason_void' => $infoPengeluaran['reason_void'],
+				'void_date' => $infoPengeluaran['void_date'],
+				'no_ca' => $infoPengeluaran['no_ca'],
+			];
+
+			$folderUpload = "./uploads/ap/";
+			$files = $_FILES;
+
+			$namaFile = $files['attachment2']['name'];
+			$lokasiTmp = $files['attachment2']['tmp_name'];
+			// # kita tambahkan uniqid() agar nama gambar bersifat unik
+			$namaBaru = uniqid() . '-' . $namaFile;
+			$lokasiBaru = "{$folderUpload}/{$namaBaru}";
+			move_uploaded_file($lokasiTmp, $lokasiBaru);
+			$foto = array('attachment' => $namaBaru);
+			$data = array_merge($data, $foto);
+
+			$insert = $this->db->insert('tbl_pengeluaran', $data);
+			if ($insert) {
+				$ap = $this->db->get_where('tbl_pengeluaran', ['no_pengeluaran' => $this->input->post('no_pengeluaran')])->result_array();
+				$total = 0;
+				foreach ($ap as $ap1) {
+					$total += $ap1['amount_proposed'];
+				}
+				$update = $this->db->update('tbl_pengeluaran', ['total' => $total], ['no_pengeluaran' => $this->input->post('no_pengeluaran')]);
+				if ($update) {
+					$this->session->set_flashdata('message', '<div class="alert alert-success" role="alert">Success</div>');
+				} else {
+					throw new Exception('Failed to update total');
+				}
+			} else {
+				throw new Exception('Failed to insert new detail');
+			}
+			$this->db->trans_complete();
+
+			if ($this->db->trans_status() === FALSE) {
+				throw new Exception('Transaction failed');
+			}
+		} catch (Exception $e) {
+			$this->db->trans_rollback();
+			$this->session->set_flashdata('message', '<div class="alert alert-danger" role="alert">Failed: ' . $e->getMessage() . '</div>');
+		}
+		redirect('cs/ap/detail/' . $this->input->post('no_pengeluaran'));
 	}
 }

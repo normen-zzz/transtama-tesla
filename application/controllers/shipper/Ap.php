@@ -204,7 +204,7 @@ class Ap extends CI_Controller
 			$link = "https://tesla-smartwork.transtama.com/approval/detailOps/$no_ap";
 			$pesan = "Hallo, ada pengajuan Ap No. *$no_ap* Oleh *$nama_user*  Dengan Tujuan *$purpose* Tanggal *$date*. Silahkan Approve Melalu Link Berikut : $link . Terima Kasih";
 			// no manager ops
-			$this->wa->pickup('+6281212603705', "$pesan");
+			$this->wa->pickup('+6281398433940', "$pesan"); //pak Sarwan
 			//Norman
 			$this->wa->pickup('+6285697780467', "$pesan");
 		}

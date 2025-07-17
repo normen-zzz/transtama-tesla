@@ -256,9 +256,9 @@ class SalesOrder extends CI_Controller
                 $pesan = "Hallo Cs dan Ops, ada pickup dari *$shipper* $pesanDestination $pesanPickUp *$service* tanggal *$tgl_pickup* jam *$time* dengan moda $pu_moda dengan jenis barang $commodity. Catatan : $note. *Sales : $sales*";
                 // kirim wa
                 $this->wa->pickup('+6285697780467', "$pesan"); //Nomor Norman IT
-                $this->wa->pickup('+6281293753199', "$pesan"); //Nomor Bu Lili CS
+                
                 $this->wa->pickup('+6285894438583', "$pesan"); //Mba Yunita  CS
-                $this->wa->pickup('+6281212603705', "$pesan"); //Mas Ali OPS
+                
                 $this->wa->pickup('+6281398433940', "$pesan"); //Sarwan OPS
 
 
@@ -357,7 +357,7 @@ class SalesOrder extends CI_Controller
     //             $this->wa->pickup('+6285697780467', "$pesan"); //Nomor Norman IT
     //             $this->wa->pickup('+6281293753199', "$pesan"); //Nomor Bu Lili CS
     //             $this->wa->pickup('+6285894438583', "$pesan"); //Mba Yunita  CS
-    //             $this->wa->pickup('+6281212603705', "$pesan"); //Mas Ali OPS
+    //           
     //             $this->wa->pickup('+6281398433940', "$pesan"); //Sarwan OPS
     //             $random = random_string('numeric', 8);
 
@@ -790,9 +790,9 @@ class SalesOrder extends CI_Controller
 
         // kirim wa
         $this->wa->pickup('+6285697780467', '*REVISI REQUEST PICKUP* \r\n\r\n' . $pesan1 . '\r\n\r\n' . $pesan2); //Nomor Norman IT
-        $this->wa->pickup('+6281293753199', '*REVISI REQUEST PICKUP* \r\n\r\n' . $pesan1 . '\r\n\r\n' . $pesan2); //Nomor Bu Lili CS
+       
         $this->wa->pickup('+6285894438583', '*REVISI REQUEST PICKUP* \r\n\r\n' . $pesan1 . '\r\n\r\n' . $pesan2); //Mba Yunita  CS
-        $this->wa->pickup('+6281212603705', '*REVISI REQUEST PICKUP* \r\n\r\n' . $pesan1 . '\r\n\r\n' . $pesan2); //Mas Ali OPS
+        
         $this->wa->pickup('+6285777396665', '*REVISI REQUEST PICKUP* \r\n\r\n' . $pesan1 . '\r\n\r\n' . $pesan2); //AMEL  CS
         $this->wa->pickup('+6281398433940', '*REVISI REQUEST PICKUP* \r\n\r\n' . $pesan1 . '\r\n\r\n' . $pesan2); //Sarwan OPS
 
@@ -2179,7 +2179,7 @@ class SalesOrder extends CI_Controller
             $this->wa->pickup('+6285697780467', "$pesan"); //Nomor Norman IT
             $this->wa->pickup('+6281293753199', "$pesan"); //Nomor Bu Lili CS
             $this->wa->pickup('+6285894438583', "$pesan"); //Mba Yunita  CS
-            $this->wa->pickup('+6281212603705', "$pesan"); //Mas Ali OPS
+           
             $this->wa->pickup('+6281398433940', "$pesan"); //Sarwan OPS
 
 
